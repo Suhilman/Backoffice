@@ -1,17 +1,18 @@
-import axios from "axios";
+import axios from 'axios';
 
-export const LOGIN_URL = "api/auth/login";
-export const REGISTER_URL = "api/auth/register";
-export const REQUEST_PASSWORD_URL = "api/auth/forgot-password";
+const API_URL = process.env.REACT_APP_API_URL;
 
-export const ME_URL = "api/me";
+export const LOGIN_URL = `${API_URL}/api/v1/auth/login`;
+export const REGISTER_URL = `${API_URL}/api/v1/auth/register`;
+export const REQUEST_PASSWORD_URL = `${API_URL}/api/v1/auth/forgot-password`;
+export const ME_URL = `${API_URL}/api/v1/business`;
 
 export function login(email, password) {
   return axios.post(LOGIN_URL, { email, password });
 }
 
-export function register(email, fullname, username, password) {
-  return axios.post(REGISTER_URL, { email, fullname, username, password });
+export function register(email, name, phone_number, password) {
+  return axios.post(REGISTER_URL, { email, name, phone_number, password });
 }
 
 export function requestPassword(email) {
@@ -20,5 +21,6 @@ export function requestPassword(email) {
 
 export function getUserByToken() {
   // Authorization head should be fulfilled in interceptor.
-  return axios.get(ME_URL);
+  const { business_id } = JSON.parse(localStorage.getItem('user_info'));
+  return axios.get(`${ME_URL}/${business_id}`);
 }

@@ -82,7 +82,7 @@ export function getInitLayoutConfig() {
       },
       menu: {
         self: {
-          display: true,
+          display: false,
           layout: "default", // tab/default
           "root-arrow": false,
           "icon-style": "duotone" // duotone, line, bold, solid
@@ -104,7 +104,7 @@ export function getInitLayoutConfig() {
       }
     },
     subheader: {
-      display: true,
+      display: false,
       displayDesc: false,
       displayDaterangepicker: true,
       layout: "subheader-v1",
@@ -158,7 +158,7 @@ export function getInitLayoutConfig() {
     },
     extras: {
       search: {
-        display: true,
+        display: false,
         layout: "dropdown", // offcanvas, dropdown
         offcanvas: {
           direction: "right"
@@ -175,7 +175,7 @@ export function getInitLayoutConfig() {
         }
       },
       "quick-actions": {
-        display: true,
+        display: false,
         layout: "dropdown", // offcanvas, dropdown,
         dropdown: {
           style: "dark", // light, dark
@@ -186,7 +186,7 @@ export function getInitLayoutConfig() {
       },
       user: {
         display: true,
-        layout: "offcanvas", // offcanvas, dropdown
+        layout: "dropdown", // offcanvas, dropdown
         dropdown: {
           style: "dark"
         },
@@ -195,25 +195,25 @@ export function getInitLayoutConfig() {
         }
       },
       languages: {
-        display: true
+        display: false
       },
       cart: {
-        display: true,
+        display: false,
         dropdown: {
           style: "dark", // ligth, dark
         }
       },
       "quick-panel": {
-        display: true,
+        display: false,
         offcanvas: {
           directions: "right"
         }
       },
       chat: {
-        display: true
+        display: false
       },
       toolbar: {
-        display: true
+        display: false
       },
       scrolltop: {
         display: true

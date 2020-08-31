@@ -1,23 +1,23 @@
-import { persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
-import { put, takeLatest } from "redux-saga/effects";
-import { getUserByToken } from "./authCrud";
+import { persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import { put, takeLatest } from 'redux-saga/effects';
+import { getUserByToken } from './authCrud';
 
 export const actionTypes = {
-  Login: "[Login] Action",
-  Logout: "[Logout] Action",
-  Register: "[Register] Action",
-  UserRequested: "[Request User] Action",
-  UserLoaded: "[Load User] Auth API"
+  Login: '[Login] Action',
+  Logout: '[Logout] Action',
+  Register: '[Register] Action',
+  UserRequested: '[Request User] Action',
+  UserLoaded: '[Load User] Auth API',
 };
 
 const initialAuthState = {
   user: undefined,
-  authToken: undefined
+  authToken: undefined,
 };
 
 export const reducer = persistReducer(
-  { storage, key: "v705-demo1-auth", whitelist: ["user", "authToken"] },
+  { storage, key: 'v705-demo1-auth', whitelist: ['user', 'authToken'] },
   (state = initialAuthState, action) => {
     switch (action.type) {
       case actionTypes.Login: {
@@ -49,14 +49,17 @@ export const reducer = persistReducer(
 );
 
 export const actions = {
-  login: authToken => ({ type: actionTypes.Login, payload: { authToken } }),
-  register: authToken => ({
+  login: (authToken) => ({ type: actionTypes.Login, payload: { authToken } }),
+  register: (authToken) => ({
     type: actionTypes.Register,
-    payload: { authToken }
+    payload: { authToken },
   }),
   logout: () => ({ type: actionTypes.Logout }),
-  requestUser: user => ({ type: actionTypes.UserRequested, payload: { user } }),
-  fulfillUser: user => ({ type: actionTypes.UserLoaded, payload: { user } })
+  requestUser: (user) => ({
+    type: actionTypes.UserRequested,
+    payload: { user },
+  }),
+  fulfillUser: (user) => ({ type: actionTypes.UserLoaded, payload: { user } }),
 };
 
 export function* saga() {
@@ -69,7 +72,8 @@ export function* saga() {
   });
 
   yield takeLatest(actionTypes.UserRequested, function* userRequested() {
-    const { data: user } = yield getUserByToken();
+    const { data } = yield getUserByToken();
+    const user = data.data;
 
     yield put(actions.fulfillUser(user));
   });

@@ -1,31 +1,38 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { useFormik } from "formik";
 import { connect } from "react-redux";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
-import { FormattedMessage, injectIntl } from "react-intl";
+import { injectIntl } from "react-intl";
+
+import { Modal, Button } from "react-bootstrap";
+
+import ModalVerify from "../components/ModalVerify";
+import ModalRegister from "../components/ModalRegister";
+
 import * as auth from "../_redux/authRedux";
 import { register } from "../_redux/authCrud";
 
 const initialValues = {
-  fullname: "",
+  name: "",
   email: "",
-  username: "",
+  phone_number: "",
   password: "",
   changepassword: "",
-  acceptTerms: false,
+  acceptTerms: false
 };
 
 function Registration(props) {
   const { intl } = props;
   const [loading, setLoading] = useState(false);
   const RegistrationSchema = Yup.object().shape({
-    fullname: Yup.string()
+    name: Yup.string()
       .min(3, "Minimum 3 symbols")
       .max(50, "Maximum 50 symbols")
       .required(
         intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD",
+          id: "AUTH.VALIDATION.REQUIRED_FIELD"
         })
       ),
     email: Yup.string()
@@ -34,15 +41,15 @@ function Registration(props) {
       .max(50, "Maximum 50 symbols")
       .required(
         intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD",
+          id: "AUTH.VALIDATION.REQUIRED_FIELD"
         })
       ),
-    username: Yup.string()
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
+    phone_number: Yup.string()
+      .min(8, "Minimum 3 symbols")
+      .max(13, "Maximum 50 symbols")
       .required(
         intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD",
+          id: "AUTH.VALIDATION.REQUIRED_FIELD"
         })
       ),
     password: Yup.string()
@@ -50,36 +57,90 @@ function Registration(props) {
       .max(50, "Maximum 50 symbols")
       .required(
         intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD",
+          id: "AUTH.VALIDATION.REQUIRED_FIELD"
         })
       ),
     changepassword: Yup.string()
       .required(
         intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD",
+          id: "AUTH.VALIDATION.REQUIRED_FIELD"
         })
       )
       .when("password", {
-        is: (val) => (val && val.length > 0 ? true : false),
+        is: val => (val && val.length > 0 ? true : false),
         then: Yup.string().oneOf(
           [Yup.ref("password")],
           "Password and Confirm Password didn't match"
-        ),
+        )
       }),
-    acceptTerms: Yup.bool().required(
-      "You must accept the terms and conditions"
-    ),
+    acceptTerms: Yup.bool().required("You must accept the terms and conditions")
   });
 
-  const enableLoading = () => {
-    setLoading(true);
+  const API_URL = process.env.REACT_APP_API_URL;
+
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [showBusinessModal, setShowBusinessModal] = useState(false);
+  const [alertModal, setAlertModal] = useState("");
+  const [token, setToken] = useState(false);
+  const [second, setSecond] = useState(0);
+  const [verificationCode, setVerificationCode] = useState(0);
+
+  const [allBusinessCategories, setAllBusinessCategories] = useState([]);
+  const [allProvinces, setAllProvinces] = useState([]);
+  const [allCities, setAllCities] = useState([]);
+  const [allLocations, setAllLocations] = useState([]);
+
+  const [code, setCode] = useState("");
+  const [phonenumber, setPhonenumber] = useState("");
+  const [businessCategory, setBusinessCategory] = useState("");
+  const [province, setProvince] = useState("");
+  const [city, setCity] = useState("");
+  const [location, setLocation] = useState("");
+  const [outletLocation, setOutletLocation] = useState("");
+
+  const closeVerifyModal = () => setShowVerifyModal(false);
+  const openVerifyModal = () => setShowVerifyModal(true);
+  const handleVerifyModal = e => setCode(e.target.value);
+
+  React.useEffect(() => {
+    let timer;
+    if (showVerifyModal && second > 0) {
+      timer = setTimeout(function() {
+        setSecond(now => now - 1);
+      }, 1000);
+    } else {
+      clearTimeout(timer);
+    }
+
+    return () => clearTimeout(timer);
+  });
+
+  const closeBusinessModal = () => setShowBusinessModal(false);
+  const openBusinessModal = () => {
+    getBusinessCategories();
+    getProvinces();
+    setShowBusinessModal(true);
+  };
+  const handleBusiness = e => setBusinessCategory(e.target.value);
+  const handleProvince = e => {
+    setProvince(e.target.value);
+    getProvinceById(e.target.value);
+  };
+  const handleCity = e => {
+    setCity(e.target.value);
+    getCityById(e.target.value);
+  };
+  const handleLocation = e => setLocation(e.target.value);
+  const handleOutletLocation = e => setOutletLocation(e.target.value);
+
+  const enableLoading = () => setLoading(true);
+  const disableLoading = () => setLoading(false);
+
+  const handleResendCode = () => {
+    setSecond(60);
   };
 
-  const disableLoading = () => {
-    setLoading(false);
-  };
-
-  const getInputClasses = (fieldname) => {
+  const getInputClasses = fieldname => {
     if (formik.touched[fieldname] && formik.errors[fieldname]) {
       return "is-invalid";
     }
@@ -96,31 +157,166 @@ function Registration(props) {
     validationSchema: RegistrationSchema,
     onSubmit: (values, { setStatus, setSubmitting }) => {
       enableLoading();
-      register(values.email, values.fullname, values.username, values.password)
-        .then(({ data: { accessToken } }) => {
-          props.register(accessToken);
+      setPhonenumber(values.phone_number.toString());
+      register(
+        values.email,
+        values.name,
+        values.phone_number.toString(),
+        values.password
+      )
+        .then(({ data }) => {
+          const { owner, accessToken } = data.data;
+
+          setToken(`Bearer ${accessToken}`);
+          setVerificationCode(owner.verification_code);
+          localStorage.setItem("user_info", JSON.stringify(owner));
+
           disableLoading();
+          openVerifyModal();
+          setSecond(60);
         })
-        .catch(() => {
+        .catch(err => {
           setSubmitting(false);
-          setStatus(
-            intl.formatMessage({
-              id: "AUTH.VALIDATION.INVALID_LOGIN",
-            })
-          );
+          setStatus(err.response.data.message);
           disableLoading();
         });
-    },
+    }
   });
+
+  const getBusinessCategories = async () => {
+    try {
+      setAlertModal("");
+      const { data } = await axios.get(`${API_URL}/api/v1/business-category`);
+      setAllBusinessCategories(data.data);
+    } catch (err) {
+      setAlertModal(err.response.data.message);
+      setAllBusinessCategories([]);
+    }
+  };
+
+  const getProvinces = async () => {
+    try {
+      setAlertModal("");
+      const { data } = await axios.get(`${API_URL}/api/v1/province`);
+      setAllProvinces(data.data);
+    } catch (err) {
+      setAlertModal(err.response.data.message);
+      setAllProvinces([]);
+    }
+  };
+
+  const getProvinceById = async id => {
+    try {
+      setAlertModal("");
+      const { data } = await axios.get(`${API_URL}/api/v1/province/${id}`);
+      setAllCities(data.data.Cities);
+    } catch (err) {
+      setAlertModal(err.response.data.message);
+      setAllCities([]);
+    }
+  };
+
+  const getCityById = async id => {
+    try {
+      setAlertModal("");
+      const { data } = await axios.get(`${API_URL}/api/v1/city/${id}`);
+      setAllLocations(data.data.Locations);
+    } catch (err) {
+      setAlertModal(err.response.data.message);
+      setAllLocations([]);
+    }
+  };
+
+  const verifyAccount = async () => {
+    try {
+      enableLoading();
+      setAlertModal("");
+      await axios.post(
+        `${API_URL}/api/v1/auth/verify-account`,
+        { code },
+        { headers: { Authorization: token } }
+      );
+      disableLoading();
+      closeVerifyModal();
+      openBusinessModal();
+    } catch (err) {
+      setAlertModal(err.response.data.message);
+      disableLoading();
+    }
+  };
+
+  const updateBusiness = async () => {
+    try {
+      enableLoading();
+      setAlertModal("");
+      const { business_id, outlet_id } = JSON.parse(
+        localStorage.getItem("user_info")
+      );
+
+      const businessData = {
+        business_category_id: businessCategory,
+        location_id: location
+      };
+
+      const outletData = {
+        location_id: location
+      };
+
+      await axios.patch(
+        `${API_URL}/api/v1/business/${business_id}`,
+        businessData,
+        { headers: { Authorization: token } }
+      );
+
+      await axios.patch(`${API_URL}/api/v1/outlet/${outlet_id}`, outletData, {
+        headers: { Authorization: token }
+      });
+
+      disableLoading();
+      props.register(token.split(" ")[1]);
+    } catch (err) {
+      setAlertModal(err.response.data.message);
+      disableLoading();
+    }
+  };
 
   return (
     <div className="login-form login-signin" style={{ display: "block" }}>
+      <ModalVerify
+        showVerifyModal={showVerifyModal}
+        closeVerifyModal={closeVerifyModal}
+        alertModal={alertModal}
+        phonenumber={phonenumber}
+        handleVerifyModal={handleVerifyModal}
+        code={code}
+        verifyAccount={verifyAccount}
+        loading={loading}
+        second={second}
+        handleResendCode={handleResendCode}
+        verification_code={verificationCode}
+      />
+
+      <ModalRegister
+        showBusinessModal={showBusinessModal}
+        closeBusinessModal={closeBusinessModal}
+        alertModal={alertModal}
+        loading={loading}
+        handleBusiness={handleBusiness}
+        handleProvince={handleProvince}
+        handleCity={handleCity}
+        handleLocation={handleLocation}
+        handleOutletLocation={handleOutletLocation}
+        allBusinessCategories={allBusinessCategories}
+        allProvinces={allProvinces}
+        allCities={allCities}
+        allLocations={allLocations}
+        updateBusiness={updateBusiness}
+      />
+
       <div className="text-center mb-10 mb-lg-20">
-        <h3 className="font-size-h1">
-          <FormattedMessage id="AUTH.REGISTER.TITLE" />
-        </h3>
+        <h3 className="font-size-h1">Register to BeetPOS</h3>
         <p className="text-muted font-weight-bold">
-          Enter your details to create your account
+          Register and get free trial, no pre payment and credit card needed
         </p>
       </div>
 
@@ -140,17 +336,17 @@ function Registration(props) {
         {/* begin: Fullname */}
         <div className="form-group fv-plugins-icon-container">
           <input
-            placeholder="Full name"
+            placeholder="Business Name"
             type="text"
             className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
-              "fullname"
+              "name"
             )}`}
-            name="fullname"
-            {...formik.getFieldProps("fullname")}
+            name="name"
+            {...formik.getFieldProps("name")}
           />
-          {formik.touched.fullname && formik.errors.fullname ? (
+          {formik.touched.name && formik.errors.name ? (
             <div className="fv-plugins-message-container">
-              <div className="fv-help-block">{formik.errors.fullname}</div>
+              <div className="fv-help-block">{formik.errors.name}</div>
             </div>
           ) : null}
         </div>
@@ -175,24 +371,24 @@ function Registration(props) {
         </div>
         {/* end: Email */}
 
-        {/* begin: Username */}
+        {/* begin: Phone number */}
         <div className="form-group fv-plugins-icon-container">
           <input
-            placeholder="User name"
-            type="text"
+            placeholder="Phone number"
+            type="number"
             className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
-              "username"
+              "phone_number"
             )}`}
-            name="username"
-            {...formik.getFieldProps("username")}
+            name="phone_number"
+            {...formik.getFieldProps("phone_number")}
           />
-          {formik.touched.username && formik.errors.username ? (
+          {formik.touched.phone_number && formik.errors.phone_number ? (
             <div className="fv-plugins-message-container">
-              <div className="fv-help-block">{formik.errors.username}</div>
+              <div className="fv-help-block">{formik.errors.phone_number}</div>
             </div>
           ) : null}
         </div>
-        {/* end: Username */}
+        {/* end: Phone number */}
 
         {/* begin: Password */}
         <div className="form-group fv-plugins-icon-container">
