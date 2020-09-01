@@ -185,6 +185,25 @@ const ProductTab = ({ refresh, handleRefresh }) => {
   ];
 
   const ExpandableComponent = ({ data }) => {
+    const keys = [
+      {
+        key: "Variant Name",
+        value: "name"
+      },
+      {
+        key: "Barcode",
+        value: "barcode"
+      },
+      {
+        key: "SKU",
+        value: "sku"
+      },
+      {
+        key: "Price",
+        value: "price"
+      }
+    ];
+
     return (
       <>
         {data.variants.map(item => {
@@ -193,59 +212,18 @@ const ProductTab = ({ refresh, handleRefresh }) => {
               key={item.id}
               style={{ padding: "1rem", marginLeft: "1rem" }}
             >
-              <ListGroup.Item>
-                <Row>
-                  <Col md={1} style={{ fontWeight: "700" }}>
-                    Variant
-                  </Col>
-                  <Col>{item.name}</Col>
-                </Row>
-              </ListGroup.Item>
-
-              <ListGroup.Item>
-                <Row>
-                  <Col md={1} style={{ fontWeight: "700" }}>
-                    Barcode
-                  </Col>
-                  <Col>{item.barcode || "-"}</Col>
-                </Row>
-              </ListGroup.Item>
-
-              <ListGroup.Item>
-                <Row>
-                  <Col md={1} style={{ fontWeight: "700" }}>
-                    SKU
-                  </Col>
-                  <Col>{item.sku || "-"}</Col>
-                </Row>
-              </ListGroup.Item>
-
-              <ListGroup.Item>
-                <Row>
-                  <Col md={1} style={{ fontWeight: "700" }}>
-                    Size
-                  </Col>
-                  <Col>{item.size || "-"}</Col>
-                </Row>
-              </ListGroup.Item>
-
-              <ListGroup.Item>
-                <Row>
-                  <Col md={1} style={{ fontWeight: "700" }}>
-                    Type
-                  </Col>
-                  <Col>{item.type || "-"}</Col>
-                </Row>
-              </ListGroup.Item>
-
-              <ListGroup.Item>
-                <Row>
-                  <Col md={1} style={{ fontWeight: "700" }}>
-                    Price
-                  </Col>
-                  <Col>{item.price}</Col>
-                </Row>
-              </ListGroup.Item>
+              {keys.map((val, index) => {
+                return (
+                  <ListGroup.Item key={index}>
+                    <Row>
+                      <Col md={3} style={{ fontWeight: "700" }}>
+                        {val.key}
+                      </Col>
+                      <Col>{item[val.value] || "-"}</Col>
+                    </Row>
+                  </ListGroup.Item>
+                );
+              })}
             </ListGroup>
           );
         })}

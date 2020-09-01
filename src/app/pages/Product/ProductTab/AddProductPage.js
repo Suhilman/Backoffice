@@ -1,6 +1,8 @@
 import React from "react";
 import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 import { useDropzone } from "react-dropzone";
 
@@ -23,41 +25,13 @@ export const AddProductPage = () => {
   });
   const history = useHistory();
 
+  const [photo, setPhoto] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [alertPhoto, setAlertPhoto] = React.useState("");
   const [showManageVariant, setShowManageVariant] = React.useState(false);
   const [validated, setValidated] = React.useState(false);
-  const [groupState, setGroupState] = React.useState([false]);
-
-  const [outlet, setOutlet] = React.useState("");
-  const [productName, setProductName] = React.useState("");
-  const [barcode, setBarcode] = React.useState("");
-  const [category, setCategory] = React.useState("");
-  const [sku, setSku] = React.useState("");
-  const [price, setPrice] = React.useState("");
-  const [photo, setPhoto] = React.useState("");
-  const [tax, setTax] = React.useState("");
-  const [type, setType] = React.useState(1);
-  const [status, setStatus] = React.useState("active");
-  const [description, setDescription] = React.useState("");
-
-  const [productVariant, setProductVariant] = React.useState([
-    {
-      barcode: "",
-      sku: "",
-      price: "",
-      optionVariants: []
-    }
-  ]);
-  const [optionVariant, setOptionVariant] = React.useState([
-    {
-      group_name: "",
-      variant_name: "",
-      name: []
-    }
-  ]);
-
+  const [validatedModal, setValidatedModal] = React.useState(false);
   const [photoPreview, setPhotoPreview] = React.useState("");
 
   const [allOutlets, setAllOutlets] = React.useState([]);
@@ -65,21 +39,114 @@ export const AddProductPage = () => {
   const [allProductTypes, setAllProductTypes] = React.useState([]);
   const [allTaxes, setAllTaxes] = React.useState([]);
 
+  const [productVariant, setProductVariant] = React.useState([
+    {
+      name: "",
+      barcode: "",
+      sku: "",
+      price: ""
+    }
+  ]);
+
+  const initialValueProduct = {
+    outlet_id: "",
+    name: "",
+    product_category_id: "",
+    price: "",
+    product_tax_id: "",
+    status: "active",
+    barcode: "",
+    sku: "",
+    product_type_id: 1,
+    description: ""
+  };
+
+  const ProductSchema = Yup.object().shape({
+    outlet_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose an outlet."),
+    name: Yup.string()
+      .min(3, "Minimum 3 characters.")
+      .max(50, "Maximum 50 characters.")
+      .required("Please input a product name."),
+    product_category_id: Yup.number()
+      .integer()
+      .min(1),
+    price: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please input a price."),
+    product_tax_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose a tax."),
+    status: Yup.string()
+      .matches(/(active|inactive)/)
+      .required("Please input a status."),
+    barcode: Yup.string()
+      .min(3, "Minimum 3 characters.")
+      .max(50, "Maximum 50 characters."),
+    sku: Yup.string()
+      .min(1, "Minimum 1 character.")
+      .max(50, "Maximum 50 characters."),
+    product_type_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose a type."),
+    description: Yup.string()
+      .min(3, "Minimum 3 characters.")
+      .max(50, "Maximum 50 characters.")
+  });
+
+  const formikProduct = useFormik({
+    initialValues: initialValueProduct,
+    validationSchema: ProductSchema,
+    onSubmit: async values => {
+      const formData = new FormData();
+      formData.append("outlet_id", values.outlet_id);
+      formData.append("name", values.name);
+      formData.append("price", values.price);
+      formData.append("product_type_id", values.product_type_id);
+      formData.append("product_tax_id", values.product_tax_id);
+      formData.append("status", values.status);
+
+      if (values.barcode) formData.append("barcode", values.barcode);
+      if (values.sku) formData.append("sku", values.sku);
+      if (values.description)
+        formData.append("description", values.description);
+      if (values.product_category_id)
+        formData.append("product_category_id", values.product_category_id);
+      if (photo) formData.append("productImage", photo);
+      if (productVariant[0].name)
+        formData.append("productVariants", JSON.stringify(productVariant));
+
+      try {
+        enableLoading();
+        await axios.post(`${API_URL}/api/v1/product`, formData);
+        disableLoading();
+        history.push("/product");
+      } catch (err) {
+        setAlert(err.response.data.message);
+        disableLoading();
+      }
+    }
+  });
+
+  const validationProduct = fieldname => {
+    if (formikProduct.touched[fieldname] && formikProduct.errors[fieldname]) {
+      return "is-invalid";
+    }
+
+    if (formikProduct.touched[fieldname] && !formikProduct.errors[fieldname]) {
+      return "is-valid";
+    }
+
+    return "";
+  };
+
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
-
-  const showModalVariant = () => setShowManageVariant(true);
-  const closeModalVariant = () => {
-    setProductVariant([
-      {
-        barcode: "",
-        sku: "",
-        price: "",
-        optionVariants: []
-      }
-    ]);
-    setShowManageVariant(false);
-  };
 
   const getOutlet = async () => {
     try {
@@ -92,12 +159,8 @@ export const AddProductPage = () => {
 
   const getProductCategory = async outlet_id => {
     try {
-      const headers = {
-        "x-outlet": outlet_id
-      };
       const productCategory = await axios.get(
-        `${API_URL}/api/v1/product-category`,
-        { headers }
+        `${API_URL}/api/v1/product-category`
       );
       setAllProductCategories(productCategory.data.data);
     } catch (err) {
@@ -123,186 +186,78 @@ export const AddProductPage = () => {
     }
   };
 
-  const handleAddGroupVariant = () => {
-    setOptionVariant([
-      ...optionVariant,
+  const showModalVariant = () => {
+    if (!productVariant[0].name) {
+      productVariant[0].barcode = formikProduct.getFieldProps("barcode").value;
+
+      if (formikProduct.getFieldProps("sku").value) {
+        productVariant[0].sku = formikProduct.getFieldProps("sku").value + "-1";
+      }
+
+      productVariant[0].price = formikProduct.getFieldProps("price").value;
+
+      setProductVariant(productVariant);
+    }
+
+    setShowManageVariant(true);
+  };
+
+  const cancelModalVariant = () => {
+    setProductVariant([
       {
-        group_name: "",
-        variant_name: "",
-        name: []
+        name: "",
+        barcode: "",
+        sku: "",
+        price: ""
+      }
+    ]);
+    setValidatedModal(false);
+    setShowManageVariant(false);
+  };
+
+  const saveChangesVariant = e => {
+    e.preventDefault();
+
+    const form = e.currentTarget;
+    setValidatedModal(true);
+    if (form.checkValidity() === false) {
+      return;
+    } else {
+      setValidatedModal(true);
+      setShowManageVariant(false);
+    }
+  };
+
+  const handleAddVariant = () => {
+    let countSku;
+    const variants = productVariant;
+    const lastIndex = variants.length - 1 < 0 ? 0 : variants.length - 1;
+
+    if (variants[lastIndex].sku) {
+      const skuVariant = variants[lastIndex].sku.split("-");
+      const number = parseInt(skuVariant[1]);
+
+      countSku = skuVariant[0] + `-${number + 1}`;
+    } else {
+      countSku = "";
+    }
+
+    setProductVariant([
+      ...productVariant,
+      {
+        name: "",
+        barcode: "",
+        sku: countSku,
+        price: formikProduct.getFieldProps("price").value
       }
     ]);
   };
 
-  const handleRemoveGroupVariant = index => {
-    const allVariants = [...optionVariant];
+  const handleRemoveVariant = index => {
+    const allVariants = [...productVariant];
     allVariants.splice(index, 1);
 
-    setOptionVariant(allVariants);
-  };
-
-  const handleOptionVariant = e => {
-    const targetName = e.target.name.split("-");
-    const targetValue = e.target.value;
-
-    const dataGroup = [...optionVariant];
-
-    if (targetName[0] === "group_name") {
-      dataGroup[targetName[1]].group_name = targetValue;
-    } else {
-      dataGroup[targetName[1]].variant_name = targetValue.replace(",", "");
-    }
-
-    setOptionVariant(dataGroup);
-  };
-
-  const handleOptionVariantBlur = e => {
-    if (!e.target.value) {
-      return;
-    }
-
-    const indexInput = e.target.name.split("-")[1];
-    const newGroup = [...groupState];
-
-    if (indexInput === "0") {
-      newGroup[indexInput] = true;
-    } else {
-      newGroup.push(true);
-    }
-
-    setGroupState(newGroup);
-
-    const filter = optionVariant.filter((item, index, self) => {
-      return (
-        index ===
-        self.findIndex(
-          selfIndex => selfIndex["group_name"] === item["group_name"]
-        )
-      );
-    });
-
-    setOptionVariant(filter);
-  };
-
-  // const processDataVariant = data => {
-  //   const allGroups = new Set(data.map(item => item.group));
-  //
-  //   const dataVariant = Array.from(allGroups, item => {
-  //     const arr = [];
-  //     for (const val of variant) {
-  //       if (item === val.group) {
-  //         arr.push(val.name);
-  //       }
-  //     }
-  //     return arr;
-  //   });
-  //
-  //   const count = data.reduce((acc, curr) => {
-  //     if (typeof acc[curr.group_name] == "undefined") {
-  //       acc[curr.group_name] = 1;
-  //     } else {
-  //       acc[curr.group_name] += 1;
-  //     }
-  //     return acc;
-  //   }, {});
-  //
-  //   for (var i = 0; i < array.length; i++) {
-  //     array[i]
-  //   }
-  //
-  //   const keysSorted = Object.keys(count).sort((a, b) => {
-  //     return count[a] - count[b];
-  //   });
-  //
-  //   const highest = keysSorted[keysSorted.length - 1];
-  //
-  //   const result = data.reduce((acc, curr) => {
-  //     if (curr.group_name === highest) {
-  //       acc.push([curr.name]);
-  //     } else {
-  //       acc.forEach(item => item.push(curr.name));
-  //     }
-  //     return acc;
-  //   }, []);
-  //
-  //   return result;
-  // };
-
-  const handleKeyPress = e => {
-    const targetName = e.target.name.split("-");
-    const targetValue = e.target.value;
-
-    const dataGroup = [...optionVariant];
-    const dataVariant = [];
-
-    if (e.key === ",") {
-      if (targetValue) {
-        dataGroup[targetName[1]].name.push(targetValue);
-        dataGroup[targetName[1]].variant_name = "";
-
-        setOptionVariant(dataGroup);
-
-        for (const item of optionVariant) {
-          item.name.forEach(val => {
-            dataVariant.push({
-              barcode: "",
-              sku: "",
-              price: "",
-              group_name: item.group_name,
-              name: val
-            });
-          });
-        }
-      }
-    }
-
-    setProductVariant(dataVariant);
-  };
-
-  const handleOnBlur = e => {
-    const targetName = e.target.name.split("-");
-    const targetValue = e.target.value;
-
-    const dataGroup = [...optionVariant];
-    const dataVariant = [...productVariant];
-
-    if (targetValue) {
-      dataGroup[targetName[1]].name.push(targetValue);
-      dataGroup[targetName[1]].variant_name = "";
-
-      setOptionVariant(dataGroup);
-
-      for (const item of optionVariant) {
-        item.name.forEach(val => {
-          dataVariant.push({
-            barcode: "",
-            sku: "",
-            price: "",
-            optionVariants: { group_name: item.group_name, name: val }
-          });
-        });
-      }
-    }
-
-    const newDataVariant = dataVariant.reduce((acc, curr, idx, src) => {
-      if (!src.length) {
-        return acc;
-      }
-
-      acc.push(src[idx]);
-      if (acc[idx].group_name !== curr.group_name) {
-        for (const item of acc) {
-          item.optionVariants = [];
-          item.optionVariants.push(curr.name);
-        }
-      }
-
-      return acc;
-    }, []);
-
-    console.log(newDataVariant);
-
-    setProductVariant(dataVariant);
+    setProductVariant(allVariants);
   };
 
   const handleChangeVariant = e => {
@@ -311,78 +266,14 @@ export const AddProductPage = () => {
     const name = targetName[0];
     const index = parseInt(targetName[1]);
 
-    const allData = productVariant;
+    const allData = [...productVariant];
     allData[index][name] = targetValue;
 
     setProductVariant(allData);
   };
 
-  const handleSelectOutlet = e => {
-    setOutlet(e.target.value);
-    getProductCategory(e.target.value);
-  };
-
-  const handleChangeName = e => {
-    let initial = "";
-    const initialEvery = e.target.value.split(" ");
-    initialEvery.forEach(item => (initial += item.slice(0, 1)));
-
-    setProductName(e.target.value);
-    setSku(initial.toUpperCase());
-  };
-  const handleSelectCategory = e => setCategory(e.target.value);
-  const handleChangePrice = e => {
-    setPrice(e.target.value);
-    setProductVariant([
-      {
-        name: productName,
-        barcode: barcode,
-        sku: sku,
-        price: e.target.value,
-        size: "",
-        type: ""
-      }
-    ]);
-  };
-  const handleSelectTax = e => setTax(e.target.value);
-  const handleSelectStatus = () => {
-    if (status === "active") {
-      setStatus("inactive");
-    } else {
-      setStatus("active");
-    }
-  };
-  const handleChangeDescription = e => setDescription(e.target.value);
-  const handleChangeBarcode = e => {
-    setBarcode(e.target.value);
-    setProductVariant([
-      {
-        name: productName,
-        barcode: e.target.value,
-        sku: sku,
-        price: price,
-        size: "",
-        type: ""
-      }
-    ]);
-  };
-  const handleChangeSku = e => {
-    setSku(e.target.value);
-    setProductVariant([
-      {
-        name: productName,
-        barcode: barcode,
-        sku: e.target.value,
-        price: price,
-        size: "",
-        type: ""
-      }
-    ]);
-  };
-  const handleSelectType = e => setType(parseInt(e.target.value));
-
   const handlePreviewPhoto = file => {
-    setAlert("");
+    setAlertPhoto("");
 
     let preview;
     let img;
@@ -399,103 +290,45 @@ export const AddProductPage = () => {
     setPhoto(img);
   };
 
-  const handleSave = async e => {
-    const form = e.currentTarget;
-    e.preventDefault();
-    setValidated(true);
-
-    if (form.checkValidity() === false) {
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("outlet_id", outlet);
-    formData.append("name", productName);
-    formData.append("price", price);
-    // formData.append("productVariant", JSON.stringify(productVariant));
-    formData.append("product_type_id", type);
-    formData.append("product_tax_id", tax);
-    formData.append("status", status.toLowerCase());
-
-    if (barcode) formData.append("barcode", barcode);
-    if (sku) formData.append("sku", sku);
-    if (description) formData.append("description", description);
-    if (category) formData.append("product_category_id", category);
-    if (photo) formData.append("productImage", photo);
-
-    try {
-      enableLoading();
-      await axios.post(`${API_URL}/api/v1/product`, formData);
-      disableLoading();
-      closeModalVariant();
-      history.push("/product");
-    } catch (err) {
-      setAlert(err.response.data.message);
-      disableLoading();
-    }
-  };
-
   React.useEffect(() => {
     getOutlet();
     getProductType();
     getTax();
+    getProductCategory();
   }, []);
 
   return (
     <Row>
       <ModalManageVariant
+        title={`Add Product Variant - ${
+          formikProduct.getFieldProps("name").value
+        }`}
+        validatedModal={validatedModal}
         showManageVariant={showManageVariant}
-        closeModalVariant={closeModalVariant}
+        cancelModalVariant={cancelModalVariant}
+        saveChangesVariant={saveChangesVariant}
         loading={loading}
         productVariant={productVariant}
-        optionVariant={optionVariant}
-        handleAddGroupVariant={handleAddGroupVariant}
-        handleRemoveGroupVariant={handleRemoveGroupVariant}
-        handleSave={handleSave}
+        handleAddVariant={handleAddVariant}
+        handleRemoveVariant={handleRemoveVariant}
         handleChangeVariant={handleChangeVariant}
-        handleOptionVariant={handleOptionVariant}
-        handleKeyPress={handleKeyPress}
-        handleOnBlur={handleOnBlur}
-        handleOptionVariantBlur={handleOptionVariantBlur}
-        groupState={groupState}
-        setGroupState={setGroupState}
       />
 
       <Col>
         <FormTemplate
-          validated={validated}
-          handleSave={handleSave}
           title="Add Product"
           loading={loading}
-          outlet={outlet}
-          handleSelectOutlet={handleSelectOutlet}
           allOutlets={allOutlets}
-          productName={productName}
-          handleChangeName={handleChangeName}
-          category={category}
-          handleSelectCategory={handleSelectCategory}
           allProductCategories={allProductCategories}
-          price={price}
-          handleChangePrice={handleChangePrice}
-          tax={tax}
-          handleSelectTax={handleSelectTax}
           allTaxes={allTaxes}
-          status={status}
-          handleSelectStatus={handleSelectStatus}
-          description={description}
-          handleChangeDescription={handleChangeDescription}
-          barcode={barcode}
-          handleChangeBarcode={handleChangeBarcode}
-          sku={sku}
-          handleChangeSku={handleChangeSku}
+          allProductTypes={allProductTypes}
           alertPhoto={alertPhoto}
           photoPreview={photoPreview}
           photo={photo}
           handlePreviewPhoto={handlePreviewPhoto}
-          type={type}
-          allProductTypes={allProductTypes}
-          handleSelectType={handleSelectType}
           showModalVariant={showModalVariant}
+          formikProduct={formikProduct}
+          validationProduct={validationProduct}
         />
       </Col>
     </Row>

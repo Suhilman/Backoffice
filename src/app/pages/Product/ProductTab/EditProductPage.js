@@ -1,6 +1,8 @@
 import React from "react";
 import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 import { useDropzone } from "react-dropzone";
 
@@ -9,7 +11,7 @@ import { Paper } from "@material-ui/core";
 
 import { useStyles } from "../ProductPage";
 
-import ModalEditVariant from "./ModalEditVariant";
+import ModalManageVariant from "./ModalManageVariant";
 import FormTemplate from "./Form";
 
 export const EditProductPage = ({ match }) => {
@@ -27,130 +29,136 @@ export const EditProductPage = ({ match }) => {
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
-  const [showAddVariant, setShowAddVariant] = React.useState(false);
-  const [showEditVariant, setShowEditVariant] = React.useState(false);
+  const [showManageVariant, setShowManageVariant] = React.useState(false);
   const [validated, setValidated] = React.useState(false);
+  const [validatedModal, setValidatedModal] = React.useState(false);
   const [alertPhoto, setAlertPhoto] = React.useState("");
-
-  const [product, setProduct] = React.useState([]);
-  const [productCode, setProductCode] = React.useState("");
-  const [outlet, setOutlet] = React.useState("");
-  const [productName, setProductName] = React.useState("");
-  const [barcode, setBarcode] = React.useState("");
-  const [category, setCategory] = React.useState("");
-  const [sku, setSku] = React.useState("");
-  const [price, setPrice] = React.useState("");
-  const [photo, setPhoto] = React.useState("");
-  const [tax, setTax] = React.useState("");
-  const [type, setType] = React.useState("");
-  const [status, setStatus] = React.useState("");
-  const [description, setDescription] = React.useState("");
-
-  const [productVariantId, setProductVariantId] = React.useState("");
-  const [productVariant, setProductVariant] = React.useState([
-    {
-      name: "",
-      barcode: "",
-      sku: "",
-      price: "",
-      size: "",
-      type: ""
-    }
-  ]);
-  const [addProductVariant, setAddProductVariant] = React.useState([
-    {
-      name: "",
-      barcode: "",
-      sku: "",
-      price: "",
-      size: "",
-      type: ""
-    }
-  ]);
-  const [editProductVariant, setEditProductVariant] = React.useState([
-    {
-      id: "",
-      name: "",
-      barcode: "",
-      sku: "",
-      price: "",
-      size: "",
-      type: ""
-    }
-  ]);
-
   const [photoPreview, setPhotoPreview] = React.useState("");
+  const [photo, setPhoto] = React.useState("");
 
   const [allOutlets, setAllOutlets] = React.useState([]);
   const [allProductCategories, setAllProductCategories] = React.useState([]);
   const [allProductTypes, setAllProductTypes] = React.useState([]);
   const [allTaxes, setAllTaxes] = React.useState([]);
 
+  const [product, setProduct] = React.useState({
+    outlet_id: "",
+    name: "",
+    product_category_id: "",
+    price: "",
+    product_tax_id: "",
+    status: "active",
+    barcode: "",
+    sku: "",
+    product_type_id: 1,
+    description: ""
+  });
+  const [productVariantInitial, setProductVariantInitial] = React.useState([
+    {
+      id: "",
+      name: "",
+      barcode: "",
+      sku: "",
+      price: ""
+    }
+  ]);
+  const [productVariant, setProductVariant] = React.useState([
+    {
+      id: "",
+      name: "",
+      barcode: "",
+      sku: "",
+      price: ""
+    }
+  ]);
+
+  const ProductSchema = Yup.object().shape({
+    outlet_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose an outlet."),
+    name: Yup.string()
+      .min(3, "Minimum 3 characters.")
+      .max(50, "Maximum 50 characters.")
+      .required("Please input a product name."),
+    product_category_id: Yup.number()
+      .integer()
+      .min(1),
+    price: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please input a price."),
+    product_tax_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose a tax."),
+    status: Yup.string()
+      .matches(/(active|inactive)/)
+      .required("Please input a status."),
+    barcode: Yup.string()
+      .min(3, "Minimum 3 characters.")
+      .max(50, "Maximum 50 characters."),
+    sku: Yup.string()
+      .min(1, "Minimum 1 character.")
+      .max(50, "Maximum 50 characters."),
+    product_type_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose a type."),
+    description: Yup.string()
+      .min(3, "Minimum 3 characters.")
+      .max(50, "Maximum 50 characters.")
+  });
+
+  const formikProduct = useFormik({
+    enableReinitialize: true,
+    initialValues: product,
+    validationSchema: ProductSchema,
+    onSubmit: async values => {
+      console.log(productVariant);
+      const formData = new FormData();
+      formData.append("outlet_id", values.outlet_id);
+      formData.append("name", values.name);
+      formData.append("price", values.price);
+      formData.append("product_type_id", values.product_type_id);
+      formData.append("product_tax_id", values.product_tax_id);
+      formData.append("status", values.status);
+      formData.append("productVariants", JSON.stringify(productVariant));
+
+      if (values.barcode) formData.append("barcode", values.barcode);
+      if (values.sku) formData.append("sku", values.sku);
+      if (values.description)
+        formData.append("description", values.description);
+      if (values.product_category_id)
+        formData.append("product_category_id", values.product_category_id);
+      if (photo) formData.append("productImage", photo);
+
+      try {
+        enableLoading();
+        await axios.put(`${API_URL}/api/v1/product/${product_id}`, formData);
+        disableLoading();
+        history.push("/product");
+      } catch (err) {
+        setAlert(err.response.data.message);
+        disableLoading();
+      }
+    }
+  });
+
+  const validationProduct = fieldname => {
+    if (formikProduct.touched[fieldname] && formikProduct.errors[fieldname]) {
+      return "is-invalid";
+    }
+
+    if (formikProduct.touched[fieldname] && !formikProduct.errors[fieldname]) {
+      return "is-valid";
+    }
+
+    return "";
+  };
+
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
-
-  const showModalVariant = () => {
-    const data = {
-      name: productName,
-      barcode: barcode,
-      sku: sku,
-      price: price,
-      size: "",
-      type: ""
-    };
-    setProductVariant([data]);
-    setShowAddVariant(true);
-  };
-
-  const showAddModalVariant = () => setShowAddVariant(true);
-  const closeAddModalVariant = () => {
-    setAddProductVariant([
-      {
-        name: "",
-        barcode: "",
-        sku: "",
-        price: "",
-        size: "",
-        type: ""
-      }
-    ]);
-    setShowAddVariant(false);
-  };
-
-  const showEditModalVariant = () => {
-    const variantData = product[0].Product_Variants.map(item => {
-      return {
-        id: item.id,
-        name: item.name,
-        barcode: item.barcode,
-        sku: item.sku,
-        price: item.price,
-        size: item.size,
-        type: item.type
-      };
-    });
-
-    setEditProductVariant(variantData);
-    setShowEditVariant(true);
-  };
-  const closeEditModalVariant = () => {
-    const variantData = product.map(item => {
-      for (const item of item.Product_Variants) {
-        return {
-          id: item.id,
-          name: item.name,
-          barcode: item.barcode,
-          sku: item.sku,
-          price: item.price,
-          size: item.size,
-          type: item.type
-        };
-      }
-    });
-
-    setEditProductVariant(variantData);
-    setShowEditVariant(false);
-  };
 
   const getProductById = async () => {
     getOutlet();
@@ -158,28 +166,45 @@ export const EditProductPage = ({ match }) => {
     getTax();
 
     try {
-      const productData = await axios.get(
+      const { data } = await axios.get(
         `${API_URL}/api/v1/product/${product_id}`
       );
-      setProduct([productData.data.data]);
-      setOutlet(productData.data.data.outlet_id);
-      setProductName(productData.data.data.name);
-      setCategory(productData.data.data.product_category_id);
-      setTax(productData.data.data.product_tax_id);
-      setType(productData.data.data.product_type_id);
-      setStatus(productData.data.data.status);
-      setDescription(productData.data.data.description || "");
-      setPrice(productData.data.data.price);
-      setBarcode(productData.data.data.barcode || "");
-      setSku(productData.data.data.sku || "");
+      const productData = data.data;
 
-      if (productData.data.data.image) {
-        setPhoto(`${API_URL}${productData.data.data.image}` || "");
+      setProduct({
+        outlet_id: productData.outlet_id,
+        name: productData.name,
+        product_category_id: productData.product_category_id,
+        price: productData.price,
+        product_tax_id: productData.product_tax_id,
+        status: productData.status,
+        barcode: productData.barcode || "",
+        sku: productData.sku || "",
+        product_type_id: productData.product_type_id,
+        description: productData.description || ""
+      });
+
+      const productVariantData = productData.Product_Variants.map(item => {
+        return {
+          id: item.id,
+          name: item.name,
+          barcode: item.barcode,
+          sku: item.sku,
+          price: item.price
+        };
+      });
+
+      if (productVariantData.length) {
+        setProductVariant(productVariantData);
+        setProductVariantInitial(productVariantData);
       }
 
-      setProductCode(productData.data.data.Product_Variants[0].product_code);
+      if (productData.image !== "") {
+        setPhoto(`${API_URL}${productData.image}`);
+        setPhotoPreview(`${API_URL}${productData.image}`);
+      }
 
-      getProductCategory(productData.data.data.outlet_id);
+      getProductCategory(productData.outlet_id);
     } catch (err) {
       console.log(err);
     }
@@ -223,112 +248,89 @@ export const EditProductPage = ({ match }) => {
     }
   };
 
-  const handleAddVariant = () => {
-    setAddProductVariant([
-      ...addProductVariant,
-      {
-        name: "",
-        barcode: "",
-        sku: "",
-        price: "",
-        size: "",
-        type: ""
+  const showModalVariant = () => {
+    if (!productVariant[0].name) {
+      productVariant[0].barcode = formikProduct.getFieldProps("barcode").value;
+
+      if (formikProduct.getFieldProps("sku").value) {
+        productVariant[0].sku = formikProduct.getFieldProps("sku").value + "-1";
       }
-    ]);
+
+      productVariant[0].price = formikProduct.getFieldProps("price").value;
+
+      setProductVariant(productVariant);
+    }
+
+    setShowManageVariant(true);
   };
 
-  const handleAddChangeVariant = e => {
-    const targetName = e.target.name.split("-");
-    const targetValue = e.target.value;
-    const name = targetName[0];
-    const index = parseInt(targetName[1]);
+  const cancelModalVariant = () => {
+    setProductVariant(productVariantInitial);
 
-    const allData = addProductVariant;
-    allData[index][name] = targetValue;
-
-    setAddProductVariant(allData);
+    setValidatedModal(false);
+    setShowManageVariant(false);
   };
 
-  const handleEditChangeVariant = e => {
-    const targetName = e.target.name.split("-");
-    const targetValue = e.target.value;
-    const name = targetName[0];
-    const index = parseInt(targetName[1]);
+  const saveChangesVariant = e => {
+    e.preventDefault();
 
-    const allData = editProductVariant;
-    allData[index][name] = targetValue;
-
-    setEditProductVariant(allData);
-  };
-
-  const handleSelectOutlet = e => setOutlet(e.target.value);
-
-  const handleChangeName = e => {
-    setProductName(e.target.value);
-    setProductVariant([
-      {
-        name: e.target.value,
-        barcode: barcode,
-        sku: sku,
-        price: price,
-        size: "",
-        type: ""
-      }
-    ]);
-  };
-  const handleSelectCategory = e => setCategory(e.target.value);
-  const handleChangePrice = e => {
-    setPrice(e.target.value);
-    setProductVariant([
-      {
-        name: productName,
-        barcode: barcode,
-        sku: sku,
-        price: e.target.value,
-        size: "",
-        type: ""
-      }
-    ]);
-  };
-  const handleSelectTax = e => setTax(e.target.value);
-  const handleSelectStatus = e => {
-    if (status === "active") {
-      setStatus("inactive");
+    const form = e.currentTarget;
+    setValidatedModal(true);
+    if (form.checkValidity() === false) {
+      return;
     } else {
-      setStatus("active");
+      setValidatedModal(true);
+      setShowManageVariant(false);
     }
   };
-  const handleChangeDescription = e => setDescription(e.target.value);
-  const handleChangeBarcode = e => {
-    setBarcode(e.target.value);
+
+  const handleAddVariant = () => {
+    let countSku;
+    const variants = productVariant;
+    const lastIndex = variants.length - 1 < 0 ? 0 : variants.length - 1;
+
+    if (variants[lastIndex].sku) {
+      const skuVariant = variants[lastIndex].sku.split("-");
+      const number = parseInt(skuVariant[1]);
+
+      countSku = skuVariant[0] + `-${number + 1}`;
+    } else {
+      countSku = "";
+    }
+
     setProductVariant([
+      ...productVariant,
       {
-        name: productName,
-        barcode: e.target.value,
-        sku: sku,
-        price: price,
-        size: "",
-        type: ""
+        id: "",
+        name: "",
+        barcode: "",
+        sku: countSku,
+        price: formikProduct.getFieldProps("price").value
       }
     ]);
   };
-  const handleChangeSku = e => {
-    setSku(e.target.value);
-    setProductVariant([
-      {
-        name: productName,
-        barcode: barcode,
-        sku: e.target.value,
-        price: price,
-        size: "",
-        type: ""
-      }
-    ]);
+
+  const handleRemoveVariant = index => {
+    const allVariants = [...productVariant];
+    allVariants.splice(index, 1);
+
+    setProductVariant(allVariants);
   };
-  const handleSelectType = e => setType(parseInt(e.target.value));
+
+  const handleChangeVariant = e => {
+    const targetName = e.target.name.split("-");
+    const targetValue = e.target.value;
+    const name = targetName[0];
+    const index = parseInt(targetName[1]);
+
+    const allData = [...productVariant];
+    allData[index][name] = targetValue;
+
+    setProductVariant(allData);
+  };
 
   const handlePreviewPhoto = file => {
-    setAlert("");
+    setAlertPhoto("");
 
     let preview;
     let img;
@@ -345,131 +347,40 @@ export const EditProductPage = ({ match }) => {
     setPhoto(img);
   };
 
-  const handleSave = async e => {
-    const form = e.currentTarget;
-    e.preventDefault();
-    setValidated(true);
-
-    if (form.checkValidity() === false) {
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("outlet_id", outlet);
-    formData.append("name", productName);
-    formData.append("price", price);
-    // formData.append("productVariant", JSON.stringify(productVariantData));
-    formData.append("product_category_id", category);
-    formData.append("product_type_id", type);
-    formData.append("product_tax_id", tax);
-    formData.append("status", status.toLowerCase());
-
-    if (barcode) formData.append("barcode", barcode);
-    if (sku) formData.append("sku", sku);
-    if (description) formData.append("description", description);
-    if (photo) formData.append("productImage", photo);
-
-    try {
-      enableLoading();
-      await axios.put(`${API_URL}/api/v1/product/${product_id}`, formData);
-      disableLoading();
-      history.push("/product");
-    } catch (err) {
-      console.log(err);
-      disableLoading();
-    }
-  };
-
-  const handleAddSave = async () => {
-    const addVariantData = {
-      product_id,
-      product_code: productCode,
-      productVariant: addProductVariant
-    };
-
-    try {
-      enableLoading();
-      await axios.post(`${API_URL}/api/v1/product/add-variant`, addVariantData);
-      disableLoading();
-      closeAddModalVariant();
-      history.push("/product");
-    } catch (err) {
-      console.log(err);
-      disableLoading();
-    }
-  };
-
-  const handleEditSave = async () => {
-    const editVariantData = {
-      product_id,
-      productVariant: editProductVariant
-    };
-
-    try {
-      enableLoading();
-      await axios.put(
-        `${API_URL}/api/v1/product/edit-variant`,
-        editVariantData
-      );
-      disableLoading();
-      closeEditModalVariant();
-      history.push("/product");
-    } catch (err) {
-      console.log(err);
-      disableLoading();
-    }
-  };
-
   React.useEffect(() => {
     getProductById();
   }, []);
 
   return (
     <Row>
-      <ModalEditVariant
-        showEditVariant={showEditVariant}
-        closeEditModalVariant={closeEditModalVariant}
+      <ModalManageVariant
+        title={`Edit Product Variant - ${product.name}`}
+        validatedModal={validatedModal}
+        showManageVariant={showManageVariant}
+        cancelModalVariant={cancelModalVariant}
+        saveChangesVariant={saveChangesVariant}
         loading={loading}
-        editProductVariant={editProductVariant}
-        handleEditSave={handleEditSave}
-        handleEditChangeVariant={handleEditChangeVariant}
+        productVariant={productVariant}
+        handleAddVariant={handleAddVariant}
+        handleRemoveVariant={handleRemoveVariant}
+        handleChangeVariant={handleChangeVariant}
       />
 
       <Col>
         <FormTemplate
-          validated={validated}
-          handleSave={handleSave}
           title="Edit Product"
           loading={loading}
-          outlet={outlet}
-          handleSelectOutlet={handleSelectOutlet}
           allOutlets={allOutlets}
-          productName={productName}
-          handleChangeName={handleChangeName}
-          category={category}
-          handleSelectCategory={handleSelectCategory}
           allProductCategories={allProductCategories}
-          price={price}
-          handleChangePrice={handleChangePrice}
-          tax={tax}
-          handleSelectTax={handleSelectTax}
           allTaxes={allTaxes}
-          status={status}
-          handleSelectStatus={handleSelectStatus}
-          description={description}
-          handleChangeDescription={handleChangeDescription}
-          barcode={barcode}
-          handleChangeBarcode={handleChangeBarcode}
-          sku={sku}
-          handleChangeSku={handleChangeSku}
+          allProductTypes={allProductTypes}
           alertPhoto={alertPhoto}
           photoPreview={photoPreview}
           photo={photo}
           handlePreviewPhoto={handlePreviewPhoto}
-          allProductTypes={allProductTypes}
-          type={type}
-          handleSelectType={handleSelectType}
           showModalVariant={showModalVariant}
+          formikProduct={formikProduct}
+          validationProduct={validationProduct}
         />
       </Col>
     </Row>

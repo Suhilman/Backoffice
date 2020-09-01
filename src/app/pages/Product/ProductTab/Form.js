@@ -10,43 +10,24 @@ import { Paper } from "@material-ui/core";
 import { useStyles } from "../ProductPage";
 
 const FormTemplate = ({
-  validated,
-  handleSave,
   title,
   loading,
-  outlet,
-  handleSelectOutlet,
   allOutlets,
-  productName,
-  handleChangeName,
-  category,
-  handleSelectCategory,
   allProductCategories,
-  price,
-  handleChangePrice,
-  tax,
-  handleSelectTax,
   allTaxes,
-  status,
-  handleSelectStatus,
-  description,
-  handleChangeDescription,
-  barcode,
-  handleChangeBarcode,
-  sku,
-  handleChangeSku,
   alertPhoto,
   photoPreview,
   photo,
   handlePreviewPhoto,
   allProductTypes,
-  type,
-  handleSelectType,
-  showModalVariant
+  showModalVariant,
+  formikProduct,
+  validationProduct
 }) => {
   const classes = useStyles();
 
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    accept: "image/jpeg,image/png",
     maxSize: 2 * 1000 * 1000,
     onDrop(file) {
       handlePreviewPhoto(file);
@@ -55,7 +36,7 @@ const FormTemplate = ({
 
   return (
     <Paper elevation={2} style={{ padding: "1rem" }}>
-      <Form noValidate validated={validated} onSubmit={handleSave}>
+      <Form onSubmit={formikProduct.handleSubmit}>
         <div className={classes.header}>
           <div className={classes.headerStart}>
             <h3>{title}</h3>
@@ -84,60 +65,75 @@ const FormTemplate = ({
               <Form.Label>Outlet*</Form.Label>
               <Form.Control
                 as="select"
-                value={outlet}
-                onChange={handleSelectOutlet}
+                name="outlet_id"
+                {...formikProduct.getFieldProps("outlet_id")}
+                className={validationProduct("outlet_id")}
                 required
               >
                 <option value={""} disabled hidden>
                   Choose Outlet
                 </option>
-                {allOutlets
-                  ? allOutlets.map(item => {
-                      return (
-                        <option key={item.id} value={item.id}>
-                          {item.name}
-                        </option>
-                      );
-                    })
-                  : ""}
+                {allOutlets.map(item => {
+                  return (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  );
+                })}
               </Form.Control>
-              <Form.Control.Feedback type="invalid">
-                Please choose an outlet.
-              </Form.Control.Feedback>
+              {formikProduct.touched.outlet_id &&
+              formikProduct.errors.outlet_id ? (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    {formikProduct.errors.outlet_id}
+                  </div>
+                </div>
+              ) : null}
             </Form.Group>
 
             <Form.Group>
               <Form.Label>Product Name*</Form.Label>
               <Form.Control
                 type="text"
-                value={productName}
-                onChange={handleChangeName}
+                name="name"
+                {...formikProduct.getFieldProps("name")}
+                onChange={e => {
+                  let initial = "";
+                  const initialEvery = e.target.value.split(" ");
+                  initialEvery.forEach(item => (initial += item.slice(0, 1)));
+
+                  formikProduct.setFieldValue("name", e.target.value);
+                  formikProduct.setFieldValue("sku", initial);
+                }}
+                className={validationProduct("name")}
                 required
               />
-              <Form.Control.Feedback type="invalid">
-                Please enter a name.
-              </Form.Control.Feedback>
+              {formikProduct.touched.name && formikProduct.errors.name ? (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    {formikProduct.errors.name}
+                  </div>
+                </div>
+              ) : null}
             </Form.Group>
 
             <Form.Group>
               <Form.Label>Category</Form.Label>
               <Form.Control
                 as="select"
-                value={category}
-                onChange={handleSelectCategory}
+                name="product_category_id"
+                {...formikProduct.getFieldProps("product_category_id")}
               >
                 <option value={""} disabled hidden>
                   Choose Category
                 </option>
-                {allProductCategories
-                  ? allProductCategories.map(item => {
-                      return (
-                        <option key={item.id} value={item.id}>
-                          {item.name}
-                        </option>
-                      );
-                    })
-                  : ""}
+                {allProductCategories.map(item => {
+                  return (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  );
+                })}
               </Form.Control>
             </Form.Group>
 
@@ -145,39 +141,48 @@ const FormTemplate = ({
               <Form.Label>Price*</Form.Label>
               <Form.Control
                 type="number"
-                value={price}
-                onChange={handleChangePrice}
+                name="price"
+                {...formikProduct.getFieldProps("price")}
+                className={validationProduct("price")}
                 required
               />
-              <Form.Control.Feedback type="invalid">
-                Please enter a price.
-              </Form.Control.Feedback>
+              {formikProduct.touched.price && formikProduct.errors.price ? (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    {formikProduct.errors.price}
+                  </div>
+                </div>
+              ) : null}
             </Form.Group>
 
             <Form.Group>
               <Form.Label>Tax*</Form.Label>
               <Form.Control
                 as="select"
-                value={tax}
-                onChange={handleSelectTax}
+                name="product_tax_id"
+                {...formikProduct.getFieldProps("product_tax_id")}
+                className={validationProduct("product_tax_id")}
                 required
               >
                 <option value={""} disabled hidden>
                   Choose Tax
                 </option>
-                {allTaxes
-                  ? allTaxes.map(item => {
-                      return (
-                        <option key={item.id} value={item.id}>
-                          {item.name}
-                        </option>
-                      );
-                    })
-                  : ""}
+                {allTaxes.map(item => {
+                  return (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  );
+                })}
               </Form.Control>
-              <Form.Control.Feedback type="invalid">
-                Please choose a tax.
-              </Form.Control.Feedback>
+              {formikProduct.touched.product_tax_id &&
+              formikProduct.errors.product_tax_id ? (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    {formikProduct.errors.product_tax_id}
+                  </div>
+                </div>
+              ) : null}
             </Form.Group>
 
             <Form.Group>
@@ -192,12 +197,24 @@ const FormTemplate = ({
                       inline
                       type="radio"
                       name="status"
+                      value={formikProduct.getFieldProps("status").value}
+                      onChange={e => {
+                        if (e.target.value === "active") {
+                          formikProduct.setFieldValue("status", "inactive");
+                        } else {
+                          formikProduct.setFieldValue("status", "active");
+                        }
+                      }}
                       label={item}
-                      value={status ? status : item.toLowerCase()}
-                      checked={item.toLowerCase() === status ? true : false}
-                      onChange={handleSelectStatus}
+                      checked={
+                        item.toLowerCase() ===
+                        formikProduct.getFieldProps("status").value
+                          ? true
+                          : false
+                      }
                       required
-                      feedback="Please choose a status"
+                      className={validationProduct("status")}
+                      feedback={formikProduct.errors.status}
                     />
                   );
                 })}
@@ -208,8 +225,8 @@ const FormTemplate = ({
               <Form.Label>Product Description</Form.Label>
               <Form.Control
                 as="textarea"
-                value={description}
-                onChange={handleChangeDescription}
+                name="description"
+                {...formikProduct.getFieldProps("description")}
               />
             </Form.Group>
           </Col>
@@ -219,8 +236,8 @@ const FormTemplate = ({
               <Form.Label>Barcode</Form.Label>
               <Form.Control
                 type="text"
-                value={barcode}
-                onChange={handleChangeBarcode}
+                name="barcode"
+                {...formikProduct.getFieldProps("barcode")}
               />
             </Form.Group>
 
@@ -228,8 +245,8 @@ const FormTemplate = ({
               <Form.Label>SKU</Form.Label>
               <Form.Control
                 type="text"
-                value={sku}
-                onChange={handleChangeSku}
+                name="sku"
+                {...formikProduct.getFieldProps("sku")}
               />
             </Form.Group>
 
@@ -258,7 +275,7 @@ const FormTemplate = ({
                       }}
                     />
                     <small>
-                      {photo ? `${photo.name} - ${photo.size} bytes` : ""}
+                      {photo?.name ? `${photo.name} - ${photo.size} bytes` : ""}
                     </small>
                   </>
                 )}
@@ -268,35 +285,45 @@ const FormTemplate = ({
             <Form.Group>
               <Form.Label>Product Type*</Form.Label>
               <Row style={{ padding: "1rem" }}>
-                {allProductTypes
-                  ? allProductTypes.map(item => {
-                      return (
-                        <Col
-                          key={item.id}
-                          className={classes.box}
-                          style={{ marginRight: "1rem" }}
-                        >
-                          <Row>
-                            <Col md={3}>
-                              <Form.Check
-                                type="radio"
-                                name="type"
-                                value={item.id}
-                                checked={item.id === type ? true : false}
-                                onChange={handleSelectType}
-                                required
-                                feedback="Please choose a type"
-                              />
-                            </Col>
-                            <Col>
-                              <Row>{item.name}</Row>
-                              <Row>{item.description}</Row>
-                            </Col>
-                          </Row>
+                {allProductTypes.map(item => {
+                  return (
+                    <Col
+                      key={item.id}
+                      className={classes.box}
+                      style={{ marginRight: "1rem" }}
+                    >
+                      <Row>
+                        <Col md={3}>
+                          <Form.Check
+                            type="radio"
+                            name="product_type_id"
+                            value={item.id}
+                            onChange={e => {
+                              formikProduct.setFieldValue(
+                                "product_type_id",
+                                parseInt(e.target.value)
+                              );
+                            }}
+                            checked={
+                              item.id ===
+                              formikProduct.getFieldProps("product_type_id")
+                                .value
+                                ? true
+                                : false
+                            }
+                            className={validationProduct("product_type_id")}
+                            required
+                            feedback={formikProduct.errors.product_type_id}
+                          />
                         </Col>
-                      );
-                    })
-                  : ""}
+                        <Col>
+                          <Row>{item.name}</Row>
+                          <Row>{item.description}</Row>
+                        </Col>
+                      </Row>
+                    </Col>
+                  );
+                })}
               </Row>
             </Form.Group>
 
