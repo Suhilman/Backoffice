@@ -1,19 +1,17 @@
 import React from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 import {
   Row,
   Col,
   Button,
-  Modal,
-  Form,
-  Spinner,
   Alert,
   Dropdown,
   InputGroup,
-  FormControl,
-  ListGroup
+  FormControl
 } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import { Search, MoreHoriz } from "@material-ui/icons";
@@ -21,15 +19,11 @@ import { Search, MoreHoriz } from "@material-ui/icons";
 import { useStyles } from "../ProductPage";
 
 import ConfirmModal from "../../../components/ConfirmModal";
+import ProductCategoryModal from "./ProductCategoryModal";
 
 const ProductCategoryTab = ({ allOutlets, refresh, handleRefresh }) => {
   const classes = useStyles();
   const API_URL = process.env.REACT_APP_API_URL;
-
-  const [categoryId, setCategoryId] = React.useState(false);
-  const [outletId, setOutletId] = React.useState("");
-
-  const [categoryName, setCategoryName] = React.useState("");
 
   const [allCategories, setAllCategories] = React.useState([]);
 
@@ -42,32 +36,84 @@ const ProductCategoryTab = ({ allOutlets, refresh, handleRefresh }) => {
   const [showEditCategory, setShowEditCategory] = React.useState(false);
   const [showAddProduct, setShowAddProduct] = React.useState(false);
 
+  const initialCategory = {
+    id: "",
+    name: ""
+  };
+
+  const CategorySchema = Yup.object().shape({
+    name: Yup.string()
+      .min(3, "Minimum 3 characters")
+      .max(50, "Maximum 50 characters")
+      .required("Please input a category")
+  });
+
+  const formikAddCategory = useFormik({
+    initialValues: initialCategory,
+    validationSchema: CategorySchema,
+    onSubmit: async values => {
+      try {
+        setAlert("");
+        enableLoading();
+        await axios.post(`${API_URL}/api/v1/product-category`, values);
+
+        getProductCategory();
+
+        handleRefresh();
+        disableLoading();
+        closeAddCategoryModal();
+      } catch (err) {
+        disableLoading();
+        setAlertModal(err.response.data.message);
+      }
+    }
+  });
+
+  const formikEditCategory = useFormik({
+    enableReinitialize: true,
+    initialValues: initialCategory,
+    validationSchema: CategorySchema,
+    onSubmit: async values => {
+      try {
+        setAlert("");
+        enableLoading();
+        await axios.put(
+          `${API_URL}/api/v1/product-category/${values.id}`,
+          values
+        );
+
+        getProductCategory();
+
+        handleRefresh();
+        disableLoading();
+        closeEditCategoryModal();
+      } catch (err) {
+        disableLoading();
+        setAlertModal(err.response.data.message);
+      }
+    }
+  });
+
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
-  const showAddCategoryModal = () => {
-    setCategoryName("");
-    setShowAddCategory(true);
+  const showAddCategoryModal = () => setShowAddCategory(true);
+  const closeAddCategoryModal = () => {
+    setAlert("");
+    formikAddCategory.setFieldValue("name", "");
+    setShowAddCategory(false);
   };
-  const closeAddCategoryModal = () => setShowAddCategory(false);
 
   const showEditCategoryModal = data => {
-    setCategoryId(data.id);
-    setCategoryName(data.name);
-    setOutletId(data.outlet_id);
+    setAlert("");
+    formikEditCategory.setFieldValue("id", data.id);
+    formikEditCategory.setFieldValue("name", data.name);
     setShowEditCategory(true);
   };
   const closeEditCategoryModal = () => setShowEditCategory(false);
 
-  const showAddProductModal = data => {
-    setCategoryId(data.id);
-    setOutletId(data.outlet_id);
-    setShowAddProduct(true);
-  };
-  const closeAddProductModal = () => setShowAddProduct(false);
-
   const showConfirmModal = data => {
-    setCategoryId(data.id);
+    formikEditCategory.setFieldValue("id", data.id);
     setShowConfirm(true);
   };
   const closeConfirmModal = () => setShowConfirm(false);
@@ -87,68 +133,7 @@ const ProductCategoryTab = ({ allOutlets, refresh, handleRefresh }) => {
     getProductCategory();
   }, [refresh]);
 
-  const handleSelectOutlet = e => setOutletId(e.target.value);
-
-  const handleChangeCategory = e => setCategoryName(e.target.value);
-
-  const handleAddSave = async e => {
-    e.preventDefault();
-
-    const categoryData = { name: categoryName, outlet_id: outletId };
-
-    try {
-      setAlert("");
-      enableLoading();
-      await axios.post(`${API_URL}/api/v1/product-category`, categoryData);
-
-      getProductCategory();
-
-      handleRefresh();
-      disableLoading();
-      closeAddCategoryModal();
-    } catch (err) {
-      console.log(err);
-      disableLoading();
-      setAlertModal(err.response.data.message);
-    }
-  };
-
-  const handleEditSave = async e => {
-    e.preventDefault();
-
-    const categoryData = {
-      name: categoryName,
-      outlet_id: outletId
-    };
-
-    try {
-      setAlert("");
-      enableLoading();
-      await axios.put(
-        `${API_URL}/api/v1/product-category/${categoryId}`,
-        categoryData
-      );
-
-      const changeCategoryName = allCategories.map(item => {
-        if (item.id === categoryId) {
-          item.name = categoryName;
-        }
-
-        return item;
-      });
-
-      setAllCategories(changeCategoryName);
-      handleRefresh();
-      disableLoading();
-      closeEditCategoryModal();
-    } catch (err) {
-      console.log(err);
-      disableLoading();
-      setAlertModal(err.response.data.message);
-    }
-  };
-
-  const categoryData = (data, outletData) => {
+  const categoryData = data => {
     if (!data.length) {
       return;
     }
@@ -192,12 +177,6 @@ const ProductCategoryTab = ({ allOutlets, refresh, handleRefresh }) => {
             <Dropdown.Menu>
               <Dropdown.Item
                 as="button"
-                onClick={() => showAddProductModal(rows)}
-              >
-                Add Product
-              </Dropdown.Item>
-              <Dropdown.Item
-                as="button"
                 onClick={() => showEditCategoryModal(rows)}
               >
                 Edit
@@ -213,16 +192,16 @@ const ProductCategoryTab = ({ allOutlets, refresh, handleRefresh }) => {
   ];
 
   const handleDelete = async () => {
-    try {
-      enableLoading();
-      await axios.delete(`${API_URL}/api/v1/product-category/${categoryId}`);
-      setAllCategories(allCategories.filter(item => item.id !== categoryId));
-      handleRefresh();
-      disableLoading();
-      closeConfirmModal();
-    } catch (err) {
-      console.log(err);
-    }
+    const categoryId = formikEditCategory.getFieldProps("id").value;
+
+    enableLoading();
+    await axios.delete(`${API_URL}/api/v1/product-category/${categoryId}`);
+
+    setAllCategories(allCategories.filter(item => item.id !== categoryId));
+    handleRefresh();
+
+    disableLoading();
+    closeConfirmModal();
   };
 
   return (
@@ -242,12 +221,8 @@ const ProductCategoryTab = ({ allOutlets, refresh, handleRefresh }) => {
         closeModal={closeAddCategoryModal}
         loading={loading}
         alert={alertModal}
-        handleClick={handleAddSave}
-        categoryName={categoryName}
-        handleChangeCategory={handleChangeCategory}
-        title="Add"
-        handleSelectOutlet={handleSelectOutlet}
-        allOutlets={allOutlets}
+        title="Add Product Category"
+        formikCategory={formikAddCategory}
       />
 
       <ProductCategoryModal
@@ -255,10 +230,8 @@ const ProductCategoryTab = ({ allOutlets, refresh, handleRefresh }) => {
         closeModal={closeEditCategoryModal}
         loading={loading}
         alert={alertModal}
-        handleClick={handleEditSave}
-        categoryName={categoryName}
-        handleChangeCategory={handleChangeCategory}
-        title="Edit"
+        title="Edit Product Category"
+        formikCategory={formikEditCategory}
       />
 
       <Col md={12}>
@@ -286,167 +259,15 @@ const ProductCategoryTab = ({ allOutlets, refresh, handleRefresh }) => {
           </InputGroup>
         </div>
 
-        {allOutlets.length ? (
-          <DataTable
-            noHeader
-            pagination
-            columns={columns}
-            data={categoryData(allCategories, allOutlets)}
-            style={{ minHeight: "100%" }}
-          />
-        ) : (
-          ""
-        )}
+        <DataTable
+          noHeader
+          pagination
+          columns={columns}
+          data={categoryData(allCategories)}
+          style={{ minHeight: "100%" }}
+        />
       </Col>
     </Row>
-  );
-};
-
-const ProductCategoryModal = ({
-  handleClick,
-  state,
-  closeModal,
-  loading,
-  alert,
-  categoryName,
-  handleChangeCategory,
-  title,
-  handleSelectOutlet,
-  allOutlets
-}) => {
-  return (
-    <Modal show={state} onHide={closeModal}>
-      <Modal.Header closeButton>
-        <Modal.Title>{title} Product Category</Modal.Title>
-      </Modal.Header>
-
-      <Modal.Body>
-        {alert ? <Alert variant="danger">{alert}</Alert> : ""}
-
-        <Form onSubmit={handleClick}>
-          {title === "Add" ? (
-            <Form.Group>
-              <Form.Label>Outlet</Form.Label>
-              <Form.Control
-                as="select"
-                defaultValue={"Default"}
-                onChange={handleSelectOutlet}
-              >
-                <option value={"Default"} disabled hidden>
-                  Choose Outlet
-                </option>
-                {allOutlets
-                  ? allOutlets.map(item => {
-                      return (
-                        <option key={item.id} value={item.id}>
-                          {item.name}
-                        </option>
-                      );
-                    })
-                  : ""}
-              </Form.Control>
-            </Form.Group>
-          ) : (
-            ""
-          )}
-
-          <Form.Group>
-            <Form.Label>Category Name</Form.Label>
-            <Form.Control
-              type="text"
-              value={categoryName}
-              onChange={handleChangeCategory}
-            />
-          </Form.Group>
-        </Form>
-      </Modal.Body>
-
-      <Modal.Footer>
-        <Button variant="secondary" onClick={closeModal}>
-          Close
-        </Button>
-        <Button onClick={handleClick}>
-          {loading ? (
-            <Spinner animation="border" variant="light" size="sm" />
-          ) : (
-            "Save changes"
-          )}
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  );
-};
-
-const AddProductModal = ({
-  handleClick,
-  state,
-  closeModal,
-  loading,
-  alert,
-  categoryName,
-  handleChangeCategory,
-  title,
-  handleSelectOutlet,
-  allOutlets
-}) => {
-  return (
-    <Modal show={state} onHide={closeModal}>
-      <Modal.Header closeButton>
-        <Modal.Title>
-          Add Product to <em>{categoryName}</em>
-        </Modal.Title>
-      </Modal.Header>
-
-      <Modal.Body>
-        {alert ? <Alert variant="danger">{alert}</Alert> : ""}
-
-        <Form onSubmit={handleClick}>
-          <Form.Group>
-            <Form.Label>Outlet</Form.Label>
-            <Form.Control
-              as="select"
-              defaultValue={"Default"}
-              onChange={handleSelectOutlet}
-            >
-              <option value={"Default"} disabled hidden>
-                Choose Outlet
-              </option>
-              {allOutlets
-                ? allOutlets.map(item => {
-                    return (
-                      <option key={item.id} value={item.id}>
-                        {item.name}
-                      </option>
-                    );
-                  })
-                : ""}
-            </Form.Control>
-          </Form.Group>
-
-          <Form.Group>
-            <Form.Label>Category Name</Form.Label>
-            <Form.Control
-              type="text"
-              value={categoryName}
-              onChange={handleChangeCategory}
-            />
-          </Form.Group>
-        </Form>
-      </Modal.Body>
-
-      <Modal.Footer>
-        <Button variant="secondary" onClick={closeModal}>
-          Close
-        </Button>
-        <Button onClick={handleClick}>
-          {loading ? (
-            <Spinner animation="border" variant="light" size="sm" />
-          ) : (
-            "Save changes"
-          )}
-        </Button>
-      </Modal.Footer>
-    </Modal>
   );
 };
 
