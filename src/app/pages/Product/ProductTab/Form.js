@@ -1,6 +1,5 @@
 import React from "react";
-import axios from "axios";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { useDropzone } from "react-dropzone";
 
@@ -26,7 +25,7 @@ const FormTemplate = ({
 }) => {
   const classes = useStyles();
 
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
     maxSize: 2 * 1000 * 1000,
     onDrop(file) {
@@ -73,7 +72,7 @@ const FormTemplate = ({
                 <option value={""} disabled hidden>
                   Choose Outlet
                 </option>
-                {allOutlets.map(item => {
+                {allOutlets.map((item) => {
                   return (
                     <option key={item.id} value={item.id}>
                       {item.name}
@@ -97,10 +96,10 @@ const FormTemplate = ({
                 type="text"
                 name="name"
                 {...formikProduct.getFieldProps("name")}
-                onChange={e => {
+                onChange={(e) => {
                   let initial = "";
                   const initialEvery = e.target.value.split(" ");
-                  initialEvery.forEach(item => (initial += item.slice(0, 1)));
+                  initialEvery.forEach((item) => (initial += item.slice(0, 1)));
 
                   formikProduct.setFieldValue("name", e.target.value);
                   formikProduct.setFieldValue("sku", initial);
@@ -127,7 +126,7 @@ const FormTemplate = ({
                 <option value={""} disabled hidden>
                   Choose Category
                 </option>
-                {allProductCategories.map(item => {
+                {allProductCategories.map((item) => {
                   return (
                     <option key={item.id} value={item.id}>
                       {item.name}
@@ -167,7 +166,7 @@ const FormTemplate = ({
                 <option value={""} disabled hidden>
                   Choose Tax
                 </option>
-                {allTaxes.map(item => {
+                {allTaxes.map((item) => {
                   return (
                     <option key={item.id} value={item.id}>
                       {item.name}
@@ -198,7 +197,7 @@ const FormTemplate = ({
                       type="radio"
                       name="status"
                       value={formikProduct.getFieldProps("status").value}
-                      onChange={e => {
+                      onChange={(e) => {
                         if (e.target.value === "active") {
                           formikProduct.setFieldValue("status", "inactive");
                         } else {
@@ -285,7 +284,7 @@ const FormTemplate = ({
             <Form.Group>
               <Form.Label>Product Type*</Form.Label>
               <Row style={{ padding: "1rem" }}>
-                {allProductTypes.map(item => {
+                {allProductTypes.map((item) => {
                   return (
                     <Col
                       key={item.id}
@@ -298,7 +297,7 @@ const FormTemplate = ({
                             type="radio"
                             name="product_type_id"
                             value={item.id}
-                            onChange={e => {
+                            onChange={(e) => {
                               formikProduct.setFieldValue(
                                 "product_type_id",
                                 parseInt(e.target.value)

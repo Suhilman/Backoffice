@@ -88,15 +88,15 @@ export const ProductPage = () => {
 
   const getProductModifier = async () => {
     try {
-      const modifiers = await axios.get(`${API_URL}/api/v1/product-modifier`);
+      const modifiers = await axios.get(`${API_URL}/api/v1/group-modifier`);
       setAllProductModifiers(modifiers.data.data);
     } catch (err) {
-      setAllProductModifiers([])
+      setAllProductModifiers([]);
     }
   };
 
   const handleRefresh = () => {
-    setRefresh(state => state + 1);
+    setRefresh((state) => state + 1);
   };
 
   React.useEffect(() => {
@@ -112,7 +112,7 @@ export const ProductPage = () => {
     <>
       <CssBaseline />
 
-      <Tabs activeKey={tabs} onSelect={v => setTabs(v)}>
+      <Tabs activeKey={tabs} onSelect={(v) => setTabs(v)}>
         <Tab eventKey="product" title="Product">
           <ProductTab
             allOutlets={allOutlets}

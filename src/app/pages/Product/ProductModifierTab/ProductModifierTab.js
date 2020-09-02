@@ -1,19 +1,14 @@
 import React from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 
 import {
   Row,
   Col,
   Button,
-  Modal,
-  Form,
-  Spinner,
-  Alert,
   Dropdown,
   InputGroup,
   FormControl,
-  ListGroup
+  Alert
 } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import { Search, MoreHoriz } from "@material-ui/icons";
@@ -24,60 +19,40 @@ import ConfirmModal from "../../../components/ConfirmModal";
 
 const ProductModifierTab = ({
   allOutlets,
-  allCategories,
   allProductModifiers,
-  setAllCategories,
   refresh,
   handleRefresh
 }) => {
   const classes = useStyles();
-  const API_URL = process.env.REACT_APP_API_URL;
 
   const [categoryId, setCategoryId] = React.useState(false);
   const [outletId, setOutletId] = React.useState("");
 
-  const [categoryName, setCategoryName] = React.useState("");
-
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
-  const [alertModal, setAlertModal] = React.useState("");
 
   const [showConfirm, setShowConfirm] = React.useState(false);
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
-  const showConfirmModal = id => {
+  const showConfirmModal = (id) => {
     setCategoryId(id);
     setShowConfirm(true);
   };
   const closeConfirmModal = () => setShowConfirm(false);
 
-  const handleSelectOutlet = e => {
-    setAlert("");
-    setOutletId(e.target.value);
-  };
-
-  const modifierData = (data, dataCategory) => {
-    if (!data.length || !dataCategory.length) {
+  const modifierData = (data) => {
+    if (!data.length) {
       return;
     }
 
-    return dataCategory.map((item, index) => {
-      const modifiers = data
-        .filter(
-          val =>
-            item.name ===
-            (val.Product_Category ? val.Product_Category.name : "")
-        )
-        .map(val => val.name)
-        .join(", ");
-
+    return data.map((item, index) => {
       return {
         id: item.id,
         no: index + 1,
         group: item.name,
-        modifiers
+        modifiers: item.Modifiers.map((val) => val.name).join(", ")
       };
     });
   };
@@ -90,9 +65,8 @@ const ProductModifierTab = ({
       width: "50px"
     },
     {
-      name: "Product Group",
-      selector: "group",
-      sortable: true
+      name: "Group Modifiers",
+      selector: "group"
     },
     {
       name: "Modifiers",
@@ -100,7 +74,7 @@ const ProductModifierTab = ({
     },
     {
       name: "Actions",
-      cell: rows => {
+      cell: (rows) => {
         return (
           <Dropdown>
             <Dropdown.Toggle variant="secondary">
@@ -111,7 +85,7 @@ const ProductModifierTab = ({
               <Link
                 to={{
                   pathname: `/product/edit-product-modifier/${rows.id}`,
-                  state: { allOutlets, allCategories }
+                  state: { allOutlets }
                 }}
               >
                 <Dropdown.Item as="button">Edit</Dropdown.Item>
@@ -130,16 +104,11 @@ const ProductModifierTab = ({
   ];
 
   const handleDelete = async () => {
-    try {
-      enableLoading();
-      await axios.delete(`${API_URL}/api/v1/product-category/${categoryId}`);
-      setAllCategories(allCategories.filter(item => item.id !== categoryId));
-      handleRefresh();
-      disableLoading();
-      closeConfirmModal();
-    } catch (err) {
-      console.log(err);
-    }
+    enableLoading();
+    console.log("deleted");
+    handleRefresh();
+    disableLoading();
+    closeConfirmModal();
   };
 
   return (
@@ -165,7 +134,7 @@ const ProductModifierTab = ({
             <Link
               to={{
                 pathname: "/product/add-product-modifier",
-                state: { allOutlets, allCategories }
+                state: { allOutlets }
               }}
             >
               <Button variant="primary">Add New Product Modifier</Button>
@@ -188,7 +157,7 @@ const ProductModifierTab = ({
           noHeader
           pagination
           columns={columns}
-          data={modifierData(allProductModifiers, allCategories)}
+          data={modifierData(allProductModifiers)}
           style={{ minHeight: "100%" }}
         />
       </Col>

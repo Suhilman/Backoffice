@@ -38,7 +38,7 @@ export default function BasePage() {
         />
 
         <Route
-          path="/product/edit-product-modifier/:categoryId"
+          path="/product/edit-product-modifier/:groupId"
           component={EditProductModifierPage}
         />
         <Route path="/product/:productId" component={EditProductPage} />

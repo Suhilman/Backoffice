@@ -1,28 +1,16 @@
 import React from "react";
 import axios from "axios";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import { useDropzone } from "react-dropzone";
-
-import { Row, Col, Button, Form, Alert, Spinner } from "react-bootstrap";
-import { Paper } from "@material-ui/core";
-
-import { useStyles } from "../ProductPage";
+import { Row, Col } from "react-bootstrap";
 
 import ModalManageVariant from "./ModalManageVariant";
 import FormTemplate from "./Form";
 
 export const AddProductPage = () => {
-  const classes = useStyles();
   const API_URL = process.env.REACT_APP_API_URL;
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
-    maxSize: 2 * 1000 * 1000,
-    onDrop(file) {
-      handlePreviewPhoto(file);
-    }
-  });
   const history = useHistory();
 
   const [photo, setPhoto] = React.useState("");
@@ -30,7 +18,6 @@ export const AddProductPage = () => {
   const [alert, setAlert] = React.useState("");
   const [alertPhoto, setAlertPhoto] = React.useState("");
   const [showManageVariant, setShowManageVariant] = React.useState(false);
-  const [validated, setValidated] = React.useState(false);
   const [validatedModal, setValidatedModal] = React.useState(false);
   const [photoPreview, setPhotoPreview] = React.useState("");
 
@@ -102,7 +89,7 @@ export const AddProductPage = () => {
   const formikProduct = useFormik({
     initialValues: initialValueProduct,
     validationSchema: ProductSchema,
-    onSubmit: async values => {
+    onSubmit: async (values) => {
       const formData = new FormData();
       formData.append("outlet_id", values.outlet_id);
       formData.append("name", values.name);
@@ -133,7 +120,7 @@ export const AddProductPage = () => {
     }
   });
 
-  const validationProduct = fieldname => {
+  const validationProduct = (fieldname) => {
     if (formikProduct.touched[fieldname] && formikProduct.errors[fieldname]) {
       return "is-invalid";
     }
@@ -157,7 +144,7 @@ export const AddProductPage = () => {
     }
   };
 
-  const getProductCategory = async outlet_id => {
+  const getProductCategory = async (outlet_id) => {
     try {
       const productCategory = await axios.get(
         `${API_URL}/api/v1/product-category`
@@ -215,7 +202,7 @@ export const AddProductPage = () => {
     setShowManageVariant(false);
   };
 
-  const saveChangesVariant = e => {
+  const saveChangesVariant = (e) => {
     e.preventDefault();
 
     const form = e.currentTarget;
@@ -253,14 +240,14 @@ export const AddProductPage = () => {
     ]);
   };
 
-  const handleRemoveVariant = index => {
+  const handleRemoveVariant = (index) => {
     const allVariants = [...productVariant];
     allVariants.splice(index, 1);
 
     setProductVariant(allVariants);
   };
 
-  const handleChangeVariant = e => {
+  const handleChangeVariant = (e) => {
     const targetName = e.target.name.split("-");
     const targetValue = e.target.value;
     const name = targetName[0];
@@ -272,7 +259,7 @@ export const AddProductPage = () => {
     setProductVariant(allData);
   };
 
-  const handlePreviewPhoto = file => {
+  const handlePreviewPhoto = (file) => {
     setAlertPhoto("");
 
     let preview;

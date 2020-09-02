@@ -1,210 +1,250 @@
 import React from "react";
 import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
+import { Formik, FieldArray } from "formik";
+import * as Yup from "yup";
 
-import { Row, Col, Button, Form, Alert, Spinner } from "react-bootstrap";
 import { Paper } from "@material-ui/core";
+import { Delete } from "@material-ui/icons";
+import { Row, Col, Button, Form, Alert, Spinner } from "react-bootstrap";
 
 import { useStyles } from "../ProductPage";
 
-export const EditProductModifierPage = props => {
+export const EditProductModifierPage = ({ location, match }) => {
   const classes = useStyles();
-  const API_URL = process.env.REACT_APP_API_URL;
   const history = useHistory();
-  const { allOutlets, allCategories } = props.location.state;
-  const { categoryId } = props.match.params;
+  const { allOutlets } = location.state;
+  const { groupId } = match.params;
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
 
-  const [outletId, setOutletId] = React.useState("");
-  const [productCategory, setProductCategory] = React.useState("");
-  const [productModifier, setProductModifier] = React.useState([
-    {
-      id: "",
-      name: "",
-      price: ""
-    }
-  ]);
-
-  const enableLoading = () => setLoading(true);
-  const disableLoading = () => setLoading(false);
-
-  const getProductModifier = async id => {
-    try {
-      const getModifiers = await axios.get(
-        `${API_URL}/api/v1/product-category/${id}`
-      );
-      const modifiers = getModifiers.data.data.Product_Modifiers.map(item => {
-        return {
-          id: item.id,
-          name: item.name,
-          price: item.price
-        };
-      });
-
-      setProductModifier(modifiers);
-      setOutletId(getModifiers.data.data.outlet_id);
-      setProductCategory(id);
-    } catch (err) {
-      setProductModifier([]);
-      setOutletId("");
-      setProductCategory("");
-    }
-  };
-
-  React.useEffect(() => {
-    getProductModifier(categoryId);
-  }, [categoryId]);
-
-  const addMoreModifier = () => {
-    setProductModifier([
-      ...productModifier,
+  const [productModifier, setProductModifier] = React.useState({
+    outlet_id: "",
+    id: "",
+    name: "",
+    modifiers: [
       {
         id: "",
         name: "",
         price: ""
       }
-    ]);
+    ]
+  });
+
+  const ProductModifierSchema = Yup.object().shape({
+    outlet_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose an outlet"),
+    name: Yup.string()
+      .min(3, "Minimum 3 characters")
+      .max(50, "Maximum 50 characters")
+      .required("Please input a group name"),
+    modifiers: Yup.array().of(
+      Yup.object().shape({
+        name: Yup.string()
+          .min(3, "Minimum 3 characters")
+          .max(50, "Maximum 50 characters")
+          .required("Please input a modifier name"),
+        price: Yup.number()
+          .min(1)
+          .required("Please input a modifier price")
+      })
+    )
+  });
+
+  const enableLoading = () => setLoading(true);
+  const disableLoading = () => setLoading(false);
+
+  const getProductModifier = async (id) => {
+    const API_URL = process.env.REACT_APP_API_URL;
+
+    const { data } = await axios.get(`${API_URL}/api/v1/group-modifier/${id}`);
+
+    setProductModifier({
+      outlet_id: data.data.outlet_id,
+      id: data.data.id,
+      name: data.data.name,
+      modifiers: data.data.Modifiers
+    });
   };
 
-  const removeOneModifier = id => {
-    const filterModifier = [...productModifier];
-    filterModifier.splice(id, 1);
-    setProductModifier(filterModifier);
-  };
-
-  const handleSelectOutlet = e => setOutletId(e.target.value);
-  const handleSelectCategory = e => setProductCategory(e.target.value);
-
-  const handleChangeModifier = async (e, index) => {
-    const { name, value } = e.target;
-    const list = [...productModifier];
-    list[index][name] = value;
-    setProductModifier(list);
-  };
-
-  const handleSave = async () => {
-    const productModifierData = {
-      product_category_id: productCategory,
-      outlet_id: outletId,
-      modifiers: productModifier
-    };
-
-    try {
-      enableLoading();
-      await axios.put(
-        `${API_URL}/api/v1/product-modifier/bulk-update`,
-        productModifierData
-      );
-      disableLoading();
-      history.push("/product");
-    } catch (err) {
-      disableLoading();
-      setAlert(err.response.data.message);
-    }
-  };
+  React.useEffect(() => {
+    getProductModifier(groupId);
+  }, [groupId]);
 
   return (
-    <Row>
-      <Col>
-        <Paper elevation={2} style={{ padding: "1rem" }}>
-          <div className={classes.header}>
-            <div className={classes.headerStart}>
-              <h3>Edit Product Modifier</h3>
-            </div>
-            <div className={classes.headerEnd}>
-              <Link to="/product">
-                <Button variant="outline-secondary">Cancel</Button>
-              </Link>
-              <Button
-                variant="primary"
-                style={{ marginLeft: "0.5rem" }}
-                onClick={handleSave}
-              >
-                {loading ? (
-                  <Spinner animation="border" variant="light" size="sm" />
-                ) : (
-                  "Save"
-                )}
-              </Button>
-            </div>
-          </div>
+    <Paper elevation={2} style={{ padding: "1rem" }}>
+      <Formik
+        enableReinitialize={true}
+        initialValues={productModifier}
+        validationSchema={ProductModifierSchema}
+        onSubmit={async (values) => {
+          const API_URL = process.env.REACT_APP_API_URL;
+          const productModifierData = {
+            outlet_id: values.outlet_id,
+            groupModifier: {
+              id: values.id,
+              name: values.name,
+              modifiers: values.modifiers
+            }
+          };
 
-          <Row>
-            <Col>
-              {alert ? <Alert variant="danger">{alert}</Alert> : ""}
+          try {
+            enableLoading();
+            await axios.put(
+              `${API_URL}/api/v1/modifier/bulk-update`,
+              productModifierData
+            );
+            disableLoading();
+            history.push("/product");
+          } catch (err) {
+            disableLoading();
+            setAlert(err.response.data.message);
+          }
+        }}
+      >
+        {(props) => (
+          <Form onSubmit={props.handleSubmit}>
+            <FieldArray
+              name="modifiers"
+              render={(arrayHelpers) => (
+                <>
+                  <div className={classes.header}>
+                    <div className={classes.headerStart}>
+                      <h3>Add Product Modifier</h3>
+                    </div>
+                    <div className={classes.headerEnd}>
+                      <Link to="/product">
+                        <Button variant="outline-secondary">Cancel</Button>
+                      </Link>
+                      <Button
+                        variant="primary"
+                        style={{ marginLeft: "0.5rem" }}
+                        type="submit"
+                      >
+                        {loading ? (
+                          <Spinner
+                            animation="border"
+                            variant="light"
+                            size="sm"
+                          />
+                        ) : (
+                          "Save"
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                  {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
-              <Form.Group>
-                <Form.Label>Outlet</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={outletId}
-                  onChange={handleSelectOutlet}
-                >
-                  {allOutlets
-                    ? allOutlets.map(item => {
-                        return (
-                          <option key={item.id} value={item.id}>
-                            {item.name}
+                  <Row style={{ padding: "1rem" }}>
+                    <Col>
+                      <Form.Group>
+                        <Form.Label>Outlet*</Form.Label>
+                        <Form.Control
+                          as="select"
+                          name="outlet_id"
+                          onChange={props.handleChange}
+                          onBlur={props.handleBlur}
+                          value={props.values.outlet_id}
+                          // className={validationProductModifier(
+                          //   props,
+                          //   "outlet_id"
+                          // )}
+                          required
+                        >
+                          <option value={""} disabled hidden>
+                            Choose Outlet
                           </option>
-                        );
-                      })
-                    : ""}
-                </Form.Control>
-              </Form.Group>
+                          {allOutlets.map((item) => {
+                            return (
+                              <option key={item.id} value={item.id}>
+                                {item.name}
+                              </option>
+                            );
+                          })}
+                        </Form.Control>
+                        {/* {props.touched.outlet_id && props.errors.outlet_id ? (
+                        <div className="fv-plugins-message-container">
+                          <div className="fv-help-block">
+                            {props.errors.outlet_id}
+                          </div>
+                        </div>
+                      ) : null} */}
+                      </Form.Group>
+                    </Col>
 
-              <Form.Group>
-                <Form.Label>Category</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={productCategory}
-                  onChange={handleSelectCategory}
-                >
-                  {allCategories
-                    ? allCategories.map(item => {
-                        return (
-                          <option key={item.id} value={item.id}>
-                            {item.name}
-                          </option>
-                        );
-                      })
-                    : ""}
-                </Form.Control>
-              </Form.Group>
+                    <Col>
+                      <Form.Group>
+                        <Form.Label>Modifier Group Name*</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="name"
+                          placeholder="Ex. : Topping"
+                          onChange={props.handleChange}
+                          onBlur={props.handleBlur}
+                          value={props.values.name}
+                          // className={validationProductModifier(props, "name")}
+                          required
+                        />
+                        {/* {props.touched.name && props.errors.name ? (
+                        <div className="fv-plugins-message-container">
+                          <div className="fv-help-block">
+                            {props.errors.name}
+                          </div>
+                        </div>
+                      ) : null} */}
+                      </Form.Group>
+                    </Col>
+                  </Row>
 
-              {productModifier.length
-                ? productModifier.map((item, index) => {
+                  {props.values.modifiers.map((item, index) => {
                     return (
-                      <Row key={index}>
-                        <Col md={5}>
+                      <Row
+                        style={{
+                          padding: "1rem",
+                          borderTop: "1px solid #ebedf2"
+                        }}
+                        key={index}
+                      >
+                        <Col>
                           <Form.Group>
-                            <Form.Label>Modifier Name</Form.Label>
+                            <Form.Label>Modifier Name*</Form.Label>
                             <Form.Control
                               type="text"
-                              name="name"
-                              defaultValue={item.name}
-                              onChange={e => handleChangeModifier(e, index)}
+                              name={`modifiers.${index}.name`}
+                              placeholder="Ex. : Boba"
+                              onChange={props.handleChange}
+                              onBlur={props.handleBlur}
+                              value={props.values.modifiers[index].name}
+                              required
                             />
                           </Form.Group>
                         </Col>
 
-                        <Col md={5}>
+                        <Col>
                           <Form.Group>
-                            <Form.Label>Modifier Price</Form.Label>
+                            <Form.Label>Modifier Price*</Form.Label>
                             <Form.Control
-                              type="text"
-                              name="price"
-                              defaultValue={item.price}
-                              onChange={e => handleChangeModifier(e, index)}
+                              type="number"
+                              name={`modifiers.${index}.price`}
+                              placeholder="Ex. : 2000"
+                              onChange={props.handleChange}
+                              onBlur={props.handleBlur}
+                              value={props.values.modifiers[index].price}
+                              required
                             />
                           </Form.Group>
                         </Col>
 
-                        {productModifier.length > 1 ? (
-                          <Col md={2}>
-                            <Button onClick={() => removeOneModifier(index)}>
-                              -
+                        {props.values.modifiers.length > 1 ? (
+                          <Col md={1} style={{ alignSelf: "center" }}>
+                            <Button
+                              onClick={() => arrayHelpers.remove(index)}
+                              variant="danger"
+                            >
+                              <Delete />
                             </Button>
                           </Col>
                         ) : (
@@ -212,14 +252,23 @@ export const EditProductModifierPage = props => {
                         )}
                       </Row>
                     );
-                  })
-                : ""}
+                  })}
 
-              <Button onClick={addMoreModifier}>+ Add Other Modifier</Button>
-            </Col>
-          </Row>
-        </Paper>
-      </Col>
-    </Row>
+                  <div style={{ padding: "1rem" }}>
+                    <Button
+                      onClick={() =>
+                        arrayHelpers.push({ id: "", name: "", price: "" })
+                      }
+                    >
+                      + Add More Modifier
+                    </Button>
+                  </div>
+                </>
+              )}
+            />
+          </Form>
+        )}
+      </Formik>
+    </Paper>
   );
 };
