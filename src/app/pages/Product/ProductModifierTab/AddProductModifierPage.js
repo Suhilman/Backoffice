@@ -11,14 +11,12 @@ export const AddProductModifierPage = ({ location }) => {
   const classes = useStyles();
   const API_URL = process.env.REACT_APP_API_URL;
   const history = useHistory();
-  const { allOutlets, allCategories } = location.state;
+  const { allOutlets } = location.state;
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
 
   const [outletId, setOutletId] = React.useState("");
-  const [typeId, setTypeId] = React.useState("");
-  const [productCategory, setProductCategory] = React.useState("");
   const [productModifier, setProductModifier] = React.useState([
     {
       name: "",

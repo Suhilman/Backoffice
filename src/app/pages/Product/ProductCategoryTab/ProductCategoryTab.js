@@ -99,13 +99,13 @@ const ProductCategoryTab = ({ allOutlets, refresh, handleRefresh }) => {
 
   const showAddCategoryModal = () => setShowAddCategory(true);
   const closeAddCategoryModal = () => {
-    setAlert("");
+    setAlertModal("");
     formikAddCategory.setFieldValue("name", "");
     setShowAddCategory(false);
   };
 
   const showEditCategoryModal = data => {
-    setAlert("");
+    setAlertModal("");
     formikEditCategory.setFieldValue("id", data.id);
     formikEditCategory.setFieldValue("name", data.name);
     setShowEditCategory(true);
