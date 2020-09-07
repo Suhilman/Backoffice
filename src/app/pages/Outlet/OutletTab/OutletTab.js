@@ -50,8 +50,6 @@ export const OutletTab = ({
     city_id: "",
     location_id: "",
     tax_id: [],
-    // latitude: "",
-    // longitude: "",
     status: "active"
   };
 
@@ -84,8 +82,6 @@ export const OutletTab = ({
     tax_id: Yup.array()
       .of(Yup.number().required())
       .required("Please choose a tax."),
-    // latitude: Yup.string(),
-    // longitude: Yup.string(),
     status: Yup.string()
       .matches(/(active|inactive)/)
       .required("Please input a status.")
@@ -194,8 +190,6 @@ export const OutletTab = ({
       city_id: data.city_id,
       location_id: data.location_id,
       tax_id: data.tax_id,
-      // latitude: "",
-      // longitude: "",
       status: data.status
     });
 
@@ -317,11 +311,11 @@ export const OutletTab = ({
       selector: "phone_number",
       sortable: true
     },
-    // {
-    //   name: "Tax Status",
-    //   selector: "tax",
-    //   sortable: true
-    // },
+    {
+      name: "Tax Status",
+      selector: "tax",
+      sortable: true
+    },
     {
       name: "Actions",
       cell: (rows) => {
@@ -375,6 +369,7 @@ export const OutletTab = ({
         locationFull: capitalize,
         phone_number: item.phone_number || "",
         status: item.status,
+        tax: tax_id.length ? "Taxable" : "No Tax",
         tax_id
       };
     });

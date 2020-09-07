@@ -5,12 +5,14 @@ import { Tabs, Tab } from "react-bootstrap";
 
 import { OutletTab } from "./OutletTab/OutletTab";
 import { TaxTab } from "./TaxTab/TaxTab";
+import { PaymentTab } from "./PaymentTab/PaymentTab";
 
 export const OutletPage = () => {
   const [tabs, setTabs] = React.useState("outlet");
   const [allOutlets, setAllOutlets] = React.useState([]);
   const [allProvinces, setAllProvinces] = React.useState([]);
   const [allTaxes, setAllTaxes] = React.useState([]);
+  const [allPaymentMethods, setAllPaymentMethods] = React.useState([]);
   const [refresh, setRefresh] = React.useState(0);
 
   const handleRefresh = () => setRefresh((state) => state + 1);
@@ -48,11 +50,22 @@ export const OutletPage = () => {
     }
   };
 
+  const getPaymentMethod = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+
+    try {
+      const { data } = await axios.get(`${API_URL}/api/v1/payment-method`);
+      setAllPaymentMethods(data.data);
+    } catch (err) {
+      setAllPaymentMethods([]);
+    }
+  };
+
   React.useEffect(() => {
     getOutlets();
     getProvinces();
     getTaxes();
-    console.log(refresh);
+    getPaymentMethod();
   }, [refresh]);
 
   return (
@@ -67,10 +80,12 @@ export const OutletPage = () => {
       </Tab>
 
       <Tab eventKey="tax" title="Tax & Charges">
-        <TaxTab
-          allOutlets={allOutlets}
-          allProvinces={allProvinces}
-          allTaxes={allTaxes}
+        <TaxTab allTaxes={allTaxes} handleRefresh={handleRefresh} />
+      </Tab>
+
+      <Tab eventKey="payment" title="Payment">
+        <PaymentTab
+          allPaymentMethods={allPaymentMethods}
           handleRefresh={handleRefresh}
         />
       </Tab>
