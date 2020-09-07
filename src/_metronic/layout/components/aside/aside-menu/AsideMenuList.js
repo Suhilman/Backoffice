@@ -58,8 +58,16 @@ export function AsideMenuList({ layoutProps }) {
         </li>
         {/* end:: section */}
 
-        {/* eCommerce */}
         {/*begin::1 Level*/}
+        <li className={`menu-item menu-item-submenu`}>
+          <NavLink className="menu-link menu-toggle" to="/outlet">
+            <span className="svg-icon menu-icon">
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Shopping/Bag2.svg")} />
+            </span>
+            <span className="menu-text">Outlet</span>
+          </NavLink>
+        </li>
+
         <li className={`menu-item menu-item-submenu`}>
           <NavLink className="menu-link menu-toggle" to="/staff">
             <span className="svg-icon menu-icon">

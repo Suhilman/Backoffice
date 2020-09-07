@@ -47,11 +47,6 @@ export const useStyles = makeStyles({
     cursor: "pointer",
     border: "2px dashed #ebedf2",
     borderRadius: "4px"
-  },
-  box: {
-    padding: "1rem",
-    border: "1px solid #ebedf2",
-    borderRadius: "4px"
   }
 });
 

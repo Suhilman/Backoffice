@@ -1,15 +1,6 @@
 import React from "react";
 
-import {
-  Button,
-  InputGroup,
-  Badge,
-  Modal,
-  Spinner,
-  Form,
-  Row,
-  Col
-} from "react-bootstrap";
+import { Button, Modal, Form, Row, Col } from "react-bootstrap";
 import { Delete } from "@material-ui/icons";
 
 const ModalManageVariant = ({
@@ -18,7 +9,6 @@ const ModalManageVariant = ({
   showManageVariant,
   cancelModalVariant,
   saveChangesVariant,
-  loading,
   productVariant,
   handleAddVariant,
   handleRemoveVariant,

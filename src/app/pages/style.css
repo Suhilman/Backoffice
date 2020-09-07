@@ -1,0 +1,41 @@
+.headerPage {
+  padding: 1rem;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  position: relative;
+  border-bottom: 1px solid #ebedf2;
+  width: 100%;
+}
+
+.headerStart {
+  align-content: flex-start;
+  align-self: center;
+}
+
+.headerEnd {
+  align-content: flex-end;
+}
+
+.box {
+  border: 1px solid #ebedf2;
+  padding: 1rem;
+}
+
+.boxDashed {
+  border: 2px dashed #ebedf2;
+  border-radius: 4px;
+  padding: 20px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.lineBottom {
+  border-bottom: 1px solid #ebedf2;
+}
+
+.filterSection {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 0 1rem;
+}

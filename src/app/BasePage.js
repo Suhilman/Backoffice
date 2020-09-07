@@ -1,8 +1,7 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense } from "react";
 import { Redirect, Switch, Route } from "react-router-dom";
 import { LayoutSplashScreen, ContentRoute } from "../_metronic/layout";
-import { BuilderPage } from "./pages/BuilderPage";
-import { MyPage } from "./pages/MyPage";
+
 import { DashboardPage } from "./pages/DashboardPage";
 import { StaffPage } from "./pages/Staff/StaffPage";
 import { AddStaffPage } from "./pages/Staff/AddStaffPage";
@@ -13,6 +12,7 @@ import { AddProductPage } from "./pages/Product/ProductTab/AddProductPage";
 import { EditProductPage } from "./pages/Product/ProductTab/EditProductPage";
 import { AddProductModifierPage } from "./pages/Product/ProductModifierTab/AddProductModifierPage";
 import { EditProductModifierPage } from "./pages/Product/ProductModifierTab/EditProductModifierPage";
+import { OutletPage } from "./pages/Outlet/OutletPage";
 
 export default function BasePage() {
   return (
@@ -27,6 +27,8 @@ export default function BasePage() {
         <Route exact path="/staff" component={StaffPage} />
         <Route path="/staff/add-staff" component={AddStaffPage} />
         <Route path="/staff/:staffId" component={DetailStaffPage} />
+
+        <Route exact path="/outlet" component={OutletPage} />
 
         <Route exact path="/account" component={AccountPage} />
 
