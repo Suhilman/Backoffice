@@ -67,7 +67,7 @@ function Registration(props) {
         })
       )
       .when("password", {
-        is: val => (val && val.length > 0 ? true : false),
+        is: (val) => (val && val.length > 0 ? true : false),
         then: Yup.string().oneOf(
           [Yup.ref("password")],
           "Password and Confirm Password didn't match"
@@ -75,8 +75,6 @@ function Registration(props) {
       }),
     acceptTerms: Yup.bool().required("You must accept the terms and conditions")
   });
-
-  const API_URL = process.env.REACT_APP_API_URL;
 
   const [showVerifyModal, setShowVerifyModal] = useState(false);
   const [showBusinessModal, setShowBusinessModal] = useState(false);
@@ -92,21 +90,109 @@ function Registration(props) {
 
   const [code, setCode] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
-  const [businessCategory, setBusinessCategory] = useState("");
-  const [province, setProvince] = useState("");
-  const [city, setCity] = useState("");
-  const [location, setLocation] = useState("");
-  const [outletLocation, setOutletLocation] = useState("");
+
+  const initialValueBusiness = {
+    business_category_id: "",
+    business_province_id: "",
+    business_city_id: "",
+    business_location_id: "",
+    outlet_location_id: ""
+  };
+
+  const BusinessSchema = Yup.object().shape({
+    business_category_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose a business category."),
+    business_province_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose a province."),
+    business_city_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose a city."),
+    business_location_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose a business location."),
+    outlet_location_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose an outlet location.")
+  });
+
+  const formikBusiness = useFormik({
+    enableReinitialize: true,
+    initialValues: initialValueBusiness,
+    validationSchema: BusinessSchema,
+    onSubmit: async (values) => {
+      const API_URL = process.env.REACT_APP_API_URL;
+
+      try {
+        enableLoading();
+        setAlertModal("");
+        const { business_id } = JSON.parse(localStorage.getItem("user_info"));
+
+        const { data } = await axios.get(`${API_URL}/api/v1/outlet`, {
+          headers: { Authorization: token }
+        });
+
+        const outlet_id = data.data[0].id;
+
+        const businessData = {
+          business_category_id: values.business_category_id,
+          location_id: values.business_location_id
+        };
+
+        const outletData = {
+          location_id: values.outlet_location_id
+        };
+
+        await axios.patch(
+          `${API_URL}/api/v1/business/${business_id}`,
+          businessData,
+          { headers: { Authorization: token } }
+        );
+
+        await axios.patch(`${API_URL}/api/v1/outlet/${outlet_id}`, outletData, {
+          headers: { Authorization: token }
+        });
+
+        verifyAccount();
+        disableLoading();
+        props.register(token.split(" ")[1]);
+      } catch (err) {
+        setAlertModal(err.response.data.message);
+        disableLoading();
+      }
+    }
+  });
+
+  const validationBusiness = (fieldname) => {
+    if (formikBusiness.touched[fieldname] && formikBusiness.errors[fieldname]) {
+      return "is-invalid";
+    }
+
+    if (
+      formikBusiness.touched[fieldname] &&
+      !formikBusiness.errors[fieldname]
+    ) {
+      return "is-valid";
+    }
+
+    return "";
+  };
 
   const closeVerifyModal = () => setShowVerifyModal(false);
   const openVerifyModal = () => setShowVerifyModal(true);
-  const handleVerifyModal = e => setCode(e.target.value);
+  const handleVerifyModal = (e) => setCode(e.target.value);
 
   React.useEffect(() => {
     let timer;
     if (showVerifyModal && second > 0) {
       timer = setTimeout(function() {
-        setSecond(now => now - 1);
+        setSecond((now) => now - 1);
       }, 1000);
     } else {
       clearTimeout(timer);
@@ -121,17 +207,6 @@ function Registration(props) {
     getProvinces();
     setShowBusinessModal(true);
   };
-  const handleBusiness = e => setBusinessCategory(e.target.value);
-  const handleProvince = e => {
-    setProvince(e.target.value);
-    getProvinceById(e.target.value);
-  };
-  const handleCity = e => {
-    setCity(e.target.value);
-    getCityById(e.target.value);
-  };
-  const handleLocation = e => setLocation(e.target.value);
-  const handleOutletLocation = e => setOutletLocation(e.target.value);
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
@@ -140,7 +215,7 @@ function Registration(props) {
     setSecond(60);
   };
 
-  const getInputClasses = fieldname => {
+  const getInputClasses = (fieldname) => {
     if (formik.touched[fieldname] && formik.errors[fieldname]) {
       return "is-invalid";
     }
@@ -175,7 +250,7 @@ function Registration(props) {
           openVerifyModal();
           setSecond(60);
         })
-        .catch(err => {
+        .catch((err) => {
           setSubmitting(false);
           setStatus(err.response.data.message);
           disableLoading();
@@ -183,8 +258,41 @@ function Registration(props) {
     }
   });
 
+  const handleProvince = (e) => {
+    const province_id = e.target.value;
+    formikBusiness.setFieldValue("business_province_id", province_id);
+    formikBusiness.setFieldValue("business_city_id", "");
+    formikBusiness.setFieldValue("business_location_id", "");
+    formikBusiness.setFieldValue("outlet_location_id", "");
+    setAllLocations([]);
+
+    const provinces = [...allProvinces];
+    const [cities] = provinces
+      .filter((item) => item.id === parseInt(province_id))
+      .map((item) => item.Cities);
+    setAllCities(cities);
+  };
+
+  const handleCity = (e) => {
+    const city_id = e.target.value;
+    formikBusiness.setFieldValue("business_city_id", city_id);
+    formikBusiness.setFieldValue("business_location_id", "");
+    formikBusiness.setFieldValue("outlet_location_id", "");
+
+    if (!city_id) return "";
+
+    if (allCities.length) {
+      const cities = [...allCities];
+      const [locations] = cities
+        .filter((item) => item.id === parseInt(city_id))
+        .map((item) => item.Locations);
+      setAllLocations(locations);
+    }
+  };
+
   const getBusinessCategories = async () => {
     try {
+      const API_URL = process.env.REACT_APP_API_URL;
       setAlertModal("");
       const { data } = await axios.get(`${API_URL}/api/v1/business-category`);
       setAllBusinessCategories(data.data);
@@ -196,6 +304,7 @@ function Registration(props) {
 
   const getProvinces = async () => {
     try {
+      const API_URL = process.env.REACT_APP_API_URL;
       setAlertModal("");
       const { data } = await axios.get(`${API_URL}/api/v1/province`);
       setAllProvinces(data.data);
@@ -205,30 +314,9 @@ function Registration(props) {
     }
   };
 
-  const getProvinceById = async id => {
-    try {
-      setAlertModal("");
-      const { data } = await axios.get(`${API_URL}/api/v1/province/${id}`);
-      setAllCities(data.data.Cities);
-    } catch (err) {
-      setAlertModal(err.response.data.message);
-      setAllCities([]);
-    }
-  };
-
-  const getCityById = async id => {
-    try {
-      setAlertModal("");
-      const { data } = await axios.get(`${API_URL}/api/v1/city/${id}`);
-      setAllLocations(data.data.Locations);
-    } catch (err) {
-      setAlertModal(err.response.data.message);
-      setAllLocations([]);
-    }
-  };
-
   const verifyAccount = async () => {
     try {
+      const API_URL = process.env.REACT_APP_API_URL;
       enableLoading();
       setAlertModal("");
       await axios.post(
@@ -245,37 +333,21 @@ function Registration(props) {
     }
   };
 
-  const updateBusiness = async () => {
+  const checkCode = async () => {
     try {
+      const API_URL = process.env.REACT_APP_API_URL;
       enableLoading();
       setAlertModal("");
-      const { business_id, outlet_id } = JSON.parse(
-        localStorage.getItem("user_info")
-      );
-
-      const businessData = {
-        business_category_id: businessCategory,
-        location_id: location
-      };
-
-      const outletData = {
-        location_id: location
-      };
-
-      await axios.patch(
-        `${API_URL}/api/v1/business/${business_id}`,
-        businessData,
+      await axios.post(
+        `${API_URL}/api/v1/auth/verify-account?check=${true}`,
+        { code },
         { headers: { Authorization: token } }
       );
-
-      await axios.patch(`${API_URL}/api/v1/outlet/${outlet_id}`, outletData, {
-        headers: { Authorization: token }
-      });
-
       disableLoading();
-      props.register(token.split(" ")[1]);
+      closeVerifyModal();
+      openBusinessModal();
     } catch (err) {
-      setAlertModal(err.response.data.message);
+      setAlertModal(err.response?.data.message);
       disableLoading();
     }
   };
@@ -289,7 +361,7 @@ function Registration(props) {
         phonenumber={phonenumber}
         handleVerifyModal={handleVerifyModal}
         code={code}
-        verifyAccount={verifyAccount}
+        checkCode={checkCode}
         loading={loading}
         second={second}
         handleResendCode={handleResendCode}
@@ -301,16 +373,14 @@ function Registration(props) {
         closeBusinessModal={closeBusinessModal}
         alertModal={alertModal}
         loading={loading}
-        handleBusiness={handleBusiness}
-        handleProvince={handleProvince}
-        handleCity={handleCity}
-        handleLocation={handleLocation}
-        handleOutletLocation={handleOutletLocation}
         allBusinessCategories={allBusinessCategories}
         allProvinces={allProvinces}
         allCities={allCities}
         allLocations={allLocations}
-        updateBusiness={updateBusiness}
+        formikBusiness={formikBusiness}
+        validationBusiness={validationBusiness}
+        handleProvince={handleProvince}
+        handleCity={handleCity}
       />
 
       <div className="text-center mb-10 mb-lg-20">

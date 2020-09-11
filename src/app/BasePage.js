@@ -3,6 +3,8 @@ import { Redirect, Switch, Route } from "react-router-dom";
 import { LayoutSplashScreen, ContentRoute } from "../_metronic/layout";
 
 import { DashboardPage } from "./pages/DashboardPage";
+import { ReportPage } from "./pages/Report/ReportPage";
+
 import { StaffPage } from "./pages/Staff/StaffPage";
 import { AddStaffPage } from "./pages/Staff/AddStaffPage";
 import { DetailStaffPage } from "./pages/Staff/DetailStaffPage";
@@ -23,16 +25,15 @@ export default function BasePage() {
           <Redirect exact from="/" to="/dashboard" />
         }
         <ContentRoute path="/dashboard" component={DashboardPage} />
+        <ContentRoute path="/report" component={ReportPage} />
+        <ContentRoute exact path="/staff" component={StaffPage} />
+        <ContentRoute path="/outlet" component={OutletPage} />
+        <ContentRoute path="/account" component={AccountPage} />
+        <ContentRoute exact path="/product" component={ProductPage} />
 
-        <Route exact path="/staff" component={StaffPage} />
         <Route path="/staff/add-staff" component={AddStaffPage} />
         <Route path="/staff/:staffId" component={DetailStaffPage} />
 
-        <Route exact path="/outlet" component={OutletPage} />
-
-        <Route exact path="/account" component={AccountPage} />
-
-        <Route exact path="/product" component={ProductPage} />
         <Route path="/product/add-product" component={AddProductPage} />
         <Route
           path="/product/add-product-modifier"

@@ -10,8 +10,7 @@ import {
   Form,
   Dropdown,
   InputGroup,
-  ListGroup,
-  FormControl
+  ListGroup
 } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 
@@ -495,7 +494,7 @@ export const OutletTab = ({
                       <Search />
                     </InputGroup.Text>
                   </InputGroup.Prepend>
-                  <FormControl placeholder="Search..." />
+                  <Form.Control placeholder="Search..." />
                 </InputGroup>
               </Col>
               <Col>

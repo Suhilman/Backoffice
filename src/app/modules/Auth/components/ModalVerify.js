@@ -8,7 +8,7 @@ const ModalVerify = ({
   phonenumber,
   handleVerifyModal,
   code,
-  verifyAccount,
+  checkCode,
   loading,
   second,
   handleResendCode,
@@ -59,7 +59,7 @@ const ModalVerify = ({
         <Button
           className="px-9 py-4 mx-2"
           variant="primary"
-          onClick={verifyAccount}
+          onClick={checkCode}
         >
           Verify
           {loading && <span className="ml-3 spinner spinner-white"></span>}

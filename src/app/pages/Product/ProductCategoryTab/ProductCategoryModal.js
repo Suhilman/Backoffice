@@ -8,7 +8,8 @@ const ProductCategoryModal = ({
   loading,
   alert,
   title,
-  formikCategory
+  formikCategory,
+  inputRef
 }) => {
   return (
     <Modal show={state} onHide={closeModal}>
@@ -26,6 +27,8 @@ const ProductCategoryModal = ({
               type="text"
               placeholder="Ex. : Food"
               {...formikCategory.getFieldProps("name")}
+              ref={inputRef}
+              required
             />
           </Form.Group>
         </Modal.Body>

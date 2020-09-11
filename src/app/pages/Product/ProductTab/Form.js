@@ -6,7 +6,7 @@ import { useDropzone } from "react-dropzone";
 import { Row, Col, Button, Form, Alert, Spinner } from "react-bootstrap";
 import { Paper } from "@material-ui/core";
 
-import { useStyles } from "../ProductPage";
+import "../../style.css";
 
 const FormTemplate = ({
   title,
@@ -23,8 +23,6 @@ const FormTemplate = ({
   formikProduct,
   validationProduct
 }) => {
-  const classes = useStyles();
-
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
     maxSize: 2 * 1000 * 1000,
@@ -36,11 +34,11 @@ const FormTemplate = ({
   return (
     <Paper elevation={2} style={{ padding: "1rem" }}>
       <Form onSubmit={formikProduct.handleSubmit}>
-        <div className={classes.header}>
-          <div className={classes.headerStart}>
+        <div className="headerPage">
+          <div className="headerStart">
             <h3>{title}</h3>
           </div>
-          <div className={classes.headerEnd}>
+          <div className="headerEnd">
             <Link to="/product">
               <Button variant="outline-secondary">Cancel</Button>
             </Link>
@@ -254,7 +252,7 @@ const FormTemplate = ({
               {alertPhoto ? <Alert variant="danger">{alertPhoto}</Alert> : ""}
               <div
                 {...getRootProps({
-                  className: `${classes.boxDashed} dropzone`
+                  className: "boxDashed dropzone"
                 })}
               >
                 <input {...getInputProps()} />
@@ -288,7 +286,7 @@ const FormTemplate = ({
                   return (
                     <Col
                       key={item.id}
-                      className={classes.box}
+                      className="box"
                       style={{ marginRight: "1rem" }}
                     >
                       <Row>

@@ -1,8 +1,8 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
-import React, {useMemo, useEffect} from "react";
+import React, { useMemo, useEffect } from "react";
 import objectPath from "object-path";
 import ApexCharts from "apexcharts";
-import {useHtmlClassService} from "../../../layout";
+import { useHtmlClassService } from "../../../layout";
 
 export function StatsWidget11({ className }) {
   const uiService = useHtmlClassService();
@@ -56,10 +56,10 @@ export function StatsWidget11({ className }) {
               href="#"
               className="text-dark-75 text-hover-primary font-weight-bolder font-size-h5"
             >
-              Weekly Sales
+              Daily Sales
             </a>
             <span className="text-muted font-weight-bold mt-2">
-              Your Weekly Sales Chart
+              Your Daily Sales Chart
             </span>
           </div>
           <span className="symbol symbol-light-success symbol-45">

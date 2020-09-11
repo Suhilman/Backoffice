@@ -1,9 +1,11 @@
 import React from "react";
 import axios from "axios";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
+import { Button, Row, Col, Form, Alert, Spinner } from "react-bootstrap";
 import {
-  CssBaseline,
-  Button,
   IconButton,
   Paper,
   FormGroup,
@@ -12,149 +14,132 @@ import {
   Switch
 } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
-import { makeStyles } from "@material-ui/styles";
-import { Row, Col, Form } from "react-bootstrap";
 
-const useStyles = makeStyles({
-  root: {
-    "& .MuiTextField-root": {
-      margin: "1rem",
-      width: "25ch"
-    }
-  },
-  header: {
-    padding: "1rem",
-    display: "flex",
-    alignItems: "stretch",
-    justifyContent: "space-between",
-    position: "relative",
-    width: "100%",
-    borderBottom: "1px solid #ebedf2"
-  },
-  headerStart: {
-    alignContent: "flex-start",
-    padding: "1rem"
-  },
-  headerEnd: {
-    alignContent: "flex-end"
-  },
-  paperForm: {
-    padding: "1rem"
-  },
-  paperHeader: {
-    padding: "1rem",
-    borderBottom: "1px solid #ebedf2"
-  },
-  margin: {
-    margin: "1rem"
-  },
-  title: {
-    fontSize: "1rem",
-    fontWeigth: "400"
-  }
-});
+import "../style.css";
 
-export const DetailStaffPage = props => {
-  const classes = useStyles();
-  const history = useHistory();
-  const { staffId } = props.match.params;
+export const DetailStaffPage = ({ match, location }) => {
+  const { staffId } = match.params;
+  const { allOutlets, allRoles, filterPrivileges } = location.state;
 
-  const API_URL = process.env.REACT_APP_API_URL;
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
-  const [name, setName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [phonenumber, setPhonenumber] = React.useState("");
-  const [image, setImage] = React.useState("");
-  const [outletId, setOutletId] = React.useState("");
-  const [roleId, setRoleId] = React.useState("");
-  const [type, setType] = React.useState("");
-  const [location, setLocation] = React.useState("");
-  const [filterPrivileges, setFilterPrivileges] = React.useState([]);
-  const [allTypes, setAllTypes] = React.useState([]);
-  const [allRoles, setAllRoles] = React.useState([]);
-  const [allOutlets, setAllOutlets] = React.useState([]);
-  const [staff, setStaff] = React.useState("");
-  const [preview, setPreview] = React.useState("");
   const [statePage, setStatePage] = React.useState("show");
-  const imageFile = React.useRef();
+  const [preview, setPreview] = React.useState("");
 
-  const cancelAxios = axios.CancelToken.source();
+  const [image, setImage] = React.useState("");
+  const [staff, setStaff] = React.useState({
+    outlet_id: "",
+    type: "",
+    role_id: "",
+    name: "",
+    email: "",
+    phone_number: "",
+    location_name: ""
+  });
+
+  const allTypes = ["Staff", "Manager", "Kasir", "Waiter"];
+
+  const StaffSchema = Yup.object().shape({
+    outlet_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose an outlet."),
+    type: Yup.string()
+      .min(3, "Minimum 3 characters.")
+      .max(50, "Maximum 50 characters.")
+      .required("Please choose a type."),
+    role_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose a role."),
+    name: Yup.string()
+      .min(3, "Minimum 3 characters.")
+      .max(50, "Maximum 50 characters.")
+      .required("Please input a product name."),
+    email: Yup.string()
+      .email()
+      .required("Please input an email."),
+    phone_number: Yup.number()
+      .integer()
+      .min(1)
+  });
+
+  const formikStaff = useFormik({
+    enableReinitialize: true,
+    initialValues: staff,
+    validationSchema: StaffSchema,
+    onSubmit: async (values) => {
+      const API_URL = process.env.REACT_APP_API_URL;
+
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("email", values.email);
+      formData.append("role_id", values.role_id);
+      formData.append("type", values.type);
+      formData.append("profile_picture", image);
+      formData.append("phone_number", values.phone_number);
+      formData.append("outlet_id", values.outlet_id);
+
+      try {
+        enableLoading();
+        await axios.put(`${API_URL}/api/v1/staff/${staffId}`, formData);
+        disableLoading();
+        setAlert("");
+        setStatePage("show");
+      } catch (err) {
+        setAlert(err.response.message);
+        disableLoading();
+      }
+    }
+  });
+
+  const validationStaff = (fieldname) => {
+    if (formikStaff.touched[fieldname] && formikStaff.errors[fieldname]) {
+      return "is-invalid";
+    }
+
+    if (formikStaff.touched[fieldname] && !formikStaff.errors[fieldname]) {
+      return "is-valid";
+    }
+
+    return "";
+  };
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
-  const getAllData = async () => {
-    enableLoading();
-
+  const getStaff = async (id) => {
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
-      const privileges = await axios.get(`${API_URL}/api/v1/privilege`, {
-        cancelToken: cancelAxios.token
+      const { data } = await axios.get(`${API_URL}/api/v1/staff/${id}`);
+
+      setStaff({
+        outlet_id: data.data.outlet_id,
+        name: data.data.name,
+        email: data.data.User.email,
+        phone_number: data.data.phone_number,
+        type: data.data.User.type,
+        role_id: data.data.User.role_id,
+        location_name: data.data.Outlet.Location.name
       });
 
-      const filterPrivileges = privileges.data.data.filter(
-        (item, index, self) => {
-          return (
-            self.findIndex(selfIndex => selfIndex.name === item.name) === index
-          );
-        }
+      setImage(
+        `${
+          data.data.profile_picture
+            ? `${API_URL}/${data.data.profile_picture}`
+            : ""
+        }`
       );
-
-      setFilterPrivileges(filterPrivileges);
     } catch (err) {
-      setFilterPrivileges([]);
-    }
-
-    try {
-      const outlets = await axios.get(`${API_URL}/api/v1/outlet`);
-      setAllOutlets(outlets.data.data);
-    } catch (err) {
-      setAllOutlets([]);
-    }
-
-    try {
-      const staff = await axios.get(`${API_URL}/api/v1/staff/${staffId}`, {
-        cancelToken: cancelAxios.token
-      });
-
-      const staffData = staff.data.data;
-
-      setName(staffData.name);
-      setEmail(staffData.User.email);
-      setImage(`${API_URL}/${staffData.profile_picture}`);
-      setPhonenumber(staffData.phone_number || "");
-      setType(staffData.User.type || "");
-      setRoleId(staffData.User.role_id || "");
-      setOutletId(staffData.outlet_id);
-      setLocation(staffData.Outlet.Location.name || "");
-
-      getRoleByOutlet(staffData.outlet_id);
-    } catch (err) {
-      setStaff("");
-    }
-
-    const types = ["Staff", "Manager", "Kasir", "Waiter"];
-    setAllTypes(types);
-
-    disableLoading();
-  };
-
-  const getRoleByOutlet = async id => {
-    try {
-      const roles = await axios.get(`${API_URL}/api/v1/role?outlet_id=${id}`);
-
-      setAllRoles(roles.data.data);
-    } catch (err) {
-      setAllRoles([]);
+      console.log(err);
     }
   };
 
   React.useEffect(() => {
-    getAllData();
-    return () => cancelAxios.cancel();
-  }, []);
+    getStaff(staffId);
+  }, [staffId]);
 
-  const handleImage = e => {
+  const handleImage = (e) => {
     let preview;
     let img;
 
@@ -169,49 +154,6 @@ export const DetailStaffPage = props => {
     setPreview(preview);
   };
 
-  const sendData = async e => {
-    e.preventDefault();
-
-    const allData = new FormData();
-    allData.append("name", name);
-    allData.append("email", email);
-    allData.append("role_id", roleId);
-    allData.append("type", type);
-    allData.append("profile_picture", image);
-    allData.append("phone_number", phonenumber);
-    allData.append("outlet_id", outletId);
-
-    let check = false;
-
-    for (const [key, value] of allData.entries()) {
-      if (!value) {
-        setAlert(`Please input ${key}`);
-        check = false;
-      } else {
-        setAlert("");
-        check = true;
-      }
-    }
-
-    if (!alert && check) {
-      try {
-        enableLoading();
-
-        const staff = await axios.put(
-          `${API_URL}/api/v1/staff/${staffId}`,
-          allData
-        );
-
-        disableLoading();
-        setAlert("");
-        setStatePage("show");
-      } catch (err) {
-        setAlert(err.response.message);
-        disableLoading();
-      }
-    }
-  };
-
   const handleStatePage = () => {
     if (statePage === "show") {
       setStatePage("edit");
@@ -220,254 +162,318 @@ export const DetailStaffPage = props => {
     }
   };
 
-  const handleOutlet = e => {
-    setOutletId(e.target.value);
-    getRoleByOutlet(e.target.value);
-  };
-
   return (
     <>
-      <CssBaseline />
+      <Row>
+        <Col>
+          <Paper elevation={2} style={{ padding: "1rem" }}>
+            {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
-      <div className={classes.header}>
-        <div className={classes.headerStart}>
-          <h3>Staff Details</h3>
-        </div>
-        <div className={classes.headerEnd}>
-          <Link to="/staff">
-            <Button variant="contained">Back to staff list</Button>
-          </Link>
-        </div>
-      </div>
+            <Form onSubmit={formikStaff.handleSubmit}>
+              <div className="headerPage">
+                <div className="headerStart">
+                  <h3>Staff Information</h3>
+                </div>
 
-      {alert ? (
-        <div className="mb-10 alert alert-custom alert-light-danger alert-dismissible">
-          <div className="alert-text font-weight-bold">{alert}</div>
-        </div>
-      ) : (
-        ""
-      )}
-
-      <div className="row">
-        <div className="col-md-12">
-          <Paper elevation={1} className={classes.paperForm}>
-            <div className={classes.header}>
-              <div className={classes.headerStart}>
-                <h3>Staff Information</h3>
-              </div>
-
-              <div className={classes.headerEnd}>
-                <Button
-                  variant="contained"
-                  color={statePage === "show" ? "primary" : "secondary"}
-                  style={{ color: "white" }}
-                  onClick={handleStatePage}
-                >
-                  {statePage === "show" ? "Edit Staff Data" : "Cancel"}
-                </Button>
-
-                {statePage === "show" ? (
-                  ""
-                ) : (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    style={{ marginLeft: "1rem", color: "white" }}
-                    onClick={sendData}
-                  >
-                    Save
-                  </Button>
-                )}
-              </div>
-            </div>
-
-            <Row style={{ padding: "1rem" }}>
-              <Col md={3}>
-                <Paper
-                  elevation={2}
-                  style={{
-                    width: "120px",
-                    height: "120px",
-                    overflow: "hidden",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    backgroundImage: `url(${preview || image})`
-                  }}
-                >
-                  {statePage === "edit" ? (
-                    <>
-                      <input
-                        accept="image/jpeg,image/png"
-                        style={{ display: "none" }}
-                        id="icon-button-file"
-                        type="file"
-                        onChange={handleImage}
-                      />
-                      <label htmlFor="icon-button-file">
-                        <IconButton
-                          color="secondary"
-                          aria-label="upload picture"
-                          component="span"
-                          style={{
-                            position: "absolute",
-                            left: "-5px",
-                            top: "-20px"
-                          }}
-                        >
-                          <Edit />
-                        </IconButton>
-                      </label>
-                    </>
+                <div className="headerEnd">
+                  {statePage === "show" ? (
+                    <Link to="/staff">
+                      <Button
+                        variant="secondary"
+                        style={{ marginRight: "1rem" }}
+                      >
+                        Back to Staff List
+                      </Button>
+                    </Link>
                   ) : (
                     ""
                   )}
-                </Paper>
 
-                <p className="text-muted mt-1">
-                  Allowed file types: .png, .jpg, .jpeg
-                </p>
-              </Col>
-
-              <Col md={3}>
-                <div className={classes.title}>Staff Name</div>
-                {statePage === "show" ? (
-                  <h5 className="mb-5">{name}</h5>
-                ) : (
-                  <Form.Control
-                    type="text"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                  />
-                )}
-
-                <div className={classes.title}>Staff Email</div>
-                {statePage === "show" ? (
-                  <h5>{email}</h5>
-                ) : (
-                  <Form.Control
-                    type="email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                  />
-                )}
-              </Col>
-
-              <Col md={3}>
-                <div className={classes.title}>Staff Role</div>
-                {statePage === "show" ? (
-                  allRoles.map(item => {
-                    if (item.id === parseInt(roleId)) {
-                      return (
-                        <h5 key={item.id} className="mb-5">
-                          {item.name}
-                        </h5>
-                      );
-                    }
-                  })
-                ) : (
-                  <Form.Control
-                    as="select"
-                    value={roleId}
-                    onChange={e => setRoleId(e.target.value)}
+                  <Button
+                    variant={statePage === "show" ? "primary" : "secondary"}
+                    onClick={handleStatePage}
                   >
-                    {allRoles.map(item => {
-                      return (
-                        <option key={item.id} value={item.id}>
-                          {item.name}
-                        </option>
-                      );
-                    })}
-                  </Form.Control>
-                )}
+                    {statePage === "show" ? "Edit Staff Data" : "Cancel"}
+                  </Button>
 
-                <div className={classes.title}>Staff Type</div>
-                {statePage === "show" ? (
-                  <h5>{type}</h5>
-                ) : (
-                  <Form.Control
-                    as="select"
-                    value={type}
-                    onChange={e => setType(e.target.value)}
-                  >
-                    {allTypes.map((item, index) => {
-                      return (
-                        <option key={index} value={item}>
-                          {item}
-                        </option>
-                      );
-                    })}
-                  </Form.Control>
-                )}
-              </Col>
-
-              <Col md={3}>
-                <div className={classes.title}>Staff Location</div>
-                {statePage === "show" ? (
-                  <h5 className="mb-5">{location}</h5>
-                ) : (
-                  <Form.Control
-                    as="select"
-                    defaultValue={outletId}
-                    onChange={handleOutlet}
-                  >
-                    {allOutlets.map(item => {
-                      return (
-                        <option key={item.id} value={item.id}>
-                          {item.Location.name}
-                        </option>
-                      );
-                    })}
-                  </Form.Control>
-                )}
-
-                <div className={classes.title}>Staff Phone Number</div>
-                {statePage === "show" ? (
-                  <h5>{phonenumber}</h5>
-                ) : (
-                  <Form.Control
-                    type="number"
-                    value={phonenumber}
-                    onChange={e => setPhonenumber(e.target.value)}
-                  />
-                )}
-              </Col>
-            </Row>
-
-            <Row>
-              <Col>
-                <div className={classes.header}>
-                  <div className={classes.headerStart}>
-                    <h3>Access List</h3>
-                  </div>
+                  {statePage === "show" ? (
+                    ""
+                  ) : (
+                    <Button
+                      variant="primary"
+                      style={{ marginLeft: "1rem" }}
+                      type="submit"
+                    >
+                      {loading ? (
+                        <Spinner animation="border" variant="light" size="sm" />
+                      ) : (
+                        "Save"
+                      )}
+                    </Button>
+                  )}
                 </div>
+              </div>
 
-                <FormControl component="fieldset">
-                  <FormGroup row>
-                    {filterPrivileges.map(privilege => {
-                      return (
-                        <FormControlLabel
-                          key={privilege.id}
-                          control={
-                            <Switch
-                              key={privilege.id}
-                              value={privilege.name}
-                              disabled
-                              color="primary"
-                            />
-                          }
-                          label={privilege.name}
-                          labelPlacement="start"
+              <Row style={{ padding: "1rem" }}>
+                <Col md={3}>
+                  <Paper
+                    elevation={2}
+                    style={{
+                      width: "120px",
+                      height: "120px",
+                      overflow: "hidden",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundImage: `url(${preview || image})`
+                    }}
+                  >
+                    {statePage === "edit" ? (
+                      <>
+                        <input
+                          accept="image/jpeg,image/png"
+                          style={{ display: "none" }}
+                          id="icon-button-file"
+                          type="file"
+                          onChange={handleImage}
                         />
-                      );
-                    })}
-                  </FormGroup>
-                </FormControl>
-              </Col>
-            </Row>
-          </Paper>
-        </div>
+                        <label htmlFor="icon-button-file">
+                          <IconButton
+                            color="secondary"
+                            aria-label="upload picture"
+                            component="span"
+                            style={{
+                              position: "absolute",
+                              left: "-5px",
+                              top: "-20px"
+                            }}
+                          >
+                            <Edit />
+                          </IconButton>
+                        </label>
+                      </>
+                    ) : (
+                      ""
+                    )}
+                  </Paper>
 
-        {/*{allAccessLists.map(access => {
+                  <p className="text-muted mt-1">
+                    Allowed file types: .png, .jpg, .jpeg
+                  </p>
+                </Col>
+
+                <Col md={3}>
+                  <div className="title">Staff Name</div>
+                  {statePage === "show" ? (
+                    <h5 className="mb-5">{formikStaff.values.name}</h5>
+                  ) : (
+                    <>
+                      <Form.Control
+                        type="text"
+                        name="name"
+                        {...formikStaff.getFieldProps("name")}
+                        className={validationStaff("name")}
+                        required
+                      />
+                      {formikStaff.touched.name && formikStaff.errors.name ? (
+                        <div className="fv-plugins-message-container">
+                          <div className="fv-help-block">
+                            {formikStaff.errors.name}
+                          </div>
+                        </div>
+                      ) : null}
+                    </>
+                  )}
+
+                  <div className="title">Staff Email</div>
+                  {statePage === "show" ? (
+                    <h5>{formikStaff.values.email}</h5>
+                  ) : (
+                    <>
+                      <Form.Control
+                        type="email"
+                        name="email"
+                        {...formikStaff.getFieldProps("email")}
+                        className={validationStaff("email")}
+                        required
+                      />
+                      {formikStaff.touched.email && formikStaff.errors.email ? (
+                        <div className="fv-plugins-message-container">
+                          <div className="fv-help-block">
+                            {formikStaff.errors.email}
+                          </div>
+                        </div>
+                      ) : null}
+                    </>
+                  )}
+                </Col>
+
+                <Col md={3}>
+                  <div className="title">Staff Role</div>
+                  {statePage === "show" ? (
+                    allRoles.map((item) => {
+                      if (item.id === parseInt(formikStaff.values.role_id)) {
+                        return (
+                          <h5 key={item.id} className="mb-5">
+                            {item.name}
+                          </h5>
+                        );
+                      }
+
+                      return "";
+                    })
+                  ) : (
+                    <>
+                      <Form.Control
+                        as="select"
+                        name="role_id"
+                        {...formikStaff.getFieldProps("role_id")}
+                        className={validationStaff("email")}
+                        required
+                      >
+                        {allRoles.map((item) => {
+                          return (
+                            <option key={item.id} value={item.id}>
+                              {item.name}
+                            </option>
+                          );
+                        })}
+                      </Form.Control>
+                      {formikStaff.touched.role_id &&
+                      formikStaff.errors.role_id ? (
+                        <div className="fv-plugins-message-container">
+                          <div className="fv-help-block">
+                            {formikStaff.errors.role_id}
+                          </div>
+                        </div>
+                      ) : null}
+                    </>
+                  )}
+
+                  <div className="title">Staff Type</div>
+                  {statePage === "show" ? (
+                    <h5>{formikStaff.values.type}</h5>
+                  ) : (
+                    <>
+                      <Form.Control
+                        as="select"
+                        name="type"
+                        {...formikStaff.getFieldProps("type")}
+                        className={validationStaff("type")}
+                        required
+                      >
+                        {allTypes.map((item, index) => {
+                          return (
+                            <option key={index} value={item}>
+                              {item}
+                            </option>
+                          );
+                        })}
+                      </Form.Control>
+                      {formikStaff.touched.type && formikStaff.errors.type ? (
+                        <div className="fv-plugins-message-container">
+                          <div className="fv-help-block">
+                            {formikStaff.errors.type}
+                          </div>
+                        </div>
+                      ) : null}
+                    </>
+                  )}
+                </Col>
+
+                <Col md={3}>
+                  <div className="title">Staff Location</div>
+                  {statePage === "show" ? (
+                    <h5 className="mb-5">{formikStaff.values.location_name}</h5>
+                  ) : (
+                    <>
+                      <Form.Control
+                        as="select"
+                        name="outlet_id"
+                        {...formikStaff.getFieldProps("outlet_id")}
+                        className={validationStaff("outlet_id")}
+                        required
+                      >
+                        {allOutlets.map((item) => {
+                          return (
+                            <option key={item.id} value={item.id}>
+                              {item.Location.name}
+                            </option>
+                          );
+                        })}
+                      </Form.Control>
+                      {formikStaff.touched.outlet_id &&
+                      formikStaff.errors.outlet_id ? (
+                        <div className="fv-plugins-message-container">
+                          <div className="fv-help-block">
+                            {formikStaff.errors.outlet_id}
+                          </div>
+                        </div>
+                      ) : null}
+                    </>
+                  )}
+
+                  <div className="title">Staff Phone Number</div>
+                  {statePage === "show" ? (
+                    <h5>{formikStaff.values.phone_number}</h5>
+                  ) : (
+                    <>
+                      <Form.Control
+                        type="number"
+                        name="phone_number"
+                        {...formikStaff.getFieldProps("phone_number")}
+                        className={validationStaff("phone_number")}
+                        required
+                      />
+                      {formikStaff.touched.phone_number &&
+                      formikStaff.errors.phone_number ? (
+                        <div className="fv-plugins-message-container">
+                          <div className="fv-help-block">
+                            {formikStaff.errors.phone_number}
+                          </div>
+                        </div>
+                      ) : null}
+                    </>
+                  )}
+                </Col>
+              </Row>
+
+              <Row>
+                <Col>
+                  <div className="headerPage">
+                    <div className="headerStart">
+                      <h3>Access List</h3>
+                    </div>
+                  </div>
+
+                  <FormControl component="fieldset">
+                    <FormGroup row>
+                      {filterPrivileges.map((privilege) => {
+                        return (
+                          <FormControlLabel
+                            key={privilege.id}
+                            control={
+                              <Switch
+                                key={privilege.id}
+                                value={privilege.name}
+                                disabled
+                                color="primary"
+                              />
+                            }
+                            label={privilege.name}
+                            labelPlacement="start"
+                          />
+                        );
+                      })}
+                    </FormGroup>
+                  </FormControl>
+                </Col>
+              </Row>
+            </Form>
+          </Paper>
+        </Col>
+      </Row>
+
+      {/*{allAccessLists.map(access => {
           return (
             <div key={access.id} className="col-md-6 mt-5">
               <Paper className={classes.paperForm} elevation={1}>
@@ -503,7 +509,6 @@ export const DetailStaffPage = props => {
             </div>
           );
         })}*/}
-      </div>
     </>
   );
 };

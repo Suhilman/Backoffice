@@ -6,50 +6,46 @@ import {
   Row,
   Col,
   Button,
-  Modal,
   Form,
-  Spinner,
-  Alert,
   Dropdown,
   InputGroup,
   ListGroup
 } from "react-bootstrap";
-import FormControlB from "react-bootstrap/FormControl";
 import DataTable from "react-data-table-component";
 import {
   Switch,
   FormGroup,
   FormControl,
-  FormControlLabel
+  FormControlLabel,
+  Paper
 } from "@material-ui/core";
 import { Search, MoreHoriz } from "@material-ui/icons";
 
-import { useStyles } from "../ProductPage";
-
 import ConfirmModal from "../../../components/ConfirmModal";
 
+import "../../style.css";
+
 const ProductTab = ({ refresh, handleRefresh }) => {
-  const classes = useStyles();
-  const API_URL = process.env.REACT_APP_API_URL;
-
-  const [allProducts, setAllProducts] = React.useState([]);
-
-  const [productId, setProductId] = React.useState("");
-  const [status, setStatus] = React.useState("");
-
   const [loading, setLoading] = React.useState(false);
   const [showConfirm, setShowConfirm] = React.useState(false);
+
+  const [allProducts, setAllProducts] = React.useState([]);
+  const [product, setProduct] = React.useState({
+    id: "",
+    name: ""
+  });
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
-  const showConfirmModal = id => {
-    setProductId(id);
+  const showConfirmModal = (data) => {
+    setProduct({ id: data.id, name: data.name });
     setShowConfirm(true);
   };
   const closeConfirmModal = () => setShowConfirm(false);
 
   const getProduct = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
       const products = await axios.get(`${API_URL}/api/v1/product`);
       setAllProducts(products.data.data);
@@ -62,10 +58,10 @@ const ProductTab = ({ refresh, handleRefresh }) => {
     getProduct();
   }, [refresh]);
 
-  const handleChangeStatus = async id => {
+  const handleChangeStatus = async (id) => {
     let currentStatus;
 
-    const edited = allProducts.map(item => {
+    const edited = allProducts.map((item) => {
       if (item.id === id) {
         if (item.status === "active") {
           item.status = "inactive";
@@ -79,6 +75,7 @@ const ProductTab = ({ refresh, handleRefresh }) => {
       return item;
     });
 
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
       await axios.patch(`${API_URL}/api/v1/product/status/${id}`, {
         status: currentStatus
@@ -90,7 +87,7 @@ const ProductTab = ({ refresh, handleRefresh }) => {
     setAllProducts(edited);
   };
 
-  const productData = data => {
+  const productData = (data) => {
     if (!data.length) {
       return;
     }
@@ -138,7 +135,7 @@ const ProductTab = ({ refresh, handleRefresh }) => {
     },
     {
       name: "Status",
-      cell: rows => {
+      cell: (rows) => {
         return (
           <FormControl component="fieldset">
             <FormGroup aria-label="position" row>
@@ -160,7 +157,7 @@ const ProductTab = ({ refresh, handleRefresh }) => {
     },
     {
       name: "Actions",
-      cell: rows => {
+      cell: (rows) => {
         return (
           <Dropdown>
             <Dropdown.Toggle variant="secondary">
@@ -171,10 +168,7 @@ const ProductTab = ({ refresh, handleRefresh }) => {
               <Link to={`/product/${rows.id}`}>
                 <Dropdown.Item as="button">Edit</Dropdown.Item>
               </Link>
-              <Dropdown.Item
-                as="button"
-                onClick={() => showConfirmModal(rows.id)}
-              >
+              <Dropdown.Item as="button" onClick={() => showConfirmModal(rows)}>
                 Delete
               </Dropdown.Item>
             </Dropdown.Menu>
@@ -206,7 +200,7 @@ const ProductTab = ({ refresh, handleRefresh }) => {
 
     return (
       <>
-        {data.variants.map(item => {
+        {data.variants.map((item) => {
           return (
             <ListGroup
               key={item.id}
@@ -232,10 +226,10 @@ const ProductTab = ({ refresh, handleRefresh }) => {
   };
 
   const handleDelete = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
       enableLoading();
-      await axios.delete(`${API_URL}/api/v1/product/${productId}`);
-      setAllProducts(allProducts.filter(item => item.id !== productId));
+      await axios.delete(`${API_URL}/api/v1/product/${product.id}`);
       handleRefresh();
       disableLoading();
       closeConfirmModal();
@@ -247,7 +241,7 @@ const ProductTab = ({ refresh, handleRefresh }) => {
   return (
     <Row>
       <ConfirmModal
-        title="Delete Product"
+        title={`Delete Product - ${product.name}`}
         body="Are you sure want to delete?"
         buttonColor="danger"
         handleClick={handleDelete}
@@ -257,77 +251,94 @@ const ProductTab = ({ refresh, handleRefresh }) => {
       />
 
       <Col md={12}>
-        <div className={classes.header}>
-          <div className={classes.headerStart}>
-            <h3>Product List</h3>
-          </div>
-          <div className={classes.headerEnd}>
-            <Button variant="outline-secondary">Import</Button>
-            <Button
-              variant="outline-secondary"
-              style={{ marginLeft: "0.5rem" }}
-            >
-              Export
-            </Button>
-            <Link to="/product/add-product">
-              <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
-                Add New Product
+        <Paper elevation={2} style={{ padding: "1rem" }}>
+          <div className="headerPage">
+            <div className="headerStart">
+              <h3>Product List</h3>
+            </div>
+            <div className="headerEnd">
+              <Button variant="outline-secondary">Import</Button>
+              <Button
+                variant="outline-secondary"
+                style={{ marginLeft: "0.5rem" }}
+              >
+                Export
               </Button>
-            </Link>
+              <Link to="/product/add-product">
+                <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
+                  Add New Product
+                </Button>
+              </Link>
+            </div>
           </div>
-        </div>
 
-        <div className={`${classes.filter} ${classes.divider}`}>
-          <InputGroup className="pb-3">
-            <InputGroup.Prepend>
-              <InputGroup.Text>
-                <Search />
-              </InputGroup.Text>
-            </InputGroup.Prepend>
-            <FormControlB placeholder="Search..." />
-          </InputGroup>
-
-          <Form className="pt-3">
-            <Form.Row>
+          <div className="filterSection lineBottom">
+            <Row>
               <Col>
-                <Form.Group as={Row}>
-                  <Col>
-                    <Form.Control as="select" defaultValue={"Default"}>
-                      <option value="Default" disabled hidden>
-                        Category
-                      </option>
-                      <option>Food</option>
-                      <option>Beverages</option>
-                    </Form.Control>
-                  </Col>
-                </Form.Group>
+                <InputGroup>
+                  <InputGroup.Prepend>
+                    <InputGroup.Text style={{ background: "transparent" }}>
+                      <Search />
+                    </InputGroup.Text>
+                  </InputGroup.Prepend>
+                  <Form.Control placeholder="Search..." />
+                </InputGroup>
               </Col>
-              <Col>
-                <Form.Group as={Row}>
-                  <Col>
-                    <Form.Control as="select" defaultValue={"Default"}>
-                      <option value="Default" disabled hidden>
-                        Status
-                      </option>
-                      <option>Active</option>
-                      <option>Inactive</option>
-                    </Form.Control>
-                  </Col>
-                </Form.Group>
-              </Col>
-            </Form.Row>
-          </Form>
-        </div>
 
-        <DataTable
-          noHeader
-          pagination
-          columns={columns}
-          data={productData(allProducts)}
-          expandableRows
-          expandableRowsComponent={<ExpandableComponent />}
-          style={{ minHeight: "100%" }}
-        />
+              <Col>
+                <Row>
+                  <Col>
+                    <Form.Group as={Row}>
+                      <Form.Label
+                        style={{ alignSelf: "center", marginBottom: "0" }}
+                      >
+                        Category:
+                      </Form.Label>
+                      <Col>
+                        <Form.Control as="select" defaultValue={"all"}>
+                          <option value="all" disabled hidden>
+                            All
+                          </option>
+                          <option>Food</option>
+                          <option>Beverages</option>
+                        </Form.Control>
+                      </Col>
+                    </Form.Group>
+                  </Col>
+
+                  <Col>
+                    <Form.Group as={Row}>
+                      <Form.Label
+                        style={{ alignSelf: "center", marginBottom: "0" }}
+                      >
+                        Status:
+                      </Form.Label>
+                      <Col>
+                        <Form.Control as="select" defaultValue={"all"}>
+                          <option value="all" disabled hidden>
+                            All
+                          </option>
+                          <option>Active</option>
+                          <option>Inactive</option>
+                        </Form.Control>
+                      </Col>
+                    </Form.Group>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </div>
+
+          <DataTable
+            noHeader
+            pagination
+            columns={columns}
+            data={productData(allProducts)}
+            expandableRows
+            expandableRowsComponent={<ExpandableComponent />}
+            style={{ minHeight: "100%" }}
+          />
+        </Paper>
       </Col>
     </Row>
   );

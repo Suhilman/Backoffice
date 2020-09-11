@@ -1,43 +1,33 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import {
-  Row,
-  Col,
-  Button,
-  Dropdown,
-  InputGroup,
-  FormControl,
-  Alert
-} from "react-bootstrap";
+import { Row, Col, Button, Dropdown, InputGroup, Form } from "react-bootstrap";
+import { Paper } from "@material-ui/core";
+
 import DataTable from "react-data-table-component";
 import { Search, MoreHoriz } from "@material-ui/icons";
 
-import { useStyles } from "../ProductPage";
-
 import ConfirmModal from "../../../components/ConfirmModal";
+
+import "../../style.css";
 
 const ProductModifierTab = ({
   allOutlets,
   allProductModifiers,
-  refresh,
   handleRefresh
 }) => {
-  const classes = useStyles();
-
-  const [categoryId, setCategoryId] = React.useState(false);
-  const [outletId, setOutletId] = React.useState("");
-
   const [loading, setLoading] = React.useState(false);
-  const [alert, setAlert] = React.useState("");
-
   const [showConfirm, setShowConfirm] = React.useState(false);
+  const [modifier, setModifier] = React.useState({
+    id: "",
+    group: ""
+  });
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
-  const showConfirmModal = (id) => {
-    setCategoryId(id);
+  const showConfirmModal = (data) => {
+    setModifier({ id: data.id, group: data.group });
     setShowConfirm(true);
   };
   const closeConfirmModal = () => setShowConfirm(false);
@@ -90,10 +80,7 @@ const ProductModifierTab = ({
               >
                 <Dropdown.Item as="button">Edit</Dropdown.Item>
               </Link>
-              <Dropdown.Item
-                as="button"
-                onClick={() => showConfirmModal(rows.id)}
-              >
+              <Dropdown.Item as="button" onClick={() => showConfirmModal(rows)}>
                 Delete
               </Dropdown.Item>
             </Dropdown.Menu>
@@ -105,7 +92,6 @@ const ProductModifierTab = ({
 
   const handleDelete = async () => {
     enableLoading();
-    console.log("deleted");
     handleRefresh();
     disableLoading();
     closeConfirmModal();
@@ -114,7 +100,7 @@ const ProductModifierTab = ({
   return (
     <Row>
       <ConfirmModal
-        title="Delete Product Category"
+        title={`Delete Product Modifier - ${modifier.group}`}
         body="Are you sure want to delete?"
         buttonColor="danger"
         handleClick={handleDelete}
@@ -124,42 +110,42 @@ const ProductModifierTab = ({
       />
 
       <Col md={12}>
-        {alert ? <Alert variant="danger">{alert}</Alert> : ""}
-
-        <div className={classes.header}>
-          <div className={classes.headerStart}>
-            <h3>Product Modifier List</h3>
+        <Paper elevation={2} style={{ padding: "1rem" }}>
+          <div className="headerPage">
+            <div className="headerStart">
+              <h3>Product Modifier List</h3>
+            </div>
+            <div className="headerEnd">
+              <Link
+                to={{
+                  pathname: "/product/add-product-modifier",
+                  state: { allOutlets }
+                }}
+              >
+                <Button variant="primary">Add New Product Modifier</Button>
+              </Link>
+            </div>
           </div>
-          <div className={classes.headerEnd}>
-            <Link
-              to={{
-                pathname: "/product/add-product-modifier",
-                state: { allOutlets }
-              }}
-            >
-              <Button variant="primary">Add New Product Modifier</Button>
-            </Link>
+
+          <div className="filterSection lineBottom">
+            <InputGroup className="pb-3">
+              <InputGroup.Prepend>
+                <InputGroup.Text style={{ background: "transparent" }}>
+                  <Search />
+                </InputGroup.Text>
+              </InputGroup.Prepend>
+              <Form.Control placeholder="Search..." />
+            </InputGroup>
           </div>
-        </div>
 
-        <div className={`${classes.filter} ${classes.divider}`}>
-          <InputGroup className="pb-3">
-            <InputGroup.Prepend>
-              <InputGroup.Text>
-                <Search />
-              </InputGroup.Text>
-            </InputGroup.Prepend>
-            <FormControl placeholder="Search..." />
-          </InputGroup>
-        </div>
-
-        <DataTable
-          noHeader
-          pagination
-          columns={columns}
-          data={modifierData(allProductModifiers)}
-          style={{ minHeight: "100%" }}
-        />
+          <DataTable
+            noHeader
+            pagination
+            columns={columns}
+            data={modifierData(allProductModifiers)}
+            style={{ minHeight: "100%" }}
+          />
+        </Paper>
       </Col>
     </Row>
   );

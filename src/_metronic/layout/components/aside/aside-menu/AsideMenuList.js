@@ -15,9 +15,7 @@ export function AsideMenuList({ layoutProps }) {
 
   return (
     <>
-      {/* begin::Menu Nav */}
       <ul className={`menu-nav ${layoutProps.ulClasses}`}>
-        {/*begin::1 Level*/}
         <li
           className={`menu-item ${getMenuItemActive("/dashboard", false)}`}
           aria-haspopup="true"
@@ -29,38 +27,38 @@ export function AsideMenuList({ layoutProps }) {
             <span className="menu-text">Dashboard</span>
           </NavLink>
         </li>
-        {/*end::1 Level*/}
 
-        {/* Components */}
-        {/* begin::section */}
+        <li
+          className={`menu-item ${getMenuItemActive("/report", false)}`}
+          aria-haspopup="true"
+        >
+          <NavLink className="menu-link" to="/report">
+            <span className="svg-icon menu-icon">
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Design/Layers.svg")} />
+            </span>
+            <span className="menu-text">Report</span>
+          </NavLink>
+        </li>
+
         <li className="menu-section ">
           <h4 className="menu-text">Products</h4>
-          <i className="menu-icon flaticon-more-v2"></i>
         </li>
-        {/* end:: section */}
 
-        {/* Material-UI */}
-        {/*begin::1 Level*/}
-        <li className={`menu-item menu-item-submenu`}>
-          <NavLink className="menu-link menu-toggle" to="/product">
+        <li className={`menu-item ${getMenuItemActive("/product", false)}`}>
+          <NavLink className="menu-link" to="/product">
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Shopping/Bag2.svg")} />
             </span>
             <span className="menu-text">Product</span>
           </NavLink>
         </li>
-        {/*end::1 Level*/}
 
-        {/* begin::section */}
         <li className="menu-section ">
           <h4 className="menu-text">Management Settings</h4>
-          <i className="menu-icon flaticon-more-v2"></i>
         </li>
-        {/* end:: section */}
 
-        {/*begin::1 Level*/}
-        <li className={`menu-item menu-item-submenu`}>
-          <NavLink className="menu-link menu-toggle" to="/outlet">
+        <li className={`menu-item ${getMenuItemActive("/outlet", false)}`}>
+          <NavLink className="menu-link" to="/outlet">
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Shopping/Bag2.svg")} />
             </span>
@@ -68,23 +66,21 @@ export function AsideMenuList({ layoutProps }) {
           </NavLink>
         </li>
 
-        <li className={`menu-item menu-item-submenu`}>
-          <NavLink className="menu-link menu-toggle" to="/staff">
+        <li className={`menu-item ${getMenuItemActive("/staff", false)}`}>
+          <NavLink className="menu-link" to="/staff">
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Shopping/Bag2.svg")} />
             </span>
             <span className="menu-text">Staff</span>
           </NavLink>
         </li>
-        {/*end::1 Level*/}
 
         <li className="menu-section ">
           <h4 className="menu-text">Account Settings</h4>
-          <i className="menu-icon flaticon-more-v2"></i>
         </li>
 
-        <li className={`menu-item menu-item-submenu`}>
-          <NavLink className="menu-link menu-toggle" to="/account">
+        <li className={`menu-item ${getMenuItemActive("/account", false)}`}>
+          <NavLink className="menu-link" to="/account">
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Shopping/Bag2.svg")} />
             </span>
@@ -92,8 +88,6 @@ export function AsideMenuList({ layoutProps }) {
           </NavLink>
         </li>
       </ul>
-
-      {/* end::Menu Nav */}
     </>
   );
 }

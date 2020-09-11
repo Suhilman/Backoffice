@@ -9,15 +9,12 @@ import { useDropzone } from "react-dropzone";
 import { Row, Col, Button, Form, Alert, Spinner } from "react-bootstrap";
 import { Paper } from "@material-ui/core";
 
-import { useStyles } from "../ProductPage";
-
 import ModalManageVariant from "./ModalManageVariant";
 import FormTemplate from "./Form";
 
 export const EditProductPage = ({ match }) => {
   const product_id = match.params.productId;
 
-  const classes = useStyles();
   const API_URL = process.env.REACT_APP_API_URL;
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     maxSize: 2 * 1000 * 1000,
@@ -114,7 +111,7 @@ export const EditProductPage = ({ match }) => {
     enableReinitialize: true,
     initialValues: product,
     validationSchema: ProductSchema,
-    onSubmit: async values => {
+    onSubmit: async (values) => {
       console.log(productVariant);
       const formData = new FormData();
       formData.append("outlet_id", values.outlet_id);
@@ -145,7 +142,7 @@ export const EditProductPage = ({ match }) => {
     }
   });
 
-  const validationProduct = fieldname => {
+  const validationProduct = (fieldname) => {
     if (formikProduct.touched[fieldname] && formikProduct.errors[fieldname]) {
       return "is-invalid";
     }
@@ -184,7 +181,7 @@ export const EditProductPage = ({ match }) => {
         description: productData.description || ""
       });
 
-      const productVariantData = productData.Product_Variants.map(item => {
+      const productVariantData = productData.Product_Variants.map((item) => {
         return {
           id: item.id,
           name: item.name,
@@ -271,7 +268,7 @@ export const EditProductPage = ({ match }) => {
     setShowManageVariant(false);
   };
 
-  const saveChangesVariant = e => {
+  const saveChangesVariant = (e) => {
     e.preventDefault();
 
     const form = e.currentTarget;
@@ -310,14 +307,14 @@ export const EditProductPage = ({ match }) => {
     ]);
   };
 
-  const handleRemoveVariant = index => {
+  const handleRemoveVariant = (index) => {
     const allVariants = [...productVariant];
     allVariants.splice(index, 1);
 
     setProductVariant(allVariants);
   };
 
-  const handleChangeVariant = e => {
+  const handleChangeVariant = (e) => {
     const targetName = e.target.name.split("-");
     const targetValue = e.target.value;
     const name = targetName[0];
@@ -329,7 +326,7 @@ export const EditProductPage = ({ match }) => {
     setProductVariant(allData);
   };
 
-  const handlePreviewPhoto = file => {
+  const handlePreviewPhoto = (file) => {
     setAlertPhoto("");
 
     let preview;

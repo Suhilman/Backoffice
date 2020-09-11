@@ -1,6 +1,5 @@
 import React from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -11,30 +10,30 @@ import {
   Alert,
   Dropdown,
   InputGroup,
-  FormControl
+  Form
 } from "react-bootstrap";
+import { Paper } from "@material-ui/core";
+
 import DataTable from "react-data-table-component";
 import { Search, MoreHoriz } from "@material-ui/icons";
-
-import { useStyles } from "../ProductPage";
 
 import ConfirmModal from "../../../components/ConfirmModal";
 import ProductCategoryModal from "./ProductCategoryModal";
 
-const ProductCategoryTab = ({ allOutlets, refresh, handleRefresh }) => {
-  const classes = useStyles();
-  const API_URL = process.env.REACT_APP_API_URL;
+import "../../style.css";
 
-  const [allCategories, setAllCategories] = React.useState([]);
-
+const ProductCategoryTab = ({ refresh, handleRefresh }) => {
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [alertModal, setAlertModal] = React.useState("");
 
+  const [allCategories, setAllCategories] = React.useState([]);
+
   const [showConfirm, setShowConfirm] = React.useState(false);
   const [showAddCategory, setShowAddCategory] = React.useState(false);
   const [showEditCategory, setShowEditCategory] = React.useState(false);
-  const [showAddProduct, setShowAddProduct] = React.useState(false);
+
+  const inputRef = React.useRef();
 
   const initialCategory = {
     id: "",
@@ -51,7 +50,8 @@ const ProductCategoryTab = ({ allOutlets, refresh, handleRefresh }) => {
   const formikAddCategory = useFormik({
     initialValues: initialCategory,
     validationSchema: CategorySchema,
-    onSubmit: async values => {
+    onSubmit: async (values) => {
+      const API_URL = process.env.REACT_APP_API_URL;
       try {
         setAlert("");
         enableLoading();
@@ -73,7 +73,8 @@ const ProductCategoryTab = ({ allOutlets, refresh, handleRefresh }) => {
     enableReinitialize: true,
     initialValues: initialCategory,
     validationSchema: CategorySchema,
-    onSubmit: async values => {
+    onSubmit: async (values) => {
+      const API_URL = process.env.REACT_APP_API_URL;
       try {
         setAlert("");
         enableLoading();
@@ -97,28 +98,37 @@ const ProductCategoryTab = ({ allOutlets, refresh, handleRefresh }) => {
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
-  const showAddCategoryModal = () => setShowAddCategory(true);
+  const showAddCategoryModal = () => {
+    setShowAddCategory(true);
+    setTimeout(() => {
+      if (inputRef.current) inputRef.current.focus();
+    }, 100);
+  };
   const closeAddCategoryModal = () => {
     setAlertModal("");
     formikAddCategory.setFieldValue("name", "");
     setShowAddCategory(false);
   };
 
-  const showEditCategoryModal = data => {
+  const showEditCategoryModal = (data) => {
     setAlertModal("");
     formikEditCategory.setFieldValue("id", data.id);
     formikEditCategory.setFieldValue("name", data.name);
     setShowEditCategory(true);
+    setTimeout(() => {
+      if (inputRef.current) inputRef.current.focus();
+    }, 100);
   };
   const closeEditCategoryModal = () => setShowEditCategory(false);
 
-  const showConfirmModal = data => {
+  const showConfirmModal = (data) => {
     formikEditCategory.setFieldValue("id", data.id);
     setShowConfirm(true);
   };
   const closeConfirmModal = () => setShowConfirm(false);
 
   const getProductCategory = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
       const allCategories = await axios.get(
         `${API_URL}/api/v1/product-category`
@@ -133,7 +143,7 @@ const ProductCategoryTab = ({ allOutlets, refresh, handleRefresh }) => {
     getProductCategory();
   }, [refresh]);
 
-  const categoryData = data => {
+  const categoryData = (data) => {
     if (!data.length) {
       return;
     }
@@ -167,7 +177,7 @@ const ProductCategoryTab = ({ allOutlets, refresh, handleRefresh }) => {
     },
     {
       name: "Actions",
-      cell: rows => {
+      cell: (rows) => {
         return (
           <Dropdown>
             <Dropdown.Toggle variant="secondary">
@@ -193,11 +203,12 @@ const ProductCategoryTab = ({ allOutlets, refresh, handleRefresh }) => {
 
   const handleDelete = async () => {
     const categoryId = formikEditCategory.getFieldProps("id").value;
+    const API_URL = process.env.REACT_APP_API_URL;
 
     enableLoading();
     await axios.delete(`${API_URL}/api/v1/product-category/${categoryId}`);
 
-    setAllCategories(allCategories.filter(item => item.id !== categoryId));
+    setAllCategories(allCategories.filter((item) => item.id !== categoryId));
     handleRefresh();
 
     disableLoading();
@@ -223,6 +234,7 @@ const ProductCategoryTab = ({ allOutlets, refresh, handleRefresh }) => {
         alert={alertModal}
         title="Add Product Category"
         formikCategory={formikAddCategory}
+        inputRef={inputRef}
       />
 
       <ProductCategoryModal
@@ -232,40 +244,43 @@ const ProductCategoryTab = ({ allOutlets, refresh, handleRefresh }) => {
         alert={alertModal}
         title="Edit Product Category"
         formikCategory={formikEditCategory}
+        inputRef={inputRef}
       />
 
-      <Col md={12}>
+      <Col md={12} style={{ minHeight: "100%" }}>
         {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
-        <div className={classes.header}>
-          <div className={classes.headerStart}>
-            <h3>Product Category List</h3>
+        <Paper elevation={2} style={{ padding: "1rem" }}>
+          <div className="headerPage">
+            <div className="headerStart">
+              <h3>Product Category List</h3>
+            </div>
+            <div className="headerEnd">
+              <Button variant="primary" onClick={showAddCategoryModal}>
+                Add New Product Category
+              </Button>
+            </div>
           </div>
-          <div className={classes.headerEnd}>
-            <Button variant="primary" onClick={showAddCategoryModal}>
-              Add New Product Category
-            </Button>
+
+          <div className="filterSection lineBottom">
+            <InputGroup className="pb-3">
+              <InputGroup.Prepend>
+                <InputGroup.Text style={{ background: "transparent" }}>
+                  <Search />
+                </InputGroup.Text>
+              </InputGroup.Prepend>
+              <Form.Control placeholder="Search..." />
+            </InputGroup>
           </div>
-        </div>
 
-        <div className={`${classes.filter} ${classes.divider}`}>
-          <InputGroup className="pb-3">
-            <InputGroup.Prepend>
-              <InputGroup.Text>
-                <Search />
-              </InputGroup.Text>
-            </InputGroup.Prepend>
-            <FormControl placeholder="Search..." />
-          </InputGroup>
-        </div>
-
-        <DataTable
-          noHeader
-          pagination
-          columns={columns}
-          data={categoryData(allCategories)}
-          style={{ minHeight: "100%" }}
-        />
+          <DataTable
+            noHeader
+            pagination
+            columns={columns}
+            data={categoryData(allCategories)}
+            style={{ minHeight: "100%" }}
+          />
+        </Paper>
       </Col>
     </Row>
   );

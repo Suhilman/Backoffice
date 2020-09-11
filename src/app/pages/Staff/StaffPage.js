@@ -1,88 +1,44 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import {
-  CssBaseline,
-  Button,
-  InputLabel,
-  OutlinedInput,
-  InputAdornment,
-  Paper
-} from "@material-ui/core";
+
+import { Paper } from "@material-ui/core";
+import { Button, InputGroup, Form, Row, Col, Dropdown } from "react-bootstrap";
+import DataTable from "react-data-table-component";
+
 import { Search, MoreHoriz } from "@material-ui/icons";
-import { makeStyles } from "@material-ui/styles";
-import {
-  InputGroup,
-  FormControl,
-  Form,
-  Row,
-  Col,
-  Dropdown,
-  Spinner
-} from "react-bootstrap";
-import { useSubheader } from "../../../_metronic/layout";
-import Table from "../../components/Table";
+
 import ConfirmModal from "../../components/ConfirmModal";
 
-const useStyles = makeStyles({
-  header: {
-    padding: "1rem",
-    display: "flex",
-    alignItems: "stretch",
-    justifyContent: "space-between",
-    position: "relative",
-    borderBottom: "1px solid #ebedf2",
-    width: "100%"
-  },
-  headerStart: {
-    alignContent: "flex-start"
-  },
-  headerEnd: {
-    alignContent: "flex-end"
-  },
-  margin: {
-    margin: "1rem"
-  },
-  paperForm: {
-    padding: "1rem"
-  },
-  paperHeader: {
-    padding: "1rem",
-    borderBottom: "1px solid #ebedf2"
-  },
-  filter: {
-    marginTop: "10px",
-    marginBottom: "10px"
-  },
-  divider: {
-    borderBottom: "1px solid #ebedf2"
-  }
-});
+import "../style.css";
 
 export const StaffPage = () => {
-  const suhbeader = useSubheader();
-  suhbeader.setTitle("Staff");
-
-  const classes = useStyles();
-
-  const API_URL = process.env.REACT_APP_API_URL;
   const [loading, setLoading] = React.useState(false);
   const [confirmModal, setConfirmModal] = React.useState(false);
   const [search, setSearch] = React.useState("");
   const [staff, setStaff] = React.useState([]);
-  const [staffId, setStaffId] = React.useState("");
+  const [allOutlets, setAllOutlets] = React.useState([]);
+  const [allAccessLists, setAllAccessLists] = React.useState([]);
+  const [filterPrivileges, setFilterPrivileges] = React.useState([]);
+  const [allRoles, setAllRoles] = React.useState([]);
+  const [staffInfo, setStaffInfo] = React.useState({
+    id: "",
+    name: ""
+  });
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
-  const handleSearch = event => {
-    setSearch(event.target.value);
-  };
+  const handleSearch = (e) => setSearch(e.target.value);
 
   const closeConfirmModal = () => setConfirmModal(false);
-  const openConfirmModal = () => setConfirmModal(true);
+  const openConfirmModal = (data) => {
+    setStaffInfo({ id: data.id, name: data.name });
+    setConfirmModal(true);
+  };
 
-  const getStaffData = async search => {
+  const getStaffData = async (search) => {
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
       if (search) {
         const { data } = await axios.get(
@@ -98,11 +54,12 @@ export const StaffPage = () => {
     }
   };
 
-  const handleDelete = async id => {
+  const handleDelete = async (id) => {
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
       enableLoading();
       await axios.delete(`${API_URL}/api/v1/staff/${id}`);
-      setStaff(staff.filter(item => item.id !== id));
+      setStaff(staff.filter((item) => item.id !== id));
       disableLoading();
       closeConfirmModal();
     } catch (err) {
@@ -114,182 +71,246 @@ export const StaffPage = () => {
     getStaffData(search);
   }, [search]);
 
-  const action = data => {
-    setStaffId(data.id);
-
-    return (
-      <Dropdown>
-        <Dropdown.Toggle variant="secondary">
-          <MoreHoriz color="action" />
-        </Dropdown.Toggle>
-
-        <Dropdown.Menu>
-          <Link to={`/staff/${data.id}`}>
-            <Dropdown.Item as="button">Staff Detail</Dropdown.Item>
-          </Link>
-          <Dropdown.Item as="button" onClick={openConfirmModal}>
-            Delete Staff
-          </Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
-    );
+  const getOutlets = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    try {
+      const outlets = await axios.get(`${API_URL}/api/v1/outlet`);
+      setAllOutlets(outlets.data.data);
+    } catch (err) {
+      setAllOutlets([]);
+    }
   };
 
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: "Name",
-        accessor: "name"
-      },
-      {
-        Header: "Location",
-        accessor: "location"
-      },
-      {
-        Header: "Type",
-        accessor: "type"
-      },
-      {
-        Header: "Actions",
-        Cell: ({ row }) => action(row.original)
-      }
-    ],
-    []
-  );
+  const getAccessPrivileges = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    try {
+      const accesses = await axios.get(`${API_URL}/api/v1/access`);
+      setAllAccessLists(accesses.data.data);
+    } catch (err) {
+      setAllAccessLists([]);
+    }
 
-  const data = React.useMemo(() => {
-    return staff.map(item => {
-      return {
-        id: item.id,
-        name: item.name,
-        location: item.Outlet.Location.name,
-        type: item.User.type
-      };
-    });
-  }, [staff]);
+    try {
+      const privileges = await axios.get(`${API_URL}/api/v1/privilege`);
+
+      const filterPrivileges = privileges.data.data.filter(
+        (item, index, self) => {
+          return (
+            self.findIndex((selfIndex) => selfIndex.name === item.name) ===
+            index
+          );
+        }
+      );
+
+      setFilterPrivileges(filterPrivileges);
+    } catch (err) {
+      setFilterPrivileges([]);
+    }
+  };
+
+  const getRoles = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    try {
+      const roles = await axios.get(`${API_URL}/api/v1/role`);
+      setAllRoles(roles.data.data);
+    } catch (err) {
+      setAllRoles([]);
+    }
+  };
+
+  React.useEffect(() => {
+    getOutlets();
+    getAccessPrivileges();
+    getRoles();
+  }, []);
+
+  const columns = [
+    {
+      name: "No.",
+      selector: "no",
+      sortable: true,
+      width: "50px"
+    },
+    {
+      name: "Name",
+      selector: "name",
+      sortable: true
+    },
+    {
+      name: "Location",
+      selector: "location",
+      sortable: true
+    },
+    {
+      name: "Type",
+      selector: "type",
+      sortable: true
+    },
+    {
+      name: "Actions",
+      cell: (rows) => {
+        return (
+          <Dropdown>
+            <Dropdown.Toggle variant="secondary">
+              <MoreHoriz color="action" />
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              <Link
+                to={{
+                  pathname: `/staff/${rows.id}`,
+                  state: {
+                    allOutlets,
+                    filterPrivileges,
+                    allRoles
+                  }
+                }}
+              >
+                <Dropdown.Item as="button">Staff Detail</Dropdown.Item>
+              </Link>
+              <Dropdown.Item as="button" onClick={() => openConfirmModal(rows)}>
+                Delete Staff
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        );
+      }
+    }
+  ];
+
+  const dataStaff = staff.map((item, index) => {
+    return {
+      id: item.id,
+      no: index + 1,
+      name: item.name,
+      location: item.Outlet.Location.name,
+      type: item.User.type
+    };
+  });
 
   return (
     <>
-      <CssBaseline />
-
       <ConfirmModal
-        title="Delete Staff"
+        title={`Delete Staff - ${staffInfo.name}`}
         body="Are you sure want to delete?"
         buttonColor="danger"
         state={confirmModal}
         closeModal={closeConfirmModal}
-        handleClick={() => handleDelete(staffId)}
+        handleClick={() => handleDelete(staffInfo.id)}
         loading={loading}
       />
 
-      <div className="row">
-        <div className="col-md-12">
-          <Paper elevation={1} className={classes.paperForm}>
-            <div className={classes.header}>
-              <div className={classes.headerStart}>
+      <Row>
+        <Col md={12}>
+          <Paper elevation={2} style={{ padding: "1rem" }}>
+            <div className="headerPage">
+              <div className="headerStart">
                 <h3>Staff - Main View</h3>
               </div>
-              <div className={classes.headerEnd}>
-                <Link to="/staff/add-staff">
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    style={{ color: "white" }}
-                  >
+              <div className="headerEnd">
+                <Link
+                  to={{
+                    pathname: "/staff/add-staff",
+                    state: {
+                      allOutlets,
+                      allAccessLists,
+                      filterPrivileges,
+                      allRoles
+                    }
+                  }}
+                >
+                  <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
                     Add Staff
                   </Button>
                 </Link>
               </div>
             </div>
 
-            <div className={`${classes.filter} ${classes.divider}`}>
-              <InputGroup className={`pb-3 ${classes.divider}`}>
-                <InputGroup.Prepend>
-                  <InputGroup.Text>
-                    <Search />
-                  </InputGroup.Text>
-                </InputGroup.Prepend>
-                <FormControl
-                  placeholder="Search..."
-                  value={search}
-                  onChange={handleSearch}
-                />
-              </InputGroup>
+            <div className="filterSection lineBottom">
+              <Row>
+                <InputGroup className="pb-3">
+                  <InputGroup.Prepend>
+                    <InputGroup.Text style={{ background: "transparent" }}>
+                      <Search />
+                    </InputGroup.Text>
+                  </InputGroup.Prepend>
+                  <Form.Control
+                    placeholder="Search..."
+                    value={search}
+                    onChange={handleSearch}
+                  />
+                </InputGroup>
+              </Row>
 
-              <Form className="pt-3">
-                <Form.Row>
-                  <Col>
-                    <Form.Group as={Row}>
-                      <Form.Label column sm={2}>
-                        Time
-                      </Form.Label>
-                      <Col sm={10}>
-                        <Form.Control as="select" defaultValue={"Default"}>
-                          <option value="Default" disabled hidden>
-                            Nothing Selected
-                          </option>
-                          <option>Newest</option>
-                          <option>Oldest</option>
-                        </Form.Control>
-                      </Col>
-                    </Form.Group>
-                  </Col>
-                  <Col>
-                    <Form.Group as={Row}>
-                      <Form.Label column sm={2}>
-                        Outlet
-                      </Form.Label>
-                      <Col sm={10}>
-                        <Form.Control as="select" defaultValue={"Default"}>
-                          <option value="Default" disabled hidden>
-                            Nothing Selected
-                          </option>
-                          <option>Newest</option>
-                          <option>Oldest</option>
-                        </Form.Control>
-                      </Col>
-                    </Form.Group>
-                  </Col>
-                  <Col>
-                    <Form.Group as={Row}>
-                      <Form.Label column sm={2}>
-                        Type
-                      </Form.Label>
-                      <Col sm={10}>
-                        <Form.Control as="select" defaultValue={"Default"}>
-                          <option value="Default" disabled hidden>
-                            Nothing Selected
-                          </option>
-                          <option>Newest</option>
-                          <option>Oldest</option>
-                        </Form.Control>
-                      </Col>
-                    </Form.Group>
-                  </Col>
-                </Form.Row>
-              </Form>
+              <Row>
+                <Col>
+                  <Form.Group as={Row}>
+                    <Form.Label
+                      style={{ alignSelf: "center", marginBottom: "0" }}
+                    >
+                      Time:
+                    </Form.Label>
+                    <Col>
+                      <Form.Control as="select" defaultValue={"Default"}>
+                        <option value="Default" disabled hidden>
+                          Nothing Selected
+                        </option>
+                        <option>Newest</option>
+                        <option>Oldest</option>
+                      </Form.Control>
+                    </Col>
+                  </Form.Group>
+                </Col>
+
+                <Col>
+                  <Form.Group as={Row}>
+                    <Form.Label
+                      style={{ alignSelf: "center", marginBottom: "0" }}
+                    >
+                      Location:
+                    </Form.Label>
+                    <Col>
+                      <Form.Control as="select" defaultValue={"Default"}>
+                        <option value="Default" disabled hidden>
+                          Nothing Selected
+                        </option>
+                        <option>Newest</option>
+                        <option>Oldest</option>
+                      </Form.Control>
+                    </Col>
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group as={Row}>
+                    <Form.Label
+                      style={{ alignSelf: "center", marginBottom: "0" }}
+                    >
+                      Type:
+                    </Form.Label>
+                    <Col>
+                      <Form.Control as="select" defaultValue={"Default"}>
+                        <option value="Default" disabled hidden>
+                          Nothing Selected
+                        </option>
+                        <option>Newest</option>
+                        <option>Oldest</option>
+                      </Form.Control>
+                    </Col>
+                  </Form.Group>
+                </Col>
+              </Row>
             </div>
 
-            <Table columns={columns} data={data} />
-
-            <Row className="mt-5">
-              <Col md={12}>
-                <Row>
-                  <Col md={2}>
-                    <Form.Control as="select" defaultValue="10">
-                      <option>20</option>
-                      <option>30</option>
-                    </Form.Control>
-                  </Col>
-                  <Col md={10} style={{ alignSelf: "center" }}>
-                    Showing 1 - 7 of 7
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
+            <DataTable
+              noHeader
+              pagination
+              columns={columns}
+              data={dataStaff}
+              style={{ minHeight: "100%" }}
+            />
           </Paper>
-        </div>
-      </div>
+        </Col>
+      </Row>
     </>
   );
 };

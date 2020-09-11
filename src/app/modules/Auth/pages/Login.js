@@ -11,16 +11,6 @@ import { login } from "../_redux/authCrud";
 import ModalVerify from "../components/ModalVerify";
 import ModalRegister from "../components/ModalRegister";
 
-/*
-  INTL (i18n) docs:
-  https://github.com/formatjs/react-intl/blob/master/docs/Components.md#formattedmessage
-*/
-
-/*
-  Formik+YUP:
-  https://jaredpalmer.com/formik/docs/tutorial#getfieldprops
-*/
-
 const initialValues = {
   email: "",
   password: ""
@@ -29,12 +19,11 @@ const initialValues = {
 function Login(props) {
   const { intl } = props;
   const [loading, setLoading] = useState(false);
-  const API_URL = process.env.REACT_APP_API_URL;
 
+  const [token, setToken] = useState("");
   const [showVerifyModal, setShowVerifyModal] = useState(false);
   const [showBusinessModal, setShowBusinessModal] = useState(false);
   const [alertModal, setAlertModal] = useState("");
-  const [token, setToken] = useState(false);
   const [second, setSecond] = useState(0);
 
   const [allBusinessCategories, setAllBusinessCategories] = useState([]);
@@ -44,32 +33,105 @@ function Login(props) {
 
   const [code, setCode] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
-  const [businessCategory, setBusinessCategory] = useState("");
-  const [province, setProvince] = useState("");
-  const [city, setCity] = useState("");
-  const [location, setLocation] = useState("");
-  const [outletLocation, setOutletLocation] = useState("");
+
+  const initialValueBusiness = {
+    business_category_id: "",
+    business_province_id: "",
+    business_city_id: "",
+    business_location_id: "",
+    outlet_location_id: ""
+  };
+
+  const BusinessSchema = Yup.object().shape({
+    business_category_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose a business category."),
+    business_province_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose a province."),
+    business_city_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose a city."),
+    business_location_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose a business location."),
+    outlet_location_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose an outlet location.")
+  });
+
+  const formikBusiness = useFormik({
+    enableReinitialize: true,
+    initialValues: initialValueBusiness,
+    validationSchema: BusinessSchema,
+    onSubmit: async (values) => {
+      const API_URL = process.env.REACT_APP_API_URL;
+
+      try {
+        enableLoading();
+        setAlertModal("");
+        const { business_id } = JSON.parse(localStorage.getItem("user_info"));
+
+        const { data } = await axios.get(`${API_URL}/api/v1/outlet`, {
+          headers: { Authorization: token }
+        });
+
+        const outlet_id = data.data[0].id;
+
+        const businessData = {
+          business_category_id: values.business_category_id,
+          location_id: values.business_location_id
+        };
+
+        const outletData = {
+          location_id: values.outlet_location_id
+        };
+
+        await axios.patch(
+          `${API_URL}/api/v1/business/${business_id}`,
+          businessData,
+          { headers: { Authorization: token } }
+        );
+
+        await axios.patch(`${API_URL}/api/v1/outlet/${outlet_id}`, outletData, {
+          headers: { Authorization: token }
+        });
+
+        verifyAccount();
+        disableLoading();
+        props.register(token.split(" ")[1]);
+      } catch (err) {
+        setAlertModal(err.response.data.message);
+        disableLoading();
+      }
+    }
+  });
+
+  const validationBusiness = (fieldname) => {
+    if (formikBusiness.touched[fieldname] && formikBusiness.errors[fieldname]) {
+      return "is-invalid";
+    }
+
+    if (
+      formikBusiness.touched[fieldname] &&
+      !formikBusiness.errors[fieldname]
+    ) {
+      return "is-valid";
+    }
+
+    return "";
+  };
 
   const closeVerifyModal = () => setShowVerifyModal(false);
   const openVerifyModal = () => setShowVerifyModal(true);
-  const handleVerifyModal = e => setCode(e.target.value);
+  const handleVerifyModal = (e) => setCode(e.target.value);
 
-  React.useEffect(() => {
-    let timer;
-    if (showVerifyModal && second > 0) {
-      timer = setTimeout(function() {
-        setSecond(now => now - 1);
-      }, 1000);
-    } else {
-      clearTimeout(timer);
-    }
-
-    return () => clearTimeout(timer);
-  });
-
-  const handleResendCode = () => {
-    setSecond(60);
-  };
+  const handleResendCode = () => setSecond(60);
 
   const closeBusinessModal = () => setShowBusinessModal(false);
   const openBusinessModal = () => {
@@ -77,22 +139,44 @@ function Login(props) {
     getProvinces();
     setShowBusinessModal(true);
   };
-  const handleBusiness = e => setBusinessCategory(e.target.value);
-  const handleProvince = e => {
-    setProvince(e.target.value);
-    getProvinceById(e.target.value);
-  };
-  const handleCity = e => {
-    setCity(e.target.value);
-    getCityById(e.target.value);
-  };
-  const handleLocation = e => setLocation(e.target.value);
-  const handleOutletLocation = e => setOutletLocation(e.target.value);
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
+  const handleProvince = (e) => {
+    const province_id = e.target.value;
+    formikBusiness.setFieldValue("business_province_id", province_id);
+    formikBusiness.setFieldValue("business_city_id", "");
+    formikBusiness.setFieldValue("business_location_id", "");
+    formikBusiness.setFieldValue("outlet_location_id", "");
+    setAllLocations([]);
+
+    const provinces = [...allProvinces];
+    const [cities] = provinces
+      .filter((item) => item.id === parseInt(province_id))
+      .map((item) => item.Cities);
+    setAllCities(cities);
+  };
+
+  const handleCity = (e) => {
+    const city_id = e.target.value;
+    formikBusiness.setFieldValue("business_city_id", city_id);
+    formikBusiness.setFieldValue("business_location_id", "");
+    formikBusiness.setFieldValue("outlet_location_id", "");
+
+    if (!city_id) return "";
+
+    if (allCities.length) {
+      const cities = [...allCities];
+      const [locations] = cities
+        .filter((item) => item.id === parseInt(city_id))
+        .map((item) => item.Locations);
+      setAllLocations(locations);
+    }
+  };
+
   const getBusinessCategories = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
       setAlertModal("");
       const { data } = await axios.get(`${API_URL}/api/v1/business-category`);
@@ -104,6 +188,7 @@ function Login(props) {
   };
 
   const getProvinces = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
       setAlertModal("");
       const { data } = await axios.get(`${API_URL}/api/v1/province`);
@@ -114,29 +199,8 @@ function Login(props) {
     }
   };
 
-  const getProvinceById = async id => {
-    try {
-      setAlertModal("");
-      const { data } = await axios.get(`${API_URL}/api/v1/province/${id}`);
-      setAllCities(data.data.Cities);
-    } catch (err) {
-      setAlertModal(err.response.data.message);
-      setAllCities([]);
-    }
-  };
-
-  const getCityById = async id => {
-    try {
-      setAlertModal("");
-      const { data } = await axios.get(`${API_URL}/api/v1/city/${id}`);
-      setAllLocations(data.data.Locations);
-    } catch (err) {
-      setAlertModal(err.response.data.message);
-      setAllLocations([]);
-    }
-  };
-
   const verifyAccount = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
       enableLoading();
       setAlertModal("");
@@ -154,44 +218,37 @@ function Login(props) {
     }
   };
 
-  const updateBusiness = async () => {
+  const checkCode = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
       enableLoading();
       setAlertModal("");
-      const { business_id } = JSON.parse(localStorage.getItem("user_info"));
-
-      const getOutlet = await axios.get(`${API_URL}/api/v1/outlet`, {
-        headers: { Authorization: token }
-      });
-
-      const outlet_id = getOutlet.data.data[0].id;
-
-      const businessData = {
-        business_category_id: businessCategory,
-        location_id: location
-      };
-
-      const outletData = {
-        location_id: location
-      };
-
-      await axios.patch(
-        `${API_URL}/api/v1/business/${business_id}`,
-        businessData,
+      await axios.post(
+        `${API_URL}/api/v1/auth/verify-account?check=${true}`,
+        { code },
         { headers: { Authorization: token } }
       );
-
-      await axios.patch(`${API_URL}/api/v1/outlet/${outlet_id}`, outletData, {
-        headers: { Authorization: token }
-      });
-
       disableLoading();
-      props.register(token.split(" ")[1]);
+      closeVerifyModal();
+      openBusinessModal();
     } catch (err) {
-      setAlertModal(err.response.data.message);
+      setAlertModal(err.response?.data.message);
       disableLoading();
     }
   };
+
+  React.useEffect(() => {
+    let timer;
+    if (showVerifyModal && second > 0) {
+      timer = setTimeout(() => {
+        setSecond((now) => now - 1);
+      }, 1000);
+    } else {
+      clearTimeout(timer);
+    }
+
+    return () => clearTimeout(timer);
+  });
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
@@ -213,7 +270,7 @@ function Login(props) {
       )
   });
 
-  const getInputClasses = fieldname => {
+  const getInputClasses = (fieldname) => {
     if (formik.touched[fieldname] && formik.errors[fieldname]) {
       return "is-invalid";
     }
@@ -230,32 +287,32 @@ function Login(props) {
     validationSchema: LoginSchema,
     onSubmit: (values, { setStatus, setSubmitting }) => {
       enableLoading();
-      setTimeout(() => {
-        login(values.email, values.password)
-          .then(({ data }) => {
-            const { token, user } = data.data;
-            setToken(`Bearer ${token}`);
-            localStorage.setItem("user_info", JSON.stringify(user));
+      login(values.email, values.password)
+        .then(({ data }) => {
+          const { token, user } = data.data;
 
-            disableLoading();
-            if (!user.is_verified) {
-              setSubmitting(false);
-              openVerifyModal();
-              setSecond(60);
-            } else {
-              props.login(token);
-            }
-          })
-          .catch(() => {
-            disableLoading();
+          setToken(`Bearer ${token}`);
+          localStorage.setItem("user_info", JSON.stringify(user));
+
+          disableLoading();
+          if (!user.is_verified) {
             setSubmitting(false);
-            setStatus(
-              intl.formatMessage({
-                id: "AUTH.VALIDATION.INVALID_LOGIN"
-              })
-            );
-          });
-      }, 1000);
+            openVerifyModal();
+            setSecond(60);
+          } else {
+            props.login(token);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          disableLoading();
+          setSubmitting(false);
+          setStatus(
+            intl.formatMessage({
+              id: "AUTH.VALIDATION.INVALID_LOGIN"
+            })
+          );
+        });
     }
   });
 
@@ -268,7 +325,7 @@ function Login(props) {
         phonenumber={phonenumber}
         handleVerifyModal={handleVerifyModal}
         code={code}
-        verifyAccount={verifyAccount}
+        checkCode={checkCode}
         loading={loading}
         second={second}
         handleResendCode={handleResendCode}
@@ -279,16 +336,14 @@ function Login(props) {
         closeBusinessModal={closeBusinessModal}
         alertModal={alertModal}
         loading={loading}
-        handleBusiness={handleBusiness}
-        handleProvince={handleProvince}
-        handleCity={handleCity}
-        handleLocation={handleLocation}
-        handleOutletLocation={handleOutletLocation}
         allBusinessCategories={allBusinessCategories}
         allProvinces={allProvinces}
         allCities={allCities}
         allLocations={allLocations}
-        updateBusiness={updateBusiness}
+        formikBusiness={formikBusiness}
+        validationBusiness={validationBusiness}
+        handleProvince={handleProvince}
+        handleCity={handleCity}
       />
 
       <div className="login-form login-signin" id="kt_login_signin_form">

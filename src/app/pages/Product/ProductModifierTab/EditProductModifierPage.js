@@ -8,10 +8,9 @@ import { Paper } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 import { Row, Col, Button, Form, Alert, Spinner } from "react-bootstrap";
 
-import { useStyles } from "../ProductPage";
+import "../../style.css";
 
 export const EditProductModifierPage = ({ location, match }) => {
-  const classes = useStyles();
   const history = useHistory();
   const { allOutlets } = location.state;
   const { groupId } = match.params;
@@ -111,11 +110,11 @@ export const EditProductModifierPage = ({ location, match }) => {
               name="modifiers"
               render={(arrayHelpers) => (
                 <>
-                  <div className={classes.header}>
-                    <div className={classes.headerStart}>
+                  <div className="headerPage">
+                    <div className="headerStart">
                       <h3>Add Product Modifier</h3>
                     </div>
-                    <div className={classes.headerEnd}>
+                    <div className="headerEnd">
                       <Link to="/product">
                         <Button variant="outline-secondary">Cancel</Button>
                       </Link>
