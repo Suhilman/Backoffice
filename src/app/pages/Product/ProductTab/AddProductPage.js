@@ -10,7 +10,6 @@ import ModalManageVariant from "./ModalManageVariant";
 import FormTemplate from "./Form";
 
 export const AddProductPage = () => {
-  const API_URL = process.env.REACT_APP_API_URL;
   const history = useHistory();
 
   const [photo, setPhoto] = React.useState("");
@@ -90,6 +89,8 @@ export const AddProductPage = () => {
     initialValues: initialValueProduct,
     validationSchema: ProductSchema,
     onSubmit: async (values) => {
+      const API_URL = process.env.REACT_APP_API_URL;
+
       const formData = new FormData();
       formData.append("outlet_id", values.outlet_id);
       formData.append("name", values.name);
@@ -136,6 +137,7 @@ export const AddProductPage = () => {
   const disableLoading = () => setLoading(false);
 
   const getOutlet = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
       const outlets = await axios.get(`${API_URL}/api/v1/outlet`);
       setAllOutlets(outlets.data.data);
@@ -145,6 +147,7 @@ export const AddProductPage = () => {
   };
 
   const getProductCategory = async (outlet_id) => {
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
       const productCategory = await axios.get(
         `${API_URL}/api/v1/product-category`
@@ -156,6 +159,7 @@ export const AddProductPage = () => {
   };
 
   const getProductType = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
       const productTypes = await axios.get(`${API_URL}/api/v1/product-type`);
       setAllProductTypes(productTypes.data.data);
@@ -165,6 +169,7 @@ export const AddProductPage = () => {
   };
 
   const getTax = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
       const taxes = await axios.get(`${API_URL}/api/v1/product-tax`);
       setAllTaxes(taxes.data.data);
@@ -316,6 +321,7 @@ export const AddProductPage = () => {
           showModalVariant={showModalVariant}
           formikProduct={formikProduct}
           validationProduct={validationProduct}
+          alert={alert}
         />
       </Col>
     </Row>

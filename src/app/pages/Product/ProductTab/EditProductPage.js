@@ -1,33 +1,21 @@
 import React from "react";
 import axios from "axios";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import { useDropzone } from "react-dropzone";
-
-import { Row, Col, Button, Form, Alert, Spinner } from "react-bootstrap";
-import { Paper } from "@material-ui/core";
+import { Row, Col } from "react-bootstrap";
 
 import ModalManageVariant from "./ModalManageVariant";
 import FormTemplate from "./Form";
 
 export const EditProductPage = ({ match }) => {
   const product_id = match.params.productId;
-
-  const API_URL = process.env.REACT_APP_API_URL;
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
-    maxSize: 2 * 1000 * 1000,
-    onDrop(file) {
-      handlePreviewPhoto(file);
-    }
-  });
   const history = useHistory();
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [showManageVariant, setShowManageVariant] = React.useState(false);
-  const [validated, setValidated] = React.useState(false);
   const [validatedModal, setValidatedModal] = React.useState(false);
   const [alertPhoto, setAlertPhoto] = React.useState("");
   const [photoPreview, setPhotoPreview] = React.useState("");
@@ -112,7 +100,8 @@ export const EditProductPage = ({ match }) => {
     initialValues: product,
     validationSchema: ProductSchema,
     onSubmit: async (values) => {
-      console.log(productVariant);
+      const API_URL = process.env.REACT_APP_API_URL;
+
       const formData = new FormData();
       formData.append("outlet_id", values.outlet_id);
       formData.append("name", values.name);
@@ -120,7 +109,9 @@ export const EditProductPage = ({ match }) => {
       formData.append("product_type_id", values.product_type_id);
       formData.append("product_tax_id", values.product_tax_id);
       formData.append("status", values.status);
-      formData.append("productVariants", JSON.stringify(productVariant));
+
+      if (productVariant[0].name)
+        formData.append("productVariants", JSON.stringify(productVariant));
 
       if (values.barcode) formData.append("barcode", values.barcode);
       if (values.sku) formData.append("sku", values.sku);
@@ -157,15 +148,10 @@ export const EditProductPage = ({ match }) => {
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
-  const getProductById = async () => {
-    getOutlet();
-    getProductType();
-    getTax();
-
+  const getProductById = async (id) => {
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
-      const { data } = await axios.get(
-        `${API_URL}/api/v1/product/${product_id}`
-      );
+      const { data } = await axios.get(`${API_URL}/api/v1/product/${id}`);
       const productData = data.data;
 
       setProduct({
@@ -200,14 +186,13 @@ export const EditProductPage = ({ match }) => {
         setPhoto(`${API_URL}${productData.image}`);
         setPhotoPreview(`${API_URL}${productData.image}`);
       }
-
-      getProductCategory(productData.outlet_id);
     } catch (err) {
       console.log(err);
     }
   };
 
   const getOutlet = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
       const outlets = await axios.get(`${API_URL}/api/v1/outlet`);
       setAllOutlets(outlets.data.data);
@@ -217,6 +202,7 @@ export const EditProductPage = ({ match }) => {
   };
 
   const getProductCategory = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
       const productCategory = await axios.get(
         `${API_URL}/api/v1/product-category`
@@ -228,6 +214,7 @@ export const EditProductPage = ({ match }) => {
   };
 
   const getProductType = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
       const productTypes = await axios.get(`${API_URL}/api/v1/product-type`);
       setAllProductTypes(productTypes.data.data);
@@ -237,6 +224,7 @@ export const EditProductPage = ({ match }) => {
   };
 
   const getTax = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
       const taxes = await axios.get(`${API_URL}/api/v1/product-tax`);
       setAllTaxes(taxes.data.data);
@@ -345,8 +333,15 @@ export const EditProductPage = ({ match }) => {
   };
 
   React.useEffect(() => {
-    getProductById();
+    getOutlet();
+    getProductType();
+    getTax();
+    getProductCategory();
   }, []);
+
+  React.useEffect(() => {
+    getProductById(product_id);
+  }, [product_id]);
 
   return (
     <Row>
@@ -378,6 +373,7 @@ export const EditProductPage = ({ match }) => {
           showModalVariant={showModalVariant}
           formikProduct={formikProduct}
           validationProduct={validationProduct}
+          alert={alert}
         />
       </Col>
     </Row>

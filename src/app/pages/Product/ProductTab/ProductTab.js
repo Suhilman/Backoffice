@@ -21,6 +21,8 @@ import {
 } from "@material-ui/core";
 import { Search, MoreHoriz } from "@material-ui/icons";
 
+import rupiahFormat from "rupiah-format";
+
 import ConfirmModal from "../../../components/ConfirmModal";
 
 import "../../style.css";
@@ -98,7 +100,7 @@ const ProductTab = ({ refresh, handleRefresh }) => {
         no: index + 1,
         name: item.name,
         category: item.Product_Category ? item.Product_Category.name : "",
-        price: item.price,
+        price: rupiahFormat.convert(item.price),
         outlet: item.Outlet.name,
         variants: item.Product_Variants,
         status: item.status
@@ -213,7 +215,13 @@ const ProductTab = ({ refresh, handleRefresh }) => {
                       <Col md={3} style={{ fontWeight: "700" }}>
                         {val.key}
                       </Col>
-                      <Col>{item[val.value] || "-"}</Col>
+                      {val.value === "price" ? (
+                        <Col>
+                          {rupiahFormat.convert(item[val.value]) || "-"}
+                        </Col>
+                      ) : (
+                        <Col>{item[val.value] || "-"}</Col>
+                      )}
                     </Row>
                   </ListGroup.Item>
                 );
@@ -251,7 +259,7 @@ const ProductTab = ({ refresh, handleRefresh }) => {
       />
 
       <Col md={12}>
-        <Paper elevation={2} style={{ padding: "1rem" }}>
+        <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div className="headerPage">
             <div className="headerStart">
               <h3>Product List</h3>

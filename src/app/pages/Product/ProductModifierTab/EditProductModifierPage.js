@@ -74,7 +74,7 @@ export const EditProductModifierPage = ({ location, match }) => {
   }, [groupId]);
 
   return (
-    <Paper elevation={2} style={{ padding: "1rem" }}>
+    <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
       <Formik
         enableReinitialize={true}
         initialValues={productModifier}

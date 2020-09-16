@@ -100,6 +100,8 @@ export const OutletTab = ({
       if (photo) formData.append("outlet", photo);
       if (values.address) formData.append("address", values.address);
       if (values.postcode) formData.append("postcode", values.postcode);
+      if (values.phone_number)
+        formData.append("phone_number", values.phone_number);
 
       const API_URL = process.env.REACT_APP_API_URL;
       try {
@@ -128,6 +130,8 @@ export const OutletTab = ({
       if (photo) formData.append("outlet", photo);
       if (values.address) formData.append("address", values.address);
       if (values.postcode) formData.append("postcode", values.postcode);
+      if (values.phone_number)
+        formData.append("phone_number", values.phone_number);
 
       const API_URL = process.env.REACT_APP_API_URL;
       try {
@@ -469,7 +473,7 @@ export const OutletTab = ({
       />
 
       <Col>
-        <Paper elevation={2} style={{ padding: "1rem" }}>
+        <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div className="headerPage">
             <div className="headerStart">
               <h3>Outlet Information</h3>

@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 
 import { Tabs, Tab } from "react-bootstrap";
 
@@ -10,32 +11,43 @@ import { ModifierSalesTab } from "./ModifierSalesTab";
 
 export const ReportPage = () => {
   const [tabs, setTabs] = React.useState("sales-summary");
-  const [refresh, setRefresh] = React.useState(0);
+  const [allOutlets, setAllOutlets] = React.useState([]);
 
-  const handleRefresh = () => setRefresh((state) => state + 1);
+  const getOutlets = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
 
-  React.useEffect(() => {}, [refresh]);
+    try {
+      const { data } = await axios.get(`${API_URL}/api/v1/outlet`);
+      setAllOutlets(data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  React.useEffect(() => {
+    getOutlets();
+  }, []);
 
   return (
     <Tabs activeKey={tabs} onSelect={(v) => setTabs(v)}>
       <Tab eventKey="sales-summary" title="Sales Summary">
-        <SalesSummaryTab handleRefresh={handleRefresh} />
+        <SalesSummaryTab allOutlets={allOutlets} />
       </Tab>
 
       <Tab eventKey="payment-method" title="Payment Method">
-        <PaymentMethodTab handleRefresh={handleRefresh} />
+        <PaymentMethodTab allOutlets={allOutlets} />
       </Tab>
 
       <Tab eventKey="sales-type" title="Sales Type">
-        <SalesTypeTab handleRefresh={handleRefresh} />
+        <SalesTypeTab allOutlets={allOutlets} />
       </Tab>
 
       <Tab eventKey="category-sales" title="Category Sales">
-        <CategorySalesTab handleRefresh={handleRefresh} />
+        <CategorySalesTab allOutlets={allOutlets} />
       </Tab>
 
       <Tab eventKey="modifier-sales" title="Modifier Sales">
-        <ModifierSalesTab handleRefresh={handleRefresh} />
+        <ModifierSalesTab allOutlets={allOutlets} />
       </Tab>
     </Tabs>
   );

@@ -21,7 +21,8 @@ const FormTemplate = ({
   allProductTypes,
   showModalVariant,
   formikProduct,
-  validationProduct
+  validationProduct,
+  alert
 }) => {
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
@@ -32,7 +33,7 @@ const FormTemplate = ({
   });
 
   return (
-    <Paper elevation={2} style={{ padding: "1rem" }}>
+    <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
       <Form onSubmit={formikProduct.handleSubmit}>
         <div className="headerPage">
           <div className="headerStart">
@@ -55,6 +56,8 @@ const FormTemplate = ({
             </Button>
           </div>
         </div>
+
+        {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
         <Row style={{ padding: "1rem" }}>
           <Col>

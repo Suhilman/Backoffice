@@ -22,6 +22,9 @@ export default function setupAxios(axios, store) {
       if (err.response.status === 401 && err.response.data === "Unauthorized") {
         localStorage.clear();
         window.location.replace("/auth/login");
+      } else if (err.response.status === 403) {
+        localStorage.clear();
+        window.location.replace("/auth/login");
       } else {
         return Promise.reject(err);
       }

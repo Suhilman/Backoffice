@@ -202,7 +202,7 @@ export const StaffPage = () => {
 
       <Row>
         <Col md={12}>
-          <Paper elevation={2} style={{ padding: "1rem" }}>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
                 <h3>Staff - Main View</h3>

@@ -166,7 +166,7 @@ export const DetailStaffPage = ({ match, location }) => {
     <>
       <Row>
         <Col>
-          <Paper elevation={2} style={{ padding: "1rem" }}>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
             <Form onSubmit={formikStaff.handleSubmit}>

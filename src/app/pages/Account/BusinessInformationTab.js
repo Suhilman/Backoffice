@@ -347,7 +347,7 @@ export const BusinessInformation = () => {
   return (
     <Row>
       <Col md={12}>
-        <Paper elevation={2} style={{ padding: "1rem" }}>
+        <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <Form onSubmit={formikBusiness.handleSubmit}>
             <div className="headerPage">
               <div className="headerStart">

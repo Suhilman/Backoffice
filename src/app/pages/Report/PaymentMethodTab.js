@@ -5,37 +5,90 @@ import { Row, Col, Table, Dropdown, DropdownButton } from "react-bootstrap";
 
 import { Paper } from "@material-ui/core";
 
+import rupiahFormat from "rupiah-format";
+
 import "../style.css";
 
-import sum from "./helpers/sum";
-
-export const PaymentMethodTab = ({ handleRefresh }) => {
+export const PaymentMethodTab = ({ allOutlets }) => {
   const [loading, setLoading] = React.useState(false);
+
+  const [allPaymentMethods, setAllPaymentMethods] = React.useState([]);
+  const [outletId, setOutletId] = React.useState("");
+  const [outletName, setOutletName] = React.useState("All Outlets");
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
-  const paymentMethodData = () => {
-    const data = [
-      {
-        method: "Cash",
-        transaction: 10,
-        total: 50000
-      },
-      {
-        method: "OVO",
-        transaction: 8,
-        total: 20000
-      },
-      {
-        method: "Gojek",
-        transaction: 9,
-        total: 30000
-      }
-    ];
+  const getPaymentMethod = async (id) => {
+    const API_URL = process.env.REACT_APP_API_URL;
 
-    const totalTransactions = sum(data, "transaction");
-    const totalAmount = sum(data, "total");
+    if (id) {
+      try {
+        const { data } = await axios.get(
+          `${API_URL}/api/v1/transaction/payment-method?outlet_id=${id}`
+        );
+        setAllPaymentMethods(data.data);
+      } catch (err) {
+        if (err.response.status === 404) {
+          setAllPaymentMethods([]);
+        }
+        console.log(err);
+      }
+    } else {
+      try {
+        const { data } = await axios.get(
+          `${API_URL}/api/v1/transaction/payment-method`
+        );
+        setAllPaymentMethods(data.data);
+      } catch (err) {
+        if (err.response.status === 404) {
+          setAllPaymentMethods([]);
+        }
+        console.log(err);
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    getPaymentMethod(outletId);
+  }, [outletId]);
+
+  const handleSelectOutlet = (data) => {
+    if (data) {
+      setOutletId(data.id);
+      setOutletName(data.name);
+    } else {
+      setOutletId("");
+      setOutletName("All Outlets");
+    }
+  };
+
+  const paymentMethodData = () => {
+    const data = [];
+
+    allPaymentMethods.forEach((item) => {
+      const allPayments = item.Payments;
+      let totalCollected = 0;
+
+      allPayments.forEach((val) => {
+        val.Transaction.Transaction_Items.forEach(
+          (curr) => (totalCollected += curr.subtotal),
+          0
+        );
+      });
+
+      data.push({
+        method: item.name,
+        transaction: item.Payments.length,
+        total: totalCollected
+      });
+    });
+
+    const totalTransactions = data.reduce(
+      (init, curr) => (init += curr.transaction),
+      0
+    );
+    const totalAmount = data.reduce((init, curr) => (init += curr.total), 0);
 
     data.push({
       method: "",
@@ -49,7 +102,7 @@ export const PaymentMethodTab = ({ handleRefresh }) => {
   return (
     <Row>
       <Col>
-        <Paper elevation={2} style={{ padding: "1rem" }}>
+        <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div
             className="headerPage lineBottom"
             style={{ marginBottom: "1rem" }}
@@ -59,10 +112,20 @@ export const PaymentMethodTab = ({ handleRefresh }) => {
             </div>
             <div className="headerEnd">
               <Row>
-                <DropdownButton title="All Outlets">
-                  <Dropdown.Item href="#/action-1">All Outlets</Dropdown.Item>
-                  <Dropdown.Item href="#/action-2">Outlet 1</Dropdown.Item>
-                  <Dropdown.Item href="#/action-3">Outlet 2</Dropdown.Item>
+                <DropdownButton title={outletName}>
+                  <Dropdown.Item onClick={() => handleSelectOutlet()}>
+                    All Outlets
+                  </Dropdown.Item>
+                  {allOutlets.map((item, index) => {
+                    return (
+                      <Dropdown.Item
+                        key={index}
+                        onClick={() => handleSelectOutlet(item)}
+                      >
+                        {item.name}
+                      </Dropdown.Item>
+                    );
+                  })}
                 </DropdownButton>
 
                 <DropdownButton title="Exports" style={{ margin: "0 1rem" }}>
@@ -90,7 +153,7 @@ export const PaymentMethodTab = ({ handleRefresh }) => {
                     <td></td>
                     <td>{item.method}</td>
                     <td>{item.transaction}</td>
-                    <td>{item.total}</td>
+                    <td>{rupiahFormat.convert(item.total)}</td>
                   </tr>
                 );
               })}

@@ -7,39 +7,104 @@ import { Paper } from "@material-ui/core";
 
 import "../style.css";
 
-import sum from "./helpers/sum";
-
-export const ModifierSalesTab = ({ handleRefresh }) => {
+export const ModifierSalesTab = ({ allOutlets }) => {
   const [loading, setLoading] = React.useState(false);
+
+  const [allModifierSales, setAllModifierSales] = React.useState([]);
+  const [outletId, setOutletId] = React.useState("");
+  const [outletName, setOutletName] = React.useState("All Outlets");
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
-  const modifierSalesData = () => {
-    const data = [
-      {
-        modifier: "Boba",
-        sold: 20,
-        refunded: 0,
-        total: 500000
-      },
-      {
-        modifier: "Sosis",
-        sold: 12,
-        refunded: 0,
-        total: 500000
-      },
-      {
-        modifier: "Bakso",
-        sold: 30,
-        refunded: 0,
-        total: 1500000
-      }
-    ];
+  const getModifierSales = async (id) => {
+    const API_URL = process.env.REACT_APP_API_URL;
 
-    const totalSold = sum(data, "sold");
-    const totalRefunded = sum(data, "refunded");
-    const totalAmount = sum(data, "total");
+    if (id) {
+      try {
+        const { data } = await axios.get(
+          `${API_URL}/api/v1/transaction/modifier-sales?outlet_id=${id}`
+        );
+        setAllModifierSales(data.data);
+      } catch (err) {
+        if (err.response.status === 404) {
+          setAllModifierSales([]);
+        }
+        console.log(err);
+      }
+    } else {
+      try {
+        const { data } = await axios.get(
+          `${API_URL}/api/v1/transaction/modifier-sales`
+        );
+        setAllModifierSales(data.data);
+      } catch (err) {
+        if (err.response.status === 404) {
+          setAllModifierSales([]);
+        }
+        console.log(err);
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    getModifierSales(outletId);
+  }, [outletId]);
+
+  const handleSelectOutlet = (data) => {
+    if (data) {
+      setOutletId(data.id);
+      setOutletName(data.name);
+    } else {
+      setOutletId("");
+      setOutletName("All Outlets");
+    }
+  };
+
+  const modifierSalesData = () => {
+    const data = [];
+
+    allModifierSales.forEach((item) => {
+      const allTransactionItems = item.Transaction_Items;
+      let totalCollected = 0;
+      let sold = 0;
+      let refunded = 0;
+
+      if (allTransactionItems.length) {
+        allTransactionItems.forEach((val) => {
+          val.forEach((curr) => {
+            totalCollected += curr.subtotal;
+
+            if (curr.Transaction.Transaction_Refund) {
+              refunded += curr.quantity;
+            } else {
+              sold += curr.quantity;
+            }
+          });
+
+          data.push({
+            modifier: item.name,
+            sold,
+            refunded,
+            total: totalCollected
+          });
+        });
+      } else {
+        data.push({
+          modifier: item.name,
+          sold: 0,
+          refunded: 0,
+          total: 0
+        });
+      }
+    });
+
+    const totalSold = data.reduce((init, curr) => (init += curr.sold), 0);
+    const totalRefunded = data.reduce(
+      (init, curr) => (init += curr.refunded),
+      0
+    );
+    const totalAmount = data.reduce((init, curr) => (init += curr.total), 0);
 
     data.push({
       modifier: "",
@@ -54,7 +119,7 @@ export const ModifierSalesTab = ({ handleRefresh }) => {
   return (
     <Row>
       <Col>
-        <Paper elevation={2} style={{ padding: "1rem" }}>
+        <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div
             className="headerPage lineBottom"
             style={{ marginBottom: "1rem" }}
@@ -64,10 +129,20 @@ export const ModifierSalesTab = ({ handleRefresh }) => {
             </div>
             <div className="headerEnd">
               <Row>
-                <DropdownButton title="All Outlets">
-                  <Dropdown.Item href="#/action-1">All Outlets</Dropdown.Item>
-                  <Dropdown.Item href="#/action-2">Outlet 1</Dropdown.Item>
-                  <Dropdown.Item href="#/action-3">Outlet 2</Dropdown.Item>
+                <DropdownButton title={outletName}>
+                  <Dropdown.Item onClick={() => handleSelectOutlet()}>
+                    All Outlets
+                  </Dropdown.Item>
+                  {allOutlets.map((item, index) => {
+                    return (
+                      <Dropdown.Item
+                        key={index}
+                        onClick={() => handleSelectOutlet(item)}
+                      >
+                        {item.name}
+                      </Dropdown.Item>
+                    );
+                  })}
                 </DropdownButton>
 
                 <DropdownButton title="Exports" style={{ margin: "0 1rem" }}>

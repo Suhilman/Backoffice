@@ -130,7 +130,7 @@ export const AddStaffPage = ({ location }) => {
     <>
       <Row>
         <Col>
-          <Paper elevation={2} style={{ padding: "1rem" }}>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <Form onSubmit={formikStaff.handleSubmit}>
               <div className="headerPage">
                 <div className="headerStart">
@@ -358,7 +358,10 @@ export const AddStaffPage = ({ location }) => {
               ) {
                 return (
                   <Col key={access.id}>
-                    <Paper elevation={2} style={{ padding: "1rem" }}>
+                    <Paper
+                      elevation={2}
+                      style={{ padding: "1rem", height: "100%" }}
+                    >
                       <h5>{access.name} Access List</h5>
 
                       <FormControl
@@ -367,9 +370,12 @@ export const AddStaffPage = ({ location }) => {
                       >
                         <FormGroup row>
                           <Container style={{ padding: "0" }}>
-                            {filterPrivileges.map((privilege) => {
+                            {filterPrivileges.map((privilege, index) => {
                               return (
-                                <Row style={{ padding: "0.5rem 1rem" }}>
+                                <Row
+                                  key={index}
+                                  style={{ padding: "0.5rem 1rem" }}
+                                >
                                   <Col style={{ alignSelf: "center" }}>
                                     <Form.Label>{privilege.name}</Form.Label>
                                   </Col>
@@ -398,15 +404,21 @@ export const AddStaffPage = ({ location }) => {
               } else if (staffManager.includes(formikStaff.values.type)) {
                 return (
                   <Col key={access.id}>
-                    <Paper elevation={2} style={{ padding: "1rem" }}>
+                    <Paper
+                      elevation={2}
+                      style={{ padding: "1rem", height: "100%" }}
+                    >
                       <h5>{access.name} Access List</h5>
 
                       <FormControl component="fieldset">
                         <FormGroup row>
                           <Container style={{ padding: "0" }}>
-                            {filterPrivileges.map((privilege) => {
+                            {filterPrivileges.map((privilege, index) => {
                               return (
-                                <Row style={{ padding: "0.5rem 1rem" }}>
+                                <Row
+                                  key={index}
+                                  style={{ padding: "0.5rem 1rem" }}
+                                >
                                   <Col style={{ alignSelf: "center" }}>
                                     <Form.Label>{privilege.name}</Form.Label>
                                   </Col>
