@@ -17,9 +17,11 @@ import { Paper } from "@material-ui/core";
 import DataTable from "react-data-table-component";
 import { Search, MoreHoriz, Delete } from "@material-ui/icons";
 
+import useDebounce from "../../../hooks/useDebounce";
+
 import ConfirmModal from "../../../components/ConfirmModal";
 import ProductCategoryModal from "./ProductCategoryModal";
-import useDebounce from "../../../hooks/useDebounce";
+import ModalAddToProduct from "./ModalAddToProduct";
 
 import "../../style.css";
 
@@ -28,12 +30,19 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
   const [alert, setAlert] = React.useState("");
   const [alertModal, setAlertModal] = React.useState("");
   const [showConfirmBulk, setShowConfirmBulk] = React.useState(false);
+  const [modalAddToProduct, setModalAddToProduct] = React.useState(false);
 
   const [multiSelect, setMultiSelect] = React.useState(false);
   const [clearRows, setClearRows] = React.useState(true);
   const [selectedData, setSelectedData] = React.useState([]);
+  const [selectedCategory, setSelectedCategory] = React.useState({
+    id: "",
+    category_name: ""
+  });
+  const [selectedProducts, setSelectedProducts] = React.useState([]);
 
   const [allCategories, setAllCategories] = React.useState([]);
+  const [allProducts, setAllProducts] = React.useState([]);
 
   const [search, setSearch] = React.useState("");
 
@@ -147,6 +156,17 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
     handleMode();
     setShowConfirmBulk(false);
   };
+  const showAddToProduct = (data) => {
+    setSelectedCategory({
+      id: data.id,
+      category_name: data.name
+    });
+    setModalAddToProduct(true);
+  };
+  const closeAddToProduct = () => {
+    setSelectedProducts([]);
+    setModalAddToProduct(false);
+  };
 
   const handleMode = () => {
     setSelectedData([]);
@@ -155,6 +175,46 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
   };
 
   const handleSelected = (state) => setSelectedData(state.selectedRows);
+  const handleSelectProducts = (e) => {
+    const { value } = e.target;
+
+    const copyProducts = [...selectedProducts];
+
+    if (copyProducts.includes(value)) {
+      copyProducts.splice(copyProducts.indexOf(value), 1);
+    } else {
+      copyProducts.push(value);
+    }
+
+    setSelectedProducts(copyProducts);
+  };
+
+  const handleAddToProduct = async (categories, products, e) => {
+    e.preventDefault();
+    const API_URL = process.env.REACT_APP_API_URL;
+
+    if (!products.length) {
+      closeAddToProduct();
+    }
+
+    const sendData = {
+      category_id: categories.id,
+      products_id: products
+    };
+
+    try {
+      enableLoading();
+      await axios.post(
+        `${API_URL}/api/v1/product-category/add-to-product`,
+        sendData
+      );
+      disableLoading();
+      handleRefresh();
+      closeAddToProduct();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const getProductCategory = async (search) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -167,6 +227,20 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
       setAllCategories(allCategories.data.data);
     } catch (err) {
       setAllCategories([]);
+    }
+  };
+
+  const getProduct = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+
+    try {
+      const { data } = await axios.get(`${API_URL}/api/v1/product`);
+      const filterProduct = data.data.filter(
+        (item) => item.product_category_id === null
+      );
+      setAllProducts(filterProduct);
+    } catch (err) {
+      setAllProducts([]);
     }
   };
 
@@ -194,6 +268,10 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
   React.useEffect(() => {
     getProductCategory(debouncedSearch);
   }, [refresh, debouncedSearch]);
+
+  React.useEffect(() => {
+    getProduct();
+  }, [refresh]);
 
   const categoryData = (data) => {
     if (!data.length) {
@@ -237,6 +315,9 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
+              <Dropdown.Item as="button" onClick={() => showAddToProduct(rows)}>
+                Add To Product
+              </Dropdown.Item>
               <Dropdown.Item
                 as="button"
                 onClick={() => showEditCategoryModal(rows)}
@@ -313,6 +394,19 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
         state={showConfirmBulk}
         closeModal={closeConfirmBulkModal}
         loading={loading}
+      />
+
+      <ModalAddToProduct
+        state={modalAddToProduct}
+        closeModal={closeAddToProduct}
+        loading={loading}
+        alert={alertModal}
+        title={`Add "${selectedCategory.category_name}" to Products`}
+        selectedCategory={selectedCategory}
+        selectedProducts={selectedProducts}
+        allProducts={allProducts}
+        handleSelectProducts={handleSelectProducts}
+        handleAddToProduct={handleAddToProduct}
       />
 
       <Col md={12} style={{ minHeight: "100%" }}>
