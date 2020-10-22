@@ -349,13 +349,13 @@ const ProductTab = ({ refresh, handleRefresh, allCategories, allOutlets }) => {
             <div className="headerEnd">
               {!multiSelect ? (
                 <>
-                  <Button variant="outline-secondary">Import</Button>
+                  {/* <Button variant="outline-secondary">Import</Button>
                   <Button
                     variant="outline-secondary"
                     style={{ marginLeft: "0.5rem" }}
                   >
                     Export
-                  </Button>
+                  </Button> */}
                   <Link to="/product/add-product">
                     <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
                       Add New Product

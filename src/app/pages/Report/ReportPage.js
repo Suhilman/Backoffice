@@ -225,7 +225,7 @@ export const ReportPage = () => {
         0
       );
 
-      const output = item.Transaction_Items.map((val, index, self) => {
+      const output = item.Transaction_Items.map((val) => {
         const currAddons = val.Transaction_Item_Addons.map(
           (addons) => addons.Addon?.name
         ).filter((val) => val);

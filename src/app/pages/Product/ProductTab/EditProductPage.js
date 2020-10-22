@@ -172,7 +172,7 @@ export const EditProductPage = ({ match }) => {
       setProduct({
         outlet_id: productData.outlet_id,
         name: productData.name,
-        product_category_id: productData.product_category_id,
+        product_category_id: productData.product_category_id || "",
         price: productData.price,
         product_tax_id: productData.product_tax_id,
         status: productData.status,

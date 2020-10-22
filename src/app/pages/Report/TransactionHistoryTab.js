@@ -5,17 +5,16 @@ import dayjs from "dayjs";
 import {
   Row,
   Col,
-  Button,
   Form,
   Dropdown,
-  InputGroup,
   ListGroup,
   DropdownButton
 } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 
 import { Paper } from "@material-ui/core";
-import { Search, MoreHoriz } from "@material-ui/icons";
+// import { Search, MoreHoriz } from "@material-ui/icons";
+import ExportExcel from "react-html-table-to-excel";
 
 import "../style.css";
 
@@ -31,7 +30,33 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
 
   const [allTransactions, setAllTransactions] = React.useState([]);
 
-  const getTransactions = async (id, range_id, start_range, end_range) => {
+  const [status, setStatus] = React.useState("");
+
+  const [reports, setReports] = React.useState([
+    {
+      date: "",
+      receipt_id: "",
+      status: "",
+      outlet_name: "",
+      sales_type: "",
+      user: "",
+      customer_phone_number: "",
+      customer_name: "",
+      sku: "",
+      product_name: "",
+      category_name: "",
+      quantity: "",
+      price_product: ""
+    }
+  ]);
+
+  const getTransactions = async (
+    id,
+    status,
+    range_id,
+    start_range,
+    end_range
+  ) => {
     const API_URL = process.env.REACT_APP_API_URL;
 
     const { date_start, date_end } = ranges(start_range, end_range).find(
@@ -39,23 +64,51 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
     );
 
     const outlet_id = id ? `&outlet_id=${id}` : "";
+    const filter = status ? `&status=${status}` : "";
 
+    let allSales;
     try {
       const { data } = await axios.get(
-        `${API_URL}/api/v1/transaction?order=newest&per_page=999${outlet_id}&date_start=${date_start}&date_end=${date_end}`
+        `${API_URL}/api/v1/transaction?order=newest&per_page=999${outlet_id}&date_start=${date_start}&date_end=${date_end}${filter}`
       );
       setAllTransactions(data.data);
+      allSales = data.data;
     } catch (err) {
       if (err.response.status === 404) {
         setAllTransactions([]);
       }
+      allSales = [];
       console.log(err);
     }
+
+    const compileReports = allSales.map((item) => {
+      const allItems = item.Transaction_Items.map((val) => {
+        return {
+          date: dayjs(item.createdAt).format("DD-MM-YYYY HH:mm:ss"),
+          receipt_id: item.receipt_id,
+          status: item.Payment?.status || "",
+          outlet_name: item.Outlet.name,
+          sales_type: val.Sales_Type.name,
+          user: item.User.User_Profile.name,
+          customer_phone_number: item.Customer_Profile?.phone_number || "",
+          customer_name: item.Customer_Profile?.name || "",
+          sku: val.sku || "",
+          product_name: val.Product.name,
+          category_name: val.Product.Product_Category.name,
+          quantity: val.quantity,
+          price_product: val.price_product
+        };
+      });
+
+      return allItems;
+    });
+
+    setReports(compileReports.flat(1));
   };
 
   React.useEffect(() => {
-    getTransactions(outletId, rangeId, startRange, endRange);
-  }, [outletId, rangeId, startRange, endRange]);
+    getTransactions(outletId, status, rangeId, startRange, endRange);
+  }, [outletId, status, rangeId, startRange, endRange]);
 
   const handleSelectOutlet = (data) => {
     if (data) {
@@ -75,6 +128,23 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
       setStartRange(new Date());
       setEndRange(new Date());
     }
+  };
+
+  const handleSelectStatus = (e) => setStatus(e.target.value);
+
+  const filename = () => {
+    const value = ranges(startRange, endRange).find(
+      (item) => item.id === rangeId
+    ).valueId;
+    const date = ranges(startRange, endRange).find(
+      (item) => item.id === rangeId
+    ).displayDate;
+
+    const processValue = value
+      .split(" ")
+      .join("-")
+      .toLowerCase();
+    return `riwayat-transaksi-${processValue}_${date}`;
   };
 
   const columns = [
@@ -171,63 +241,139 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
   };
 
   return (
-    <Row>
-      <Col>
-        <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
-          <div className="headerPage">
-            <div className="headerStart">
-              <h3>Transaction History</h3>
+    <>
+      <div style={{ display: "none" }}>
+        <table id="table-history-transaction">
+          <thead>
+            <tr>
+              <th>Laporan Transaksi Penjualan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr></tr>
+          </tbody>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <td>
+                {
+                  ranges(startRange, endRange).find(
+                    (item) => item.id === rangeId
+                  ).displayDate
+                }
+              </td>
+            </tr>
+            <tr>
+              <th>Status Transaksi</th>
+              <td>{status ? status : "Semua Transaksi"}</td>
+            </tr>
+            <tr>
+              <th>Produk/Pelanggan</th>
+              <td>Semua Pelanggan</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr></tr>
+          </tbody>
+          <thead>
+            <tr>
+              <th>Tanggal & Waktu</th>
+              <th>ID Struk</th>
+              <th>Status Pembayaran</th>
+              <th>Outlet</th>
+              <th>Tipe Penjualan</th>
+              <th>User</th>
+              <th>No. HP Pelanggan</th>
+              <th>Nama Pelanggan</th>
+              <th>SKU</th>
+              <th>Nama Produk</th>
+              <th>Kategori</th>
+              <th>Jumlah Produk</th>
+              <th>Harga Produk</th>
+            </tr>
+          </thead>
+          <tbody>
+            {reports.map((item, index) => {
+              return (
+                <tr key={index}>
+                  <td>{item.date}</td>
+                  <td>{item.receipt_id}</td>
+                  <td>{item.status}</td>
+                  <td>{item.outlet_name}</td>
+                  <td>{item.sales_type}</td>
+                  <td>{item.user}</td>
+                  <td>{item.customer_phone_number}</td>
+                  <td>{item.customer_name}</td>
+                  <td>{item.sku}</td>
+                  <td>{item.product_name}</td>
+                  <td>{item.category_name}</td>
+                  <td>{item.quantity}</td>
+                  <td>{item.price_product}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      <Row>
+        <Col>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <div className="headerPage">
+              <div className="headerStart">
+                <h3>Transaction History</h3>
+              </div>
+              <div className="headerEnd">
+                <Row>
+                  <DropdownButton title={rangeName} variant="outline-secondary">
+                    {ranges(startRange, endRange).map((item) => {
+                      if (item.id === 9) return "";
+
+                      return (
+                        <Dropdown.Item
+                          key={item.id}
+                          onClick={() => handleSelectRange(item)}
+                        >
+                          {item.value}
+                        </Dropdown.Item>
+                      );
+                    })}
+                  </DropdownButton>
+
+                  <DropdownButton
+                    title={outletName}
+                    style={{ margin: "0 1rem" }}
+                    variant="outline-secondary"
+                  >
+                    <Dropdown.Item onClick={() => handleSelectOutlet()}>
+                      All Outlets
+                    </Dropdown.Item>
+                    {allOutlets.map((item, index) => {
+                      return (
+                        <Dropdown.Item
+                          key={index}
+                          onClick={() => handleSelectOutlet(item)}
+                        >
+                          {item.name}
+                        </Dropdown.Item>
+                      );
+                    })}
+                  </DropdownButton>
+
+                  <ExportExcel
+                    className="btn btn-outline-primary"
+                    table="table-history-transaction"
+                    filename={filename()}
+                    sheet="transaction-history"
+                    buttonText="Export"
+                  />
+                </Row>
+              </div>
             </div>
-            <div className="headerEnd">
-              {/* <Button
-                variant="primary"
-                style={{ marginLeft: "0.5rem" }}
-                // onClick={showAddModalOutlet}
-              >
-                Add New Outlet
-              </Button> */}
+
+            <div className="filterSection lineBottom">
               <Row>
-                <DropdownButton title={rangeName} variant="outline-secondary">
-                  {ranges(startRange, endRange).map((item) => {
-                    if (item.id === 9) return "";
-
-                    return (
-                      <Dropdown.Item
-                        key={item.id}
-                        onClick={() => handleSelectRange(item)}
-                      >
-                        {item.value}
-                      </Dropdown.Item>
-                    );
-                  })}
-                </DropdownButton>
-
-                <DropdownButton
-                  title={outletName}
-                  style={{ marginLeft: "1rem" }}
-                  variant="outline-secondary"
-                >
-                  <Dropdown.Item onClick={() => handleSelectOutlet()}>
-                    All Outlets
-                  </Dropdown.Item>
-                  {allOutlets.map((item, index) => {
-                    return (
-                      <Dropdown.Item
-                        key={index}
-                        onClick={() => handleSelectOutlet(item)}
-                      >
-                        {item.name}
-                      </Dropdown.Item>
-                    );
-                  })}
-                </DropdownButton>
-              </Row>
-            </div>
-          </div>
-
-          {/* <div className="filterSection lineBottom">
-            <Row>
-              <Col>
+                {/* <Col>
                 <InputGroup className="pb-3">
                   <InputGroup.Prepend>
                     <InputGroup.Text style={{ background: "transparent" }}>
@@ -240,66 +386,75 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
                     onChange={handleSearch}
                   />
                 </InputGroup>
-              </Col>
-              <Col>
-                <Row>
-                  <Col>
-                    <Form.Group as={Row}>
-                      <Form.Label
-                        style={{ alignSelf: "center", marginBottom: "0" }}
-                      >
-                        Time:
-                      </Form.Label>
-                      <Col>
-                        <Form.Control
-                          as="select"
-                          name="time"
-                          value={filter.time}
-                          onChange={handleFilter}
+              </Col> */}
+                <Col md={6}>
+                  <Row>
+                    <Col>
+                      <Form.Group as={Row}>
+                        <Form.Label
+                          style={{ alignSelf: "center", marginBottom: "0" }}
                         >
-                          {allStatuses.map((item, index) => {
-                            return (
-                              <option key={index} value={item.toLowerCase()}>
-                                {item}
-                              </option>
-                            );
-                          })}
-                        </Form.Control>
-                      </Col>
-                    </Form.Group>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </div> */}
+                          Status:
+                        </Form.Label>
+                        <Col>
+                          <Form.Control
+                            as="select"
+                            name="status"
+                            value={status}
+                            onChange={handleSelectStatus}
+                            onBlur={handleSelectStatus}
+                          >
+                            <option value={""}>All Status</option>
+                            {["New", "Done", "Refund", "Closed"].map(
+                              (item, index) => {
+                                return (
+                                  <option
+                                    key={index}
+                                    value={item.toLowerCase()}
+                                  >
+                                    {item}
+                                  </option>
+                                );
+                              }
+                            )}
+                          </Form.Control>
+                        </Col>
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            </div>
 
-          <div
-            style={{
-              paddingRight: "1rem",
-              paddingTop: "1rem",
-              textAlign: "right"
-            }}
-          >
-            <p>
-              <b>Date:</b>{" "}
-              {
-                ranges(startRange, endRange).find((item) => item.id === rangeId)
-                  .displayDate
-              }
-            </p>
-          </div>
+            <div
+              style={{
+                paddingRight: "1rem",
+                paddingTop: "1rem",
+                textAlign: "right"
+              }}
+            >
+              <p>
+                <b>Date:</b>{" "}
+                {
+                  ranges(startRange, endRange).find(
+                    (item) => item.id === rangeId
+                  ).displayDate
+                }
+              </p>
+            </div>
 
-          <DataTable
-            noHeader
-            pagination
-            columns={columns}
-            data={dataTransactions()}
-            expandableRows
-            expandableRowsComponent={<ExpandableComponent />}
-            style={{ minHeight: "100%" }}
-          />
-        </Paper>
-      </Col>
-    </Row>
+            <DataTable
+              noHeader
+              pagination
+              columns={columns}
+              data={dataTransactions()}
+              expandableRows
+              expandableRowsComponent={<ExpandableComponent />}
+              style={{ minHeight: "100%" }}
+            />
+          </Paper>
+        </Col>
+      </Row>
+    </>
   );
 };

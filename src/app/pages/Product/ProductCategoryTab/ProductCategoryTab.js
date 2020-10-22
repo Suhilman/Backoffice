@@ -176,20 +176,19 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
     }
 
     const API_URL = process.env.REACT_APP_API_URL;
-    console.log(data);
-    // const group_modifier_id = data.map((item) => item.id);
+    const product_category_id = data.map((item) => item.id);
 
-    // try {
-    //   enableLoading();
-    //   await axios.delete(`${API_URL}/api/v1/modifier/bulk-delete`, {
-    //     data: { group_modifier_id }
-    //   });
-    //   disableLoading();
-    //   handleRefresh();
-    //   closeConfirmBulkModal();
-    // } catch (err) {
-    //   console.log(err);
-    // }
+    try {
+      enableLoading();
+      await axios.delete(`${API_URL}/api/v1/product-category/bulk-delete`, {
+        data: { product_category_id }
+      });
+      disableLoading();
+      handleRefresh();
+      closeConfirmBulkModal();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   React.useEffect(() => {
