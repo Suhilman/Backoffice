@@ -17,53 +17,16 @@ const ModalPayment = ({
   cancelModal,
   title,
   loading,
-  formikPayment,
-  validationPayment,
-  allTypes
+  formikSalesType,
+  validationSalesType
 }) => {
   return (
     <Modal show={stateModal} onHide={cancelModal} size="sm">
       <Modal.Header closeButton>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
-      <Form onSubmit={formikPayment.handleSubmit}>
+      <Form onSubmit={formikSalesType.handleSubmit}>
         <Modal.Body>
-          <Row>
-            <Col>
-              <Form.Group>
-                <Form.Label>Select Type:</Form.Label>
-                <Form.Control
-                  as="select"
-                  name="payment_method_type_id"
-                  {...formikPayment.getFieldProps("payment_method_type_id")}
-                  className={validationPayment("payment_method_type_id")}
-                  required
-                >
-                  <option value="" disabled hidden>
-                    Choose a Type
-                  </option>
-                  {allTypes?.length
-                    ? allTypes.map((item) => {
-                        return (
-                          <option key={item.id} value={item.id}>
-                            {item.name}
-                          </option>
-                        );
-                      })
-                    : ""}
-                </Form.Control>
-                {formikPayment.touched.payment_method_type_id &&
-                formikPayment.errors.payment_method_type_id ? (
-                  <div className="fv-plugins-message-container">
-                    <div className="fv-help-block">
-                      {formikPayment.errors.payment_method_type_id}
-                    </div>
-                  </div>
-                ) : null}
-              </Form.Group>
-            </Col>
-          </Row>
-
           <Row>
             <Col>
               <Form.Group>
@@ -72,14 +35,14 @@ const ModalPayment = ({
                   type="text"
                   name="name"
                   placeholder="Enter Name"
-                  {...formikPayment.getFieldProps("name")}
-                  className={validationPayment("name")}
+                  {...formikSalesType.getFieldProps("name")}
+                  className={validationSalesType("name")}
                   required
                 />
-                {formikPayment.touched.name && formikPayment.errors.name ? (
+                {formikSalesType.touched.name && formikSalesType.errors.name ? (
                   <div className="fv-plugins-message-container">
                     <div className="fv-help-block">
-                      {formikPayment.errors.name}
+                      {formikSalesType.errors.name}
                     </div>
                   </div>
                 ) : null}
@@ -90,7 +53,7 @@ const ModalPayment = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>MDR:</Form.Label>
+                <Form.Label>Charge:</Form.Label>
                 <InputGroup className="pb-3">
                   <InputGroup.Prepend>
                     <InputGroup.Text style={{ background: "transparent" }}>
@@ -99,20 +62,44 @@ const ModalPayment = ({
                   </InputGroup.Prepend>
                   <Form.Control
                     type="number"
-                    name="mdr"
-                    placeholder="Enter MDR"
-                    {...formikPayment.getFieldProps("mdr")}
-                    className={validationPayment("mdr")}
+                    name="charge"
+                    placeholder="Enter Charge"
+                    {...formikSalesType.getFieldProps("charge")}
+                    className={validationSalesType("charge")}
                     required
                   />
                 </InputGroup>
-                {formikPayment.touched.mdr && formikPayment.errors.mdr ? (
+
+                {formikSalesType.touched.charge &&
+                formikSalesType.errors.charge ? (
                   <div className="fv-plugins-message-container">
                     <div className="fv-help-block">
-                      {formikPayment.errors.mdr}
+                      {formikSalesType.errors.charge}
                     </div>
                   </div>
                 ) : null}
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Check
+                  type="checkbox"
+                  label="Require Table"
+                  name="require_table"
+                  value={formikSalesType.getFieldProps("require_table").value}
+                  onChange={(e) => {
+                    const { value } = e.target;
+                    if (value === "false") {
+                      formikSalesType.setFieldValue("require_table", true);
+                    } else {
+                      formikSalesType.setFieldValue("require_table", false);
+                    }
+                  }}
+                  checked={formikSalesType.getFieldProps("require_table").value}
+                />
               </Form.Group>
             </Col>
           </Row>

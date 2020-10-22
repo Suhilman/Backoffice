@@ -19,26 +19,37 @@ import { Search, MoreHoriz } from "@material-ui/icons";
 
 import ModalOutlet from "./ModalOutlet";
 import ShowConfirmModal from "../../../components/ConfirmModal";
+import useDebounce from "../../../hooks/useDebounce";
 
 import "../../style.css";
 
 export const OutletTab = ({
-  allOutlets,
   allProvinces,
   allTaxes,
-  handleRefresh
+  handleRefresh,
+  refresh
 }) => {
   const [loading, setLoading] = React.useState(false);
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
 
+  const [search, setSearch] = React.useState("");
+  const [filter, setFilter] = React.useState({
+    time: "newest"
+  });
+
+  const allStatuses = ["Newest", "Oldest"];
+
+  const [allOutlets, setAllOutlets] = React.useState([]);
   const [allCities, setAllCities] = React.useState([]);
   const [allLocations, setAllLocations] = React.useState([]);
 
   const [photo, setPhoto] = React.useState("");
   const [photoPreview, setPhotoPreview] = React.useState("");
   const [alertPhoto, setAlertPhoto] = React.useState("");
+
+  const debouncedSearch = useDebounce(search, 1000);
 
   const initialValueOutlet = {
     name: "",
@@ -78,9 +89,7 @@ export const OutletTab = ({
       .integer()
       .min(1)
       .required("Please choose a location."),
-    tax_id: Yup.array()
-      .of(Yup.number().required())
-      .required("Please choose a tax."),
+    tax_id: Yup.array().of(Yup.number()),
     status: Yup.string()
       .matches(/(active|inactive)/)
       .required("Please input a status.")
@@ -292,6 +301,32 @@ export const OutletTab = ({
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
+  const handleSearch = (e) => setSearch(e.target.value);
+  const handleFilter = (e) => {
+    const { name, value } = e.target;
+    const filterData = { ...filter };
+    filterData[name] = value;
+    setFilter(filterData);
+  };
+
+  const getOutlets = async (search, filter) => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const filterOutlet = `?name=${search}&order=${filter.time}`;
+
+    try {
+      const { data } = await axios.get(
+        `${API_URL}/api/v1/outlet${filterOutlet}`
+      );
+      setAllOutlets(data.data);
+    } catch (err) {
+      setAllOutlets([]);
+    }
+  };
+
+  React.useEffect(() => {
+    getOutlets(debouncedSearch, filter);
+  }, [refresh, debouncedSearch, filter]);
+
   const columns = [
     {
       name: "No.",
@@ -498,7 +533,11 @@ export const OutletTab = ({
                       <Search />
                     </InputGroup.Text>
                   </InputGroup.Prepend>
-                  <Form.Control placeholder="Search..." />
+                  <Form.Control
+                    placeholder="Search..."
+                    value={search}
+                    onChange={handleSearch}
+                  />
                 </InputGroup>
               </Col>
               <Col>
@@ -508,30 +547,22 @@ export const OutletTab = ({
                       <Form.Label
                         style={{ alignSelf: "center", marginBottom: "0" }}
                       >
-                        Status:
+                        Time:
                       </Form.Label>
                       <Col>
-                        <Form.Control as="select" defaultValue={"all"}>
-                          <option value="all">All</option>
-                          <option>Pending</option>
-                        </Form.Control>
-                      </Col>
-                    </Form.Group>
-                  </Col>
-
-                  <Col>
-                    <Form.Group as={Row}>
-                      <Form.Label
-                        style={{ alignSelf: "center", marginBottom: "0" }}
-                      >
-                        Type:
-                      </Form.Label>
-                      <Col>
-                        <Form.Control as="select" defaultValue={"all"}>
-                          <option value="all">All</option>
-                          <option>Online</option>
-                          <option>Retail</option>
-                          <option>Direct</option>
+                        <Form.Control
+                          as="select"
+                          name="time"
+                          value={filter.time}
+                          onChange={handleFilter}
+                        >
+                          {allStatuses.map((item, index) => {
+                            return (
+                              <option key={index} value={item.toLowerCase()}>
+                                {item}
+                              </option>
+                            );
+                          })}
                         </Form.Control>
                       </Col>
                     </Form.Group>

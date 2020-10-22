@@ -8,6 +8,8 @@ import { injectIntl } from "react-intl";
 
 import { Modal, Button } from "react-bootstrap";
 
+import ReCAPTCHA from "react-google-recaptcha";
+
 import ModalVerify from "../components/ModalVerify";
 import ModalRegister from "../components/ModalRegister";
 
@@ -26,6 +28,8 @@ const initialValues = {
 function Registration(props) {
   const { intl } = props;
   const [loading, setLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
+
   const RegistrationSchema = Yup.object().shape({
     name: Yup.string()
       .min(3, "Minimum 3 symbols")
@@ -188,6 +192,8 @@ function Registration(props) {
   const openVerifyModal = () => setShowVerifyModal(true);
   const handleVerifyModal = (e) => setCode(e.target.value);
 
+  const handleCaptcha = (value) => setCaptchaToken(value);
+
   React.useEffect(() => {
     let timer;
     if (showVerifyModal && second > 0) {
@@ -237,7 +243,8 @@ function Registration(props) {
         values.email,
         values.name,
         values.phone_number.toString(),
-        values.password
+        values.password,
+        captchaToken
       )
         .then(({ data }) => {
           const { owner, accessToken } = data.data;
@@ -522,6 +529,11 @@ function Registration(props) {
           ) : null}
         </div>
         {/* end: Terms and Conditions */}
+        <ReCAPTCHA
+          sitekey={process.env.REACT_APP_SITE_KEY}
+          onChange={handleCaptcha}
+        />
+
         <div className="form-group d-flex flex-wrap flex-center">
           <button
             type="submit"

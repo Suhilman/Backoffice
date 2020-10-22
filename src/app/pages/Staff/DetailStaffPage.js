@@ -29,6 +29,7 @@ export const DetailStaffPage = ({ match, location }) => {
   const [image, setImage] = React.useState("");
   const [staff, setStaff] = React.useState({
     outlet_id: "",
+    staff_id: "",
     type: "",
     role_id: "",
     name: "",
@@ -115,6 +116,7 @@ export const DetailStaffPage = ({ match, location }) => {
 
       setStaff({
         outlet_id: data.data.outlet_id,
+        staff_id: data.data.User.staff_id,
         name: data.data.name,
         email: data.data.User.email,
         phone_number: data.data.phone_number,
@@ -304,6 +306,29 @@ export const DetailStaffPage = ({ match, location }) => {
                         </div>
                       ) : null}
                     </>
+                  )}
+
+                  <div className="title">Staff ID</div>
+                  {statePage === "show" ? (
+                    <h5>{formikStaff.values.staff_id}</h5>
+                  ) : (
+                    <h5>{formikStaff.values.staff_id}</h5>
+                    // <>
+                    //   <Form.Control
+                    //     type="text"
+                    //     name="staff_id"
+                    //     {...formikStaff.getFieldProps("staff_id")}
+                    //     className={validationStaff("staff_id")}
+                    //     required
+                    //   />
+                    //   {formikStaff.touched.staff_id && formikStaff.errors.staff_id ? (
+                    //     <div className="fv-plugins-message-container">
+                    //       <div className="fv-help-block">
+                    //         {formikStaff.errors.staff_id}
+                    //       </div>
+                    //     </div>
+                    //   ) : null}
+                    // </>
                   )}
                 </Col>
 

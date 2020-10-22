@@ -5,8 +5,16 @@ import objectPath from "object-path";
 import ApexCharts from "apexcharts";
 import { useHtmlClassService } from "../../../layout";
 import { DropdownCustomToggler, DropdownMenu1 } from "../../dropdowns";
+import rupiahFormat from "rupiah-format";
+import combineAllSales from "../helpers/combineAllSales";
+import sum from "../helpers/sum";
 
-export function FinanceSummary({ className }) {
+export function FinanceSummary({
+  className,
+  totalSales,
+  totalTransactions,
+  totalRange
+}) {
   const uiService = useHtmlClassService();
   const layoutProps = useMemo(() => {
     return {
@@ -34,6 +42,30 @@ export function FinanceSummary({ className }) {
     };
   }, [uiService]);
 
+  const [totalEarnings, setTotalEarnings] = React.useState(0);
+  const [averagePrice, setAveragePrice] = React.useState(0);
+
+  const handleHover = (idx) => {
+    const earnings = totalSales.map((item) => {
+      return sum(combineAllSales(item));
+    });
+    const averages = totalSales.map((item) => {
+      const qty = item.reduce((init, curr) => {
+        for (const val of curr.Transaction_Items) {
+          init += val.quantity;
+        }
+        return init;
+      }, 0);
+      const price = sum(combineAllSales(item));
+
+      const avg = Math.round(price / qty) || 0;
+      return avg;
+    });
+
+    setTotalEarnings(earnings[idx]);
+    setAveragePrice(averages[idx]);
+  };
+
   useEffect(() => {
     const element = document.getElementById("finance-summary");
 
@@ -41,13 +73,18 @@ export function FinanceSummary({ className }) {
       return;
     }
 
-    const options = getChartOption(layoutProps);
+    const options = getChartOption(
+      layoutProps,
+      totalTransactions,
+      totalRange,
+      handleHover
+    );
     const chart = new ApexCharts(element, options);
     chart.render();
     return function cleanUp() {
       chart.destroy();
     };
-  }, [layoutProps]);
+  }, [layoutProps, totalTransactions, totalRange, totalSales]);
 
   return (
     <Card>
@@ -79,17 +116,11 @@ export function FinanceSummary({ className }) {
         <Row style={{ padding: "2rem" }}>
           <Col>
             <h6>Total Earnings</h6>
-            <h5>Rp. 50.000,000</h5>
+            <h5>{rupiahFormat.convert(totalEarnings || 0)}</h5>
           </Col>
-          <Col>
-            <h6>Next Tax Review Date</h6>
-            <h5>July 24,2017</h5>
-          </Col>
-        </Row>
-        <Row style={{ padding: "2rem" }}>
           <Col>
             <h6>Average Product Price</h6>
-            <h5>Rp.360,700</h5>
+            <h5>{rupiahFormat.convert(averagePrice || 0)}</h5>
           </Col>
         </Row>
 
@@ -103,12 +134,17 @@ export function FinanceSummary({ className }) {
   );
 }
 
-function getChartOption(layoutProps) {
+function getChartOption(
+  layoutProps,
+  totalTransactions,
+  totalRange,
+  handleHover
+) {
   const options = {
     series: [
       {
-        name: "Net Profit",
-        data: [30, 45, 32, 70, 40]
+        name: "Transactions",
+        data: totalTransactions
       }
     ],
     chart: {
@@ -142,7 +178,7 @@ function getChartOption(layoutProps) {
       colors: [layoutProps.colorsThemeBaseSuccess]
     },
     xaxis: {
-      categories: ["Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+      categories: totalRange,
       axisBorder: {
         show: false
       },
@@ -164,15 +200,6 @@ function getChartOption(layoutProps) {
           color: layoutProps.colorsGrayGray300,
           width: 1,
           dashArray: 3
-        }
-      },
-      tooltip: {
-        enabled: true,
-        formatter: undefined,
-        offsetY: 0,
-        style: {
-          fontSize: "12px",
-          fontFamily: layoutProps.fontFamily
         }
       }
     },
@@ -213,8 +240,9 @@ function getChartOption(layoutProps) {
         fontFamily: layoutProps.fontFamily
       },
       y: {
-        formatter: function(val) {
-          return "$" + val + " thousands";
+        formatter: function(val, opts) {
+          handleHover(opts.dataPointIndex);
+          return val;
         }
       }
     },

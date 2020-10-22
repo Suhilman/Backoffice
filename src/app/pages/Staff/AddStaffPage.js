@@ -34,8 +34,8 @@ export const AddStaffPage = ({ location }) => {
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
-  // const [cashierAccessList, setCashierAccessList] = React.useState([]);
-  // const [backendAccessList, setBackendAccessList] = React.useState([]);
+
+  const [selectedPrivileges, setSelectedPrivileges] = React.useState([]);
 
   const initialValueStaff = {
     outlet_id: "",
@@ -45,7 +45,8 @@ export const AddStaffPage = ({ location }) => {
     email: "",
     phone_number: "",
     password: "",
-    password_confirmation: ""
+    password_confirmation: "",
+    pin: ""
   };
 
   const StaffSchema = Yup.object().shape({
@@ -79,7 +80,12 @@ export const AddStaffPage = ({ location }) => {
       .required("Please input a password."),
     password_confirmation: Yup.string()
       .oneOf([Yup.ref("password"), null], "Password do not match")
-      .required("Please input a password confirmation.")
+      .required("Please input a password confirmation."),
+    pin: Yup.string()
+      .matches(/^\d+$/, "pin must be numbers")
+      .min(6)
+      .max(6)
+      .required("Please input a pin")
   });
 
   const formikStaff = useFormik({
@@ -93,6 +99,7 @@ export const AddStaffPage = ({ location }) => {
         name: values.name,
         email: values.email,
         password: values.password,
+        pin: values.pin,
         phone_number: JSON.stringify(values.phone_number),
         type: values.type,
         role_id: values.role_id,
@@ -125,6 +132,31 @@ export const AddStaffPage = ({ location }) => {
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
+
+  const handleChangeRole = (e) => {
+    const { name, value } = e.target;
+
+    if (!value) {
+      return;
+    }
+
+    const selectedId = parseInt(value);
+    formikStaff.setFieldValue(name, selectedId);
+
+    const selectedRole = allRoles.find((item) => item.id === selectedId);
+
+    const filteredPrivileges = selectedRole.Privilege_Accesses.filter(
+      (item, index, self) => {
+        return (
+          self.findIndex(
+            (selfIndex) => selfIndex.Privilege.name === item.Privilege.name
+          ) === index
+        );
+      }
+    ).sort((a, b) => a.Privilege.id - b.Privilege.id);
+
+    setSelectedPrivileges(filteredPrivileges);
+  };
 
   return (
     <>
@@ -224,6 +256,8 @@ export const AddStaffPage = ({ location }) => {
                       as="select"
                       name="role_id"
                       {...formikStaff.getFieldProps("role_id")}
+                      onChange={handleChangeRole}
+                      onBlur={handleChangeRole}
                       className={validationStaff("role_id")}
                       required
                     >
@@ -340,6 +374,24 @@ export const AddStaffPage = ({ location }) => {
                       </div>
                     ) : null}
                   </Form.Group>
+
+                  <Form.Group>
+                    <Form.Label>PIN*</Form.Label>
+                    <Form.Control
+                      type="password"
+                      name="pin"
+                      {...formikStaff.getFieldProps("pin")}
+                      className={validationStaff("pin")}
+                      required
+                    />
+                    {formikStaff.touched.pin && formikStaff.errors.pin ? (
+                      <div className="fv-plugins-message-container">
+                        <div className="fv-help-block">
+                          {formikStaff.errors.pin}
+                        </div>
+                      </div>
+                    ) : null}
+                  </Form.Group>
                 </Col>
               </Row>
             </Form>
@@ -348,106 +400,64 @@ export const AddStaffPage = ({ location }) => {
 
         <Col>
           <Row>
-            {allAccessLists.map((access) => {
-              const cashierWaiter = ["Kasir", "Waiter"];
-              const staffManager = ["Staff", "Manager"];
-
-              if (
-                cashierWaiter.includes(formikStaff.values.type) &&
-                access.name === "Cashier"
-              ) {
-                return (
-                  <Col key={access.id}>
-                    <Paper
-                      elevation={2}
-                      style={{ padding: "1rem", height: "100%" }}
-                    >
-                      <h5>{access.name} Access List</h5>
-
-                      <FormControl
-                        component="fieldset"
-                        style={{ width: "100%" }}
+            {selectedPrivileges.length
+              ? allAccessLists.map((access) => {
+                  return (
+                    <Col key={access.id}>
+                      <Paper
+                        elevation={2}
+                        style={{ padding: "1rem", height: "100%" }}
                       >
-                        <FormGroup row>
-                          <Container style={{ padding: "0" }}>
-                            {filterPrivileges.map((privilege, index) => {
-                              return (
-                                <Row
-                                  key={index}
-                                  style={{ padding: "0.5rem 1rem" }}
-                                >
-                                  <Col style={{ alignSelf: "center" }}>
-                                    <Form.Label>{privilege.name}</Form.Label>
-                                  </Col>
-                                  <Col style={{ textAlign: "end" }}>
-                                    <FormControlLabel
-                                      key={privilege.id}
-                                      control={
-                                        <Switch
-                                          key={privilege.id}
-                                          value={privilege.name}
-                                          color="primary"
-                                          disabled
-                                        />
-                                      }
-                                    />
-                                  </Col>
-                                </Row>
-                              );
-                            })}
-                          </Container>
-                        </FormGroup>
-                      </FormControl>
-                    </Paper>
-                  </Col>
-                );
-              } else if (staffManager.includes(formikStaff.values.type)) {
-                return (
-                  <Col key={access.id}>
-                    <Paper
-                      elevation={2}
-                      style={{ padding: "1rem", height: "100%" }}
-                    >
-                      <h5>{access.name} Access List</h5>
+                        <h5>{access.name} Access List</h5>
 
-                      <FormControl component="fieldset">
-                        <FormGroup row>
-                          <Container style={{ padding: "0" }}>
-                            {filterPrivileges.map((privilege, index) => {
-                              return (
-                                <Row
-                                  key={index}
-                                  style={{ padding: "0.5rem 1rem" }}
-                                >
-                                  <Col style={{ alignSelf: "center" }}>
-                                    <Form.Label>{privilege.name}</Form.Label>
-                                  </Col>
-                                  <Col style={{ textAlign: "end" }}>
-                                    <FormControlLabel
-                                      key={privilege.id}
-                                      control={
-                                        <Switch
-                                          key={privilege.id}
-                                          value={privilege.name}
-                                          color="primary"
-                                          disabled
+                        <FormControl
+                          component="fieldset"
+                          style={{ width: "100%" }}
+                        >
+                          <FormGroup row>
+                            <Container style={{ padding: "0" }}>
+                              {selectedPrivileges.map((privilege, index) => {
+                                if (access.name === privilege.Access.name) {
+                                  return (
+                                    <Row
+                                      key={index}
+                                      style={{ padding: "0.5rem 1rem" }}
+                                    >
+                                      <Col style={{ alignSelf: "center" }}>
+                                        <Form.Label>
+                                          {privilege.Privilege.name}
+                                        </Form.Label>
+                                      </Col>
+                                      <Col style={{ textAlign: "end" }}>
+                                        <FormControlLabel
+                                          key={privilege.Privilege.id}
+                                          control={
+                                            <Switch
+                                              key={privilege.Privilege.id}
+                                              value={privilege.Privilege.name}
+                                              color="primary"
+                                              checked
+                                              style={{
+                                                cursor: "not-allowed"
+                                              }}
+                                            />
+                                          }
                                         />
-                                      }
-                                    />
-                                  </Col>
-                                </Row>
-                              );
-                            })}
-                          </Container>
-                        </FormGroup>
-                      </FormControl>
-                    </Paper>
-                  </Col>
-                );
-              } else {
-                return "";
-              }
-            })}
+                                      </Col>
+                                    </Row>
+                                  );
+                                } else {
+                                  return "";
+                                }
+                              })}
+                            </Container>
+                          </FormGroup>
+                        </FormControl>
+                      </Paper>
+                    </Col>
+                  );
+                })
+              : ""}
           </Row>
         </Col>
       </Row>

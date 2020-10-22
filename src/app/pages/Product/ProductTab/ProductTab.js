@@ -19,17 +19,26 @@ import {
   FormControlLabel,
   Paper
 } from "@material-ui/core";
-import { Search, MoreHoriz } from "@material-ui/icons";
+import { Search, MoreHoriz, Delete } from "@material-ui/icons";
 
 import rupiahFormat from "rupiah-format";
+import useDebounce from "../../../hooks/useDebounce";
 
 import ConfirmModal from "../../../components/ConfirmModal";
 
 import "../../style.css";
 
-const ProductTab = ({ refresh, handleRefresh }) => {
+const ProductTab = ({ refresh, handleRefresh, allCategories, allOutlets }) => {
   const [loading, setLoading] = React.useState(false);
   const [showConfirm, setShowConfirm] = React.useState(false);
+  const [showConfirmBulk, setShowConfirmBulk] = React.useState(false);
+
+  const [search, setSearch] = React.useState("");
+  const [filter, setFilter] = React.useState({
+    category: "",
+    status: "",
+    outlet: ""
+  });
 
   const [allProducts, setAllProducts] = React.useState([]);
   const [product, setProduct] = React.useState({
@@ -37,8 +46,23 @@ const ProductTab = ({ refresh, handleRefresh }) => {
     name: ""
   });
 
+  const [multiSelect, setMultiSelect] = React.useState(false);
+  const [clearRows, setClearRows] = React.useState(true);
+  const [selectedData, setSelectedData] = React.useState([]);
+
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
+
+  const showConfirmBulkModal = (data) => {
+    if (!data.length) {
+      return handleMode();
+    }
+    setShowConfirmBulk(true);
+  };
+  const closeConfirmBulkModal = () => {
+    handleMode();
+    setShowConfirmBulk(false);
+  };
 
   const showConfirmModal = (data) => {
     setProduct({ id: data.id, name: data.name });
@@ -46,10 +70,16 @@ const ProductTab = ({ refresh, handleRefresh }) => {
   };
   const closeConfirmModal = () => setShowConfirm(false);
 
-  const getProduct = async () => {
+  const debouncedSearch = useDebounce(search, 1000);
+
+  const getProduct = async (search, filter) => {
     const API_URL = process.env.REACT_APP_API_URL;
+    const filterProduct = `?name=${search}&product_category_id=${filter.category}&outlet_id=${filter.outlet}&status=${filter.status}`;
+
     try {
-      const products = await axios.get(`${API_URL}/api/v1/product`);
+      const products = await axios.get(
+        `${API_URL}/api/v1/product${filterProduct}&per_page=1000`
+      );
       setAllProducts(products.data.data);
     } catch (err) {
       setAllProducts([]);
@@ -57,8 +87,39 @@ const ProductTab = ({ refresh, handleRefresh }) => {
   };
 
   React.useEffect(() => {
-    getProduct();
-  }, [refresh]);
+    getProduct(debouncedSearch, filter);
+  }, [refresh, debouncedSearch, filter]);
+
+  const handleMode = () => {
+    setSelectedData([]);
+    setMultiSelect((state) => !state);
+    setClearRows((state) => !state);
+  };
+
+  const handleSelected = (state) => {
+    setSelectedData(state.selectedRows);
+  };
+
+  const handleBulkDelete = async (data) => {
+    if (!data.length) {
+      return handleMode();
+    }
+
+    const API_URL = process.env.REACT_APP_API_URL;
+    const product_id = data.map((item) => item.id);
+
+    try {
+      enableLoading();
+      await axios.delete(`${API_URL}/api/v1/product/bulk-delete`, {
+        data: { product_id }
+      });
+      disableLoading();
+      handleRefresh();
+      closeConfirmBulkModal();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleChangeStatus = async (id) => {
     let currentStatus;
@@ -89,6 +150,14 @@ const ProductTab = ({ refresh, handleRefresh }) => {
     setAllProducts(edited);
   };
 
+  const handleSearch = (e) => setSearch(e.target.value);
+  const handleFilter = (e) => {
+    const { name, value } = e.target;
+    const filterData = { ...filter };
+    filterData[name] = value;
+    setFilter(filterData);
+  };
+
   const productData = (data) => {
     if (!data.length) {
       return;
@@ -102,7 +171,6 @@ const ProductTab = ({ refresh, handleRefresh }) => {
         category: item.Product_Category ? item.Product_Category.name : "",
         price: rupiahFormat.convert(item.price),
         outlet: item.Outlet.name,
-        variants: item.Product_Variants,
         status: item.status
       };
     });
@@ -180,58 +248,58 @@ const ProductTab = ({ refresh, handleRefresh }) => {
     }
   ];
 
-  const ExpandableComponent = ({ data }) => {
-    const keys = [
-      {
-        key: "Variant Name",
-        value: "name"
-      },
-      {
-        key: "Barcode",
-        value: "barcode"
-      },
-      {
-        key: "SKU",
-        value: "sku"
-      },
-      {
-        key: "Price",
-        value: "price"
-      }
-    ];
+  // const ExpandableComponent = ({ data }) => {
+  //   const keys = [
+  //     {
+  //       key: "Variant Name",
+  //       value: "name"
+  //     },
+  //     {
+  //       key: "Barcode",
+  //       value: "barcode"
+  //     },
+  //     {
+  //       key: "SKU",
+  //       value: "sku"
+  //     },
+  //     {
+  //       key: "Price",
+  //       value: "price"
+  //     }
+  //   ];
 
-    return (
-      <>
-        {data.variants.map((item) => {
-          return (
-            <ListGroup
-              key={item.id}
-              style={{ padding: "1rem", marginLeft: "1rem" }}
-            >
-              {keys.map((val, index) => {
-                return (
-                  <ListGroup.Item key={index}>
-                    <Row>
-                      <Col md={3} style={{ fontWeight: "700" }}>
-                        {val.key}
-                      </Col>
-                      {val.value === "price" ? (
-                        <Col>
-                          {rupiahFormat.convert(item[val.value]) || "-"}
-                        </Col>
-                      ) : (
-                        <Col>{item[val.value] || "-"}</Col>
-                      )}
-                    </Row>
-                  </ListGroup.Item>
-                );
-              })}
-            </ListGroup>
-          );
-        })}
-      </>
-    );
-  };
+  //   return (
+  //     <>
+  //       {data.variants.map((item) => {
+  //         return (
+  //           <ListGroup
+  //             key={item.id}
+  //             style={{ padding: "1rem", marginLeft: "1rem" }}
+  //           >
+  //             {keys.map((val, index) => {
+  //               return (
+  //                 <ListGroup.Item key={index}>
+  //                   <Row>
+  //                     <Col md={3} style={{ fontWeight: "700" }}>
+  //                       {val.key}
+  //                     </Col>
+  //                     {val.value === "price" ? (
+  //                       <Col>
+  //                         {rupiahFormat.convert(item[val.value]) || "-"}
+  //                       </Col>
+  //                     ) : (
+  //                       <Col>{item[val.value] || "-"}</Col>
+  //                     )}
+  //                   </Row>
+  //                 </ListGroup.Item>
+  //               );
+  //             })}
+  //           </ListGroup>
+  //         );
+  //       })}
+  //     </>
+  //   );
+  // };
 
   const handleDelete = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -258,25 +326,62 @@ const ProductTab = ({ refresh, handleRefresh }) => {
         loading={loading}
       />
 
+      <ConfirmModal
+        title={`Delete ${selectedData.length} Selected Products`}
+        body="Are you sure want to delete?"
+        buttonColor="danger"
+        handleClick={() => handleBulkDelete(selectedData)}
+        state={showConfirmBulk}
+        closeModal={closeConfirmBulkModal}
+        loading={loading}
+      />
+
       <Col md={12}>
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div className="headerPage">
             <div className="headerStart">
-              <h3>Product List</h3>
+              {!selectedData.length ? (
+                <h3>Product List</h3>
+              ) : (
+                <h3>{selectedData.length} items selected</h3>
+              )}
             </div>
             <div className="headerEnd">
-              <Button variant="outline-secondary">Import</Button>
-              <Button
-                variant="outline-secondary"
-                style={{ marginLeft: "0.5rem" }}
-              >
-                Export
-              </Button>
-              <Link to="/product/add-product">
-                <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
-                  Add New Product
+              {!multiSelect ? (
+                <>
+                  <Button variant="outline-secondary">Import</Button>
+                  <Button
+                    variant="outline-secondary"
+                    style={{ marginLeft: "0.5rem" }}
+                  >
+                    Export
+                  </Button>
+                  <Link to="/product/add-product">
+                    <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
+                      Add New Product
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <Button
+                  variant="danger"
+                  style={{ marginLeft: "0.5rem" }}
+                  onClick={() => showConfirmBulkModal(selectedData)}
+                >
+                  Delete
                 </Button>
-              </Link>
+              )}
+              {allProducts.length ? (
+                <Button
+                  variant={!multiSelect ? "danger" : "secondary"}
+                  style={{ marginLeft: "0.5rem" }}
+                  onClick={handleMode}
+                >
+                  {!multiSelect ? <Delete /> : "Cancel"}
+                </Button>
+              ) : (
+                ""
+              )}
             </div>
           </div>
 
@@ -289,7 +394,11 @@ const ProductTab = ({ refresh, handleRefresh }) => {
                       <Search />
                     </InputGroup.Text>
                   </InputGroup.Prepend>
-                  <Form.Control placeholder="Search..." />
+                  <Form.Control
+                    placeholder="Search..."
+                    value={search}
+                    onChange={handleSearch}
+                  />
                 </InputGroup>
               </Col>
 
@@ -303,12 +412,47 @@ const ProductTab = ({ refresh, handleRefresh }) => {
                         Category:
                       </Form.Label>
                       <Col>
-                        <Form.Control as="select" defaultValue={"all"}>
-                          <option value="all" disabled hidden>
-                            All
-                          </option>
-                          <option>Food</option>
-                          <option>Beverages</option>
+                        <Form.Control
+                          as="select"
+                          name="category"
+                          value={filter.category}
+                          onChange={handleFilter}
+                        >
+                          <option value="">All</option>
+                          {allCategories.map((item) => {
+                            return (
+                              <option key={item.id} value={item.id}>
+                                {item.name}
+                              </option>
+                            );
+                          })}
+                        </Form.Control>
+                      </Col>
+                    </Form.Group>
+                  </Col>
+
+                  <Col>
+                    <Form.Group as={Row}>
+                      <Form.Label
+                        style={{ alignSelf: "center", marginBottom: "0" }}
+                      >
+                        Outlet:
+                      </Form.Label>
+                      <Col>
+                        <Form.Control
+                          as="select"
+                          name="outlet"
+                          value={filter.outlet}
+                          onChange={handleFilter}
+                        >
+                          <option value="">All</option>
+                          {allOutlets.map((item) => {
+                            return (
+                              <option key={item.id} value={item.id}>
+                                {item.name}
+                              </option>
+                            );
+                          })}
                         </Form.Control>
                       </Col>
                     </Form.Group>
@@ -322,12 +466,15 @@ const ProductTab = ({ refresh, handleRefresh }) => {
                         Status:
                       </Form.Label>
                       <Col>
-                        <Form.Control as="select" defaultValue={"all"}>
-                          <option value="all" disabled hidden>
-                            All
-                          </option>
-                          <option>Active</option>
-                          <option>Inactive</option>
+                        <Form.Control
+                          as="select"
+                          name="status"
+                          value={filter.status}
+                          onChange={handleFilter}
+                        >
+                          <option value="">All</option>
+                          <option value="active">Active</option>
+                          <option value="inactive">Inactive</option>
                         </Form.Control>
                       </Col>
                     </Form.Group>
@@ -342,9 +489,12 @@ const ProductTab = ({ refresh, handleRefresh }) => {
             pagination
             columns={columns}
             data={productData(allProducts)}
-            expandableRows
-            expandableRowsComponent={<ExpandableComponent />}
+            // expandableRows
+            // expandableRowsComponent={<ExpandableComponent />}
             style={{ minHeight: "100%" }}
+            selectableRows={multiSelect}
+            onSelectedRowsChange={handleSelected}
+            clearSelectedRows={clearRows}
           />
         </Paper>
       </Col>

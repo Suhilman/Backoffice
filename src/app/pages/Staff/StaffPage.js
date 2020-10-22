@@ -9,13 +9,21 @@ import DataTable from "react-data-table-component";
 import { Search, MoreHoriz } from "@material-ui/icons";
 
 import ConfirmModal from "../../components/ConfirmModal";
+import useDebounce from "../../hooks/useDebounce";
 
 import "../style.css";
 
 export const StaffPage = () => {
   const [loading, setLoading] = React.useState(false);
   const [confirmModal, setConfirmModal] = React.useState(false);
+
   const [search, setSearch] = React.useState("");
+  const [filter, setFilter] = React.useState({
+    time: "newest",
+    type: "",
+    outlet_id: ""
+  });
+
   const [staff, setStaff] = React.useState([]);
   const [allOutlets, setAllOutlets] = React.useState([]);
   const [allAccessLists, setAllAccessLists] = React.useState([]);
@@ -29,7 +37,15 @@ export const StaffPage = () => {
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
+  const debouncedSearch = useDebounce(search, 1000);
+
   const handleSearch = (e) => setSearch(e.target.value);
+  const handleFilter = (e) => {
+    const { name, value } = e.target;
+    const filterData = { ...filter };
+    filterData[name] = value;
+    setFilter(filterData);
+  };
 
   const closeConfirmModal = () => setConfirmModal(false);
   const openConfirmModal = (data) => {
@@ -37,18 +53,13 @@ export const StaffPage = () => {
     setConfirmModal(true);
   };
 
-  const getStaffData = async (search) => {
+  const getStaffData = async (search, filter) => {
     const API_URL = process.env.REACT_APP_API_URL;
+    const filterStaff = `?name=${search}&order=${filter.time}&outlet_id=${filter.outlet_id}&type=${filter.type}`;
+
     try {
-      if (search) {
-        const { data } = await axios.get(
-          `${API_URL}/api/v1/staff?name=${search}`
-        );
-        setStaff(data.data);
-      } else {
-        const { data } = await axios.get(`${API_URL}/api/v1/staff`);
-        setStaff(data.data);
-      }
+      const { data } = await axios.get(`${API_URL}/api/v1/staff${filterStaff}`);
+      setStaff(data.data);
     } catch (err) {
       setStaff([]);
     }
@@ -68,8 +79,8 @@ export const StaffPage = () => {
   };
 
   React.useEffect(() => {
-    getStaffData(search);
-  }, [search]);
+    getStaffData(debouncedSearch, filter);
+  }, [debouncedSearch, filter]);
 
   const getOutlets = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -251,12 +262,14 @@ export const StaffPage = () => {
                       Time:
                     </Form.Label>
                     <Col>
-                      <Form.Control as="select" defaultValue={"Default"}>
-                        <option value="Default" disabled hidden>
-                          Nothing Selected
-                        </option>
-                        <option>Newest</option>
-                        <option>Oldest</option>
+                      <Form.Control
+                        as="select"
+                        name="time"
+                        value={filter.time}
+                        onChange={handleFilter}
+                      >
+                        <option value="newest">Newest</option>
+                        <option value="oldest">Oldest</option>
                       </Form.Control>
                     </Col>
                   </Form.Group>
@@ -270,12 +283,20 @@ export const StaffPage = () => {
                       Location:
                     </Form.Label>
                     <Col>
-                      <Form.Control as="select" defaultValue={"Default"}>
-                        <option value="Default" disabled hidden>
-                          Nothing Selected
-                        </option>
-                        <option>Newest</option>
-                        <option>Oldest</option>
+                      <Form.Control
+                        as="select"
+                        name="outlet_id"
+                        value={filter.outlet_id}
+                        onChange={handleFilter}
+                      >
+                        <option value="">All</option>
+                        {allOutlets.map((item) => {
+                          return (
+                            <option key={item.id} value={item.id}>
+                              {item.Location.name}
+                            </option>
+                          );
+                        })}
                       </Form.Control>
                     </Col>
                   </Form.Group>
@@ -288,12 +309,22 @@ export const StaffPage = () => {
                       Type:
                     </Form.Label>
                     <Col>
-                      <Form.Control as="select" defaultValue={"Default"}>
-                        <option value="Default" disabled hidden>
-                          Nothing Selected
-                        </option>
-                        <option>Newest</option>
-                        <option>Oldest</option>
+                      <Form.Control
+                        as="select"
+                        name="type"
+                        value={filter.type}
+                        onChange={handleFilter}
+                      >
+                        <option value="">All</option>
+                        {["Kasir", "Waiter", "Staff", "Manager"].map(
+                          (item, index) => {
+                            return (
+                              <option key={index} value={item}>
+                                {item}
+                              </option>
+                            );
+                          }
+                        )}
                       </Form.Control>
                     </Col>
                   </Form.Group>

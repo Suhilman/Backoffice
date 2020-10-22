@@ -19,10 +19,13 @@ export default function setupAxios(axios, store) {
       return response;
     },
     (err) => {
-      if (err.response.status === 401 && err.response.data === "Unauthorized") {
+      if (
+        err.response?.status === 401 &&
+        err.response?.data === "Unauthorized"
+      ) {
         localStorage.clear();
         window.location.replace("/auth/login");
-      } else if (err.response.status === 403) {
+      } else if (err.response?.status === 403) {
         localStorage.clear();
         window.location.replace("/auth/login");
       } else {

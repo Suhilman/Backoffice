@@ -1,5 +1,4 @@
 import React from "react";
-import axios from "axios";
 
 import { Row, Col, Table, Dropdown, DropdownButton } from "react-bootstrap";
 
@@ -7,50 +6,34 @@ import { Paper } from "@material-ui/core";
 
 import { sum } from "lodash";
 import rupiahFormat from "rupiah-format";
+import ExportExcel from "react-html-table-to-excel";
 
 import "../style.css";
 
-export const SalesSummaryTab = ({ allOutlets }) => {
-  const [loading, setLoading] = React.useState(false);
+export const SalesSummaryTab = ({
+  allOutlets,
+  getTransactions,
+  allTransactions,
+  ranges,
+  reports
+}) => {
+  // const [loading, setLoading] = React.useState(false);
 
-  const [allTransactions, setAllTransactions] = React.useState([]);
   const [outletId, setOutletId] = React.useState("");
   const [outletName, setOutletName] = React.useState("All Outlets");
 
-  const enableLoading = () => setLoading(true);
-  const disableLoading = () => setLoading(false);
+  const [rangeId, setRangeId] = React.useState(1);
+  const [rangeName, setRangeName] = React.useState("Today");
 
-  const getTransactions = async (id) => {
-    const API_URL = process.env.REACT_APP_API_URL;
+  const [startRange, setStartRange] = React.useState(new Date());
+  const [endRange, setEndRange] = React.useState(new Date());
 
-    if (id) {
-      try {
-        const { data } = await axios.get(
-          `${API_URL}/api/v1/transaction?outlet_id=${id}`
-        );
-        setAllTransactions(data.data);
-      } catch (err) {
-        if (err.response.status === 404) {
-          setAllTransactions([]);
-        }
-        console.log(err);
-      }
-    } else {
-      try {
-        const { data } = await axios.get(`${API_URL}/api/v1/transaction`);
-        setAllTransactions(data.data);
-      } catch (err) {
-        if (err.response.status === 404) {
-          setAllTransactions([]);
-        }
-        console.log(err);
-      }
-    }
-  };
+  // const enableLoading = () => setLoading(true);
+  // const disableLoading = () => setLoading(false);
 
   React.useEffect(() => {
-    getTransactions(outletId);
-  }, [outletId]);
+    getTransactions(outletId, rangeId, startRange, endRange);
+  }, [outletId, rangeId, startRange, endRange]);
 
   const handleSelectOutlet = (data) => {
     if (data) {
@@ -62,14 +45,20 @@ export const SalesSummaryTab = ({ allOutlets }) => {
     }
   };
 
+  const handleSelectRange = (data) => {
+    setRangeId(data.id);
+    setRangeName(data.value);
+
+    if (data.id === 9) {
+      setStartRange(new Date());
+      setEndRange(new Date());
+    }
+  };
+
   const summaryData = () => {
     const data = [
       {
         key: "(Income)",
-        value: 0
-      },
-      {
-        key: "(HPP)",
         value: 0
       },
       {
@@ -89,7 +78,7 @@ export const SalesSummaryTab = ({ allOutlets }) => {
         value: 0
       },
       {
-        key: "(Gratuity)",
+        key: "(Bonus)",
         value: 0
       },
       {
@@ -106,136 +95,248 @@ export const SalesSummaryTab = ({ allOutlets }) => {
       }
     ];
 
-    // const hpp = allTransactions.reduce((init, curr) => {
-    //   curr.Transaction_Items.forEach((val) => {
-    //     init += val.product_price * val.quantity;
-    //   });
+    const completedTransactions = allTransactions.filter(
+      (item) =>
+        item.Payment?.status === "done" || item.Payment?.status === "refund"
+    );
+    const doneTransactions = allTransactions.filter(
+      (item) => item.Payment?.status === "done"
+    );
+    const voidTransactions = allTransactions.filter(
+      (item) => item.Payment?.status === "refund"
+    );
 
-    //   return init;
-    // }, 0);
-
-    const hpp = 0;
-
-    const income = sum(
-      allTransactions.map((item) => {
-        return item.Transaction_Items.reduce(
-          (init, curr) => (init += curr.subtotal),
-          0
-        );
-      })
+    const income = completedTransactions.reduce(
+      (init, curr) => (init += curr.Payment?.payment_total),
+      0
     );
 
     // income sales
     const incomeSales = income;
     data[0].value = incomeSales;
 
-    // hpp sales
-    const hppSales = hpp;
-    data[1].value = hppSales;
-
-    // gross sales
-    const grossSales = income - hpp;
-    data[2].value = grossSales;
+    // gross sales dikurangi hpp
+    const grossSales = income;
+    data[1].value = grossSales;
 
     // discount
-    const discount = allTransactions.reduce(
-      (init, curr) => (init += curr.promo_amount || 0),
+    const discount = completedTransactions.reduce(
+      (init, curr) => (init += curr.Payment?.payment_discount),
       0
     );
-    data[3].value = discount;
+    data[2].value = discount;
 
     // refund / void
-    const voidSales = 0;
-    data[4].value = voidSales;
+    const voidSales = voidTransactions.reduce(
+      (init, curr) => (init += curr.Payment.payment_total),
+      0
+    );
+    data[3].value = voidSales;
 
     // nett sales
     const nettSales = grossSales - discount - voidSales;
-    data[5].value = nettSales;
+    data[4].value = nettSales;
 
-    // graduity
-    const graduitySales = 0;
-    data[6].value = graduitySales;
+    // bonus
+    const bonus = 0;
+    data[5].value = bonus;
 
     // tax
-    const taxSales = allTransactions.reduce(
-      (init, curr) => (init += curr.tax_amount || 0),
+    const taxSales = doneTransactions.reduce(
+      (init, curr) => (init += curr.Payment.payment_tax),
       0
     );
-    data[7].value = taxSales;
+    data[6].value = taxSales;
 
     // rounding
     const roundingSales = 0;
-    data[8].value = roundingSales;
+    data[7].value = roundingSales;
 
     // total
-    const totalCollected = nettSales + graduitySales + taxSales + roundingSales;
-    data[9].value = totalCollected;
+    const totalCollected = nettSales - bonus - taxSales + roundingSales;
+    data[8].value = totalCollected;
 
     return data;
   };
 
+  const sumReports = (data, key) => {
+    return data.reduce((init, curr) => (init += curr[key]), 0);
+  };
+
+  const filename = () => {
+    const value = ranges(startRange, endRange).find(
+      (item) => item.id === rangeId
+    ).valueId;
+    const date = ranges(startRange, endRange).find(
+      (item) => item.id === rangeId
+    ).displayDate;
+
+    const processValue = value
+      .split(" ")
+      .join("-")
+      .toLowerCase();
+    return `transaksi-penjualan-produk-${processValue}_${date}`;
+  };
+
   return (
-    <Row>
-      <Col>
-        <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
-          <div
-            className="headerPage lineBottom"
-            style={{ marginBottom: "1rem" }}
-          >
-            <div className="headerStart">
-              <h3 style={{ margin: "0" }}>Sales Summary</h3>
+    <>
+      <div style={{ display: "none" }}>
+        <table id="table-summary">
+          <thead>
+            <tr>
+              <th>Laporan Penjualan Produk</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr></tr>
+          </tbody>
+          <thead>
+            <tr>
+              <th>Outlet</th>
+              <td>{outletName}</td>
+            </tr>
+          </thead>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <td>
+                {
+                  ranges(startRange, endRange).find(
+                    (item) => item.id === rangeId
+                  ).displayDate
+                }
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr></tr>
+          </tbody>
+          <thead>
+            <tr>
+              <th>Nama Produk</th>
+              <th>Nama Opsi Tambahan</th>
+              <th>Kategori</th>
+              <th>SKU</th>
+              <th>Terjual</th>
+              <th>Penjualan Kotor</th>
+              <th>Diskon</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {reports.map((item, index) => {
+              return (
+                <tr key={index}>
+                  <td>{item.product_name}</td>
+                  <td>{item.addons_name}</td>
+                  <td>{item.category_name}</td>
+                  <td>{item.sku}</td>
+                  <td>{item.totalItems}</td>
+                  <td>{item.grossSales}</td>
+                  <td>{item.discountSales}</td>
+                  <td>{item.totalSales}</td>
+                </tr>
+              );
+            })}
+            <tr>
+              <th>Grand Total</th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th>{sumReports(reports, "totalItems")} </th>
+              <th>{sumReports(reports, "grossSales")} </th>
+              <th></th>
+              <th>{sumReports(reports, "totalSales")} </th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <Row>
+        <Col>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <div
+              className="headerPage lineBottom"
+              style={{ marginBottom: "1rem" }}
+            >
+              <div className="headerStart">
+                <h3 style={{ margin: "0" }}>Sales Summary</h3>
+              </div>
+              <div className="headerEnd">
+                <Row>
+                  <DropdownButton title={rangeName} variant="outline-secondary">
+                    {ranges(startRange, endRange).map((item) => {
+                      if (item.id === 9) return "";
+
+                      return (
+                        <Dropdown.Item
+                          key={item.id}
+                          onClick={() => handleSelectRange(item)}
+                        >
+                          {item.value}
+                        </Dropdown.Item>
+                      );
+                    })}
+                  </DropdownButton>
+
+                  <DropdownButton
+                    title={outletName}
+                    style={{ margin: "0 1rem" }}
+                    variant="outline-secondary"
+                  >
+                    <Dropdown.Item onClick={() => handleSelectOutlet()}>
+                      All Outlets
+                    </Dropdown.Item>
+                    {allOutlets.map((item, index) => {
+                      return (
+                        <Dropdown.Item
+                          key={index}
+                          onClick={() => handleSelectOutlet(item)}
+                        >
+                          {item.name}
+                        </Dropdown.Item>
+                      );
+                    })}
+                  </DropdownButton>
+
+                  <ExportExcel
+                    className="btn btn-outline-primary"
+                    table="table-summary"
+                    filename={filename()}
+                    sheet="transaction-report"
+                    buttonText="Export"
+                  />
+                </Row>
+              </div>
             </div>
-            <div className="headerEnd">
-              <Row>
-                {/* <DropdownButton title="All Time">
-                  <Dropdown.Item href="#/action-1">All Time</Dropdown.Item>
-                  <Dropdown.Item href="#/action-2">This Week</Dropdown.Item>
-                  <Dropdown.Item href="#/action-3">This Month</Dropdown.Item>
-                </DropdownButton> */}
 
-                <DropdownButton
-                  title={outletName}
-                  style={{ marginLeft: "1rem" }}
-                >
-                  <Dropdown.Item onClick={() => handleSelectOutlet()}>
-                    All Outlets
-                  </Dropdown.Item>
-                  {allOutlets.map((item, index) => {
-                    return (
-                      <Dropdown.Item
-                        key={index}
-                        onClick={() => handleSelectOutlet(item)}
-                      >
-                        {item.name}
-                      </Dropdown.Item>
-                    );
-                  })}
-                </DropdownButton>
-
-                <DropdownButton title="Exports" style={{ margin: "0 1rem" }}>
-                  <Dropdown.Item href="#/action-1">PDF</Dropdown.Item>
-                  <Dropdown.Item href="#/action-2">Excel</Dropdown.Item>
-                  <Dropdown.Item href="#/action-3">CSV</Dropdown.Item>
-                </DropdownButton>
-              </Row>
+            <div style={{ paddingRight: "1rem", textAlign: "right" }}>
+              <p>
+                <b>Date:</b>{" "}
+                {
+                  ranges(startRange, endRange).find(
+                    (item) => item.id === rangeId
+                  ).displayDate
+                }
+              </p>
             </div>
-          </div>
 
-          <Table striped>
-            <tbody>
-              {summaryData().map((item, index) => {
-                return (
-                  <tr key={index}>
-                    <td></td>
-                    <td>{item.key}</td>
-                    <td>{rupiahFormat.convert(item.value)}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
-        </Paper>
-      </Col>
-    </Row>
+            <Table striped>
+              <tbody>
+                {summaryData().map((item, index) => {
+                  return (
+                    <tr key={index}>
+                      <td></td>
+                      <td>{item.key}</td>
+                      <td>{rupiahFormat.convert(item.value)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </Paper>
+        </Col>
+      </Row>
+    </>
   );
 };

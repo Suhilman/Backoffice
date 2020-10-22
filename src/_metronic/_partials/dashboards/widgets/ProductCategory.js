@@ -7,7 +7,7 @@ import { Card } from "react-bootstrap";
 import { useHtmlClassService } from "../../../layout";
 import { KTUtil } from "../../../_assets/js/components/util";
 
-export function ProductCategory({ className }) {
+export function ProductCategory({ className, productCategories }) {
   const uiService = useHtmlClassService();
 
   const layoutProps = useMemo(() => {
@@ -39,14 +39,14 @@ export function ProductCategory({ className }) {
     }
 
     const height = parseInt(KTUtil.css(element, "height"));
-    const options = getChartOptions(layoutProps, height);
+    const options = getChartOptions(layoutProps, height, productCategories);
 
     const chart = new ApexCharts(element, options);
     chart.render();
     return function cleanUp() {
       chart.destroy();
     };
-  }, [layoutProps]);
+  }, [layoutProps, productCategories]);
 
   return (
     <Card className="card-stretch gutter-b">
@@ -62,10 +62,13 @@ export function ProductCategory({ className }) {
   );
 }
 
-function getChartOptions(layoutProps, height) {
+function getChartOptions(layoutProps, height, productCategories) {
+  const categoryName = Object.keys(productCategories);
+  const categoryQty = Object.values(productCategories);
+
   const options = {
-    series: [102, 59, 20],
-    labels: ["Food", "Coffee", "Appetizer"],
+    series: categoryQty.length ? categoryQty : [1],
+    labels: categoryName.length ? categoryName : ["[No Sales]"],
     chart: {
       type: "donut"
     }

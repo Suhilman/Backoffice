@@ -9,13 +9,19 @@ import "../style.css";
 
 import rupiahFormat from "rupiah-format";
 
-export const SalesTypeTab = ({ allOutlets }) => {
+export const SalesTypeTab = ({ allOutlets, ranges }) => {
   const [loading, setLoading] = React.useState(false);
 
   const [allSalesTypes, setAllSalesTypes] = React.useState([]);
   const [allTypes, setAllTypes] = React.useState([]);
   const [outletId, setOutletId] = React.useState("");
   const [outletName, setOutletName] = React.useState("All Outlets");
+
+  const [rangeId, setRangeId] = React.useState(1);
+  const [rangeName, setRangeName] = React.useState("Today");
+
+  const [startRange, setStartRange] = React.useState(new Date());
+  const [endRange, setEndRange] = React.useState(new Date());
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
@@ -34,33 +40,25 @@ export const SalesTypeTab = ({ allOutlets }) => {
     }
   };
 
-  const getSalesType = async (id) => {
+  const getSalesType = async (id, range_id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
 
-    if (id) {
-      try {
-        const { data } = await axios.get(
-          `${API_URL}/api/v1/transaction/sales-type?outlet_id=${id}`
-        );
-        setAllSalesTypes(data.data);
-      } catch (err) {
-        if (err.response.status === 404) {
-          setAllSalesTypes([]);
-        }
-        console.log(err);
+    const { date_start, date_end } = ranges(start_range, end_range).find(
+      (item) => item.id === range_id
+    );
+
+    const outlet_id = id ? `?outlet_id=${id}&` : "?";
+
+    try {
+      const { data } = await axios.get(
+        `${API_URL}/api/v1/transaction/sales-type${outlet_id}date_start=${date_start}&date_end=${date_end}`
+      );
+      setAllSalesTypes(data.data);
+    } catch (err) {
+      if (err.response.status === 404) {
+        setAllSalesTypes([]);
       }
-    } else {
-      try {
-        const { data } = await axios.get(
-          `${API_URL}/api/v1/transaction/sales-type`
-        );
-        setAllSalesTypes(data.data);
-      } catch (err) {
-        if (err.response.status === 404) {
-          setAllSalesTypes([]);
-        }
-        console.log(err);
-      }
+      console.log(err);
     }
   };
 
@@ -69,8 +67,8 @@ export const SalesTypeTab = ({ allOutlets }) => {
   }, []);
 
   React.useEffect(() => {
-    getSalesType(outletId);
-  }, [outletId]);
+    getSalesType(outletId, rangeId, startRange, endRange);
+  }, [outletId, rangeId, startRange, endRange]);
 
   const handleSelectOutlet = (data) => {
     if (data) {
@@ -82,36 +80,69 @@ export const SalesTypeTab = ({ allOutlets }) => {
     }
   };
 
+  const handleSelectRange = (data) => {
+    setRangeId(data.id);
+    setRangeName(data.value);
+
+    if (data.id === 9) {
+      setStartRange(new Date());
+      setEndRange(new Date());
+    }
+  };
+
   const salesTypeData = () => {
     const data = [];
 
-    for (const type of allTypes) {
-      allSalesTypes.forEach((item) => {
-        const allTransactions = item.Transactions;
-        let totalCollected = 0;
+    const allTransactions = allSalesTypes.filter(
+      (item) => item.Payment?.status === "done"
+    );
+    const types = allTransactions.map((item) =>
+      [
+        ...new Set(
+          item.Transaction_Items.map((val) => {
+            return val.Sales_Type.name;
+          })
+        )
+      ].join(" + ")
+    );
+    const newTypes = types.map((item, index) => {
+      return { type: item, transaction: allTransactions[index] };
+    });
+    const numberTransactions = newTypes.reduce((map, val) => {
+      map[val.type] = (map[val.type] || 0) + 1;
+      return map;
+    }, {});
+    const joinedTransactions = newTypes.reduce((init, curr, index, self) => {
+      init[curr.type] = self
+        .filter((item) => item.type === curr.type)
+        .map((item) => item.transaction);
+      return init;
+    }, {});
 
-        allTransactions.forEach((val) => {
-          val.Transaction_Items.forEach(
-            (curr) => (totalCollected += curr.subtotal),
-            0
-          );
+    const newAllTypes = [...new Set([...types, ...allTypes])];
+    const haveTransactions = Object.keys(numberTransactions);
+    newAllTypes.forEach((type) => {
+      if (haveTransactions.includes(type)) {
+        const totalCollected = joinedTransactions[type].reduce(
+          (init, curr) => (init += curr.Payment.payment_total),
+          0
+        );
+
+        data.push({
+          type,
+          transaction: numberTransactions[type],
+          total: totalCollected
         });
+      } else {
+        data.push({
+          type,
+          transaction: 0,
+          total: 0
+        });
+      }
+    });
 
-        if (type === item.name) {
-          data.push({
-            type,
-            transaction: allTransactions.length,
-            total: totalCollected
-          });
-        } else {
-          data.push({
-            type,
-            transaction: 0,
-            total: 0
-          });
-        }
-      });
-    }
+    data.sort((a, b) => b.transaction - a.transaction);
 
     const totalTransactions = data.reduce(
       (init, curr) => (init += curr.transaction),
@@ -141,7 +172,26 @@ export const SalesTypeTab = ({ allOutlets }) => {
             </div>
             <div className="headerEnd">
               <Row>
-                <DropdownButton title={outletName}>
+                <DropdownButton title={rangeName} variant="outline-secondary">
+                  {ranges(startRange, endRange).map((item) => {
+                    if (item.id === 9) return "";
+
+                    return (
+                      <Dropdown.Item
+                        key={item.id}
+                        onClick={() => handleSelectRange(item)}
+                      >
+                        {item.value}
+                      </Dropdown.Item>
+                    );
+                  })}
+                </DropdownButton>
+
+                <DropdownButton
+                  title={outletName}
+                  style={{ marginLeft: "1rem" }}
+                  variant="outline-secondary"
+                >
                   <Dropdown.Item onClick={() => handleSelectOutlet()}>
                     All Outlets
                   </Dropdown.Item>
@@ -156,14 +206,18 @@ export const SalesTypeTab = ({ allOutlets }) => {
                     );
                   })}
                 </DropdownButton>
-
-                <DropdownButton title="Exports" style={{ margin: "0 1rem" }}>
-                  <Dropdown.Item href="#/action-1">PDF</Dropdown.Item>
-                  <Dropdown.Item href="#/action-2">Excel</Dropdown.Item>
-                  <Dropdown.Item href="#/action-3">CSV</Dropdown.Item>
-                </DropdownButton>
               </Row>
             </div>
+          </div>
+
+          <div style={{ paddingRight: "1rem", textAlign: "right" }}>
+            <p>
+              <b>Date:</b>{" "}
+              {
+                ranges(startRange, endRange).find((item) => item.id === rangeId)
+                  .displayDate
+              }
+            </p>
           </div>
 
           <Table striped>

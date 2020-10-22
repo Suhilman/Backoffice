@@ -1,14 +1,6 @@
 import React from "react";
 
-import {
-  Button,
-  Modal,
-  Spinner,
-  Form,
-  Row,
-  Col,
-  InputGroup
-} from "react-bootstrap";
+import { Button, Modal, Spinner, Form, Row, Col } from "react-bootstrap";
 
 import "../../style.css";
 
@@ -17,33 +9,33 @@ const ModalPayment = ({
   cancelModal,
   title,
   loading,
-  formikPayment,
-  validationPayment,
-  allTypes
+  formikTable,
+  validationTable,
+  allOutlets
 }) => {
   return (
     <Modal show={stateModal} onHide={cancelModal} size="sm">
       <Modal.Header closeButton>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
-      <Form onSubmit={formikPayment.handleSubmit}>
+      <Form onSubmit={formikTable.handleSubmit}>
         <Modal.Body>
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Select Type:</Form.Label>
+                <Form.Label>Select Outlet:</Form.Label>
                 <Form.Control
                   as="select"
-                  name="payment_method_type_id"
-                  {...formikPayment.getFieldProps("payment_method_type_id")}
-                  className={validationPayment("payment_method_type_id")}
+                  name="outlet_id"
+                  {...formikTable.getFieldProps("outlet_id")}
+                  className={validationTable("outlet_id")}
                   required
                 >
                   <option value="" disabled hidden>
-                    Choose a Type
+                    Choose an Outlet
                   </option>
-                  {allTypes?.length
-                    ? allTypes.map((item) => {
+                  {allOutlets?.length
+                    ? allOutlets.map((item) => {
                         return (
                           <option key={item.id} value={item.id}>
                             {item.name}
@@ -52,11 +44,11 @@ const ModalPayment = ({
                       })
                     : ""}
                 </Form.Control>
-                {formikPayment.touched.payment_method_type_id &&
-                formikPayment.errors.payment_method_type_id ? (
+                {formikTable.touched.outlet_id &&
+                formikTable.errors.outlet_id ? (
                   <div className="fv-plugins-message-container">
                     <div className="fv-help-block">
-                      {formikPayment.errors.payment_method_type_id}
+                      {formikTable.errors.outlet_id}
                     </div>
                   </div>
                 ) : null}
@@ -72,14 +64,14 @@ const ModalPayment = ({
                   type="text"
                   name="name"
                   placeholder="Enter Name"
-                  {...formikPayment.getFieldProps("name")}
-                  className={validationPayment("name")}
+                  {...formikTable.getFieldProps("name")}
+                  className={validationTable("name")}
                   required
                 />
-                {formikPayment.touched.name && formikPayment.errors.name ? (
+                {formikTable.touched.name && formikTable.errors.name ? (
                   <div className="fv-plugins-message-container">
                     <div className="fv-help-block">
-                      {formikPayment.errors.name}
+                      {formikTable.errors.name}
                     </div>
                   </div>
                 ) : null}
@@ -90,26 +82,19 @@ const ModalPayment = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>MDR:</Form.Label>
-                <InputGroup className="pb-3">
-                  <InputGroup.Prepend>
-                    <InputGroup.Text style={{ background: "transparent" }}>
-                      %
-                    </InputGroup.Text>
-                  </InputGroup.Prepend>
-                  <Form.Control
-                    type="number"
-                    name="mdr"
-                    placeholder="Enter MDR"
-                    {...formikPayment.getFieldProps("mdr")}
-                    className={validationPayment("mdr")}
-                    required
-                  />
-                </InputGroup>
-                {formikPayment.touched.mdr && formikPayment.errors.mdr ? (
+                <Form.Label>Capacity:</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="capacity"
+                  placeholder="Enter Capacity"
+                  {...formikTable.getFieldProps("capacity")}
+                  className={validationTable("capacity")}
+                  required
+                />
+                {formikTable.touched.capacity && formikTable.errors.capacity ? (
                   <div className="fv-plugins-message-container">
                     <div className="fv-help-block">
-                      {formikPayment.errors.mdr}
+                      {formikTable.errors.capacity}
                     </div>
                   </div>
                 ) : null}

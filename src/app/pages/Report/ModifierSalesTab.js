@@ -7,6 +7,8 @@ import { Paper } from "@material-ui/core";
 
 import "../style.css";
 
+import rupiahFormat from "rupiah-format";
+
 export const ModifierSalesTab = ({ allOutlets }) => {
   const [loading, setLoading] = React.useState(false);
 
@@ -172,7 +174,7 @@ export const ModifierSalesTab = ({ allOutlets }) => {
                     <td>{item.modifier}</td>
                     <td>{item.sold}</td>
                     <td>{item.refunded}</td>
-                    <td>{item.total}</td>
+                    <td>{rupiahFormat.convert(item.total)}</td>
                   </tr>
                 );
               })}

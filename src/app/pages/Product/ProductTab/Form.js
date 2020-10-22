@@ -4,6 +4,12 @@ import { Link } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 
 import { Row, Col, Button, Form, Alert, Spinner } from "react-bootstrap";
+import {
+  FormControl,
+  FormControlLabel,
+  Switch,
+  FormGroup
+} from "@material-ui/core";
 import { Paper } from "@material-ui/core";
 
 import "../../style.css";
@@ -19,7 +25,7 @@ const FormTemplate = ({
   photo,
   handlePreviewPhoto,
   allProductTypes,
-  showModalVariant,
+  showModalAddons,
   formikProduct,
   validationProduct,
   alert
@@ -222,6 +228,38 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
+              <FormControl component="fieldset">
+                <FormGroup row>
+                  <Form.Label
+                    style={{ alignSelf: "center", marginRight: "1rem" }}
+                  >
+                    Product Favorite*
+                  </Form.Label>
+                  <FormControlLabel
+                    value={formikProduct.getFieldProps("is_favorite").value}
+                    name="is_favorite"
+                    control={
+                      <Switch
+                        color="primary"
+                        checked={
+                          formikProduct.getFieldProps("is_favorite").value
+                        }
+                        onChange={(e) => {
+                          const { value } = e.target;
+                          if (value === "false") {
+                            formikProduct.setFieldValue("is_favorite", true);
+                          } else {
+                            formikProduct.setFieldValue("is_favorite", false);
+                          }
+                        }}
+                      />
+                    }
+                  />
+                </FormGroup>
+              </FormControl>
+            </Form.Group>
+
+            <Form.Group>
               <Form.Label>Product Description</Form.Label>
               <Form.Control
                 as="textarea"
@@ -327,9 +365,9 @@ const FormTemplate = ({
               </Row>
             </Form.Group>
 
-            <div>Product Variant</div>
+            <div>Product Addons</div>
             <div style={{ padding: "1rem" }}>
-              <Button onClick={showModalVariant}>Manage Product Variant</Button>
+              <Button onClick={showModalAddons}>Manage Addons</Button>
             </div>
           </Col>
         </Row>

@@ -19,17 +19,26 @@ import { Search, MoreHoriz } from "@material-ui/icons";
 
 import ModalTax from "./ModalTax";
 import ShowConfirmModal from "../../../components/ConfirmModal";
+import useDebounce from "../../../hooks/useDebounce";
 
 import "../../style.css";
 
-export const TaxTab = ({ allTaxes, handleRefresh }) => {
+export const TaxTab = ({ handleRefresh, refresh }) => {
   const [loading, setLoading] = React.useState(false);
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
+  const [allTaxTypes, setAllTaxTypes] = React.useState([]);
   const [allTypes, setAllTypes] = React.useState([]);
 
-  const getTaxTypes = async () => {
+  const [search, setSearch] = React.useState("");
+  const [filter, setFilter] = React.useState({
+    type: ""
+  });
+
+  const debouncedSearch = useDebounce(search, 1000);
+
+  const getTypes = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/tax-type`);
@@ -39,9 +48,33 @@ export const TaxTab = ({ allTaxes, handleRefresh }) => {
     }
   };
 
+  const getTaxes = async (search, filter) => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const filterTaxType = `?name=${search}&type=${filter.type}`;
+
+    try {
+      const { data } = await axios.get(`${API_URL}/api/v1/tax${filterTaxType}`);
+      setAllTaxTypes(data.data);
+    } catch (err) {
+      setAllTaxTypes([]);
+    }
+  };
+
   React.useEffect(() => {
-    getTaxTypes();
+    getTypes();
   }, []);
+
+  React.useEffect(() => {
+    getTaxes(debouncedSearch, filter);
+  }, [refresh, debouncedSearch, filter]);
+
+  const handleSearch = (e) => setSearch(e.target.value);
+  const handleFilter = (e) => {
+    const { name, value } = e.target;
+    const filterData = { ...filter };
+    filterData[name] = value;
+    setFilter(filterData);
+  };
 
   const initialValueTax = {
     name: "",
@@ -236,7 +269,7 @@ export const TaxTab = ({ allTaxes, handleRefresh }) => {
   ];
 
   const dataTaxes = () => {
-    return allTaxes.map((item, index) => {
+    return allTaxTypes.map((item, index) => {
       return {
         id: item.id,
         no: index + 1,
@@ -257,7 +290,7 @@ export const TaxTab = ({ allTaxes, handleRefresh }) => {
         loading={loading}
         formikTax={formikTax}
         validationTax={validationTax}
-        allTypes={allTypes}
+        allTypes={allTaxTypes}
       />
 
       <ModalTax
@@ -267,7 +300,7 @@ export const TaxTab = ({ allTaxes, handleRefresh }) => {
         loading={loading}
         formikTax={formikTaxEdit}
         validationTax={validationTaxEdit}
-        allTypes={allTypes}
+        allTypes={allTaxTypes}
       />
 
       <ShowConfirmModal
@@ -306,7 +339,11 @@ export const TaxTab = ({ allTaxes, handleRefresh }) => {
                       <Search />
                     </InputGroup.Text>
                   </InputGroup.Prepend>
-                  <FormControl placeholder="Search..." />
+                  <FormControl
+                    placeholder="Search..."
+                    value={search}
+                    onChange={handleSearch}
+                  />
                 </InputGroup>
               </Col>
               <Col>
@@ -319,11 +356,20 @@ export const TaxTab = ({ allTaxes, handleRefresh }) => {
                         Type:
                       </Form.Label>
                       <Col>
-                        <Form.Control as="select" defaultValue={"all"}>
-                          <option value="all">All</option>
-                          <option>Online</option>
-                          <option>Retail</option>
-                          <option>Direct</option>
+                        <Form.Control
+                          as="select"
+                          name="type"
+                          value={filter.type}
+                          onChange={handleFilter}
+                        >
+                          <option value="">All</option>
+                          {allTypes.map((item) => {
+                            return (
+                              <option key={item.id} value={item.id}>
+                                {item.name}
+                              </option>
+                            );
+                          })}
                         </Form.Control>
                       </Col>
                     </Form.Group>

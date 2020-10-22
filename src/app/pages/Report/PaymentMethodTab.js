@@ -9,49 +9,47 @@ import rupiahFormat from "rupiah-format";
 
 import "../style.css";
 
-export const PaymentMethodTab = ({ allOutlets }) => {
+export const PaymentMethodTab = ({ allOutlets, ranges }) => {
   const [loading, setLoading] = React.useState(false);
 
   const [allPaymentMethods, setAllPaymentMethods] = React.useState([]);
   const [outletId, setOutletId] = React.useState("");
   const [outletName, setOutletName] = React.useState("All Outlets");
 
+  const [rangeId, setRangeId] = React.useState(1);
+  const [rangeName, setRangeName] = React.useState("Today");
+
+  const [startRange, setStartRange] = React.useState(new Date());
+  const [endRange, setEndRange] = React.useState(new Date());
+
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
-  const getPaymentMethod = async (id) => {
+  const getPaymentMethod = async (id, range_id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
 
-    if (id) {
-      try {
-        const { data } = await axios.get(
-          `${API_URL}/api/v1/transaction/payment-method?outlet_id=${id}`
-        );
-        setAllPaymentMethods(data.data);
-      } catch (err) {
-        if (err.response.status === 404) {
-          setAllPaymentMethods([]);
-        }
-        console.log(err);
+    const { date_start, date_end } = ranges(start_range, end_range).find(
+      (item) => item.id === range_id
+    );
+
+    const outlet_id = id ? `?outlet_id=${id}&` : "?";
+
+    try {
+      const { data } = await axios.get(
+        `${API_URL}/api/v1/transaction/payment-method${outlet_id}date_start=${date_start}&date_end=${date_end}`
+      );
+      setAllPaymentMethods(data.data);
+    } catch (err) {
+      if (err.response.status === 404) {
+        setAllPaymentMethods([]);
       }
-    } else {
-      try {
-        const { data } = await axios.get(
-          `${API_URL}/api/v1/transaction/payment-method`
-        );
-        setAllPaymentMethods(data.data);
-      } catch (err) {
-        if (err.response.status === 404) {
-          setAllPaymentMethods([]);
-        }
-        console.log(err);
-      }
+      console.log(err);
     }
   };
 
   React.useEffect(() => {
-    getPaymentMethod(outletId);
-  }, [outletId]);
+    getPaymentMethod(outletId, rangeId, startRange, endRange);
+  }, [outletId, rangeId, startRange, endRange]);
 
   const handleSelectOutlet = (data) => {
     if (data) {
@@ -63,26 +61,37 @@ export const PaymentMethodTab = ({ allOutlets }) => {
     }
   };
 
+  const handleSelectRange = (data) => {
+    setRangeId(data.id);
+    setRangeName(data.value);
+
+    if (data.id === 9) {
+      setStartRange(new Date());
+      setEndRange(new Date());
+    }
+  };
+
   const paymentMethodData = () => {
     const data = [];
 
     allPaymentMethods.forEach((item) => {
-      const allPayments = item.Payments;
-      let totalCollected = 0;
+      const allPayments = item.Payments.filter(
+        (item) => item.status === "done"
+      );
 
-      allPayments.forEach((val) => {
-        val.Transaction.Transaction_Items.forEach(
-          (curr) => (totalCollected += curr.subtotal),
-          0
-        );
-      });
+      const totalCollected = allPayments.reduce(
+        (init, curr) => (init += curr.payment_total),
+        0
+      );
 
       data.push({
         method: item.name,
-        transaction: item.Payments.length,
+        transaction: allPayments.length,
         total: totalCollected
       });
     });
+
+    data.sort((a, b) => b.transaction - a.transaction);
 
     const totalTransactions = data.reduce(
       (init, curr) => (init += curr.transaction),
@@ -112,7 +121,26 @@ export const PaymentMethodTab = ({ allOutlets }) => {
             </div>
             <div className="headerEnd">
               <Row>
-                <DropdownButton title={outletName}>
+                <DropdownButton title={rangeName} variant="outline-secondary">
+                  {ranges(startRange, endRange).map((item) => {
+                    if (item.id === 9) return "";
+
+                    return (
+                      <Dropdown.Item
+                        key={item.id}
+                        onClick={() => handleSelectRange(item)}
+                      >
+                        {item.value}
+                      </Dropdown.Item>
+                    );
+                  })}
+                </DropdownButton>
+
+                <DropdownButton
+                  title={outletName}
+                  style={{ marginLeft: "1rem" }}
+                  variant="outline-secondary"
+                >
                   <Dropdown.Item onClick={() => handleSelectOutlet()}>
                     All Outlets
                   </Dropdown.Item>
@@ -127,14 +155,18 @@ export const PaymentMethodTab = ({ allOutlets }) => {
                     );
                   })}
                 </DropdownButton>
-
-                <DropdownButton title="Exports" style={{ margin: "0 1rem" }}>
-                  <Dropdown.Item href="#/action-1">PDF</Dropdown.Item>
-                  <Dropdown.Item href="#/action-2">Excel</Dropdown.Item>
-                  <Dropdown.Item href="#/action-3">CSV</Dropdown.Item>
-                </DropdownButton>
               </Row>
             </div>
+          </div>
+
+          <div style={{ paddingRight: "1rem", textAlign: "right" }}>
+            <p>
+              <b>Date:</b>{" "}
+              {
+                ranges(startRange, endRange).find((item) => item.id === rangeId)
+                  .displayDate
+              }
+            </p>
           </div>
 
           <Table striped>

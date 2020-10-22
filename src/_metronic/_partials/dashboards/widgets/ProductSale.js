@@ -7,7 +7,7 @@ import { Card } from "react-bootstrap";
 import { useHtmlClassService } from "../../../layout";
 import { KTUtil } from "../../../_assets/js/components/util";
 
-export function ProductSale({ className }) {
+export function ProductSale({ className, productSales }) {
   const uiService = useHtmlClassService();
 
   const layoutProps = useMemo(() => {
@@ -39,14 +39,14 @@ export function ProductSale({ className }) {
     }
 
     const height = parseInt(KTUtil.css(element, "height"));
-    const options = getChartOptions(layoutProps, height);
+    const options = getChartOptions(layoutProps, height, productSales);
 
     const chart = new ApexCharts(element, options);
     chart.render();
     return function cleanUp() {
       chart.destroy();
     };
-  }, [layoutProps]);
+  }, [layoutProps, productSales]);
 
   return (
     <Card className="card-stretch gutter-b">
@@ -64,17 +64,35 @@ export function ProductSale({ className }) {
   );
 }
 
-function getChartOptions(layoutProps, height) {
+function getChartOptions(layoutProps, height, productSales) {
+  const productName = Object.keys(productSales);
+  const productQty = Object.values(productSales);
+
   const options = {
     series: [
       {
-        name: "TEAM A",
+        name: "Quantity",
         type: "column",
-        data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30]
+        data: productQty
       }
     ],
+    xaxis: {
+      categories: productName
+    },
+    yaxis: {
+      labels: {
+        formatter: function(val) {
+          return Math.round(val);
+        }
+      }
+    },
+    tooltip: {
+      x: {
+        show: false
+      }
+    },
     chart: {
-      height: 200,
+      height,
       type: "line",
       stacked: false,
       toolbar: false
@@ -82,12 +100,12 @@ function getChartOptions(layoutProps, height) {
     stroke: {
       width: [0, 2, 5],
       curve: "smooth"
-    },
-    plotOptions: {
-      bar: {
-        columnWidth: "50%"
-      }
     }
+    // plotOptions: {
+    //   bar: {
+    //     columnWidth: "20%"
+    //   }
+    // }
   };
   return options;
 }

@@ -10,16 +10,14 @@ import { Row, Col, Button, Form, Alert, Spinner } from "react-bootstrap";
 
 import "../../style.css";
 
-export const EditProductModifierPage = ({ location, match }) => {
+export const EditProductModifierPage = ({ match }) => {
   const history = useHistory();
-  const { allOutlets } = location.state;
   const { groupId } = match.params;
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
 
   const [productModifier, setProductModifier] = React.useState({
-    outlet_id: "",
     id: "",
     name: "",
     modifiers: [
@@ -32,10 +30,6 @@ export const EditProductModifierPage = ({ location, match }) => {
   });
 
   const ProductModifierSchema = Yup.object().shape({
-    outlet_id: Yup.number()
-      .integer()
-      .min(1)
-      .required("Please choose an outlet"),
     name: Yup.string()
       .min(3, "Minimum 3 characters")
       .max(50, "Maximum 50 characters")
@@ -82,7 +76,6 @@ export const EditProductModifierPage = ({ location, match }) => {
         onSubmit={async (values) => {
           const API_URL = process.env.REACT_APP_API_URL;
           const productModifierData = {
-            outlet_id: values.outlet_id,
             groupModifier: {
               id: values.id,
               name: values.name,
@@ -138,42 +131,6 @@ export const EditProductModifierPage = ({ location, match }) => {
                   {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
                   <Row style={{ padding: "1rem" }}>
-                    <Col>
-                      <Form.Group>
-                        <Form.Label>Outlet*</Form.Label>
-                        <Form.Control
-                          as="select"
-                          name="outlet_id"
-                          onChange={props.handleChange}
-                          onBlur={props.handleBlur}
-                          value={props.values.outlet_id}
-                          // className={validationProductModifier(
-                          //   props,
-                          //   "outlet_id"
-                          // )}
-                          required
-                        >
-                          <option value={""} disabled hidden>
-                            Choose Outlet
-                          </option>
-                          {allOutlets.map((item) => {
-                            return (
-                              <option key={item.id} value={item.id}>
-                                {item.name}
-                              </option>
-                            );
-                          })}
-                        </Form.Control>
-                        {/* {props.touched.outlet_id && props.errors.outlet_id ? (
-                        <div className="fv-plugins-message-container">
-                          <div className="fv-help-block">
-                            {props.errors.outlet_id}
-                          </div>
-                        </div>
-                      ) : null} */}
-                      </Form.Group>
-                    </Col>
-
                     <Col>
                       <Form.Group>
                         <Form.Label>Modifier Group Name*</Form.Label>

@@ -18,15 +18,41 @@ import { Search, MoreHoriz } from "@material-ui/icons";
 
 import ModalPayment from "./ModalPayment";
 import ShowConfirmModal from "../../../components/ConfirmModal";
+import useDebounce from "../../../hooks/useDebounce";
 
 import "../../style.css";
 
-export const PaymentTab = ({ allPaymentMethods, handleRefresh }) => {
+export const PaymentTab = ({ handleRefresh, refresh }) => {
   const [loading, setLoading] = React.useState(false);
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
+
+  const [allPaymentMethods, setAllPaymentMethods] = React.useState([]);
   const [allTypes, setAllTypes] = React.useState([]);
+
+  const [search, setSearch] = React.useState("");
+  const [filter, setFilter] = React.useState({
+    type: "",
+    status: ""
+  });
+
+  const allStatuses = ["Active", "Inactive"];
+  const debouncedSearch = useDebounce(search, 1000);
+
+  const getPaymentMethod = async (search, filter) => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const filterPayment = `?name=${search}&type=${filter.type}&status=${filter.status}`;
+
+    try {
+      const { data } = await axios.get(
+        `${API_URL}/api/v1/payment-method${filterPayment}`
+      );
+      setAllPaymentMethods(data.data);
+    } catch (err) {
+      setAllPaymentMethods([]);
+    }
+  };
 
   const getPaymentMethodTypes = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -39,8 +65,20 @@ export const PaymentTab = ({ allPaymentMethods, handleRefresh }) => {
   };
 
   React.useEffect(() => {
+    getPaymentMethod(debouncedSearch, filter);
+  }, [refresh, debouncedSearch, filter]);
+
+  React.useEffect(() => {
     getPaymentMethodTypes();
   }, []);
+
+  const handleSearch = (e) => setSearch(e.target.value);
+  const handleFilter = (e) => {
+    const { name, value } = e.target;
+    const filterData = { ...filter };
+    filterData[name] = value;
+    setFilter(filterData);
+  };
 
   const initialValuePayment = {
     name: "",
@@ -60,7 +98,7 @@ export const PaymentTab = ({ allPaymentMethods, handleRefresh }) => {
       .required("Please input a payment method type."),
     mdr: Yup.number()
       .integer()
-      .min(1)
+      .min(0)
       .required("Please input a mdr."),
     status: Yup.string()
       .matches(/(active|inactive)/)
@@ -372,7 +410,12 @@ export const PaymentTab = ({ allPaymentMethods, handleRefresh }) => {
                       <Search />
                     </InputGroup.Text>
                   </InputGroup.Prepend>
-                  <Form.Control type="text" placeholder="Search..." />
+                  <Form.Control
+                    type="text"
+                    placeholder="Search..."
+                    value={search}
+                    onChange={handleSearch}
+                  />
                 </InputGroup>
               </Col>
               <Col>
@@ -385,11 +428,46 @@ export const PaymentTab = ({ allPaymentMethods, handleRefresh }) => {
                         Type:
                       </Form.Label>
                       <Col>
-                        <Form.Control as="select" defaultValue={"all"}>
-                          <option value="all">All</option>
-                          <option>Online</option>
-                          <option>Retail</option>
-                          <option>Direct</option>
+                        <Form.Control
+                          as="select"
+                          name="type"
+                          value={filter.type}
+                          onChange={handleFilter}
+                        >
+                          <option value="">All</option>
+                          {allTypes.map((item) => {
+                            return (
+                              <option key={item.id} value={item.id}>
+                                {item.name}
+                              </option>
+                            );
+                          })}
+                        </Form.Control>
+                      </Col>
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group as={Row}>
+                      <Form.Label
+                        style={{ alignSelf: "center", marginBottom: "0" }}
+                      >
+                        Status:
+                      </Form.Label>
+                      <Col>
+                        <Form.Control
+                          as="select"
+                          name="status"
+                          value={filter.status}
+                          onChange={handleFilter}
+                        >
+                          <option value="">All</option>
+                          {allStatuses.map((item, index) => {
+                            return (
+                              <option key={index} value={item.toLowerCase()}>
+                                {item}
+                              </option>
+                            );
+                          })}
                         </Form.Control>
                       </Col>
                     </Form.Group>

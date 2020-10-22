@@ -12,7 +12,18 @@ export const ProductPage = () => {
   const [refresh, setRefresh] = React.useState(0);
   const [allOutlets, setAllOutlets] = React.useState([]);
   const [allCategories, setAllCategories] = React.useState([]);
-  const [allProductModifiers, setAllProductModifiers] = React.useState([]);
+  const [allProducts, setAllProducts] = React.useState([]);
+
+  const getProduct = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+
+    try {
+      const products = await axios.get(`${API_URL}/api/v1/product`);
+      setAllProducts(products.data.data);
+    } catch (err) {
+      setAllProducts([]);
+    }
+  };
 
   const getOutlet = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -36,16 +47,6 @@ export const ProductPage = () => {
     }
   };
 
-  const getProductModifier = async () => {
-    const API_URL = process.env.REACT_APP_API_URL;
-    try {
-      const modifiers = await axios.get(`${API_URL}/api/v1/group-modifier`);
-      setAllProductModifiers(modifiers.data.data);
-    } catch (err) {
-      setAllProductModifiers([]);
-    }
-  };
-
   const handleRefresh = () => {
     setRefresh((state) => state + 1);
   };
@@ -56,7 +57,7 @@ export const ProductPage = () => {
 
   React.useEffect(() => {
     getProductCategory();
-    getProductModifier();
+    // getProduct();
   }, [refresh]);
 
   return (
@@ -64,21 +65,19 @@ export const ProductPage = () => {
       <Tab eventKey="product" title="Product">
         <ProductTab
           allOutlets={allOutlets}
+          allCategories={allCategories}
           refresh={refresh}
           handleRefresh={handleRefresh}
         />
       </Tab>
 
-      <Tab eventKey="product-modifier" title="Product Modifier">
+      {/* <Tab eventKey="product-modifier" title="Product Modifier">
         <ProductModifierTab
-          allOutlets={allOutlets}
-          allCategories={allCategories}
-          allProductModifiers={allProductModifiers}
-          setAllCategories={setAllCategories}
           refresh={refresh}
           handleRefresh={handleRefresh}
+          allProducts={allProducts}
         />
-      </Tab>
+      </Tab> */}
 
       <Tab eventKey="product-category" title="Product Category">
         <ProductCategoryTab

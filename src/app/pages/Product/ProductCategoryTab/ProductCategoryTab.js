@@ -15,10 +15,11 @@ import {
 import { Paper } from "@material-ui/core";
 
 import DataTable from "react-data-table-component";
-import { Search, MoreHoriz } from "@material-ui/icons";
+import { Search, MoreHoriz, Delete } from "@material-ui/icons";
 
 import ConfirmModal from "../../../components/ConfirmModal";
 import ProductCategoryModal from "./ProductCategoryModal";
+import useDebounce from "../../../hooks/useDebounce";
 
 import "../../style.css";
 
@@ -26,12 +27,21 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [alertModal, setAlertModal] = React.useState("");
+  const [showConfirmBulk, setShowConfirmBulk] = React.useState(false);
+
+  const [multiSelect, setMultiSelect] = React.useState(false);
+  const [clearRows, setClearRows] = React.useState(true);
+  const [selectedData, setSelectedData] = React.useState([]);
 
   const [allCategories, setAllCategories] = React.useState([]);
+
+  const [search, setSearch] = React.useState("");
 
   const [showConfirm, setShowConfirm] = React.useState(false);
   const [showAddCategory, setShowAddCategory] = React.useState(false);
   const [showEditCategory, setShowEditCategory] = React.useState(false);
+
+  const debouncedSearch = useDebounce(search, 1000);
 
   const inputRef = React.useRef();
 
@@ -127,11 +137,32 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
   };
   const closeConfirmModal = () => setShowConfirm(false);
 
-  const getProductCategory = async () => {
+  const showConfirmBulkModal = (data) => {
+    if (!data.length) {
+      return handleMode();
+    }
+    setShowConfirmBulk(true);
+  };
+  const closeConfirmBulkModal = () => {
+    handleMode();
+    setShowConfirmBulk(false);
+  };
+
+  const handleMode = () => {
+    setSelectedData([]);
+    setMultiSelect((state) => !state);
+    setClearRows((state) => !state);
+  };
+
+  const handleSelected = (state) => setSelectedData(state.selectedRows);
+
+  const getProductCategory = async (search) => {
     const API_URL = process.env.REACT_APP_API_URL;
+    const filterProductCategory = search ? `?name=${search}` : "";
+
     try {
       const allCategories = await axios.get(
-        `${API_URL}/api/v1/product-category`
+        `${API_URL}/api/v1/product-category${filterProductCategory}`
       );
       setAllCategories(allCategories.data.data);
     } catch (err) {
@@ -139,9 +170,31 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
     }
   };
 
+  const handleBulkDelete = async (data) => {
+    if (!data.length) {
+      return handleMode();
+    }
+
+    const API_URL = process.env.REACT_APP_API_URL;
+    console.log(data);
+    // const group_modifier_id = data.map((item) => item.id);
+
+    // try {
+    //   enableLoading();
+    //   await axios.delete(`${API_URL}/api/v1/modifier/bulk-delete`, {
+    //     data: { group_modifier_id }
+    //   });
+    //   disableLoading();
+    //   handleRefresh();
+    //   closeConfirmBulkModal();
+    // } catch (err) {
+    //   console.log(err);
+    // }
+  };
+
   React.useEffect(() => {
-    getProductCategory();
-  }, [refresh]);
+    getProductCategory(debouncedSearch);
+  }, [refresh, debouncedSearch]);
 
   const categoryData = (data) => {
     if (!data.length) {
@@ -205,15 +258,21 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
     const categoryId = formikEditCategory.getFieldProps("id").value;
     const API_URL = process.env.REACT_APP_API_URL;
 
-    enableLoading();
-    await axios.delete(`${API_URL}/api/v1/product-category/${categoryId}`);
+    try {
+      enableLoading();
+      await axios.delete(`${API_URL}/api/v1/product-category/${categoryId}`);
 
-    setAllCategories(allCategories.filter((item) => item.id !== categoryId));
-    handleRefresh();
+      setAllCategories(allCategories.filter((item) => item.id !== categoryId));
+      handleRefresh();
 
-    disableLoading();
-    closeConfirmModal();
+      disableLoading();
+      closeConfirmModal();
+    } catch (err) {
+      console.log(err);
+    }
   };
+
+  const handleSearch = (e) => setSearch(e.target.value);
 
   return (
     <Row>
@@ -247,18 +306,53 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
         inputRef={inputRef}
       />
 
+      <ConfirmModal
+        title={`Delete ${selectedData.length} Selected Modifiers`}
+        body="Are you sure want to delete?"
+        buttonColor="danger"
+        handleClick={() => handleBulkDelete(selectedData)}
+        state={showConfirmBulk}
+        closeModal={closeConfirmBulkModal}
+        loading={loading}
+      />
+
       <Col md={12} style={{ minHeight: "100%" }}>
         {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div className="headerPage">
             <div className="headerStart">
-              <h3>Product Category List</h3>
+              {!selectedData.length ? (
+                <h3>Product Category List</h3>
+              ) : (
+                <h3>{selectedData.length} items selected</h3>
+              )}
             </div>
             <div className="headerEnd">
-              <Button variant="primary" onClick={showAddCategoryModal}>
-                Add New Product Category
-              </Button>
+              {!multiSelect ? (
+                <Button variant="primary" onClick={showAddCategoryModal}>
+                  Add New Product Category
+                </Button>
+              ) : (
+                <Button
+                  variant="danger"
+                  style={{ marginLeft: "0.5rem" }}
+                  onClick={() => showConfirmBulkModal(selectedData)}
+                >
+                  Delete
+                </Button>
+              )}
+              {allCategories.length ? (
+                <Button
+                  variant={!multiSelect ? "danger" : "secondary"}
+                  style={{ marginLeft: "0.5rem" }}
+                  onClick={handleMode}
+                >
+                  {!multiSelect ? <Delete /> : "Cancel"}
+                </Button>
+              ) : (
+                ""
+              )}
             </div>
           </div>
 
@@ -269,7 +363,11 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
                   <Search />
                 </InputGroup.Text>
               </InputGroup.Prepend>
-              <Form.Control placeholder="Search..." />
+              <Form.Control
+                placeholder="Search..."
+                value={search}
+                onChange={handleSearch}
+              />
             </InputGroup>
           </div>
 
@@ -279,6 +377,9 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
             columns={columns}
             data={categoryData(allCategories)}
             style={{ minHeight: "100%" }}
+            selectableRows={multiSelect}
+            onSelectedRowsChange={handleSelected}
+            clearSelectedRows={clearRows}
           />
         </Paper>
       </Col>

@@ -6,27 +6,16 @@ import { Tabs, Tab } from "react-bootstrap";
 import { OutletTab } from "./OutletTab/OutletTab";
 import { TaxTab } from "./TaxTab/TaxTab";
 import { PaymentTab } from "./PaymentTab/PaymentTab";
+import { TableManagementTab } from "./TableManagementTab/TableManagementTab";
+import { SalesTypeTab } from "./SalesTypeTab/SalesTypeTab";
 
 export const OutletPage = () => {
   const [tabs, setTabs] = React.useState("outlet");
-  const [allOutlets, setAllOutlets] = React.useState([]);
   const [allProvinces, setAllProvinces] = React.useState([]);
   const [allTaxes, setAllTaxes] = React.useState([]);
-  const [allPaymentMethods, setAllPaymentMethods] = React.useState([]);
   const [refresh, setRefresh] = React.useState(0);
 
   const handleRefresh = () => setRefresh((state) => state + 1);
-
-  const getOutlets = async () => {
-    const API_URL = process.env.REACT_APP_API_URL;
-
-    try {
-      const { data } = await axios.get(`${API_URL}/api/v1/outlet`);
-      setAllOutlets(data.data);
-    } catch (err) {
-      setAllOutlets([]);
-    }
-  };
 
   const getProvinces = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -50,44 +39,36 @@ export const OutletPage = () => {
     }
   };
 
-  const getPaymentMethod = async () => {
-    const API_URL = process.env.REACT_APP_API_URL;
-
-    try {
-      const { data } = await axios.get(`${API_URL}/api/v1/payment-method`);
-      setAllPaymentMethods(data.data);
-    } catch (err) {
-      setAllPaymentMethods([]);
-    }
-  };
-
   React.useEffect(() => {
-    getOutlets();
     getProvinces();
     getTaxes();
-    getPaymentMethod();
   }, [refresh]);
 
   return (
     <Tabs activeKey={tabs} onSelect={(v) => setTabs(v)}>
       <Tab eventKey="outlet" title="Outlet">
         <OutletTab
-          allOutlets={allOutlets}
           allProvinces={allProvinces}
           allTaxes={allTaxes}
           handleRefresh={handleRefresh}
+          refresh={refresh}
         />
       </Tab>
 
       <Tab eventKey="tax" title="Tax & Charges">
-        <TaxTab allTaxes={allTaxes} handleRefresh={handleRefresh} />
+        <TaxTab handleRefresh={handleRefresh} refresh={refresh} />
       </Tab>
 
       <Tab eventKey="payment" title="Payment">
-        <PaymentTab
-          allPaymentMethods={allPaymentMethods}
-          handleRefresh={handleRefresh}
-        />
+        <PaymentTab handleRefresh={handleRefresh} refresh={refresh} />
+      </Tab>
+
+      <Tab eventKey="sales-type" title="Sales Type">
+        <SalesTypeTab handleRefresh={handleRefresh} refresh={refresh} />
+      </Tab>
+
+      <Tab eventKey="table-management" title="Table Management">
+        <TableManagementTab handleRefresh={handleRefresh} refresh={refresh} />
       </Tab>
     </Tabs>
   );

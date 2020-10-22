@@ -6,7 +6,7 @@ import * as Yup from "yup";
 
 import { Row, Col } from "react-bootstrap";
 
-import ModalManageVariant from "./ModalManageVariant";
+import ModalManageAddons from "./ModalManageAddons";
 import FormTemplate from "./Form";
 
 export const EditProductPage = ({ match }) => {
@@ -15,11 +15,11 @@ export const EditProductPage = ({ match }) => {
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
-  const [showManageVariant, setShowManageVariant] = React.useState(false);
-  const [validatedModal, setValidatedModal] = React.useState(false);
   const [alertPhoto, setAlertPhoto] = React.useState("");
-  const [photoPreview, setPhotoPreview] = React.useState("");
   const [photo, setPhoto] = React.useState("");
+  const [photoPreview, setPhotoPreview] = React.useState("");
+  const [showManageAddons, setShowManageAddons] = React.useState(false);
+  const [validatedModal, setValidatedModal] = React.useState(false);
 
   const [allOutlets, setAllOutlets] = React.useState([]);
   const [allProductCategories, setAllProductCategories] = React.useState([]);
@@ -36,24 +36,37 @@ export const EditProductPage = ({ match }) => {
     barcode: "",
     sku: "",
     product_type_id: 1,
+    is_favorite: false,
     description: ""
   });
-  const [productVariantInitial, setProductVariantInitial] = React.useState([
+  const [productAddonsInitial, setProductAddonsInitial] = React.useState([
     {
       id: "",
-      name: "",
-      barcode: "",
-      sku: "",
-      price: ""
+      group_name: "",
+      group_type: "",
+      addons: [
+        {
+          id: "",
+          name: "",
+          price: 0,
+          status: "active"
+        }
+      ]
     }
   ]);
-  const [productVariant, setProductVariant] = React.useState([
+  const [productAddons, setProductAddons] = React.useState([
     {
       id: "",
-      name: "",
-      barcode: "",
-      sku: "",
-      price: ""
+      group_name: "",
+      group_type: "",
+      addons: [
+        {
+          id: "",
+          name: "",
+          price: 0,
+          status: "active"
+        }
+      ]
     }
   ]);
 
@@ -90,6 +103,7 @@ export const EditProductPage = ({ match }) => {
       .integer()
       .min(1)
       .required("Please choose a type."),
+    is_favorite: Yup.boolean().required(),
     description: Yup.string()
       .min(3, "Minimum 3 characters.")
       .max(50, "Maximum 50 characters.")
@@ -108,10 +122,11 @@ export const EditProductPage = ({ match }) => {
       formData.append("price", values.price);
       formData.append("product_type_id", values.product_type_id);
       formData.append("product_tax_id", values.product_tax_id);
+      formData.append("is_favorite", values.is_favorite);
       formData.append("status", values.status);
 
-      if (productVariant[0].name)
-        formData.append("productVariants", JSON.stringify(productVariant));
+      if (productAddons)
+        formData.append("groupAddons", JSON.stringify(productAddons));
 
       if (values.barcode) formData.append("barcode", values.barcode);
       if (values.sku) formData.append("sku", values.sku);
@@ -164,23 +179,24 @@ export const EditProductPage = ({ match }) => {
         barcode: productData.barcode || "",
         sku: productData.sku || "",
         product_type_id: productData.product_type_id,
+        is_favorite: productData.is_favorite,
         description: productData.description || ""
       });
 
-      const productVariantData = productData.Product_Variants.map((item) => {
-        return {
-          id: item.id,
-          name: item.name,
-          barcode: item.barcode,
-          sku: item.sku,
-          price: item.price
-        };
+      const addonsInitial = productData.Group_Addons.map((item) => {
+        item.group_name = item.name;
+        item.group_type = item.type;
+        item.addons = item.Addons;
+
+        delete item.name;
+        delete item.type;
+        delete item.Addons;
+
+        return item;
       });
 
-      if (productVariantData.length) {
-        setProductVariant(productVariantData);
-        setProductVariantInitial(productVariantData);
-      }
+      setProductAddonsInitial(addonsInitial);
+      setProductAddons(addonsInitial);
 
       if (productData.image !== "") {
         setPhoto(`${API_URL}${productData.image}`);
@@ -233,30 +249,16 @@ export const EditProductPage = ({ match }) => {
     }
   };
 
-  const showModalVariant = () => {
-    if (!productVariant[0].name) {
-      productVariant[0].barcode = formikProduct.getFieldProps("barcode").value;
+  const showModalAddons = () => setShowManageAddons(true);
 
-      if (formikProduct.getFieldProps("sku").value) {
-        productVariant[0].sku = formikProduct.getFieldProps("sku").value + "-1";
-      }
-
-      productVariant[0].price = formikProduct.getFieldProps("price").value;
-
-      setProductVariant(productVariant);
-    }
-
-    setShowManageVariant(true);
-  };
-
-  const cancelModalVariant = () => {
-    setProductVariant(productVariantInitial);
+  const cancelModalAddons = () => {
+    setProductAddons(productAddonsInitial);
 
     setValidatedModal(false);
-    setShowManageVariant(false);
+    setShowManageAddons(false);
   };
 
-  const saveChangesVariant = (e) => {
+  const saveChangesAddons = (e) => {
     e.preventDefault();
 
     const form = e.currentTarget;
@@ -265,53 +267,73 @@ export const EditProductPage = ({ match }) => {
       return;
     } else {
       setValidatedModal(true);
-      setShowManageVariant(false);
+      setShowManageAddons(false);
     }
   };
 
-  const handleAddVariant = () => {
-    let countSku;
-    const variants = productVariant;
-    const lastIndex = variants.length - 1 < 0 ? 0 : variants.length - 1;
-
-    if (variants[lastIndex].sku) {
-      const skuVariant = variants[lastIndex].sku.split("-");
-      const number = parseInt(skuVariant[1]);
-
-      countSku = skuVariant[0] + `-${number + 1}`;
-    } else {
-      countSku = "";
-    }
-
-    setProductVariant([
-      ...productVariant,
+  const handleAddGroupAddons = () => {
+    setProductAddons([
+      ...productAddons,
       {
         id: "",
-        name: "",
-        barcode: "",
-        sku: countSku,
-        price: formikProduct.getFieldProps("price").value
+        group_name: "",
+        group_type: "",
+        addons: [
+          {
+            id: "",
+            name: "",
+            price: 0,
+            status: "active"
+          }
+        ]
       }
     ]);
   };
 
-  const handleRemoveVariant = (index) => {
-    const allVariants = [...productVariant];
-    allVariants.splice(index, 1);
+  const handleAddAddons = (index) => {
+    const allProductAddons = [...productAddons];
+    const currentAllAddons = allProductAddons[index].addons;
 
-    setProductVariant(allVariants);
+    currentAllAddons.push({
+      id: "",
+      name: "",
+      price: 0,
+      status: "active"
+    });
+
+    setProductAddons(allProductAddons);
   };
 
-  const handleChangeVariant = (e) => {
+  const handleRemoveAddons = (index, valIndex) => {
+    const allProductAddons = [...productAddons];
+    const currentAllAddons = allProductAddons[index].addons;
+    currentAllAddons.splice(valIndex, 1);
+
+    if (!currentAllAddons.length) {
+      allProductAddons.splice(index, 1);
+    }
+
+    setProductAddons(allProductAddons);
+  };
+
+  const handleChangeAddons = (e) => {
     const targetName = e.target.name.split("-");
     const targetValue = e.target.value;
     const name = targetName[0];
     const index = parseInt(targetName[1]);
 
-    const allData = [...productVariant];
-    allData[index][name] = targetValue;
+    const allData = [...productAddons];
 
-    setProductVariant(allData);
+    if (name === "addons") {
+      const valName = targetName[2];
+      const valIndex = parseInt(targetName[3]);
+
+      allData[index][name][valIndex][valName] = targetValue;
+    } else {
+      allData[index][name] = targetValue;
+    }
+
+    setProductAddons(allData);
   };
 
   const handlePreviewPhoto = (file) => {
@@ -345,17 +367,17 @@ export const EditProductPage = ({ match }) => {
 
   return (
     <Row>
-      <ModalManageVariant
-        title={`Edit Product Variant - ${product.name}`}
+      <ModalManageAddons
+        title={`Edit Product Addons for - ${product.name}`}
         validatedModal={validatedModal}
-        showManageVariant={showManageVariant}
-        cancelModalVariant={cancelModalVariant}
-        saveChangesVariant={saveChangesVariant}
-        loading={loading}
-        productVariant={productVariant}
-        handleAddVariant={handleAddVariant}
-        handleRemoveVariant={handleRemoveVariant}
-        handleChangeVariant={handleChangeVariant}
+        showManageAddons={showManageAddons}
+        cancelModalAddons={cancelModalAddons}
+        saveChangesAddons={saveChangesAddons}
+        productAddons={productAddons}
+        handleAddGroupAddons={handleAddGroupAddons}
+        handleAddAddons={handleAddAddons}
+        handleRemoveAddons={handleRemoveAddons}
+        handleChangeAddons={handleChangeAddons}
       />
 
       <Col>
@@ -370,7 +392,7 @@ export const EditProductPage = ({ match }) => {
           photoPreview={photoPreview}
           photo={photo}
           handlePreviewPhoto={handlePreviewPhoto}
-          showModalVariant={showModalVariant}
+          showModalAddons={showModalAddons}
           formikProduct={formikProduct}
           validationProduct={validationProduct}
           alert={alert}

@@ -8,6 +8,8 @@ import { FormattedMessage, injectIntl } from "react-intl";
 import * as auth from "../_redux/authRedux";
 import { login } from "../_redux/authCrud";
 
+import ReCAPTCHA from "react-google-recaptcha";
+
 import ModalVerify from "../components/ModalVerify";
 import ModalRegister from "../components/ModalRegister";
 
@@ -19,6 +21,7 @@ const initialValues = {
 function Login(props) {
   const { intl } = props;
   const [loading, setLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
 
   const [token, setToken] = useState("");
   const [showVerifyModal, setShowVerifyModal] = useState(false);
@@ -237,6 +240,8 @@ function Login(props) {
     }
   };
 
+  const handleCaptcha = (value) => setCaptchaToken(value);
+
   React.useEffect(() => {
     let timer;
     if (showVerifyModal && second > 0) {
@@ -287,7 +292,7 @@ function Login(props) {
     validationSchema: LoginSchema,
     onSubmit: (values, { setStatus, setSubmitting }) => {
       enableLoading();
-      login(values.email, values.password)
+      login(values.email, values.password, captchaToken)
         .then(({ data }) => {
           const { token, user } = data.data;
 
@@ -411,6 +416,10 @@ function Login(props) {
             >
               <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />
             </Link>
+            <ReCAPTCHA
+              sitekey={process.env.REACT_APP_SITE_KEY}
+              onChange={handleCaptcha}
+            />
             <button
               id="kt_login_signin_submit"
               type="submit"

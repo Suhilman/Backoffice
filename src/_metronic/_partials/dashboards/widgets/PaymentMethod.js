@@ -7,7 +7,7 @@ import { Card } from "react-bootstrap";
 import { useHtmlClassService } from "../../../layout";
 import { KTUtil } from "../../../_assets/js/components/util";
 
-export function PaymentMethod({ className }) {
+export function PaymentMethod({ className, paymentMethods }) {
   const uiService = useHtmlClassService();
 
   const layoutProps = useMemo(() => {
@@ -39,14 +39,14 @@ export function PaymentMethod({ className }) {
     }
 
     const height = parseInt(KTUtil.css(element, "height"));
-    const options = getChartOptions(layoutProps, height);
+    const options = getChartOptions(layoutProps, height, paymentMethods);
 
     const chart = new ApexCharts(element, options);
     chart.render();
     return function cleanUp() {
       chart.destroy();
     };
-  }, [layoutProps]);
+  }, [layoutProps, paymentMethods]);
 
   return (
     <Card>
@@ -64,12 +64,26 @@ export function PaymentMethod({ className }) {
   );
 }
 
-function getChartOptions(layoutProps, height) {
+function getChartOptions(layoutProps, height, paymentMethods) {
+  const paymentName = Object.keys(paymentMethods);
+  const paymentCount = Object.values(paymentMethods);
+
+  // const dataName = paymentName.length ? paymentName : null;
+  // const dataCount = paymentCount.length ? paymentCount : null;
+
   const options = {
-    series: [23, 55, 70],
-    labels: ["Gopay", "OVO", "Cash/Credit"],
+    series: paymentCount.length ? paymentCount : [1],
+    labels: paymentName.length ? paymentName : ["[No Sales]"],
     chart: {
       type: "donut"
+    },
+    noData: {
+      text: undefined,
+      style: {
+        color: undefined,
+        fontSize: "14px",
+        fontFamily: undefined
+      }
     }
   };
   return options;
