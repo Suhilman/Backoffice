@@ -15,6 +15,9 @@ import { EditProductPage } from "./pages/Product/ProductTab/EditProductPage";
 import { AddProductModifierPage } from "./pages/Product/ProductModifierTab/AddProductModifierPage";
 import { EditProductModifierPage } from "./pages/Product/ProductModifierTab/EditProductModifierPage";
 import { OutletPage } from "./pages/Outlet/OutletPage";
+import { RolePage } from "./pages/Role/RolePage";
+import { PromoPage } from "./pages/Promo/PromoPage";
+import { SpecialPromoPage } from "./pages/Promo/SpecialPromoPage";
 
 export default function BasePage() {
   return (
@@ -45,6 +48,10 @@ export default function BasePage() {
           component={EditProductModifierPage}
         />
         <Route path="/product/:productId" component={EditProductPage} />
+
+        <Route path="/role" component={RolePage} />
+        <Route exact path="/promo" component={PromoPage} />
+        <Route path="/promo/special-promo" component={SpecialPromoPage} />
 
         <Redirect to="error/error-v1" />
       </Switch>

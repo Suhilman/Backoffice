@@ -7,8 +7,10 @@ import {
   Form,
   Row,
   Col,
-  InputGroup
+  InputGroup,
+  Alert
 } from "react-bootstrap";
+import { useDropzone } from "react-dropzone";
 
 import "../../style.css";
 
@@ -19,8 +21,20 @@ const ModalPayment = ({
   loading,
   formikPayment,
   validationPayment,
-  allTypes
+  allTypes,
+  handlePreviewPhoto,
+  alertPhoto,
+  photoPreview,
+  photo
 }) => {
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: "image/jpeg,image/png",
+    maxSize: 2 * 1000 * 1000,
+    onDrop(file) {
+      handlePreviewPhoto(file);
+    }
+  });
+
   return (
     <Modal show={stateModal} onHide={cancelModal} size="sm">
       <Modal.Header closeButton>
@@ -113,6 +127,46 @@ const ModalPayment = ({
                     </div>
                   </div>
                 ) : null}
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>QR Image:</Form.Label>
+                {alertPhoto ? <Alert variant="danger">{alertPhoto}</Alert> : ""}
+                <div
+                  {...getRootProps({
+                    className: "boxDashed dropzone"
+                  })}
+                >
+                  <input {...getInputProps()} />
+                  {!photoPreview ? (
+                    <p>
+                      Drag 'n' drop some files here, or click to select files
+                    </p>
+                  ) : (
+                    <>
+                      <div
+                        style={{
+                          margin: "auto",
+                          width: "120px",
+                          height: "120px",
+                          overflow: "hidden",
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          backgroundImage: `url(${photoPreview || photo})`
+                        }}
+                      />
+                      <small>
+                        {photo?.name
+                          ? `${photo.name} - ${photo.size} bytes`
+                          : ""}
+                      </small>
+                    </>
+                  )}
+                </div>
               </Form.Group>
             </Col>
           </Row>

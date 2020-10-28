@@ -28,6 +28,10 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
   const [stateEditModal, setStateEditModal] = React.useState(false);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
 
+  const [photo, setPhoto] = React.useState("");
+  const [photoPreview, setPhotoPreview] = React.useState("");
+  const [alertPhoto, setAlertPhoto] = React.useState("");
+
   const [allPaymentMethods, setAllPaymentMethods] = React.useState([]);
   const [allTypes, setAllTypes] = React.useState([]);
 
@@ -110,12 +114,15 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
     initialValues: initialValuePayment,
     validationSchema: PaymentSchema,
     onSubmit: async (values) => {
-      const paymentMethodData = {
-        name: values.name,
-        payment_method_type_id: values.payment_method_type_id,
-        mdr: values.mdr,
-        status: values.status
-      };
+      const paymentMethodData = new FormData();
+      paymentMethodData.append("name", values.name);
+      paymentMethodData.append(
+        "payment_method_type_id",
+        values.payment_method_type_id
+      );
+      paymentMethodData.append("mdr", values.mdr);
+      paymentMethodData.append("status", values.status);
+      if (photo) paymentMethodData.append("qrImage", photo);
 
       const API_URL = process.env.REACT_APP_API_URL;
       try {
@@ -135,12 +142,15 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
     initialValues: initialValuePayment,
     validationSchema: PaymentSchema,
     onSubmit: async (values) => {
-      const paymentMethodData = {
-        name: values.name,
-        payment_method_type_id: values.payment_method_type_id,
-        mdr: values.mdr,
-        status: values.status
-      };
+      const paymentMethodData = new FormData();
+      paymentMethodData.append("name", values.name);
+      paymentMethodData.append(
+        "payment_method_type_id",
+        values.payment_method_type_id
+      );
+      paymentMethodData.append("mdr", values.mdr);
+      paymentMethodData.append("status", values.status);
+      if (photo) paymentMethodData.append("qrImage", photo);
 
       const API_URL = process.env.REACT_APP_API_URL;
       try {
@@ -188,9 +198,11 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
     return "";
   };
 
-  const showAddModalPayment = () => setStateAddModal(true);
+  const showAddModalPayment = (data) => setStateAddModal(true);
   const cancelAddModalPayment = () => {
     formikPayment.resetForm();
+    setPhoto("");
+    setPhotoPreview("");
     setStateAddModal(false);
   };
 
@@ -203,10 +215,18 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       status: data.status
     });
 
+    if (data.qr_image) {
+      const API_URL = process.env.REACT_APP_API_URL;
+      setPhoto(`${API_URL}${data.qr_image}`);
+      setPhotoPreview(`${API_URL}${data.qr_image}`);
+    }
+
     setStateEditModal(true);
   };
   const cancelEditModalPayment = () => {
     formikPaymentEdit.resetForm();
+    setPhoto("");
+    setPhotoPreview("");
     setStateEditModal(false);
   };
   const showDeleteModalPayment = (data) => {
@@ -256,6 +276,24 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const handlePreviewPhoto = (file) => {
+    setAlertPhoto("");
+
+    let preview;
+    let img;
+
+    if (file.length) {
+      preview = URL.createObjectURL(file[0]);
+      img = file[0];
+    } else {
+      preview = "";
+      setAlertPhoto("file is too large or not supported");
+    }
+
+    setPhotoPreview(preview);
+    setPhoto(img);
   };
 
   const enableLoading = () => setLoading(true);
@@ -343,6 +381,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
         type: item.Payment_Method_Type.name,
         type_id: item.payment_method_type_id,
         mdr: item.mdr + "%",
+        qr_image: item.qr_image,
         status: item.status
       };
     });
@@ -358,6 +397,10 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
         formikPayment={formikPayment}
         validationPayment={validationPayment}
         allTypes={allTypes}
+        handlePreviewPhoto={handlePreviewPhoto}
+        alertPhoto={alertPhoto}
+        photoPreview={photoPreview}
+        photo={photo}
       />
 
       <ModalPayment
@@ -370,6 +413,10 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
         formikPayment={formikPaymentEdit}
         validationPayment={validationPaymentEdit}
         allTypes={allTypes}
+        handlePreviewPhoto={handlePreviewPhoto}
+        alertPhoto={alertPhoto}
+        photoPreview={photoPreview}
+        photo={photo}
       />
 
       <ShowConfirmModal

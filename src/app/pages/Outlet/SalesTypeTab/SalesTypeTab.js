@@ -160,6 +160,7 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
 
   const showEditModalSalesType = (data) => {
     formikSalesTypeEdit.setValues({
+      id: data.id,
       name: data.name,
       require_table: data.require_table,
       charge: parseInt(data.charge.slice(0, -1))
@@ -183,11 +184,11 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
 
   const handleDeleteSalesType = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
-    const payment_id = formikSalesType.getFieldProps("id").value;
+    const sales_type_id = formikSalesType.getFieldProps("id").value;
 
     try {
       enableLoading();
-      await axios.delete(`${API_URL}/api/v1/sales-type/${payment_id}`);
+      await axios.delete(`${API_URL}/api/v1/sales-type/${sales_type_id}`);
       handleRefresh();
       disableLoading();
       cancelDeleteModalSalesType();

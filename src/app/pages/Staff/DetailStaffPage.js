@@ -4,7 +4,15 @@ import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import { Button, Row, Col, Form, Alert, Spinner } from "react-bootstrap";
+import {
+  Button,
+  Row,
+  Col,
+  Form,
+  Alert,
+  Spinner,
+  Container
+} from "react-bootstrap";
 import {
   IconButton,
   Paper,
@@ -19,15 +27,27 @@ import "../style.css";
 
 export const DetailStaffPage = ({ match, location }) => {
   const { staffId } = match.params;
-  const { allOutlets, allRoles, filterPrivileges } = location.state;
+  const { allOutlets, allRoles, allAccessLists } = location.state;
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [statePage, setStatePage] = React.useState("show");
   const [preview, setPreview] = React.useState("");
 
+  const [selectedRole, setSelectedRole] = React.useState("");
+
   const [image, setImage] = React.useState("");
   const [staff, setStaff] = React.useState({
+    outlet_id: "",
+    staff_id: "",
+    type: "",
+    role_id: "",
+    name: "",
+    email: "",
+    phone_number: "",
+    location_name: ""
+  });
+  const [staffInitial, setStaffInitial] = React.useState({
     outlet_id: "",
     staff_id: "",
     type: "",
@@ -57,6 +77,10 @@ export const DetailStaffPage = ({ match, location }) => {
       .min(3, "Minimum 3 characters.")
       .max(50, "Maximum 50 characters.")
       .required("Please input a product name."),
+    staff_id: Yup.string()
+      .min(5)
+      .max(10)
+      .required("Please input a staff id."),
     email: Yup.string()
       .email()
       .required("Please input an email."),
@@ -74,6 +98,7 @@ export const DetailStaffPage = ({ match, location }) => {
 
       const formData = new FormData();
       formData.append("name", values.name);
+      formData.append("staff_id", values.staff_id);
       formData.append("email", values.email);
       formData.append("role_id", values.role_id);
       formData.append("type", values.type);
@@ -88,7 +113,7 @@ export const DetailStaffPage = ({ match, location }) => {
         setAlert("");
         setStatePage("show");
       } catch (err) {
-        setAlert(err.response.message);
+        setAlert(err.response.data.message || err.message);
         disableLoading();
       }
     }
@@ -124,6 +149,16 @@ export const DetailStaffPage = ({ match, location }) => {
         role_id: data.data.User.role_id,
         location_name: data.data.Outlet.Location.name
       });
+      setStaffInitial({
+        outlet_id: data.data.outlet_id,
+        staff_id: data.data.User.staff_id,
+        name: data.data.name,
+        email: data.data.User.email,
+        phone_number: data.data.phone_number,
+        type: data.data.User.type,
+        role_id: data.data.User.role_id,
+        location_name: data.data.Outlet.Location.name
+      });
 
       setImage(
         `${
@@ -132,6 +167,8 @@ export const DetailStaffPage = ({ match, location }) => {
             : ""
         }`
       );
+
+      setSelectedRole(parseInt(data.data.User.role_id));
     } catch (err) {
       console.log(err);
     }
@@ -160,8 +197,21 @@ export const DetailStaffPage = ({ match, location }) => {
     if (statePage === "show") {
       setStatePage("edit");
     } else {
+      formikStaff.resetForm();
+      setSelectedRole(parseInt(staffInitial.role_id));
       setStatePage("show");
     }
+  };
+
+  const privilegesData = (role_id) => {
+    if (!role_id) {
+      return [];
+    }
+    const staffPrivileges = allRoles.find((item) => item.id === selectedRole);
+    const sortedPrivileges = staffPrivileges.Role_Privileges.sort(
+      (a, b) => a.privilege_id - b.privilege_id
+    );
+    return sortedPrivileges;
   };
 
   return (
@@ -312,23 +362,23 @@ export const DetailStaffPage = ({ match, location }) => {
                   {statePage === "show" ? (
                     <h5>{formikStaff.values.staff_id}</h5>
                   ) : (
-                    <h5>{formikStaff.values.staff_id}</h5>
-                    // <>
-                    //   <Form.Control
-                    //     type="text"
-                    //     name="staff_id"
-                    //     {...formikStaff.getFieldProps("staff_id")}
-                    //     className={validationStaff("staff_id")}
-                    //     required
-                    //   />
-                    //   {formikStaff.touched.staff_id && formikStaff.errors.staff_id ? (
-                    //     <div className="fv-plugins-message-container">
-                    //       <div className="fv-help-block">
-                    //         {formikStaff.errors.staff_id}
-                    //       </div>
-                    //     </div>
-                    //   ) : null}
-                    // </>
+                    <>
+                      <Form.Control
+                        type="text"
+                        name="staff_id"
+                        {...formikStaff.getFieldProps("staff_id")}
+                        className={validationStaff("staff_id")}
+                        required
+                      />
+                      {formikStaff.touched.staff_id &&
+                      formikStaff.errors.staff_id ? (
+                        <div className="fv-plugins-message-container">
+                          <div className="fv-help-block">
+                            {formikStaff.errors.staff_id}
+                          </div>
+                        </div>
+                      ) : null}
+                    </>
                   )}
                 </Col>
 
@@ -352,6 +402,16 @@ export const DetailStaffPage = ({ match, location }) => {
                         as="select"
                         name="role_id"
                         {...formikStaff.getFieldProps("role_id")}
+                        onChange={(e) => {
+                          const { value } = e.target;
+                          formikStaff.setFieldValue("role_id", value);
+                          setSelectedRole(parseInt(value));
+                        }}
+                        onBlur={(e) => {
+                          const { value } = e.target;
+                          formikStaff.setFieldValue("role_id", value);
+                          setSelectedRole(parseInt(value));
+                        }}
                         className={validationStaff("email")}
                         required
                       >
@@ -470,70 +530,92 @@ export const DetailStaffPage = ({ match, location }) => {
                     </div>
                   </div>
 
-                  <FormControl component="fieldset">
-                    <FormGroup row>
-                      {filterPrivileges.map((privilege) => {
-                        return (
-                          <FormControlLabel
-                            key={privilege.id}
-                            control={
-                              <Switch
-                                key={privilege.id}
-                                value={privilege.name}
-                                disabled
-                                color="primary"
-                              />
-                            }
-                            label={privilege.name}
-                            labelPlacement="start"
-                          />
-                        );
-                      })}
-                    </FormGroup>
-                  </FormControl>
+                  <Row>
+                    {selectedRole
+                      ? allAccessLists.map((access) => {
+                          return (
+                            <Col key={access.id} style={{ paddingTop: "1rem" }}>
+                              <Paper
+                                elevation={2}
+                                style={{ padding: "1rem", height: "100%" }}
+                              >
+                                <h5>{access.name} Access List</h5>
+
+                                <FormControl
+                                  component="fieldset"
+                                  style={{ width: "100%" }}
+                                >
+                                  <FormGroup row>
+                                    <Container style={{ padding: "0" }}>
+                                      {privilegesData(selectedRole).map(
+                                        (privilege, index) => {
+                                          if (
+                                            access.name ===
+                                            privilege.Privilege.Access.name
+                                          ) {
+                                            return (
+                                              <Row
+                                                key={index}
+                                                style={{
+                                                  padding: "0.5rem 1rem"
+                                                }}
+                                              >
+                                                <Col
+                                                  style={{
+                                                    alignSelf: "center"
+                                                  }}
+                                                >
+                                                  <Form.Label>
+                                                    {privilege.Privilege.name}
+                                                  </Form.Label>
+                                                </Col>
+                                                <Col
+                                                  style={{ textAlign: "end" }}
+                                                >
+                                                  <FormControlLabel
+                                                    key={privilege.Privilege.id}
+                                                    control={
+                                                      <Switch
+                                                        key={
+                                                          privilege.Privilege.id
+                                                        }
+                                                        value={
+                                                          privilege.Privilege
+                                                            .name
+                                                        }
+                                                        color="primary"
+                                                        checked={
+                                                          privilege.allow
+                                                        }
+                                                        style={{
+                                                          cursor: "not-allowed"
+                                                        }}
+                                                      />
+                                                    }
+                                                  />
+                                                </Col>
+                                              </Row>
+                                            );
+                                          } else {
+                                            return "";
+                                          }
+                                        }
+                                      )}
+                                    </Container>
+                                  </FormGroup>
+                                </FormControl>
+                              </Paper>
+                            </Col>
+                          );
+                        })
+                      : ""}
+                  </Row>
                 </Col>
               </Row>
             </Form>
           </Paper>
         </Col>
       </Row>
-
-      {/*{allAccessLists.map(access => {
-          return (
-            <div key={access.id} className="col-md-6 mt-5">
-              <Paper className={classes.paperForm} elevation={1}>
-                <div className={classes.paperHeader}>
-                  <h5>{access.name} Access List</h5>
-                </div>
-
-                <FormControl component="fieldset">
-                  <FormGroup row>
-                    {filterPrivileges.map(privilege => {
-                      return (
-                        <FormControlLabel
-                          key={privilege.id}
-                          control={
-                            <Switch
-                              key={privilege.id}
-                              // checked={stateSwitch}
-                              value={privilege.name}
-                              onChange={e =>
-                                handleAccessListStaff(e, access.id)
-                              }
-                              color="primary"
-                            />
-                          }
-                          label={privilege.name}
-                          labelPlacement="start"
-                        />
-                      );
-                    })}
-                  </FormGroup>
-                </FormControl>
-              </Paper>
-            </div>
-          );
-        })}*/}
     </>
   );
 };

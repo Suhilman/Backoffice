@@ -25,12 +25,7 @@ import "../style.css";
 
 export const AddStaffPage = ({ location }) => {
   const history = useHistory();
-  const {
-    allOutlets,
-    allAccessLists,
-    allRoles,
-    filterPrivileges
-  } = location.state;
+  const { allOutlets, allAccessLists, allRoles } = location.state;
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
@@ -42,6 +37,7 @@ export const AddStaffPage = ({ location }) => {
     type: "",
     role_id: "",
     name: "",
+    staff_id: "",
     email: "",
     phone_number: "",
     password: "",
@@ -66,6 +62,10 @@ export const AddStaffPage = ({ location }) => {
       .min(3, "Minimum 3 characters.")
       .max(50, "Maximum 50 characters.")
       .required("Please input a product name."),
+    staff_id: Yup.string()
+      .min(5)
+      .max(10)
+      .required("Please input a staff id."),
     email: Yup.string()
       .email()
       .required("Please input an email."),
@@ -97,6 +97,7 @@ export const AddStaffPage = ({ location }) => {
 
       const staffData = {
         name: values.name,
+        staff_id: values.staff_id,
         email: values.email,
         password: values.password,
         pin: values.pin,
@@ -145,17 +146,10 @@ export const AddStaffPage = ({ location }) => {
 
     const selectedRole = allRoles.find((item) => item.id === selectedId);
 
-    const filteredPrivileges = selectedRole.Privilege_Accesses.filter(
-      (item, index, self) => {
-        return (
-          self.findIndex(
-            (selfIndex) => selfIndex.Privilege.name === item.Privilege.name
-          ) === index
-        );
-      }
-    ).sort((a, b) => a.Privilege.id - b.Privilege.id);
-
-    setSelectedPrivileges(filteredPrivileges);
+    const sortedPrivileges = selectedRole.Role_Privileges.sort(
+      (a, b) => a.privilege_id - b.privilege_id
+    );
+    setSelectedPrivileges(sortedPrivileges);
   };
 
   return (
@@ -301,9 +295,28 @@ export const AddStaffPage = ({ location }) => {
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>Email*</Form.Label>
+                    <Form.Label>Staff ID*</Form.Label>
                     <Form.Control
                       type="text"
+                      name="staff_id"
+                      {...formikStaff.getFieldProps("staff_id")}
+                      className={validationStaff("staff_id")}
+                      required
+                    />
+                    {formikStaff.touched.staff_id &&
+                    formikStaff.errors.staff_id ? (
+                      <div className="fv-plugins-message-container">
+                        <div className="fv-help-block">
+                          {formikStaff.errors.staff_id}
+                        </div>
+                      </div>
+                    ) : null}
+                  </Form.Group>
+
+                  <Form.Group>
+                    <Form.Label>Email*</Form.Label>
+                    <Form.Control
+                      type="email"
                       name="email"
                       {...formikStaff.getFieldProps("email")}
                       className={validationStaff("email")}
@@ -417,7 +430,10 @@ export const AddStaffPage = ({ location }) => {
                           <FormGroup row>
                             <Container style={{ padding: "0" }}>
                               {selectedPrivileges.map((privilege, index) => {
-                                if (access.name === privilege.Access.name) {
+                                if (
+                                  access.name ===
+                                  privilege.Privilege.Access.name
+                                ) {
                                   return (
                                     <Row
                                       key={index}
@@ -436,7 +452,7 @@ export const AddStaffPage = ({ location }) => {
                                               key={privilege.Privilege.id}
                                               value={privilege.Privilege.name}
                                               color="primary"
-                                              checked
+                                              checked={privilege.allow}
                                               style={{
                                                 cursor: "not-allowed"
                                               }}

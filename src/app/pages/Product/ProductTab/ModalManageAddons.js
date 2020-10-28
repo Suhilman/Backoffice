@@ -61,6 +61,7 @@ const ModalManageVariant = ({
                             name={`group_type-${index}`}
                             value={item.group_type}
                             onChange={handleChangeAddons}
+                            required
                           >
                             <option value="" disabled hidden>
                               Select a Type
@@ -110,7 +111,7 @@ const ModalManageVariant = ({
                               </Col>
 
                               {productAddons.length > 1 ||
-                              item.addons.length > 1 ? (
+                              item.addons.length > 0 ? (
                                 <Col
                                   md={1}
                                   style={

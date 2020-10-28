@@ -95,25 +95,15 @@ export const StaffPage = () => {
   const getAccessPrivileges = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
-      const accesses = await axios.get(`${API_URL}/api/v1/access`);
-      setAllAccessLists(accesses.data.data);
+      const { data } = await axios.get(`${API_URL}/api/v1/access`);
+      setAllAccessLists(data.data);
     } catch (err) {
       setAllAccessLists([]);
     }
 
     try {
-      const privileges = await axios.get(`${API_URL}/api/v1/privilege`);
-
-      const filterPrivileges = privileges.data.data.filter(
-        (item, index, self) => {
-          return (
-            self.findIndex((selfIndex) => selfIndex.name === item.name) ===
-            index
-          );
-        }
-      );
-
-      setFilterPrivileges(filterPrivileges);
+      const { data } = await axios.get(`${API_URL}/api/v1/privilege`);
+      setFilterPrivileges(data.data);
     } catch (err) {
       setFilterPrivileges([]);
     }
@@ -122,8 +112,8 @@ export const StaffPage = () => {
   const getRoles = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
-      const roles = await axios.get(`${API_URL}/api/v1/role`);
-      setAllRoles(roles.data.data);
+      const { data } = await axios.get(`${API_URL}/api/v1/role`);
+      setAllRoles(data.data);
     } catch (err) {
       setAllRoles([]);
     }
@@ -172,8 +162,8 @@ export const StaffPage = () => {
                   pathname: `/staff/${rows.id}`,
                   state: {
                     allOutlets,
-                    filterPrivileges,
-                    allRoles
+                    allRoles,
+                    allAccessLists
                   }
                 }}
               >

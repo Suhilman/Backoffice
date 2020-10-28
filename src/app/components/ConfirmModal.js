@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Modal, Spinner } from "react-bootstrap";
+import { Button, Modal, Spinner, Alert } from "react-bootstrap";
 
 const ConfirmModal = ({
   title,
@@ -8,7 +8,8 @@ const ConfirmModal = ({
   handleClick,
   state,
   closeModal,
-  loading
+  loading,
+  alert
 }) => {
   return (
     <Modal show={state} onHide={closeModal}>
@@ -17,6 +18,8 @@ const ConfirmModal = ({
       </Modal.Header>
 
       <Modal.Body>
+        {alert ? <Alert variant="danger">{alert}</Alert> : ""}
+
         <p>{body}</p>
       </Modal.Body>
 

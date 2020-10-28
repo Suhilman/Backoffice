@@ -4,7 +4,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 export const LOGIN_URL = `${API_URL}/api/v1/auth/login`;
 export const REGISTER_URL = `${API_URL}/api/v1/auth/register`;
-export const REQUEST_PASSWORD_URL = `${API_URL}/api/v1/auth/forgot-password`;
+export const REQUEST_PASSWORD_URL = `${API_URL}/api/v1/forget-password`;
 export const ME_URL = `${API_URL}/api/v1/business`;
 
 export function login(email, password, captcha) {
