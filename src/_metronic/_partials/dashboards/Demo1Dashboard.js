@@ -250,8 +250,12 @@ export function Demo1Dashboard() {
         `${API_URL}/api/v1/transaction${outlet_id}date_start=${date_start}&date_end=${date_end}`
       );
 
-      allSalesDone = data.data.filter((item) => item.status === "done");
-      allSalesRefund = data.data.filter((item) => item.status === "refund");
+      allSalesDone = data.data.filter(
+        (item) => item.Payment?.status === "done"
+      );
+      allSalesRefund = data.data.filter(
+        (item) => item.Payment?.status === "refund"
+      );
     } catch (err) {
       if (err.response.status === 404) {
         allSalesDone = [];
@@ -1010,7 +1014,7 @@ export function Demo1Dashboard() {
     <>
       <div className="row">
         {/* Sales Stat */}
-        <div className="col-lg-12 col-xxl-4">
+        <div className="col-lg-12 col-xxl-12">
           <MixedWidget1
             className="card-stretch gutter-b"
             currentSales={currentSales}
@@ -1032,8 +1036,10 @@ export function Demo1Dashboard() {
             reports={reports}
           />
         </div>
+      </div>
 
-        <div className="col-lg-12 col-xxl-4">
+      <div className="row">
+        <div className="col-lg-12 col-xxl-12">
           <StatsWidget11
             className="card-stretch gutter-b"
             realTimeTransactions={realTimeTransactions}
@@ -1041,6 +1047,7 @@ export function Demo1Dashboard() {
           />
         </div>
       </div>
+
       <div className="row">
         <div className="col-lg-4">
           <ProductSale productSales={productSales} />

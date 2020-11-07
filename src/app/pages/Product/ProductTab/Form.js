@@ -28,7 +28,8 @@ const FormTemplate = ({
   showModalAddons,
   formikProduct,
   validationProduct,
-  alert
+  alert,
+  handleDeletePhoto
 }) => {
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
@@ -318,6 +319,19 @@ const FormTemplate = ({
                   </>
                 )}
               </div>
+              {photo ? (
+                <div style={{ textAlign: "center", marginTop: "1rem" }}>
+                  <Button
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={handleDeletePhoto}
+                  >
+                    Remove Photo
+                  </Button>
+                </div>
+              ) : (
+                ""
+              )}
             </Form.Group>
 
             <Form.Group>

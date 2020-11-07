@@ -121,9 +121,30 @@ export const RolePage = () => {
         setAlert("");
         enableLoading();
         await axios.put(`${API_URL}/api/v1/role/${values.id}`, values);
-        disableLoading();
-        handleRefresh();
-        closeEditModal();
+
+        const localPrivileges = values.privileges.map((item) => {
+          const lowerName = item.name
+            .split(" ")
+            .join("_")
+            .toLowerCase();
+
+          return { name: lowerName, allow: item.allow, access: item.access };
+        });
+
+        const currLocalStorage = JSON.parse(localStorage.getItem("user_info"));
+
+        if (currLocalStorage.privileges) {
+          currLocalStorage.privileges = localPrivileges;
+          localStorage.setItem("user_info", JSON.stringify(currLocalStorage));
+
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        } else {
+          handleRefresh();
+          disableLoading();
+          closeEditModal();
+        }
       } catch (err) {
         setAlert(err.response?.data.message || err.message);
         disableLoading();

@@ -25,7 +25,10 @@ export default function setupAxios(axios, store) {
       ) {
         localStorage.clear();
         window.location.replace("/auth/login");
-      } else if (err.response?.status === 403) {
+      } else if (
+        err.response?.status === 403 &&
+        err.response?.data.message.includes("token")
+      ) {
         localStorage.clear();
         window.location.replace("/auth/login");
       } else {

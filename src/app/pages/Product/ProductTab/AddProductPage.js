@@ -296,6 +296,11 @@ export const AddProductPage = () => {
     setPhoto(img);
   };
 
+  const handleDeletePhoto = () => {
+    setPhoto("");
+    setPhotoPreview("");
+  };
+
   React.useEffect(() => {
     getOutlet();
     getProductType();
@@ -336,6 +341,7 @@ export const AddProductPage = () => {
           formikProduct={formikProduct}
           validationProduct={validationProduct}
           alert={alert}
+          handleDeletePhoto={handleDeletePhoto}
         />
       </Col>
     </Row>

@@ -114,6 +114,56 @@ export const SpecialPromoPage = () => {
     return "";
   };
 
+  const formikEditPromo = useFormik({
+    enableReinitialize: true,
+    initialValues: initialValuePromo,
+    validationSchema: PromoSchema,
+    onSubmit: async (values) => {
+      const promoData = new FormData();
+      promoData.append("outlet_id", values.outlet_id);
+      promoData.append("name", values.name);
+      promoData.append("description_type", values.description_type);
+      promoData.append("description", values.description);
+      promoData.append("type", values.type);
+      promoData.append("value", values.value);
+      promoData.append("promo_category_id", values.promo_category_id);
+      if (photo) promoData.append("specialPromoImage", photo);
+
+      const API_URL = process.env.REACT_APP_API_URL;
+      try {
+        enableLoading();
+        await axios.put(
+          `${API_URL}/api/v1/special-promo/${values.id}`,
+          promoData
+        );
+        handleRefresh();
+        disableLoading();
+        closeEditModal();
+      } catch (err) {
+        disableLoading();
+        setAlert(err.response?.data.message || err.message);
+      }
+    }
+  });
+
+  const validationEditPromo = (fieldname) => {
+    if (
+      formikEditPromo.touched[fieldname] &&
+      formikEditPromo.errors[fieldname]
+    ) {
+      return "is-invalid";
+    }
+
+    if (
+      formikEditPromo.touched[fieldname] &&
+      !formikEditPromo.errors[fieldname]
+    ) {
+      return "is-valid";
+    }
+
+    return "";
+  };
+
   const getSpecialPromos = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
@@ -180,6 +230,32 @@ export const SpecialPromoPage = () => {
     setStateAddModal(false);
   };
 
+  const showEditModal = (data) => {
+    const API_URL = process.env.REACT_APP_API_URL;
+
+    formikEditPromo.setValues({
+      id: data.id,
+      outlet_id: data.outlet_id,
+      name: data.name,
+      description_type: data.description_type,
+      description: data.description,
+      type: data.type,
+      value: data.rate,
+      promo_category_id: 1
+    });
+    if (data.image) {
+      setPhoto(`${API_URL}${data.image}`);
+      setPhotoPreview(`${API_URL}${data.image}`);
+    }
+    setStateEditModal(true);
+  };
+  const closeEditModal = () => {
+    formikEditPromo.resetForm();
+    setPhoto("");
+    setPhotoPreview("");
+    setStateEditModal(false);
+  };
+
   const showDeleteModal = (data) => {
     formikPromo.setFieldValue("id", data.id);
     formikPromo.setFieldValue("name", data.name);
@@ -234,8 +310,13 @@ export const SpecialPromoPage = () => {
         id: item.id,
         no: index + 1,
         name: item.name,
+        outlet_id: item.outlet_id,
         outlet_name: item.Outlet.name,
         value,
+        rate: item.value,
+        type: item.type,
+        description_type: item.description_type,
+        description: item.description,
         image: item.image,
         status: item.status
       };
@@ -270,11 +351,17 @@ export const SpecialPromoPage = () => {
         const API_URL = process.env.REACT_APP_API_URL;
         const linkImage = `${API_URL}${rows.image}`;
         return (
-          <img
-            src={linkImage}
-            alt="promo-banner"
-            style={{ width: "100px", height: "auto", padding: "0.5rem 0" }}
-          />
+          <>
+            {rows.image ? (
+              <img
+                src={linkImage}
+                alt="promo-banner"
+                style={{ width: "100px", height: "auto", padding: "0.5rem 0" }}
+              />
+            ) : (
+              "[No Promo Banner]"
+            )}
+          </>
         );
       }
     },
@@ -310,10 +397,7 @@ export const SpecialPromoPage = () => {
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
-              <Dropdown.Item
-                as="button"
-                // onClick={() => showEditModal(rows)}
-              >
+              <Dropdown.Item as="button" onClick={() => showEditModal(rows)}>
                 Edit
               </Dropdown.Item>
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
@@ -336,6 +420,21 @@ export const SpecialPromoPage = () => {
         alert={alert}
         formikPromo={formikPromo}
         validationPromo={validationPromo}
+        alertPhoto={alertPhoto}
+        photoPreview={photoPreview}
+        photo={photo}
+        handlePreviewPhoto={handlePreviewPhoto}
+        allOutlets={allOutlets}
+      />
+
+      <SpecialPromoModal
+        stateModal={stateEditModal}
+        cancelModal={closeEditModal}
+        title={`Edit Promo - ${formikEditPromo.getFieldProps("name").value}`}
+        loading={loading}
+        alert={alert}
+        formikPromo={formikEditPromo}
+        validationPromo={validationEditPromo}
         alertPhoto={alertPhoto}
         photoPreview={photoPreview}
         photo={photo}

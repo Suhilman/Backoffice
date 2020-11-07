@@ -103,7 +103,9 @@ const ModalRole = ({
                                                     .getFieldProps("privileges")
                                                     .value.find(
                                                       (val) =>
-                                                        val.name === value
+                                                        val.name === value &&
+                                                        val.access ===
+                                                          privilege.access
                                                     );
                                                   if (allowValue.allow) {
                                                     formikRole.setFieldValue(

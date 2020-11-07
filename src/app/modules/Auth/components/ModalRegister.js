@@ -6,7 +6,7 @@ const ModalRegister = ({
   closeBusinessModal,
   alertModal,
   loading,
-  allBusinessCategories,
+  allBusinessTypes,
   allProvinces,
   allCities,
   allLocations,
@@ -25,19 +25,19 @@ const ModalRegister = ({
           {alertModal ? <Alert variant="danger">{alertModal}</Alert> : ""}
 
           <Form.Group>
-            <Form.Label>Select Business Category</Form.Label>
+            <Form.Label>Select Business Type</Form.Label>
             <Form.Control
               as="select"
-              name="business_category_id"
-              {...formikBusiness.getFieldProps("business_category_id")}
-              className={validationBusiness("business_category_id")}
+              name="business_type_id"
+              {...formikBusiness.getFieldProps("business_type_id")}
+              className={validationBusiness("business_type_id")}
               required
             >
               <option value="" disabled hidden>
-                Choose Business Category
+                Choose Business Type
               </option>
 
-              {allBusinessCategories.map((item) => {
+              {allBusinessTypes.map((item) => {
                 return (
                   <option key={item.id} value={item.id}>
                     {item.name}
@@ -45,11 +45,11 @@ const ModalRegister = ({
                 );
               })}
             </Form.Control>
-            {formikBusiness.touched.business_category_id &&
-            formikBusiness.errors.business_category_id ? (
+            {formikBusiness.touched.business_type_id &&
+            formikBusiness.errors.business_type_id ? (
               <div className="fv-plugins-message-container">
                 <div className="fv-help-block">
-                  {formikBusiness.errors.business_category_id}
+                  {formikBusiness.errors.business_type_id}
                 </div>
               </div>
             ) : null}

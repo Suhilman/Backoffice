@@ -20,6 +20,7 @@ export const EditProductPage = ({ match }) => {
   const [photoPreview, setPhotoPreview] = React.useState("");
   const [showManageAddons, setShowManageAddons] = React.useState(false);
   const [validatedModal, setValidatedModal] = React.useState(false);
+  const [deletePhoto, setDeletePhoto] = React.useState(false);
 
   const [allOutlets, setAllOutlets] = React.useState([]);
   const [allProductCategories, setAllProductCategories] = React.useState([]);
@@ -135,6 +136,7 @@ export const EditProductPage = ({ match }) => {
       if (values.product_category_id)
         formData.append("product_category_id", values.product_category_id);
       if (photo) formData.append("productImage", photo);
+      if (deletePhoto) formData.append("deletePhoto", deletePhoto);
 
       try {
         enableLoading();
@@ -198,7 +200,7 @@ export const EditProductPage = ({ match }) => {
       setProductAddonsInitial(addonsInitial);
       setProductAddons(addonsInitial);
 
-      if (productData.image !== "") {
+      if (productData.image) {
         setPhoto(`${API_URL}${productData.image}`);
         setPhotoPreview(`${API_URL}${productData.image}`);
       }
@@ -354,6 +356,12 @@ export const EditProductPage = ({ match }) => {
     setPhoto(img);
   };
 
+  const handleDeletePhoto = () => {
+    setPhoto("");
+    setPhotoPreview("");
+    setDeletePhoto(true);
+  };
+
   React.useEffect(() => {
     getOutlet();
     getProductType();
@@ -396,6 +404,7 @@ export const EditProductPage = ({ match }) => {
           formikProduct={formikProduct}
           validationProduct={validationProduct}
           alert={alert}
+          handleDeletePhoto={handleDeletePhoto}
         />
       </Col>
     </Row>

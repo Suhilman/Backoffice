@@ -1,8 +1,8 @@
-import React, {useMemo} from "react";
-import {AsideMenuList} from "./AsideMenuList";
-import {useHtmlClassService} from "../../../_core/MetronicLayout";
+import React, { useMemo } from "react";
+import AsideMenuList from "./AsideMenuList";
+import { useHtmlClassService } from "../../../_core/MetronicLayout";
 
-export function AsideMenu({disableScroll}) {
+export function AsideMenu({ disableScroll }) {
   const uiService = useHtmlClassService();
   const layoutProps = useMemo(() => {
     return {

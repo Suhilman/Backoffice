@@ -87,7 +87,7 @@ function Registration(props) {
   const [second, setSecond] = useState(0);
   const [verificationCode, setVerificationCode] = useState(0);
 
-  const [allBusinessCategories, setAllBusinessCategories] = useState([]);
+  const [allBusinessTypes, setAllBusinessTypes] = useState([]);
   const [allProvinces, setAllProvinces] = useState([]);
   const [allCities, setAllCities] = useState([]);
   const [allLocations, setAllLocations] = useState([]);
@@ -96,7 +96,7 @@ function Registration(props) {
   const [phonenumber, setPhonenumber] = useState("");
 
   const initialValueBusiness = {
-    business_category_id: "",
+    business_type_id: "",
     business_province_id: "",
     business_city_id: "",
     business_location_id: "",
@@ -104,10 +104,10 @@ function Registration(props) {
   };
 
   const BusinessSchema = Yup.object().shape({
-    business_category_id: Yup.number()
+    business_type_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a business category."),
+      .required("Please choose a business type."),
     business_province_id: Yup.number()
       .integer()
       .min(1)
@@ -145,7 +145,7 @@ function Registration(props) {
         const outlet_id = data.data[0].id;
 
         const businessData = {
-          business_category_id: values.business_category_id,
+          business_type_id: values.business_type_id,
           location_id: values.business_location_id
         };
 
@@ -209,7 +209,7 @@ function Registration(props) {
 
   const closeBusinessModal = () => setShowBusinessModal(false);
   const openBusinessModal = () => {
-    getBusinessCategories();
+    getBusinessTypes();
     getProvinces();
     setShowBusinessModal(true);
   };
@@ -297,15 +297,15 @@ function Registration(props) {
     }
   };
 
-  const getBusinessCategories = async () => {
+  const getBusinessTypes = async () => {
     try {
       const API_URL = process.env.REACT_APP_API_URL;
       setAlertModal("");
-      const { data } = await axios.get(`${API_URL}/api/v1/business-category`);
-      setAllBusinessCategories(data.data);
+      const { data } = await axios.get(`${API_URL}/api/v1/business-type`);
+      setAllBusinessTypes(data.data);
     } catch (err) {
       setAlertModal(err.response.data.message);
-      setAllBusinessCategories([]);
+      setAllBusinessTypes([]);
     }
   };
 
@@ -380,7 +380,7 @@ function Registration(props) {
         closeBusinessModal={closeBusinessModal}
         alertModal={alertModal}
         loading={loading}
-        allBusinessCategories={allBusinessCategories}
+        allBusinessTypes={allBusinessTypes}
         allProvinces={allProvinces}
         allCities={allCities}
         allLocations={allLocations}

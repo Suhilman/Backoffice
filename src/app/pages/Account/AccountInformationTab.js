@@ -121,21 +121,35 @@ export const AccountInformation = () => {
 
     if (owner) {
       storeStaffId = data.data.Business.store_id;
+
+      setAccount({
+        ...account,
+        name: data.data.Business.name,
+        phone_number: data.data.Business.phone_number,
+        email: data.data.email,
+        registration_date: registrationDateFormat(data.data.created_at),
+        last_login: data.data.last_login
+          ? loginDateFormat(data.data.last_login)
+          : "-",
+        [owner ? "store_id" : "staff_id"]: storeStaffId
+      });
     } else {
-      storeStaffId = data.data.Business.staff_id;
+      storeStaffId = data.data.User.staff_id;
+
+      setAccount({
+        ...account,
+        name: data.data.name,
+        phone_number: data.data.phone_number,
+        email: data.data.User.email,
+        registration_date: registrationDateFormat(data.data.created_at),
+        last_login: data.data.User.last_login
+          ? loginDateFormat(data.data.User.last_login)
+          : "-",
+        staff_id: storeStaffId
+      });
     }
 
-    setAccount({
-      ...account,
-      name: data.data.Business.name,
-      phone_number: data.data.Business.phone_number,
-      email: data.data.email,
-      registration_date: registrationDateFormat(data.data.created_at),
-      last_login: data.data.last_login
-        ? loginDateFormat(data.data.last_login)
-        : "-",
-      [owner ? "store_id" : "staff_id"]: storeStaffId
-    });
+
   };
 
   React.useEffect(() => {

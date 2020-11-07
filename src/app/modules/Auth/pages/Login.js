@@ -29,7 +29,7 @@ function Login(props) {
   const [alertModal, setAlertModal] = useState("");
   const [second, setSecond] = useState(0);
 
-  const [allBusinessCategories, setAllBusinessCategories] = useState([]);
+  const [allBusinessTypes, setAllBusinessTypes] = useState([]);
   const [allProvinces, setAllProvinces] = useState([]);
   const [allCities, setAllCities] = useState([]);
   const [allLocations, setAllLocations] = useState([]);
@@ -38,7 +38,7 @@ function Login(props) {
   const [phonenumber, setPhonenumber] = useState("");
 
   const initialValueBusiness = {
-    business_category_id: "",
+    business_type_id: "",
     business_province_id: "",
     business_city_id: "",
     business_location_id: "",
@@ -46,10 +46,10 @@ function Login(props) {
   };
 
   const BusinessSchema = Yup.object().shape({
-    business_category_id: Yup.number()
+    business_type_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a business category."),
+      .required("Please choose a business type."),
     business_province_id: Yup.number()
       .integer()
       .min(1)
@@ -87,7 +87,7 @@ function Login(props) {
         const outlet_id = data.data[0].id;
 
         const businessData = {
-          business_category_id: values.business_category_id,
+          business_type_id: values.business_type_id,
           location_id: values.business_location_id
         };
 
@@ -138,7 +138,7 @@ function Login(props) {
 
   const closeBusinessModal = () => setShowBusinessModal(false);
   const openBusinessModal = () => {
-    getBusinessCategories();
+    getBusinessTypes();
     getProvinces();
     setShowBusinessModal(true);
   };
@@ -178,15 +178,15 @@ function Login(props) {
     }
   };
 
-  const getBusinessCategories = async () => {
+  const getBusinessTypes = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
       setAlertModal("");
-      const { data } = await axios.get(`${API_URL}/api/v1/business-category`);
-      setAllBusinessCategories(data.data);
+      const { data } = await axios.get(`${API_URL}/api/v1/business-type`);
+      setAllBusinessTypes(data.data);
     } catch (err) {
       setAlertModal(err.response.data.message);
-      setAllBusinessCategories([]);
+      setAllBusinessTypes([]);
     }
   };
 
@@ -341,7 +341,7 @@ function Login(props) {
         closeBusinessModal={closeBusinessModal}
         alertModal={alertModal}
         loading={loading}
-        allBusinessCategories={allBusinessCategories}
+        allBusinessTypes={allBusinessTypes}
         allProvinces={allProvinces}
         allCities={allCities}
         allLocations={allLocations}
@@ -415,6 +415,12 @@ function Login(props) {
               id="kt_login_forgot"
             >
               <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />
+            </Link>
+            <Link
+              to="/auth/login/staff"
+              className="text-dark-50 text-hover-primary my-3 mr-2"
+            >
+              Staff? Login Here
             </Link>
             <ReCAPTCHA
               sitekey={process.env.REACT_APP_SITE_KEY}

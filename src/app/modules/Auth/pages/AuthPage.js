@@ -7,6 +7,7 @@ import Login from "./Login";
 import Registration from "./Registration";
 import ForgotPassword from "./ForgotPassword";
 import "../../../../_metronic/_assets/sass/pages/login/classic/login-1.scss";
+import LoginStaff from "./LoginStaff";
 
 export function AuthPage() {
   return (
@@ -94,6 +95,8 @@ export function AuthPage() {
             {/* begin::Content body */}
             <div className="d-flex flex-column-fluid flex-center mt-30 mt-lg-0">
               <Switch>
+                <ContentRoute path="/auth/login/staff" component={LoginStaff} />
+
                 <ContentRoute path="/auth/login" component={Login} />
                 <ContentRoute
                   path="/auth/registration"

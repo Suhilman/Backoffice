@@ -18,12 +18,13 @@ export const BusinessInformation = () => {
   const [imageNpwp, setImageNpwp] = React.useState("");
   const [businessImage, setBusinessImage] = React.useState("");
 
-  const [allBusinessCategories, setAllBusinessCategories] = React.useState([]);
+  const [allBusinessTypes, setAllBusinessTypes] = React.useState([]);
   const [allProvinces, setAllProvinces] = React.useState([]);
   const [allCities, setAllCities] = React.useState([]);
   const [allLocations, setAllLocations] = React.useState([]);
 
   const [stateComponent, setStateComponent] = React.useState("show");
+  const [refresh, setRefresh] = React.useState("show");
 
   const [business, setBusiness] = React.useState({
     name: "",
@@ -34,10 +35,10 @@ export const BusinessInformation = () => {
     business_phone_number: "",
     ktp_number: "",
     npwp_number: "",
-    business_category: "",
+    business_type: "",
     payment_method: "",
     sales_type: "",
-    business_category_id: "",
+    business_type_id: "",
     province_id: "",
     city_id: "",
     location_id: ""
@@ -66,7 +67,7 @@ export const BusinessInformation = () => {
         val ? val.toString().length === 15 : ""
       )
       .required("Please input a npwp_number"),
-    business_category_id: Yup.number()
+    business_type_id: Yup.number()
       .integer()
       .min(1)
       .required("Please input a business category"),
@@ -90,7 +91,7 @@ export const BusinessInformation = () => {
       formData.append("location_id", values.location_id);
       formData.append("ktp_owner", values.ktp_number);
       formData.append("npwp_business", values.npwp_number);
-      formData.append("business_category_id", values.business_category_id);
+      formData.append("business_type_id", values.business_type_id);
       formData.append("address", values.business_address);
 
       if (imageKtp) formData.append("ktp_picture", imageKtp);
@@ -103,6 +104,7 @@ export const BusinessInformation = () => {
           `${API_URL}/api/v1/business/${userInfo.business_id}`,
           formData
         );
+        handleRefresh();
         disableLoading();
         setStateComponent("show");
       } catch (err) {
@@ -140,14 +142,14 @@ export const BusinessInformation = () => {
         province_name: data.data.Location.City.Province.name,
         city_name: data.data.Location.City.name,
         business_location: data.data.Location.name,
-        business_category: data.data.Business_Category.name,
+        business_type: data.data.Business_Type.name,
         business_address: data.data.address || "",
         business_phone_number: data.data.phone_number,
         ktp_number: data.data.ktp_owner || "",
         npwp_number: data.data.npwp_business || "",
         payment_method: "",
         sales_type: "",
-        business_category_id: data.data.business_category_id,
+        business_type_id: data.data.business_type_id,
         province_id: data.data.Location.City.Province.id,
         city_id: data.data.Location.City.id,
         location_id: data.data.location_id
@@ -176,11 +178,11 @@ export const BusinessInformation = () => {
     }
   };
 
-  const getAllBusinessCategories = async () => {
+  const getAllBusinessTypes = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
-      const { data } = await axios.get(`${API_URL}/api/v1/business-category`);
-      setAllBusinessCategories(data.data);
+      const { data } = await axios.get(`${API_URL}/api/v1/business-type`);
+      setAllBusinessTypes(data.data);
     } catch (err) {
       console.log(err);
     }
@@ -207,9 +209,14 @@ export const BusinessInformation = () => {
   };
 
   React.useEffect(() => {
-    getBusinessInfo();
-    getAllBusinessCategories();
+    getAllBusinessTypes();
   }, []);
+
+  React.useEffect(() => {
+    getBusinessInfo();
+  }, [refresh]);
+
+  const handleRefresh = () => setRefresh((state) => state + 1);
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
@@ -277,8 +284,8 @@ export const BusinessInformation = () => {
       value: business.npwp_number
     },
     {
-      field: "Business Category",
-      value: business.business_category
+      field: "Business Type",
+      value: business.business_type
     },
     {
       field: "Payment Method",
@@ -457,15 +464,13 @@ export const BusinessInformation = () => {
                         <Form.Label>Business Category</Form.Label>
                         <Form.Control
                           as="select"
-                          name="business_category_id"
-                          {...formikBusiness.getFieldProps(
-                            "business_category_id"
-                          )}
-                          className={validationBusiness("business_category_id")}
+                          name="business_type_id"
+                          {...formikBusiness.getFieldProps("business_type_id")}
+                          className={validationBusiness("business_type_id")}
                           required
                         >
-                          {allBusinessCategories.length
-                            ? allBusinessCategories.map((item) => {
+                          {allBusinessTypes.length
+                            ? allBusinessTypes.map((item) => {
                                 return (
                                   <option key={item.id} value={item.id}>
                                     {item.name}
@@ -474,11 +479,11 @@ export const BusinessInformation = () => {
                               })
                             : ""}
                         </Form.Control>
-                        {formikBusiness.touched.business_category_id &&
-                        formikBusiness.errors.business_category_id ? (
+                        {formikBusiness.touched.business_type_id &&
+                        formikBusiness.errors.business_type_id ? (
                           <div className="fv-plugins-message-container">
                             <div className="fv-help-block">
-                              {formikBusiness.errors.business_category_id}
+                              {formikBusiness.errors.business_type_id}
                             </div>
                           </div>
                         ) : null}
