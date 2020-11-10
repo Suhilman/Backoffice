@@ -37,9 +37,13 @@ function AsideMenuList(props) {
 
   const findPrivilege = (name) => {
     if (currPrivileges.length) {
-      const find = currPrivileges.find((item) => item.name === name);
+      const find = currPrivileges.find(
+        (item) => item.name === name && item.access === "Backend"
+      );
       if (find) {
-        return currPrivileges.find((item) => item.name === name).allow;
+        return currPrivileges.find(
+          (item) => item.name === name && item.access === "Backend"
+        ).allow;
       }
     }
 

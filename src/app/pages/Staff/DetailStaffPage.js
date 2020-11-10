@@ -76,7 +76,7 @@ export const DetailStaffPage = ({ match, location }) => {
     name: Yup.string()
       .min(3, "Minimum 3 characters.")
       .max(50, "Maximum 50 characters.")
-      .required("Please input a product name."),
+      .required("Please input a staff name."),
     staff_id: Yup.string()
       .min(5)
       .max(10)

@@ -12,13 +12,12 @@ import { AccountPage } from "./pages/Account/AccountPage";
 import { ProductPage } from "./pages/Product/ProductPage";
 import { AddProductPage } from "./pages/Product/ProductTab/AddProductPage";
 import { EditProductPage } from "./pages/Product/ProductTab/EditProductPage";
-import { AddProductModifierPage } from "./pages/Product/ProductModifierTab/AddProductModifierPage";
-import { EditProductModifierPage } from "./pages/Product/ProductModifierTab/EditProductModifierPage";
 import { OutletPage } from "./pages/Outlet/OutletPage";
 import { RolePage } from "./pages/Role/RolePage";
 import { PromoPage } from "./pages/Promo/PromoPage";
 import { SpecialPromoPage } from "./pages/Promo/SpecialPromoPage";
 import { CustomerPage } from "./pages/Customer/CustomerPage";
+import { DetailCustomerPage } from "./pages/Customer/DetailCustomerPage";
 
 export default function BasePage() {
   const [currPrivileges, setCurrPrivileges] = React.useState({
@@ -29,7 +28,7 @@ export default function BasePage() {
     staff_management: false,
     role_management: false,
     promo_management: false,
-    customer_management: false,
+    customer_management: false
   });
 
   const { privileges } = JSON.parse(localStorage.getItem("user_info"));
@@ -155,9 +154,17 @@ export default function BasePage() {
         <ProtectedRoute
           isAllowed={currPrivileges.customer_management}
           isRoute={false}
-          exact={false}
+          exact={true}
           path="/customer"
           component={CustomerPage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.customer_management}
+          isRoute={true}
+          exact={false}
+          path="/customer/:customerId"
+          component={DetailCustomerPage}
         />
 
         {/*<ContentRoute path="/dashboard" component={DashboardPage} />
