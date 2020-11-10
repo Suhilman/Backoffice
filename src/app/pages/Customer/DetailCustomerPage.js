@@ -322,7 +322,7 @@ export const DetailCustomerPage = ({ match }) => {
                   ) : (
                     <>
                       <Form.Control
-                        type="string"
+                        type="text"
                         name="phone_number"
                         {...formikCustomer.getFieldProps("phone_number")}
                         className={validationCustomer("phone_number")}

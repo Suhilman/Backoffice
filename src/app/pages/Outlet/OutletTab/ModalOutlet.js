@@ -105,7 +105,7 @@ const ModalOutlet = ({
                   <Form.Group>
                     <Form.Label>Phone Number:</Form.Label>
                     <Form.Control
-                      type="number"
+                      type="text"
                       name="phone_number"
                       placeholder="Enter Phone Number"
                       {...formikOutlet.getFieldProps("phone_number")}

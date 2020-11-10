@@ -84,9 +84,7 @@ export const DetailStaffPage = ({ match, location }) => {
     email: Yup.string()
       .email()
       .required("Please input an email."),
-    phone_number: Yup.number()
-      .integer()
-      .min(1)
+    phone_number: Yup.number().typeError("Please input a number only")
   });
 
   const formikStaff = useFormik({
@@ -503,7 +501,7 @@ export const DetailStaffPage = ({ match, location }) => {
                   ) : (
                     <>
                       <Form.Control
-                        type="number"
+                        type="text"
                         name="phone_number"
                         {...formikStaff.getFieldProps("phone_number")}
                         className={validationStaff("phone_number")}

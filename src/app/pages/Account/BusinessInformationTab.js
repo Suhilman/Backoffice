@@ -54,15 +54,16 @@ export const BusinessInformation = () => {
       .max(50, "Maximum 50 characters.")
       .required("Please input a business address."),
     business_phone_number: Yup.number()
-      .integer()
-      .min(1)
+      .typeError("Please input a number only")
       .required("Please input a business phone_number"),
     ktp_number: Yup.number()
+      .typeError("Please input a number only")
       .test("ktp_number", "Must exactly 16 digits", (val) =>
         val ? val.toString().length === 16 : ""
       )
       .required("Please input a ktp_number"),
     npwp_number: Yup.number()
+      .typeError("Please input a number only")
       .test("npwp_number", "Must exactly 15 digits", (val) =>
         val ? val.toString().length === 15 : ""
       )
@@ -355,7 +356,7 @@ export const BusinessInformation = () => {
     <Row>
       <Col md={12}>
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
-          <Form onSubmit={formikBusiness.handleSubmit}>
+          <Form noValidate onSubmit={formikBusiness.handleSubmit}>
             <div className="headerPage">
               <div className="headerStart">
                 <h3>Business Information</h3>
@@ -425,7 +426,7 @@ export const BusinessInformation = () => {
                       <Form.Group style={{ width: "80%" }}>
                         <Form.Label>KTP Number</Form.Label>
                         <Form.Control
-                          type="number"
+                          type="text"
                           name="ktp_number"
                           {...formikBusiness.getFieldProps("ktp_number")}
                           className={validationBusiness("ktp_number")}
@@ -444,7 +445,7 @@ export const BusinessInformation = () => {
                       <Form.Group style={{ width: "80%" }}>
                         <Form.Label>NPWP Number</Form.Label>
                         <Form.Control
-                          type="number"
+                          type="text"
                           name="npwp_number"
                           {...formikBusiness.getFieldProps("npwp_number")}
                           className={validationBusiness("npwp_number")}
@@ -658,7 +659,7 @@ export const BusinessInformation = () => {
                       <Form.Group>
                         <Form.Label>Phone Number</Form.Label>
                         <Form.Control
-                          type="number"
+                          type="text"
                           name="business_phone_number"
                           {...formikBusiness.getFieldProps(
                             "business_phone_number"

@@ -30,9 +30,7 @@ export const AccountInformation = () => {
     email: Yup.string()
       .email()
       .required("Please input an email."),
-    phone_number: Yup.number()
-      .integer()
-      .min(1),
+    phone_number: Yup.number().typeError("Please input a number only"),
     old_password: Yup.string()
       .matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!#%*?&]{8,20}$/,
@@ -60,7 +58,7 @@ export const AccountInformation = () => {
 
       const accountData = {
         email: values.email,
-        phone_number: JSON.stringify(values.phone_number),
+        phone_number: values.phone_number,
         old_password: values.old_password,
         new_password: values.new_password
       };
@@ -98,7 +96,10 @@ export const AccountInformation = () => {
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
   const openModal = () => setStateModal(true);
-  const closeModal = () => setStateModal(false);
+  const closeModal = () => {
+    formikAccount.resetForm();
+    setStateModal(false);
+  };
 
   const userInfo = JSON.parse(localStorage.getItem("user_info"));
   const isOwner = userInfo.owner_id ? true : false;
@@ -148,8 +149,6 @@ export const AccountInformation = () => {
         staff_id: storeStaffId
       });
     }
-
-
   };
 
   React.useEffect(() => {
@@ -266,7 +265,7 @@ const ModalAccountInformation = ({
               <Form.Group>
                 <Form.Label>Phone Number</Form.Label>
                 <Form.Control
-                  type="number"
+                  type="text"
                   name="phone_number"
                   {...formikAccount.getFieldProps("phone_number")}
                   className={validationAccount("phone_number")}

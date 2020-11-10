@@ -68,9 +68,7 @@ export const OutletTab = ({
       .min(3, "Minimum 3 characters.")
       .max(50, "Maximum 50 characters.")
       .required("Please input a product name."),
-    phone_number: Yup.number()
-      .integer()
-      .min(1),
+    phone_number: Yup.number().typeError("Please input a number only"),
     address: Yup.string()
       .min(3, "Minimum 3 characters.")
       .max(100, "Maximum 100 characters."),

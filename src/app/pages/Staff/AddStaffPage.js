@@ -69,9 +69,7 @@ export const AddStaffPage = ({ location }) => {
     email: Yup.string()
       .email()
       .required("Please input an email."),
-    phone_number: Yup.number()
-      .integer()
-      .min(1),
+    phone_number: Yup.number().typeError("Please input a number only"),
     password: Yup.string()
       .matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!#%*?&]{8,20}$/,
@@ -101,7 +99,7 @@ export const AddStaffPage = ({ location }) => {
         email: values.email,
         password: values.password,
         pin: values.pin,
-        phone_number: JSON.stringify(values.phone_number),
+        phone_number: values.phone_number,
         type: values.type,
         role_id: values.role_id,
         outlet_id: values.outlet_id
@@ -334,7 +332,7 @@ export const AddStaffPage = ({ location }) => {
                   <Form.Group>
                     <Form.Label>Phone Number*</Form.Label>
                     <Form.Control
-                      type="number"
+                      type="text"
                       name="phone_number"
                       {...formikStaff.getFieldProps("phone_number")}
                       className={validationStaff("phone_number")}
