@@ -3,10 +3,21 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import dayjs from "dayjs";
+import rupiahFormat from "rupiah-format";
 
-import { Button, Row, Col, Form, Alert, Spinner } from "react-bootstrap";
+import {
+  Button,
+  Row,
+  Col,
+  Form,
+  Alert,
+  Spinner,
+  ListGroup
+} from "react-bootstrap";
 import { IconButton, Paper } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
+import DataTable from "react-data-table-component";
 
 import "../style.css";
 
@@ -36,6 +47,19 @@ export const DetailCustomerPage = ({ match }) => {
     address: "",
     notes: ""
   });
+
+  const [customerStats, setCustomerStats] = React.useState({
+    total_transaction_count: "",
+    total_transaction: "",
+    average_transaction: "",
+    favorite_product: "",
+    last_visit: "",
+    registration_date: "",
+    points: "",
+    points_spent: ""
+  });
+
+  const [customerHistory, setCustomerHistory] = React.useState([]);
 
   const CustomerSchema = Yup.object().shape({
     name: Yup.string()
@@ -125,8 +149,54 @@ export const DetailCustomerPage = ({ match }) => {
         setImageInitial(`${API_URL}${data.data.profile_picture}`);
         setPreviewInitial(`${API_URL}${data.data.profile_picture}`);
       }
+
+      const allTransactions = data.data.Transactions;
+
+      if (allTransactions.length) {
+        const allTransactionsDone = allTransactions.filter(
+          (item) => item.status === "done" || item.status === "closed"
+        );
+
+        const total_transaction_count = data.data.Transactions.length;
+        const total_transaction = allTransactionsDone.reduce(
+          (init, curr) => (init += curr.Payment.payment_total),
+          0
+        );
+        const average_transaction = Math.floor(
+          total_transaction / total_transaction_count
+        );
+
+        const purchasedProducts = allTransactionsDone.map((trans) => {
+          return trans.Transaction_Items.map((item) => item.Product.name);
+        });
+
+        const countProducts = purchasedProducts.flat(1).reduce((init, curr) => {
+          init[curr] = (init[curr] || 0) + 1;
+          return init;
+        }, {});
+
+        const favorite_product = Object.keys(countProducts)[0];
+        const last_visit = allTransactionsDone.sort((a, b) => b.id - a.id)[0]
+          .createdAt;
+        const registration_date = data.data.createdAt;
+        const points = data.data.points;
+        const points_spent = data.data.points_spent;
+
+        setCustomerStats({
+          total_transaction_count,
+          total_transaction,
+          average_transaction,
+          favorite_product,
+          last_visit,
+          registration_date,
+          points,
+          points_spent
+        });
+
+        setCustomerHistory(allTransactionsDone);
+      }
     } catch (err) {
-      setAlert(err.response.data.message || err.message);
+      setAlert(err.response?.data.message || err.message);
     }
   };
 
@@ -162,6 +232,98 @@ export const DetailCustomerPage = ({ match }) => {
 
     setImage(img);
     setPreview(preview);
+  };
+
+  const formatDate = (date) => dayjs(date).format("DD/MM/YYYY");
+
+  const columns = [
+    {
+      name: "Time",
+      selector: "time",
+      sortable: true
+    },
+    {
+      name: "Product",
+      cell: (rows) => {
+        return (
+          <div>
+            {rows.product.map((item, index) => {
+              return (
+                <p key={index} style={{ margin: 0 }}>
+                  {item}
+                </p>
+              );
+            })}
+          </div>
+        );
+      }
+    },
+    {
+      name: "Total Price",
+      selector: "total_price",
+      sortable: true
+    }
+  ];
+
+  const dataTransactions = () => {
+    const currHistory = [...customerHistory];
+    const sliceHistory = currHistory.slice(0, 5);
+
+    if (!sliceHistory.length) {
+      return;
+    }
+
+    return sliceHistory.map((item) => {
+      const product = item.Transaction_Items.map((val) => {
+        return `${val.Product.name} x ${val.quantity}`;
+      });
+
+      const total_price = item.Payment.payment_total;
+
+      return {
+        time: dayjs(item.createdAt).format("DD/MM/YYYY HH:mm"),
+        product,
+        total_price: rupiahFormat.convert(total_price) || 0,
+        items: item.Transaction_Items
+      };
+    });
+  };
+
+  const ExpandableComponent = ({ data }) => {
+    const head = ["Sales Type", "Addons"];
+    const body = data.items.map((item) => {
+      const addons = item.Transaction_Item_Addons.map((val) => val.Addon.name);
+      return [item.Sales_Type.name, addons.join(",")];
+    });
+
+    return (
+      <>
+        <ListGroup style={{ padding: "1rem", marginLeft: "1rem" }}>
+          <ListGroup.Item>
+            <Row>
+              {head.map((item, index) => {
+                return (
+                  <Col key={index} style={{ fontWeight: "700" }}>
+                    {item}
+                  </Col>
+                );
+              })}
+            </Row>
+          </ListGroup.Item>
+          {body.map((item, index) => {
+            return (
+              <ListGroup.Item key={index}>
+                <Row>
+                  {item.map((val, valIndex) => {
+                    return <Col key={valIndex}>{val}</Col>;
+                  })}
+                </Row>
+              </ListGroup.Item>
+            );
+          })}
+        </ListGroup>
+      </>
+    );
   };
 
   return (
@@ -214,9 +376,9 @@ export const DetailCustomerPage = ({ match }) => {
                 </div>
               </div>
 
-              <Row style={{ padding: "1rem" }}>
-                {alert ? <Alert variant="danger">{alert}</Alert> : ""}
+              {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
+              <Row style={{ padding: "1rem" }}>
                 <Col md={3}>
                   <Paper
                     elevation={2}
@@ -378,6 +540,107 @@ export const DetailCustomerPage = ({ match }) => {
               </Row>
             </Paper>
           </Form>
+        </Col>
+      </Row>
+
+      <Row style={{ marginTop: "2rem" }}>
+        <Col>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <div className="headerPage">
+              <div className="headerStart">
+                <h3>Customer Statistics</h3>
+              </div>
+
+              {/* <div className="headerEnd"></div> */}
+            </div>
+
+            <Row style={{ padding: "1rem" }}>
+              <Col md={3}>
+                <div className="title">Transaction Number</div>
+                <h5 style={{ marginBottom: "2rem" }}>
+                  {customerStats.total_transaction_count
+                    ? customerStats.total_transaction_count
+                    : "-"}
+                </h5>
+
+                <div className="title">Last Visit</div>
+                <h5>
+                  {customerStats.last_visit
+                    ? formatDate(customerStats.last_visit)
+                    : "-"}
+                </h5>
+              </Col>
+
+              <Col md={3}>
+                <div className="title">Total Transaction</div>
+                <h5 style={{ marginBottom: "2rem" }}>
+                  {customerStats.total_transaction
+                    ? rupiahFormat.convert(customerStats.total_transaction)
+                    : "-"}
+                </h5>
+
+                <div className="title">Favorite Product</div>
+                <h5>
+                  {customerStats.favorite_product
+                    ? customerStats.favorite_product
+                    : "-"}
+                </h5>
+              </Col>
+
+              <Col md={3}>
+                <div className="title">Average Transaction</div>
+                <h5 style={{ marginBottom: "2rem" }}>
+                  {customerStats.average_transaction
+                    ? rupiahFormat.convert(customerStats.average_transaction)
+                    : "-"}
+                </h5>
+
+                <div className="title">Registration Date</div>
+                <h5>
+                  {customerStats.registration_date
+                    ? formatDate(customerStats.registration_date)
+                    : "-"}
+                </h5>
+              </Col>
+
+              <Col md={3}>
+                <div className="title">Remaining Point</div>
+                <h5 style={{ marginBottom: "2rem" }}>
+                  {customerStats.points ? customerStats.points : "-"}
+                </h5>
+
+                <div className="title">Total Point Spent</div>
+                <h5>
+                  {customerStats.points_spent
+                    ? customerStats.points_spent
+                    : "-"}
+                </h5>
+              </Col>
+            </Row>
+          </Paper>
+        </Col>
+      </Row>
+
+      <Row style={{ marginTop: "2rem" }}>
+        <Col>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <div className="headerPage">
+              <div className="headerStart">
+                <h3>Transaction History</h3>
+              </div>
+
+              {/* <div className="headerEnd"></div> */}
+            </div>
+
+            <DataTable
+              noHeader
+              columns={columns}
+              data={dataTransactions()}
+              expandableRows
+              expandableRowsComponent={<ExpandableComponent />}
+              style={{ minHeight: "100%" }}
+            />
+          </Paper>
         </Col>
       </Row>
     </>

@@ -27,7 +27,8 @@ export default function setupAxios(axios, store) {
         window.location.replace("/auth/login");
       } else if (
         err.response?.status === 403 &&
-        err.response?.data.message.includes("token")
+        (err.response?.data.message === "token invalid" ||
+          err.response?.data.message === "jwt expired")
       ) {
         localStorage.clear();
         window.location.replace("/auth/login");
