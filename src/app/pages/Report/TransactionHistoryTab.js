@@ -183,7 +183,6 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
 
   const dataTransactions = () => {
     return allTransactions.map((item, index) => {
-      console.log(item);
       return {
         id: item.id,
         no: index + 1,
