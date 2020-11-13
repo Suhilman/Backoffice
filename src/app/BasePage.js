@@ -14,10 +14,11 @@ import { AddProductPage } from "./pages/Product/ProductTab/AddProductPage";
 import { EditProductPage } from "./pages/Product/ProductTab/EditProductPage";
 import { OutletPage } from "./pages/Outlet/OutletPage";
 import { RolePage } from "./pages/Role/RolePage";
-import { PromoPage } from "./pages/Promo/PromoPage";
-import { SpecialPromoPage } from "./pages/Promo/SpecialPromoPage";
 import { CustomerPage } from "./pages/Customer/CustomerPage";
 import { DetailCustomerPage } from "./pages/Customer/DetailCustomerPage";
+import { PromoPage } from "./pages/Promo/PromoPage";
+import { SpecialPromoPage } from "./pages/Promo/SpecialPromo/SpecialPromoPage";
+import { VoucherPromoPage } from "./pages/Promo/VoucherPromo/VoucherPromoPage";
 
 export default function BasePage() {
   const [currPrivileges, setCurrPrivileges] = React.useState({
@@ -149,6 +150,13 @@ export default function BasePage() {
           exact={false}
           path="/promo/special-promo"
           component={SpecialPromoPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.promo_management}
+          isRoute={true}
+          exact={false}
+          path="/promo/voucher-promo"
+          component={VoucherPromoPage}
         />
 
         <ProtectedRoute
