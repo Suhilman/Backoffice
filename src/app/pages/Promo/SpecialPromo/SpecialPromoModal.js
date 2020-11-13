@@ -3,7 +3,7 @@ import React from "react";
 import { Button, Modal, Spinner, Form, Row, Col, Alert } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 
-import "../style.css";
+import "../../style.css";
 
 const SpecialPromoModal = ({
   stateModal,
@@ -33,7 +33,7 @@ const SpecialPromoModal = ({
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
 
-      <Form onSubmit={formikPromo.handleSubmit}>
+      <Form noValidate onSubmit={formikPromo.handleSubmit}>
         <Modal.Body>
           {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
@@ -133,7 +133,6 @@ const SpecialPromoModal = ({
                   name="description"
                   {...formikPromo.getFieldProps("description")}
                   className={validationPromo("description")}
-                  required
                 />
                 {formikPromo.touched.description &&
                 formikPromo.errors.description ? (

@@ -16,9 +16,9 @@ import DataTable from "react-data-table-component";
 import { Search, MoreHoriz } from "@material-ui/icons";
 
 import SpecialPromoModal from "./SpecialPromoModal";
-import ShowConfirmModal from "../../components/ConfirmModal";
+import ShowConfirmModal from "../../../components/ConfirmModal";
 
-import "../style.css";
+import "../../style.css";
 
 export const SpecialPromoPage = () => {
   const [loading, setLoading] = React.useState(false);
