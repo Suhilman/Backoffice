@@ -328,7 +328,14 @@ const VoucherPromoModal = ({
 
 const DateTimePicker = ({ startDate, setStartDate }) => {
   const CustomInput = ({ value, onClick }) => {
-    return <Form.Control type="text" defaultValue={value} onClick={onClick} />;
+    return (
+      <Form.Control
+        type="text"
+        defaultValue={value}
+        onClick={onClick}
+        style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
+      />
+    );
   };
   return (
     <DatePicker

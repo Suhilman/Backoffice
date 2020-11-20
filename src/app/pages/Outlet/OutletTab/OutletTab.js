@@ -456,7 +456,7 @@ export const OutletTab = ({
   };
 
   return (
-    <Row>
+    <>
       <ModalOutlet
         stateModal={stateAddModal}
         cancelModal={cancelAddModalOutlet}
@@ -505,82 +505,84 @@ export const OutletTab = ({
         handleClick={handleDeleteOutlet}
       />
 
-      <Col>
-        <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
-          <div className="headerPage">
-            <div className="headerStart">
-              <h3>Outlet Information</h3>
+      <Row style={{ height: "100%" }}>
+        <Col>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <div className="headerPage">
+              <div className="headerStart">
+                <h3>Outlet Information</h3>
+              </div>
+              <div className="headerEnd">
+                <Button
+                  variant="primary"
+                  style={{ marginLeft: "0.5rem" }}
+                  onClick={showAddModalOutlet}
+                >
+                  Add New Outlet
+                </Button>
+              </div>
             </div>
-            <div className="headerEnd">
-              <Button
-                variant="primary"
-                style={{ marginLeft: "0.5rem" }}
-                onClick={showAddModalOutlet}
-              >
-                Add New Outlet
-              </Button>
-            </div>
-          </div>
 
-          <div className="filterSection lineBottom">
-            <Row>
-              <Col>
-                <InputGroup className="pb-3">
-                  <InputGroup.Prepend>
-                    <InputGroup.Text style={{ background: "transparent" }}>
-                      <Search />
-                    </InputGroup.Text>
-                  </InputGroup.Prepend>
-                  <Form.Control
-                    placeholder="Search..."
-                    value={search}
-                    onChange={handleSearch}
-                  />
-                </InputGroup>
-              </Col>
-              <Col>
-                <Row>
-                  <Col>
-                    <Form.Group as={Row}>
-                      <Form.Label
-                        style={{ alignSelf: "center", marginBottom: "0" }}
-                      >
-                        Time:
-                      </Form.Label>
-                      <Col>
-                        <Form.Control
-                          as="select"
-                          name="time"
-                          value={filter.time}
-                          onChange={handleFilter}
+            <div className="filterSection lineBottom">
+              <Row>
+                <Col>
+                  <InputGroup className="pb-3">
+                    <InputGroup.Prepend>
+                      <InputGroup.Text style={{ background: "transparent" }}>
+                        <Search />
+                      </InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <Form.Control
+                      placeholder="Search..."
+                      value={search}
+                      onChange={handleSearch}
+                    />
+                  </InputGroup>
+                </Col>
+                <Col>
+                  <Row>
+                    <Col>
+                      <Form.Group as={Row}>
+                        <Form.Label
+                          style={{ alignSelf: "center", marginBottom: "0" }}
                         >
-                          {allStatuses.map((item, index) => {
-                            return (
-                              <option key={index} value={item.toLowerCase()}>
-                                {item}
-                              </option>
-                            );
-                          })}
-                        </Form.Control>
-                      </Col>
-                    </Form.Group>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </div>
+                          Time:
+                        </Form.Label>
+                        <Col>
+                          <Form.Control
+                            as="select"
+                            name="time"
+                            value={filter.time}
+                            onChange={handleFilter}
+                          >
+                            {allStatuses.map((item, index) => {
+                              return (
+                                <option key={index} value={item.toLowerCase()}>
+                                  {item}
+                                </option>
+                              );
+                            })}
+                          </Form.Control>
+                        </Col>
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            </div>
 
-          <DataTable
-            noHeader
-            pagination
-            columns={columns}
-            data={dataOutlets()}
-            expandableRows
-            expandableRowsComponent={<ExpandableComponent />}
-            style={{ minHeight: "100%" }}
-          />
-        </Paper>
-      </Col>
-    </Row>
+            <DataTable
+              noHeader
+              pagination
+              columns={columns}
+              data={dataOutlets()}
+              expandableRows
+              expandableRowsComponent={<ExpandableComponent />}
+              style={{ minHeight: "70%" }}
+            />
+          </Paper>
+        </Col>
+      </Row>
+    </>
   );
 };

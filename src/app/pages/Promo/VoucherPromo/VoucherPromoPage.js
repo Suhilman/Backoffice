@@ -45,9 +45,9 @@ export const VoucherPromoPage = () => {
     name: "",
     code: "",
     quota: "",
-    description_type: "",
+    description_type: "regulation",
     description: "",
-    type: "",
+    type: "percentage",
     value: ""
   };
 

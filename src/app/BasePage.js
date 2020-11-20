@@ -19,6 +19,9 @@ import { DetailCustomerPage } from "./pages/Customer/DetailCustomerPage";
 import { PromoPage } from "./pages/Promo/PromoPage";
 import { SpecialPromoPage } from "./pages/Promo/SpecialPromo/SpecialPromoPage";
 import { VoucherPromoPage } from "./pages/Promo/VoucherPromo/VoucherPromoPage";
+import { AutomaticPromoPage } from "./pages/Promo/AutomaticPromo/AutomaticPromoPage";
+import { AddAutomaticPromoPage } from "./pages/Promo/AutomaticPromo/AddAutomaticPromoPage";
+import { EditAutomaticPromoPage } from "./pages/Promo/AutomaticPromo/EditAutomaticPromoPage";
 
 export default function BasePage() {
   const [currPrivileges, setCurrPrivileges] = React.useState({
@@ -158,6 +161,27 @@ export default function BasePage() {
           path="/promo/voucher-promo"
           component={VoucherPromoPage}
         />
+        <ProtectedRoute
+          isAllowed={currPrivileges.promo_management}
+          isRoute={false}
+          exact={true}
+          path="/promo/automatic-promo"
+          component={AutomaticPromoPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.promo_management}
+          isRoute={true}
+          exact={false}
+          path="/promo/automatic-promo/add-automatic-promo"
+          component={AddAutomaticPromoPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.promo_management}
+          isRoute={true}
+          exact={false}
+          path="/promo/automatic-promo/:promoId"
+          component={EditAutomaticPromoPage}
+        />
 
         <ProtectedRoute
           isAllowed={currPrivileges.customer_management}
@@ -174,24 +198,6 @@ export default function BasePage() {
           path="/customer/:customerId"
           component={DetailCustomerPage}
         />
-
-        {/*<ContentRoute path="/dashboard" component={DashboardPage} />
-        <ContentRoute path="/report" component={ReportPage} />
-
-        <ContentRoute exact path="/product" component={ProductPage} />
-        <Route path="/product/add-product" component={AddProductPage} />
-        <Route path="/product/:productId" component={EditProductPage} />
-
-        <ContentRoute path="/outlet" component={OutletPage} />
-
-        <ContentRoute exact path="/staff" component={StaffPage} />
-        <Route path="/staff/add-staff" component={AddStaffPage} />
-        <Route path="/staff/:staffId" component={DetailStaffPage} />
-
-        <ContentRoute path="/role" component={RolePage} />
-
-        <ContentRoute exact path="/promo" component={PromoPage} />
-        <Route path="/promo/special-promo" component={SpecialPromoPage} />*/}
 
         <ContentRoute path="/account" component={AccountPage} />
         <Redirect to="error/error-v1" />
