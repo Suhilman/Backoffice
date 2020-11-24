@@ -51,7 +51,7 @@ export const PromoPage = () => {
         }
         if (item.name === "Point/Loyalty System") {
           activePromos = item.Promos.filter(
-            (val) => val.Loyalty_Promo.status === "active"
+            (val) => val.Loyalty_Promo.Product.status === "active"
           );
         }
 

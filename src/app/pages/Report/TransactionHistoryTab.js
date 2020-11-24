@@ -66,44 +66,39 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
     const outlet_id = id ? `&outlet_id=${id}` : "";
     const filter = status ? `&status=${status}` : "";
 
-    let allSales;
     try {
       const { data } = await axios.get(
         `${API_URL}/api/v1/transaction?order=newest&per_page=999${outlet_id}&date_start=${date_start}&date_end=${date_end}${filter}`
       );
       setAllTransactions(data.data);
-      allSales = data.data;
-    } catch (err) {
-      if (err.response.status === 404) {
-        setAllTransactions([]);
-      }
-      allSales = [];
-      console.log(err);
-    }
 
-    const compileReports = allSales.map((item) => {
-      const allItems = item.Transaction_Items.map((val) => {
-        return {
-          date: dayjs(item.createdAt).format("DD-MM-YYYY HH:mm:ss"),
-          receipt_id: item.receipt_id,
-          status: item.Payment?.status || "",
-          outlet_name: item.Outlet.name,
-          sales_type: val.Sales_Type.name,
-          user: item.User.User_Profile.name,
-          customer_phone_number: item.Customer_Profile?.phone_number || "",
-          customer_name: item.Customer_Profile?.name || "",
-          sku: val.sku || "",
-          product_name: val.Product.name,
-          category_name: val.Product.Product_Category.name,
-          quantity: val.quantity,
-          price_product: val.price_product
-        };
+      const compileReports = data.data.map((item) => {
+        const allItems = item.Transaction_Items.map((val) => {
+          return {
+            date: dayjs(item.createdAt).format("DD-MM-YYYY HH:mm:ss"),
+            receipt_id: item.receipt_id,
+            status: item.Payment.status,
+            outlet_name: item.Outlet.name,
+            sales_type: val.Sales_Type.name,
+            user: item.User.User_Profile.name,
+            customer_phone_number: item.Customer_Profile?.phone_number || "",
+            customer_name: item.Customer_Profile?.name || "",
+            sku: val.sku || "",
+            product_name: val.Product.name,
+            category_name: val.Product.Product_Category.name,
+            quantity: val.quantity,
+            price_product: val.price_product
+          };
+        });
+
+        return allItems;
       });
 
-      return allItems;
-    });
-
-    setReports(compileReports.flat(1));
+      setReports(compileReports.flat(1));
+    } catch (err) {
+      setAllTransactions([]);
+      console.log(err);
+    }
   };
 
   React.useEffect(() => {
@@ -188,7 +183,7 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
         no: index + 1,
         receipt_id: item.receipt_id,
         payment_total: item.Payment?.payment_total || 0,
-        outlet_name: item.Outlet.name,
+        outlet_name: item.Outlet?.name || "-",
         created_at: dayjs(item.createdAt).format("DD-MM-YYYY HH:mm:ss"),
         status: item.status,
         items: item.Transaction_Items

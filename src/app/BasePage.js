@@ -22,6 +22,7 @@ import { VoucherPromoPage } from "./pages/Promo/VoucherPromo/VoucherPromoPage";
 import { AutomaticPromoPage } from "./pages/Promo/AutomaticPromo/AutomaticPromoPage";
 import { AddAutomaticPromoPage } from "./pages/Promo/AutomaticPromo/AddAutomaticPromoPage";
 import { EditAutomaticPromoPage } from "./pages/Promo/AutomaticPromo/EditAutomaticPromoPage";
+import { LoyaltyPromoPage } from "./pages/Promo/LoyaltyPromo/LoyaltyPromoPage";
 
 export default function BasePage() {
   const [currPrivileges, setCurrPrivileges] = React.useState({
@@ -181,6 +182,14 @@ export default function BasePage() {
           exact={false}
           path="/promo/automatic-promo/:promoId"
           component={EditAutomaticPromoPage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.promo_management}
+          isRoute={false}
+          exact={true}
+          path="/promo/point-loyalty-system"
+          component={LoyaltyPromoPage}
         />
 
         <ProtectedRoute
