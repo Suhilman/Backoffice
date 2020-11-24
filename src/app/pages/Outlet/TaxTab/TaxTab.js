@@ -290,7 +290,7 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
         loading={loading}
         formikTax={formikTax}
         validationTax={validationTax}
-        allTypes={allTaxTypes}
+        allTypes={allTypes}
       />
 
       <ModalTax
@@ -300,7 +300,7 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
         loading={loading}
         formikTax={formikTaxEdit}
         validationTax={validationTaxEdit}
-        allTypes={allTaxTypes}
+        allTypes={allTypes}
       />
 
       <ShowConfirmModal

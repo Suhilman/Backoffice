@@ -43,15 +43,13 @@ const ModalTax = ({
                   <option value="" disabled hidden>
                     Choose a Type
                   </option>
-                  {allTypes?.length
-                    ? allTypes.map((item) => {
-                        return (
-                          <option key={item.id} value={item.id}>
-                            {item.name}
-                          </option>
-                        );
-                      })
-                    : ""}
+                  {allTypes.map((item) => {
+                    return (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    );
+                  })}
                 </Form.Control>
                 {formikTax.touched.tax_type_id &&
                 formikTax.errors.tax_type_id ? (
