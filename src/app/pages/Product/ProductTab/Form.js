@@ -41,7 +41,7 @@ const FormTemplate = ({
 
   return (
     <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
-      <Form onSubmit={formikProduct.handleSubmit}>
+      <Form noValidate onSubmit={formikProduct.handleSubmit}>
         <div className="headerPage">
           <div className="headerStart">
             <h3>{title}</h3>
@@ -130,6 +130,7 @@ const FormTemplate = ({
                 as="select"
                 name="product_category_id"
                 {...formikProduct.getFieldProps("product_category_id")}
+                className={validationProduct("product_category_id")}
               >
                 <option value={""} disabled hidden>
                   Choose Category
@@ -266,7 +267,16 @@ const FormTemplate = ({
                 as="textarea"
                 name="description"
                 {...formikProduct.getFieldProps("description")}
+                className={validationProduct("description")}
               />
+              {formikProduct.touched.description &&
+              formikProduct.errors.description ? (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    {formikProduct.errors.description}
+                  </div>
+                </div>
+              ) : null}
             </Form.Group>
           </Col>
 
@@ -277,7 +287,15 @@ const FormTemplate = ({
                 type="text"
                 name="barcode"
                 {...formikProduct.getFieldProps("barcode")}
+                className={validationProduct("barcode")}
               />
+              {formikProduct.touched.barcode && formikProduct.errors.barcode ? (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    {formikProduct.errors.barcode}
+                  </div>
+                </div>
+              ) : null}
             </Form.Group>
 
             <Form.Group>
@@ -286,7 +304,34 @@ const FormTemplate = ({
                 type="text"
                 name="sku"
                 {...formikProduct.getFieldProps("sku")}
+                className={validationProduct("sku")}
               />
+              {formikProduct.touched.sku && formikProduct.errors.sku ? (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    {formikProduct.errors.sku}
+                  </div>
+                </div>
+              ) : null}
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>
+                {title === "Add Product" ? "Starting Stock" : "Stock"}
+              </Form.Label>
+              <Form.Control
+                type="number"
+                name="stock"
+                {...formikProduct.getFieldProps("stock")}
+                className={validationProduct("stock")}
+              />
+              {formikProduct.touched.stock && formikProduct.errors.stock ? (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    {formikProduct.errors.stock}
+                  </div>
+                </div>
+              ) : null}
             </Form.Group>
 
             <Form.Group>

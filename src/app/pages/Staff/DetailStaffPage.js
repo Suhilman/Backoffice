@@ -356,7 +356,7 @@ export const DetailStaffPage = ({ match, location }) => {
                     </>
                   )}
 
-                  <div className="title">Staff ID</div>
+                  {/* <div className="title">Staff ID</div>
                   {statePage === "show" ? (
                     <h5>{formikStaff.values.staff_id}</h5>
                   ) : (
@@ -377,7 +377,7 @@ export const DetailStaffPage = ({ match, location }) => {
                         </div>
                       ) : null}
                     </>
-                  )}
+                  )} */}
                 </Col>
 
                 <Col md={3}>
@@ -432,7 +432,30 @@ export const DetailStaffPage = ({ match, location }) => {
                     </>
                   )}
 
-                  <div className="title">Staff Type</div>
+                  <div className="title">Staff ID</div>
+                  {statePage === "show" ? (
+                    <h5>{formikStaff.values.staff_id}</h5>
+                  ) : (
+                    <>
+                      <Form.Control
+                        type="text"
+                        name="staff_id"
+                        {...formikStaff.getFieldProps("staff_id")}
+                        className={validationStaff("staff_id")}
+                        required
+                      />
+                      {formikStaff.touched.staff_id &&
+                      formikStaff.errors.staff_id ? (
+                        <div className="fv-plugins-message-container">
+                          <div className="fv-help-block">
+                            {formikStaff.errors.staff_id}
+                          </div>
+                        </div>
+                      ) : null}
+                    </>
+                  )}
+
+                  {/* <div className="title">Staff Type</div>
                   {statePage === "show" ? (
                     <h5>{formikStaff.values.type}</h5>
                   ) : (
@@ -460,7 +483,7 @@ export const DetailStaffPage = ({ match, location }) => {
                         </div>
                       ) : null}
                     </>
-                  )}
+                  )} */}
                 </Col>
 
                 <Col md={3}>

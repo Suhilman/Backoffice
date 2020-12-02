@@ -87,15 +87,13 @@ export const AddAutomaticPromoPage = ({ location }) => {
       .min(3, "Minimum 3 characters.")
       .max(50, "Maximum 50 characters.")
       .required("Please input a name"),
-    outlet_id: Yup.number()
-      .min(1)
-      .required("Please choose an outlet"),
+    outlet_id: Yup.array()
+      .of(Yup.number().min(1))
+      .required("Please choose outlet"),
     description_type: Yup.string()
       .matches(/regulation|how_to_use/)
       .required("Please choose description type"),
-    description: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters."),
+    description: Yup.string().min(1, "Minimum 1 character."),
     promo_date_start: Yup.date().required("Please input date start"),
     promo_date_end: Yup.date().required("Please input date end"),
     promo_days: Yup.string()
@@ -169,7 +167,7 @@ export const AddAutomaticPromoPage = ({ location }) => {
 
       formData.append("name", values.name);
       formData.append("type", values.type);
-      formData.append("outlet_id", values.outlet_id);
+      formData.append("outlet_id", JSON.stringify(values.outlet_id));
       formData.append("description_type", values.description_type);
       formData.append("promo_date_start", values.promo_date_start);
       formData.append("promo_date_end", values.promo_date_end);
@@ -206,7 +204,7 @@ export const AddAutomaticPromoPage = ({ location }) => {
 
       formData.append("name", values.name);
       formData.append("type", values.type);
-      formData.append("outlet_id", values.outlet_id);
+      formData.append("outlet_id", JSON.stringify(values.outlet_id));
       formData.append("description_type", values.description_type);
       formData.append("promo_date_start", values.promo_date_start);
       formData.append("promo_date_end", values.promo_date_end);
@@ -242,7 +240,7 @@ export const AddAutomaticPromoPage = ({ location }) => {
 
       formData.append("name", values.name);
       formData.append("type", values.type);
-      formData.append("outlet_id", values.outlet_id);
+      formData.append("outlet_id", JSON.stringify(values.outlet_id));
       formData.append("description_type", values.description_type);
       formData.append("promo_date_start", values.promo_date_start);
       formData.append("promo_date_end", values.promo_date_end);
@@ -489,6 +487,15 @@ export const AddAutomaticPromoPage = ({ location }) => {
     }
   };
 
+  const handleSelectOutlet = (value, formik) => {
+    if (value) {
+      const outlet = value.map((item) => item.value);
+      formik.setFieldValue("outlet_id", outlet);
+    } else {
+      formik.setFieldValue("outlet_id", []);
+    }
+  };
+
   const handleTabs = (value) => {
     setTabs(value);
     formikPromoQuantity.resetForm();
@@ -541,6 +548,8 @@ export const AddAutomaticPromoPage = ({ location }) => {
           handlePromoEndDate={handlePromoEndDate}
           handlePromoDays={handlePromoDays}
           handlePromoHour={handlePromoHour}
+          handleSelectOutlet={handleSelectOutlet}
+          mode="add"
         />
       </Tab>
 
@@ -566,6 +575,8 @@ export const AddAutomaticPromoPage = ({ location }) => {
           handlePromoEndDate={handlePromoEndDate}
           handlePromoDays={handlePromoDays}
           handlePromoHour={handlePromoHour}
+          handleSelectOutlet={handleSelectOutlet}
+          mode="add"
         />
       </Tab>
 
@@ -593,6 +604,8 @@ export const AddAutomaticPromoPage = ({ location }) => {
           handlePromoHour={handlePromoHour}
           handleSelectX={handleSelectX}
           handleSelectY={handleSelectY}
+          handleSelectOutlet={handleSelectOutlet}
+          mode="add"
         />
       </Tab>
     </Tabs>

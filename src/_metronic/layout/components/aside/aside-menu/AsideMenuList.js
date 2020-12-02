@@ -29,9 +29,10 @@ function AsideMenuList(props) {
   };
 
   const handleSetPrivileges = () => {
-    const curr = JSON.parse(localStorage.getItem("user_info")).privileges || [];
-    const currUser = curr.length ? "staff" : "owner";
-    setCurrPrivileges(curr);
+    const localData = JSON.parse(localStorage.getItem("user_info"));
+    const privileges = localData?.privileges ? localData.privileges : [];
+    const currUser = privileges.length ? "staff" : "owner";
+    setCurrPrivileges(privileges);
     setUser(currUser);
   };
 
@@ -69,11 +70,14 @@ function AsideMenuList(props) {
     // product sections
     const ps = [...productSections];
     const checkProduct = findPrivilege("product_management");
+    const checkInventory = findPrivilege("inventory_management");
 
     if (checkProduct) ps.push("product_management");
+    if (checkInventory) ps.push("inventory_management");
 
     if (user === "owner") {
       ps.push("product_management");
+      ps.push("inventory_management");
     }
 
     setProductSections(ps);
@@ -197,6 +201,29 @@ function AsideMenuList(props) {
                         />
                       </span>
                       <span className="menu-text">Product</span>
+                    </NavLink>
+                  </li>
+                );
+              }
+
+              if (section === "inventory_management") {
+                return (
+                  <li
+                    key={index}
+                    className={`menu-item ${getMenuItemActive(
+                      "/inventory",
+                      false
+                    )}`}
+                  >
+                    <NavLink className="menu-link" to="/inventory">
+                      <span className="svg-icon menu-icon">
+                        <SVG
+                          src={toAbsoluteUrl(
+                            "/media/svg/icons/Shopping/Bag2.svg"
+                          )}
+                        />
+                      </span>
+                      <span className="menu-text">Inventory</span>
                     </NavLink>
                   </li>
                 );

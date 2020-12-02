@@ -313,12 +313,12 @@ export const LoyaltyPromoPage = () => {
     let currentStatus;
 
     const edited = loyaltyPromos.map((item) => {
-      if (item.product_id === id) {
-        if (item.Product.status === "active") {
-          item.Product.status = "inactive";
+      if (item.id === id) {
+        if (item.status === "active") {
+          item.status = "inactive";
           currentStatus = "inactive";
         } else {
-          item.Product.status = "active";
+          item.status = "active";
           currentStatus = "active";
         }
       }
@@ -328,7 +328,7 @@ export const LoyaltyPromoPage = () => {
 
     const API_URL = process.env.REACT_APP_API_URL;
     try {
-      await axios.patch(`${API_URL}/api/v1/product/status/${id}`, {
+      await axios.patch(`${API_URL}/api/v1/loyalty-promo/${id}`, {
         status: currentStatus
       });
     } catch (err) {
@@ -500,7 +500,7 @@ export const LoyaltyPromoPage = () => {
         product_price: rupiahFormat.convert(item.Product.price),
         product_id: item.product_id,
         point: item.point,
-        product_status: item.Product.status
+        point_status: item.status
       };
     });
   };
@@ -537,18 +537,18 @@ export const LoyaltyPromoPage = () => {
       selector: "point"
     },
     {
-      name: "Product Status",
+      name: "Point Status",
       cell: (rows) => {
         return (
           <FormControl component="fieldset">
             <FormGroup aria-label="position" row>
               <FormControlLabel
-                value={rows.product_status}
+                value={rows.point_status}
                 control={
                   <Switch
                     color="primary"
-                    checked={rows.product_status === "active" ? true : false}
-                    onChange={() => handleChangeStatus(rows.product_id)}
+                    checked={rows.point_status === "active" ? true : false}
+                    onChange={() => handleChangeStatus(rows.id)}
                     name=""
                   />
                 }

@@ -152,6 +152,21 @@ export const DetailCustomerPage = ({ match }) => {
 
       const allTransactions = data.data.Transactions;
 
+      const registration_date = data.data.createdAt;
+      const points = data.data.points;
+      const points_spent = data.data.points_spent;
+
+      setCustomerStats({
+        total_transaction_count: "",
+        total_transaction: "",
+        average_transaction: "",
+        favorite_product: "",
+        last_visit: "",
+        registration_date,
+        points,
+        points_spent
+      });
+
       if (allTransactions.length) {
         const allTransactionsDone = allTransactions.filter(
           (item) => item.status === "done" || item.status === "closed"
@@ -178,9 +193,6 @@ export const DetailCustomerPage = ({ match }) => {
         const favorite_product = Object.keys(countProducts)[0];
         const last_visit = allTransactionsDone.sort((a, b) => b.id - a.id)[0]
           .createdAt;
-        const registration_date = data.data.createdAt;
-        const points = data.data.points;
-        const points_spent = data.data.points_spent;
 
         setCustomerStats({
           total_transaction_count,

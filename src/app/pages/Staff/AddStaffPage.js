@@ -34,7 +34,7 @@ export const AddStaffPage = ({ location }) => {
 
   const initialValueStaff = {
     outlet_id: "",
-    type: "",
+    type: "Staff",
     role_id: "",
     name: "",
     staff_id: "",
@@ -211,7 +211,7 @@ export const AddStaffPage = ({ location }) => {
                     ) : null}
                   </Form.Group>
 
-                  <Form.Group>
+                  {/* <Form.Group>
                     <Form.Label>Type*</Form.Label>
                     <Form.Control
                       as="select"
@@ -240,7 +240,7 @@ export const AddStaffPage = ({ location }) => {
                         </div>
                       </div>
                     ) : null}
-                  </Form.Group>
+                  </Form.Group> */}
 
                   <Form.Group>
                     <Form.Label>Role*</Form.Label>

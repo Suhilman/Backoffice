@@ -44,7 +44,8 @@ export const AddProductPage = () => {
     name: "",
     product_category_id: "",
     price: "",
-    product_tax_id: "",
+    stock: "",
+    product_tax_id: 1,
     status: "active",
     barcode: "",
     sku: "",
@@ -68,6 +69,10 @@ export const AddProductPage = () => {
       .integer()
       .min(1)
       .required("Please input a price."),
+    stock: Yup.number()
+      .integer()
+      .min(0)
+      .required("Please input a stock."),
     product_tax_id: Yup.number()
       .integer()
       .min(1)
@@ -85,9 +90,7 @@ export const AddProductPage = () => {
       .integer()
       .min(1)
       .required("Please choose a type."),
-    description: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
+    description: Yup.string().min(1, "Minimum 1 character.")
   });
 
   const formikProduct = useFormik({
@@ -100,6 +103,7 @@ export const AddProductPage = () => {
       formData.append("outlet_id", values.outlet_id);
       formData.append("name", values.name);
       formData.append("price", values.price);
+      formData.append("stock", values.stock);
       formData.append("product_type_id", values.product_type_id);
       formData.append("product_tax_id", values.product_tax_id);
       formData.append("status", values.status);

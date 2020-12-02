@@ -143,10 +143,15 @@ export const StaffPage = () => {
       sortable: true
     },
     {
-      name: "Type",
-      selector: "type",
+      name: "Role",
+      selector: "role",
       sortable: true
     },
+    // {
+    //   name: "Type",
+    //   selector: "type",
+    //   sortable: true
+    // },
     {
       name: "Actions",
       cell: (rows) => {
@@ -185,7 +190,8 @@ export const StaffPage = () => {
       no: index + 1,
       name: item.name,
       location: item.Outlet.Location.name,
-      type: item.User.type
+      // type: item.User.type
+      role: item.User.Role.name
     };
   });
 

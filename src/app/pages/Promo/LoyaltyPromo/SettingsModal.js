@@ -206,7 +206,7 @@ const SpecialPromoModal = ({
                     <Form.Label>Exchange Type:</Form.Label>
                     <Form.Control as="select">
                       <option value="percentage">Percentage</option>
-                      <option value="currency">Currency</option>
+                      <option value="currency">Rupiah</option>
                     </Form.Control>
                   </Form.Group>
                 </Col>

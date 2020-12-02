@@ -110,9 +110,7 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
     description_type: Yup.string()
       .matches(/regulation|how_to_use/)
       .required("Please choose description type"),
-    description: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters."),
+    description: Yup.string().min(1, "Minimum 1 character."),
     promo_date_start: Yup.date().required("Please input date start"),
     promo_date_end: Yup.date().required("Please input date end"),
     promo_days: Yup.string()
@@ -538,6 +536,7 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
           handlePromoEndDate={handlePromoEndDate}
           handlePromoDays={handlePromoDays}
           handlePromoHour={handlePromoHour}
+          mode="edit"
         />
       ) : (
         ""
@@ -565,6 +564,7 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
           handlePromoEndDate={handlePromoEndDate}
           handlePromoDays={handlePromoDays}
           handlePromoHour={handlePromoHour}
+          mode="edit"
         />
       ) : (
         ""
@@ -594,6 +594,7 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
           handlePromoHour={handlePromoHour}
           handleSelectX={handleSelectX}
           handleSelectY={handleSelectY}
+          mode="edit"
         />
       ) : (
         ""

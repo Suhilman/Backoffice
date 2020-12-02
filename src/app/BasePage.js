@@ -23,6 +23,13 @@ import { AutomaticPromoPage } from "./pages/Promo/AutomaticPromo/AutomaticPromoP
 import { AddAutomaticPromoPage } from "./pages/Promo/AutomaticPromo/AddAutomaticPromoPage";
 import { EditAutomaticPromoPage } from "./pages/Promo/AutomaticPromo/EditAutomaticPromoPage";
 import { LoyaltyPromoPage } from "./pages/Promo/LoyaltyPromo/LoyaltyPromoPage";
+import { InventoryPage } from "./pages/Inventory/InventoryPage";
+import { IncomingStockPage } from "./pages/Inventory/InventoryTab/IncomingStock/IncomingStockPage";
+import { AddIncomingStockPage } from "./pages/Inventory/InventoryTab/IncomingStock/AddPage";
+import { DetailIncomingStockPage } from "./pages/Inventory/InventoryTab/IncomingStock/DetailPage";
+import { OutcomingStockPage } from "./pages/Inventory/InventoryTab/OutcomingStock/OutcomingStockPage";
+import { AddOutcomingStockPage } from "./pages/Inventory/InventoryTab/OutcomingStock/AddPage";
+import { DetailOutcomingStockPage } from "./pages/Inventory/InventoryTab/OutcomingStock/DetailPage";
 
 export default function BasePage() {
   const [currPrivileges, setCurrPrivileges] = React.useState({
@@ -33,10 +40,12 @@ export default function BasePage() {
     staff_management: false,
     role_management: false,
     promo_management: false,
-    customer_management: false
+    customer_management: false,
+    inventory_management: false
   });
 
-  const { privileges } = JSON.parse(localStorage.getItem("user_info"));
+  const localData = JSON.parse(localStorage.getItem("user_info"));
+  const privileges = localData?.privileges ? localData.privileges : "";
   const user = privileges ? "staff" : "owner";
 
   React.useEffect(() => {
@@ -101,6 +110,57 @@ export default function BasePage() {
           exact={false}
           path="/product/:productId"
           component={EditProductPage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory"
+          component={InventoryPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory/incoming-stock"
+          component={IncomingStockPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory/incoming-stock/add"
+          component={AddIncomingStockPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory/incoming-stock/:stockId"
+          component={DetailIncomingStockPage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory/outcoming-stock"
+          component={OutcomingStockPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory/outcoming-stock/add"
+          component={AddOutcomingStockPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory/outcoming-stock/:stockId"
+          component={DetailOutcomingStockPage}
         />
 
         <ProtectedRoute

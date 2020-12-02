@@ -32,6 +32,7 @@ export const EditProductPage = ({ match }) => {
     name: "",
     product_category_id: "",
     price: "",
+    stock: "",
     product_tax_id: "",
     status: "active",
     barcode: "",
@@ -87,6 +88,10 @@ export const EditProductPage = ({ match }) => {
       .integer()
       .min(1)
       .required("Please input a price."),
+    stock: Yup.number()
+      .integer()
+      .min(0)
+      .required("Please input a stock."),
     product_tax_id: Yup.number()
       .integer()
       .min(1)
@@ -105,9 +110,7 @@ export const EditProductPage = ({ match }) => {
       .min(1)
       .required("Please choose a type."),
     is_favorite: Yup.boolean().required(),
-    description: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
+    description: Yup.string().min(1, "Minimum 1 character.")
   });
 
   const formikProduct = useFormik({
@@ -121,6 +124,7 @@ export const EditProductPage = ({ match }) => {
       formData.append("outlet_id", values.outlet_id);
       formData.append("name", values.name);
       formData.append("price", values.price);
+      formData.append("stock", values.stock);
       formData.append("product_type_id", values.product_type_id);
       formData.append("product_tax_id", values.product_tax_id);
       formData.append("is_favorite", values.is_favorite);
@@ -176,6 +180,7 @@ export const EditProductPage = ({ match }) => {
         name: productData.name,
         product_category_id: productData.product_category_id || "",
         price: productData.price,
+        stock: productData.stock,
         product_tax_id: productData.product_tax_id,
         status: productData.status,
         barcode: productData.barcode || "",

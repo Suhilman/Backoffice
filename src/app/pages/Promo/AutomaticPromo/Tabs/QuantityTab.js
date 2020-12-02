@@ -27,7 +27,9 @@ const QuantityTab = ({
   handlePromoStartDate,
   handlePromoEndDate,
   handlePromoDays,
-  handlePromoHour
+  handlePromoHour,
+  handleSelectOutlet,
+  mode
 }) => {
   return (
     <Row>
@@ -152,7 +154,7 @@ const QuantityTab = ({
                         required
                       >
                         <option value="percentage">Percentage</option>
-                        <option value="currency">Currency</option>
+                        <option value="currency">Rupiah</option>
                       </Form.Control>
                       {formikPromo.touched.quantity_type &&
                       formikPromo.errors.quantity_type ? (
@@ -207,6 +209,8 @@ const QuantityTab = ({
               handlePromoEndDate={handlePromoEndDate}
               handlePromoDays={handlePromoDays}
               handlePromoHour={handlePromoHour}
+              handleSelectOutlet={handleSelectOutlet}
+              mode={mode}
             />
           </Form>
         </Paper>

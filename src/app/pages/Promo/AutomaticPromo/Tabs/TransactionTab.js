@@ -27,7 +27,9 @@ const TransactionTab = ({
   handlePromoStartDate,
   handlePromoEndDate,
   handlePromoDays,
-  handlePromoHour
+  handlePromoHour,
+  handleSelectOutlet,
+  mode
 }) => {
   return (
     <Row>
@@ -120,7 +122,7 @@ const TransactionTab = ({
                         required
                       >
                         <option value="percentage">Percentage</option>
-                        <option value="currency">Currency</option>
+                        <option value="currency">Rupiah</option>
                       </Form.Control>
                       {formikPromo.touched.transaction_type &&
                       formikPromo.errors.transaction_type ? (
@@ -175,6 +177,8 @@ const TransactionTab = ({
               handlePromoEndDate={handlePromoEndDate}
               handlePromoDays={handlePromoDays}
               handlePromoHour={handlePromoHour}
+              handleSelectOutlet={handleSelectOutlet}
+              mode={mode}
             />
           </Form>
         </Paper>

@@ -170,6 +170,7 @@ const ProductTab = ({ refresh, handleRefresh, allCategories, allOutlets }) => {
         name: item.name,
         category: item.Product_Category ? item.Product_Category.name : "",
         price: rupiahFormat.convert(item.price),
+        stock: item.stock,
         outlet: item.Outlet.name,
         status: item.status
       };
@@ -201,6 +202,11 @@ const ProductTab = ({ refresh, handleRefresh, allCategories, allOutlets }) => {
     {
       name: "Outlet",
       selector: "outlet",
+      sortable: true
+    },
+    {
+      name: "Stock",
+      selector: "stock",
       sortable: true
     },
     {

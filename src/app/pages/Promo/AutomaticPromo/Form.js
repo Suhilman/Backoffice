@@ -5,6 +5,7 @@ import DatePicker from "react-datepicker";
 import { OutlinedInput } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core";
 import { CalendarToday } from "@material-ui/icons";
+import Select from "react-select";
 
 import "../../style.css";
 
@@ -30,7 +31,9 @@ const FormTemplate = ({
   handlePromoStartDate,
   handlePromoEndDate,
   handlePromoDays,
-  handlePromoHour
+  handlePromoHour,
+  handleSelectOutlet,
+  mode
 }) => {
   const classes = useStyles();
 
@@ -52,6 +55,10 @@ const FormTemplate = ({
       />
     );
   };
+
+  const optionsOutlet = allOutlets.map((item) => {
+    return { value: item.id, label: item.name };
+  });
 
   return (
     <>
@@ -269,35 +276,57 @@ const FormTemplate = ({
 
           <Row>
             <Col sm={4}>
-              <Form.Group>
-                <Form.Label>Location:</Form.Label>
-                <Form.Control
-                  as="select"
-                  name="outlet_id"
-                  {...formikPromo.getFieldProps("outlet_id")}
-                  className={validationPromo("outlet_id")}
-                  required
-                >
-                  <option value="" disabled hidden>
-                    Choose an Outlet
-                  </option>
-                  {allOutlets.map((item, index) => {
-                    return (
-                      <option key={index} value={item.id}>
-                        {item.name}
-                      </option>
-                    );
-                  })}
-                </Form.Control>
-                {formikPromo.touched.outlet_id &&
-                formikPromo.errors.outlet_id ? (
-                  <div className="fv-plugins-message-container">
-                    <div className="fv-help-block">
-                      {formikPromo.errors.outlet_id}
+              {mode === "edit" ? (
+                <Form.Group>
+                  <Form.Label>Location:</Form.Label>
+                  <Form.Control
+                    as="select"
+                    name="outlet_id"
+                    {...formikPromo.getFieldProps("outlet_id")}
+                    className={validationPromo("outlet_id")}
+                    required
+                  >
+                    <option value="" disabled hidden>
+                      Choose an Outlet
+                    </option>
+                    {allOutlets.map((item, index) => {
+                      return (
+                        <option key={index} value={item.id}>
+                          {item.name}
+                        </option>
+                      );
+                    })}
+                  </Form.Control>
+                  {formikPromo.touched.outlet_id &&
+                  formikPromo.errors.outlet_id ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikPromo.errors.outlet_id}
+                      </div>
                     </div>
-                  </div>
-                ) : null}
-              </Form.Group>
+                  ) : null}
+                </Form.Group>
+              ) : (
+                <Form.Group>
+                  <Form.Label>Location:</Form.Label>
+                  <Select
+                    options={optionsOutlet}
+                    isMulti
+                    name="outlet_id"
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    onChange={(value) => handleSelectOutlet(value, formikPromo)}
+                  />
+                  {formikPromo.touched.outlet_id &&
+                  formikPromo.errors.outlet_id ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikPromo.errors.outlet_id}
+                      </div>
+                    </div>
+                  ) : null}
+                </Form.Group>
+              )}
             </Col>
 
             <Col sm={4}>

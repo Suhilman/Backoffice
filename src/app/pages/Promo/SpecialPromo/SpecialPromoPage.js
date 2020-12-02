@@ -59,7 +59,7 @@ export const SpecialPromoPage = () => {
     description_type: Yup.string()
       .matches(/regulation|how_to_use/)
       .required("Please choose type."),
-    description: Yup.string(),
+    description: Yup.string().min(1, "Minimum 1 character"),
     type: Yup.string()
       .matches(/percentage|currency/)
       .required("Please choose type."),
