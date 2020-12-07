@@ -17,7 +17,7 @@ import { Paper } from "@material-ui/core";
 import DatePicker from "react-datepicker";
 import { CalendarToday, Delete } from "@material-ui/icons";
 
-export const AddOutcomingStockPage = ({ location }) => {
+export const AddStockOpnamePage = ({ location }) => {
   const history = useHistory();
   const { allOutlets, allProducts } = location.state;
 
@@ -26,6 +26,8 @@ export const AddOutcomingStockPage = ({ location }) => {
 
   const [startDate, setStartDate] = React.useState(new Date());
 
+  const [outletProduct, setOutletProduct] = React.useState([]);
+
   const initialValueStock = {
     outlet_id: "",
     notes: "",
@@ -33,7 +35,11 @@ export const AddOutcomingStockPage = ({ location }) => {
     items: [
       {
         product_id: "",
-        quantity: 0
+        quantity_system: 0,
+        quantity_actual: 0,
+        difference: 0,
+        price_system: 0,
+        price_new: 0
       }
     ]
   };
@@ -50,9 +56,21 @@ export const AddOutcomingStockPage = ({ location }) => {
         product_id: Yup.number()
           .min(1)
           .required("Please input a product"),
-        quantity: Yup.number()
-          .min(1, "Minimum 1")
-          .required("Please input a quantity")
+        quantity_system: Yup.number()
+          .typeError("Please input a product")
+          .required("Please input a quantity system"),
+        quantity_actual: Yup.number()
+          .min(0, "Minimum 0")
+          .required("Please input a quantity actual"),
+        difference: Yup.number()
+          .typeError("Please input a quantity actual")
+          .required("Please input a difference"),
+        price_system: Yup.number()
+          .typeError("Please input a product")
+          .required("Please input a price system"),
+        price_new: Yup.number()
+          .min(0, "Minimum 0")
+          .required("Please input a price actual")
       })
     )
   });
@@ -72,9 +90,9 @@ export const AddOutcomingStockPage = ({ location }) => {
 
       try {
         enableLoading();
-        await axios.post(`${API_URL}/api/v1/outcoming-stock`, stockData);
+        await axios.post(`${API_URL}/api/v1/stock-opname`, stockData);
         disableLoading();
-        history.push("/inventory/outcoming-stock");
+        history.push("/inventory/stock-opname");
       } catch (err) {
         setAlert(err.response?.data.message || err.message);
         disableLoading();
@@ -102,6 +120,57 @@ export const AddOutcomingStockPage = ({ location }) => {
     formikStock.setFieldValue("date", date);
   };
 
+  const handleSelectOutlet = (e) => {
+    const { value } = e.target;
+    formikStock.setFieldValue("outlet_id", value);
+    formikStock.setFieldValue("items", initialValueStock.items);
+    const filterProduct = allProducts.filter(
+      (item) => item.outlet_id === parseInt(value)
+    );
+    setOutletProduct(filterProduct);
+  };
+
+  const handleSelectProduct = (e, index) => {
+    const { value } = e.target;
+
+    if (!value) {
+      return;
+    }
+
+    const currProduct = allProducts.find((item) => item.id === parseInt(value));
+    const diff =
+      parseInt(formikStock.values.items[index].quantity_system) >= 0
+        ? parseInt(formikStock.values.items[index].quantity_system) -
+          parseInt(formikStock.values.items[index].quantity_actual)
+        : parseInt(formikStock.values.items[index].quantity_system) +
+          parseInt(formikStock.values.items[index].quantity_actual);
+
+    formikStock.setFieldValue(`items[${index}].product_id`, value);
+    formikStock.setFieldValue(
+      `items[${index}].quantity_system`,
+      currProduct.stock
+    );
+    formikStock.setFieldValue(`items[${index}].difference`, diff);
+    formikStock.setFieldValue(
+      `items[${index}].price_system`,
+      currProduct.price
+    );
+    formikStock.setFieldValue(`items[${index}].price_new`, currProduct.price);
+  };
+
+  const handleChangeQuantity = (e, index) => {
+    const { value } = e.target;
+
+    const diff =
+      parseInt(formikStock.values.items[index].quantity_system) >= 0
+        ? parseInt(formikStock.values.items[index].quantity_system) -
+          parseInt(value)
+        : parseInt(formikStock.values.items[index].quantity_system) +
+          parseInt(value);
+    formikStock.setFieldValue(`items[${index}].quantity_actual`, value);
+    formikStock.setFieldValue(`items[${index}].difference`, diff);
+  };
+
   const CustomInputDate = ({ value, onClick }) => {
     return (
       <Form.Control
@@ -120,10 +189,10 @@ export const AddOutcomingStockPage = ({ location }) => {
           <Form noValidate onSubmit={formikStock.handleSubmit}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Add Outcoming Stock</h3>
+                <h3>Add Stock Opname</h3>
               </div>
               <div className="headerEnd">
-                <Link to="/inventory/outcoming-stock">
+                <Link to="/inventory/stock-opname">
                   <Button variant="secondary">Cancel</Button>
                 </Link>
                 <Button
@@ -140,10 +209,9 @@ export const AddOutcomingStockPage = ({ location }) => {
               </div>
             </div>
 
-              {alert ? <Alert variant="danger">{alert}</Alert> : ""}
+            {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
             <Row style={{ padding: "1rem" }} className="lineBottom">
-
               <Col sm={3}>
                 <Form.Group>
                   <Form.Label>Location:</Form.Label>
@@ -151,6 +219,8 @@ export const AddOutcomingStockPage = ({ location }) => {
                     as="select"
                     name="outlet_id"
                     {...formikStock.getFieldProps("outlet_id")}
+                    onChange={handleSelectOutlet}
+                    onBLur={handleSelectOutlet}
                     className={validationStock("outlet_id")}
                     required
                   >
@@ -192,8 +262,7 @@ export const AddOutcomingStockPage = ({ location }) => {
                       </InputGroup.Text>
                     </InputGroup.Append>
                   </InputGroup>
-                  {formikStock.touched.date &&
-                  formikStock.errors.date ? (
+                  {formikStock.touched.date && formikStock.errors.date ? (
                     <div className="fv-plugins-message-container">
                       <div className="fv-help-block">
                         {formikStock.errors.date}
@@ -230,7 +299,19 @@ export const AddOutcomingStockPage = ({ location }) => {
                     <h6>Product Name</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Quantity</h6>
+                    <h6>Quantity System</h6>
+                  </Col>
+                  <Col style={{ padding: "1rem", textAlign: "center" }}>
+                    <h6>Quantity Actual</h6>
+                  </Col>
+                  <Col style={{ padding: "1rem", textAlign: "center" }}>
+                    <h6>Difference</h6>
+                  </Col>
+                  <Col style={{ padding: "1rem", textAlign: "center" }}>
+                    <h6>Price System</h6>
+                  </Col>
+                  <Col style={{ padding: "1rem", textAlign: "center" }}>
+                    <h6>Price New</h6>
                   </Col>
                   <Col sm={1}></Col>
                 </Row>
@@ -252,12 +333,18 @@ export const AddOutcomingStockPage = ({ location }) => {
                                       {...formikStock.getFieldProps(
                                         `items[${index}].product_id`
                                       )}
+                                      onChange={(e) =>
+                                        handleSelectProduct(e, index)
+                                      }
+                                      onBlur={(e) =>
+                                        handleSelectProduct(e, index)
+                                      }
                                       required
                                     >
                                       <option value="" disabled hidden>
                                         Choose Product
                                       </option>
-                                      {allProducts.map((item) => {
+                                      {outletProduct.map((item) => {
                                         return (
                                           <option key={item.id} value={item.id}>
                                             {item.name}
@@ -282,9 +369,110 @@ export const AddOutcomingStockPage = ({ location }) => {
                                   <Form.Group>
                                     <Form.Control
                                       type="number"
-                                      name={`items[${index}].quantity`}
+                                      name={`items[${index}].quantity_system`}
                                       {...formikStock.getFieldProps(
-                                        `items[${index}].quantity`
+                                        `items[${index}].quantity_system`
+                                      )}
+                                      disabled
+                                      required
+                                    />
+                                    {formikStock.touched.items &&
+                                    formikStock.errors.items ? (
+                                      <div className="fv-plugins-message-container">
+                                        <div className="fv-help-block">
+                                          {
+                                            formikStock.errors.items[index]
+                                              ?.quantity_system
+                                          }
+                                        </div>
+                                      </div>
+                                    ) : null}
+                                  </Form.Group>
+                                </Col>
+                                <Col>
+                                  <Form.Group>
+                                    <Form.Control
+                                      type="number"
+                                      name={`items[${index}].quantity_actual`}
+                                      {...formikStock.getFieldProps(
+                                        `items[${index}].quantity_actual`
+                                      )}
+                                      onChange={(e) =>
+                                        handleChangeQuantity(e, index)
+                                      }
+                                      onBlur={(e) =>
+                                        handleChangeQuantity(e, index)
+                                      }
+                                      required
+                                    />
+                                    {formikStock.touched.items &&
+                                    formikStock.errors.items ? (
+                                      <div className="fv-plugins-message-container">
+                                        <div className="fv-help-block">
+                                          {
+                                            formikStock.errors.items[index]
+                                              ?.quantity_actual
+                                          }
+                                        </div>
+                                      </div>
+                                    ) : null}
+                                  </Form.Group>
+                                </Col>
+                                <Col>
+                                  <Form.Group>
+                                    <Form.Control
+                                      type="number"
+                                      name={`items[${index}].difference`}
+                                      {...formikStock.getFieldProps(
+                                        `items[${index}].difference`
+                                      )}
+                                      disabled
+                                      required
+                                    />
+                                    {formikStock.touched.items &&
+                                    formikStock.errors.items ? (
+                                      <div className="fv-plugins-message-container">
+                                        <div className="fv-help-block">
+                                          {
+                                            formikStock.errors.items[index]
+                                              ?.difference
+                                          }
+                                        </div>
+                                      </div>
+                                    ) : null}
+                                  </Form.Group>
+                                </Col>
+                                <Col>
+                                  <Form.Group>
+                                    <Form.Control
+                                      type="number"
+                                      name={`items[${index}].price_system`}
+                                      {...formikStock.getFieldProps(
+                                        `items[${index}].price_system`
+                                      )}
+                                      disabled
+                                      required
+                                    />
+                                    {formikStock.touched.items &&
+                                    formikStock.errors.items ? (
+                                      <div className="fv-plugins-message-container">
+                                        <div className="fv-help-block">
+                                          {
+                                            formikStock.errors.items[index]
+                                              ?.price_system
+                                          }
+                                        </div>
+                                      </div>
+                                    ) : null}
+                                  </Form.Group>
+                                </Col>
+                                <Col>
+                                  <Form.Group>
+                                    <Form.Control
+                                      type="number"
+                                      name={`items[${index}].price_new`}
+                                      {...formikStock.getFieldProps(
+                                        `items[${index}].price_new`
                                       )}
                                       required
                                     />
@@ -294,7 +482,7 @@ export const AddOutcomingStockPage = ({ location }) => {
                                         <div className="fv-help-block">
                                           {
                                             formikStock.errors.items[index]
-                                              ?.quantity
+                                              ?.price_new
                                           }
                                         </div>
                                       </div>

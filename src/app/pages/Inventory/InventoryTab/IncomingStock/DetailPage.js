@@ -92,21 +92,37 @@ export const DetailIncomingStockPage = ({ match }) => {
             style={{ padding: "1rem", marginBottom: "1rem" }}
             className="lineBottom"
           >
-            <Col sm={3} style={{ padding: "1rem" }}>
-              <div style={{ fontSize: "1.2rem" }}>
-                <b>Stock ID: </b>
-                {incomingStock ? incomingStock.code : "-"}
-              </div>
-              <div style={{ fontSize: "1.2rem" }}>
-                <b>Location: </b>
-                {incomingStock ? incomingStock.Outlet.name : "-"}
-              </div>
-              <div style={{ fontSize: "1.2rem" }}>
-                <b>Date: </b>
-                {incomingStock
-                  ? dayjs(incomingStock.date).format("DD/MM/YYYY")
-                  : "-"}
-              </div>
+            <Col sm={3}>
+              <Form.Group>
+                <Form.Label>Stock ID:</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={incomingStock ? incomingStock.code : "-"}
+                  disabled
+                />
+              </Form.Group>
+
+              <Form.Group>
+                <Form.Label>Location:</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={incomingStock ? incomingStock.Outlet.name : "-"}
+                  disabled
+                />
+              </Form.Group>
+
+              <Form.Group>
+                <Form.Label>Date:</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={
+                    incomingStock
+                      ? dayjs(incomingStock.date).format("DD/MM/YYYY")
+                      : "-"
+                  }
+                  disabled
+                />
+              </Form.Group>
             </Col>
 
             <Col>

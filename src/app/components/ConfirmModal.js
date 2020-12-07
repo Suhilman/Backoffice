@@ -9,7 +9,8 @@ const ConfirmModal = ({
   state,
   closeModal,
   loading,
-  alert
+  alert,
+  children
 }) => {
   return (
     <Modal show={state} onHide={closeModal}>
@@ -20,20 +21,24 @@ const ConfirmModal = ({
       <Modal.Body>
         {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
-        <p>{body}</p>
+        {typeof body === "string" ? <p>{body}</p> : children}
       </Modal.Body>
 
       <Modal.Footer>
         <Button variant="secondary" onClick={closeModal}>
           Close
         </Button>
-        <Button variant={buttonColor} onClick={handleClick}>
-          {loading ? (
-            <Spinner animation="border" variant="light" size="sm" />
-          ) : (
-            "Save changes"
-          )}
-        </Button>
+        {handleClick ? (
+          <Button variant={buttonColor} onClick={handleClick}>
+            {loading ? (
+              <Spinner animation="border" variant="light" size="sm" />
+            ) : (
+              "Save changes"
+            )}
+          </Button>
+        ) : (
+          ""
+        )}
       </Modal.Footer>
     </Modal>
   );

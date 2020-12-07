@@ -156,9 +156,9 @@ export const AddIncomingStockPage = ({ location }) => {
               </div>
             </div>
 
-            <Row style={{ padding: "1rem" }} className="lineBottom">
-              {alert ? <Alert variant="danger">{alert}</Alert> : ""}
+            {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
+            <Row style={{ padding: "1rem" }} className="lineBottom">
               <Col sm={3}>
                 <Form.Group>
                   <Form.Label>Location:</Form.Label>
@@ -194,7 +194,7 @@ export const AddIncomingStockPage = ({ location }) => {
                   <Form.Label>Date:</Form.Label>
                   <InputGroup>
                     <DatePicker
-                      name="promo_date_start"
+                      name="date"
                       selected={startDate}
                       onChange={handleDate}
                       customInput={<CustomInputDate />}
@@ -207,11 +207,10 @@ export const AddIncomingStockPage = ({ location }) => {
                       </InputGroup.Text>
                     </InputGroup.Append>
                   </InputGroup>
-                  {formikStock.touched.promo_date_start &&
-                  formikStock.errors.promo_date_start ? (
+                  {formikStock.touched.date && formikStock.errors.date ? (
                     <div className="fv-plugins-message-container">
                       <div className="fv-help-block">
-                        {formikStock.errors.promo_date_start}
+                        {formikStock.errors.date}
                       </div>
                     </div>
                   ) : null}

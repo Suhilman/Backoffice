@@ -90,7 +90,7 @@ const InventoryTab = ({ refresh }) => {
     }
   ];
 
-  const dataCustomer = inventory.map((item, index) => {
+  const dataInventory = inventory.map((item, index) => {
     let adjusment = 0;
     let incoming_stock = 0;
     let outcoming_stock = 0;
@@ -130,7 +130,7 @@ const InventoryTab = ({ refresh }) => {
   return (
     <>
       <Row>
-        <Col md={12}>
+        <Col>
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
@@ -144,6 +144,18 @@ const InventoryTab = ({ refresh }) => {
                 <Link to={{ pathname: "/inventory/outcoming-stock" }}>
                   <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
                     Outcoming Stock
+                  </Button>
+                </Link>
+
+                <Link to={{ pathname: "/inventory/transfer-stock" }}>
+                  <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
+                    Transfer Stock
+                  </Button>
+                </Link>
+
+                <Link to={{ pathname: "/inventory/stock-opname" }}>
+                  <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
+                    Stock Opname
                   </Button>
                 </Link>
               </div>
@@ -193,7 +205,7 @@ const InventoryTab = ({ refresh }) => {
               noHeader
               pagination
               columns={columns}
-              data={dataCustomer}
+              data={dataInventory}
               style={{ minHeight: "100%" }}
             />
           </Paper>

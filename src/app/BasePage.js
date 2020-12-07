@@ -30,6 +30,14 @@ import { DetailIncomingStockPage } from "./pages/Inventory/InventoryTab/Incoming
 import { OutcomingStockPage } from "./pages/Inventory/InventoryTab/OutcomingStock/OutcomingStockPage";
 import { AddOutcomingStockPage } from "./pages/Inventory/InventoryTab/OutcomingStock/AddPage";
 import { DetailOutcomingStockPage } from "./pages/Inventory/InventoryTab/OutcomingStock/DetailPage";
+import { TransferStockPage } from "./pages/Inventory/InventoryTab/TransferStock/TransferStockPage";
+import { AddTransferStockPage } from "./pages/Inventory/InventoryTab/TransferStock/AddPage";
+import { DetailTransferStockPage } from "./pages/Inventory/InventoryTab/TransferStock/DetailPage";
+import { StockOpnamePage } from "./pages/Inventory/InventoryTab/StockOpname/StockOpnamePage";
+import { AddStockOpnamePage } from "./pages/Inventory/InventoryTab/StockOpname/AddPage";
+import { DetailStockOpnamePage } from "./pages/Inventory/InventoryTab/StockOpname/DetailPage";
+import { AddPurchaseOrderPage } from "./pages/Inventory/PurchaseOrderTab/AddPage";
+import { DetailPurchaseOrderPage } from "./pages/Inventory/PurchaseOrderTab/DetailPage";
 
 export default function BasePage() {
   const [currPrivileges, setCurrPrivileges] = React.useState({
@@ -161,6 +169,65 @@ export default function BasePage() {
           exact={true}
           path="/inventory/outcoming-stock/:stockId"
           component={DetailOutcomingStockPage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory/transfer-stock"
+          component={TransferStockPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory/transfer-stock/add"
+          component={AddTransferStockPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory/transfer-stock/:stockId"
+          component={DetailTransferStockPage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory/stock-opname"
+          component={StockOpnamePage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory/stock-opname/add"
+          component={AddStockOpnamePage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory/stock-opname/:stockId"
+          component={DetailStockOpnamePage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory/purchase-order/add"
+          component={AddPurchaseOrderPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory/purchase-order/:orderId"
+          component={DetailPurchaseOrderPage}
         />
 
         <ProtectedRoute

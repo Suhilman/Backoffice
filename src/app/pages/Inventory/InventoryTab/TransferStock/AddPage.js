@@ -17,7 +17,7 @@ import { Paper } from "@material-ui/core";
 import DatePicker from "react-datepicker";
 import { CalendarToday, Delete } from "@material-ui/icons";
 
-export const AddOutcomingStockPage = ({ location }) => {
+export const AddTransferStockPage = ({ location }) => {
   const history = useHistory();
   const { allOutlets, allProducts } = location.state;
 
@@ -26,8 +26,11 @@ export const AddOutcomingStockPage = ({ location }) => {
 
   const [startDate, setStartDate] = React.useState(new Date());
 
+  const [originProduct, setOriginProduct] = React.useState([]);
+
   const initialValueStock = {
-    outlet_id: "",
+    outlet_from_id: "",
+    outlet_to_id: "",
     notes: "",
     date: startDate,
     items: [
@@ -39,10 +42,14 @@ export const AddOutcomingStockPage = ({ location }) => {
   };
 
   const StockSchema = Yup.object().shape({
-    outlet_id: Yup.number()
+    outlet_from_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose an outlet."),
+      .required("Please choose an outlet origin."),
+    outlet_to_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose an outlet destination."),
     notes: Yup.string(),
     date: Yup.string().required("Please input date"),
     items: Yup.array().of(
@@ -63,18 +70,23 @@ export const AddOutcomingStockPage = ({ location }) => {
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
 
-      const stockData = {
-        outlet_id: values.outlet_id,
-        notes: values.notes,
-        date: values.date,
-        items: values.items
-      };
-
       try {
+        const stockData = {
+          outlet_from_id: values.outlet_from_id,
+          outlet_to_id: values.outlet_to_id,
+          notes: values.notes,
+          date: values.date,
+          items: values.items
+        };
+
+        if (stockData.outlet_from_id === stockData.outlet_to_id) {
+          throw new Error("origin and destination cannot be the same outlet");
+        }
+
         enableLoading();
-        await axios.post(`${API_URL}/api/v1/outcoming-stock`, stockData);
+        await axios.post(`${API_URL}/api/v1/transfer-stock`, stockData);
         disableLoading();
-        history.push("/inventory/outcoming-stock");
+        history.push("/inventory/transfer-stock");
       } catch (err) {
         setAlert(err.response?.data.message || err.message);
         disableLoading();
@@ -102,6 +114,16 @@ export const AddOutcomingStockPage = ({ location }) => {
     formikStock.setFieldValue("date", date);
   };
 
+  const handleSelectOrigin = (e) => {
+    const { value } = e.target;
+    formikStock.setFieldValue("outlet_from_id", value);
+    formikStock.setFieldValue("items", initialValueStock.items);
+    const filterProduct = allProducts.filter(
+      (item) => item.outlet_id === parseInt(value)
+    );
+    setOriginProduct(filterProduct);
+  };
+
   const CustomInputDate = ({ value, onClick }) => {
     return (
       <Form.Control
@@ -120,10 +142,10 @@ export const AddOutcomingStockPage = ({ location }) => {
           <Form noValidate onSubmit={formikStock.handleSubmit}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Add Outcoming Stock</h3>
+                <h3>Add Transfer Stock</h3>
               </div>
               <div className="headerEnd">
-                <Link to="/inventory/outcoming-stock">
+                <Link to="/inventory/transfer-stock">
                   <Button variant="secondary">Cancel</Button>
                 </Link>
                 <Button
@@ -140,18 +162,19 @@ export const AddOutcomingStockPage = ({ location }) => {
               </div>
             </div>
 
-              {alert ? <Alert variant="danger">{alert}</Alert> : ""}
+            {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
             <Row style={{ padding: "1rem" }} className="lineBottom">
-
               <Col sm={3}>
                 <Form.Group>
-                  <Form.Label>Location:</Form.Label>
+                  <Form.Label>Origin:</Form.Label>
                   <Form.Control
                     as="select"
-                    name="outlet_id"
-                    {...formikStock.getFieldProps("outlet_id")}
-                    className={validationStock("outlet_id")}
+                    name="outlet_from_id"
+                    {...formikStock.getFieldProps("outlet_from_id")}
+                    onChange={handleSelectOrigin}
+                    onBlur={handleSelectOrigin}
+                    className={validationStock("outlet_from_id")}
                     required
                   >
                     <option value={""} disabled hidden>
@@ -165,11 +188,41 @@ export const AddOutcomingStockPage = ({ location }) => {
                       );
                     })}
                   </Form.Control>
-                  {formikStock.touched.outlet_id &&
-                  formikStock.errors.outlet_id ? (
+                  {formikStock.touched.outlet_from_id &&
+                  formikStock.errors.outlet_from_id ? (
                     <div className="fv-plugins-message-container">
                       <div className="fv-help-block">
-                        {formikStock.errors.outlet_id}
+                        {formikStock.errors.outlet_from_id}
+                      </div>
+                    </div>
+                  ) : null}
+                </Form.Group>
+
+                <Form.Group>
+                  <Form.Label>Destination:</Form.Label>
+                  <Form.Control
+                    as="select"
+                    name="outlet_to_id"
+                    {...formikStock.getFieldProps("outlet_to_id")}
+                    className={validationStock("outlet_to_id")}
+                    required
+                  >
+                    <option value={""} disabled hidden>
+                      Choose Outlet
+                    </option>
+                    {allOutlets.map((item) => {
+                      return (
+                        <option key={item.id} value={item.id}>
+                          {item.name}
+                        </option>
+                      );
+                    })}
+                  </Form.Control>
+                  {formikStock.touched.outlet_to_id &&
+                  formikStock.errors.outlet_to_id ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikStock.errors.outlet_to_id}
                       </div>
                     </div>
                   ) : null}
@@ -192,8 +245,7 @@ export const AddOutcomingStockPage = ({ location }) => {
                       </InputGroup.Text>
                     </InputGroup.Append>
                   </InputGroup>
-                  {formikStock.touched.date &&
-                  formikStock.errors.date ? (
+                  {formikStock.touched.date && formikStock.errors.date ? (
                     <div className="fv-plugins-message-container">
                       <div className="fv-help-block">
                         {formikStock.errors.date}
@@ -257,7 +309,7 @@ export const AddOutcomingStockPage = ({ location }) => {
                                       <option value="" disabled hidden>
                                         Choose Product
                                       </option>
-                                      {allProducts.map((item) => {
+                                      {originProduct.map((item) => {
                                         return (
                                           <option key={item.id} value={item.id}>
                                             {item.name}

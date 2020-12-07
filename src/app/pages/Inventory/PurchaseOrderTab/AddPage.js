@@ -17,64 +17,84 @@ import { Paper } from "@material-ui/core";
 import DatePicker from "react-datepicker";
 import { CalendarToday, Delete } from "@material-ui/icons";
 
-export const AddOutcomingStockPage = ({ location }) => {
+export const AddPurchaseOrderPage = ({ location }) => {
   const history = useHistory();
-  const { allOutlets, allProducts } = location.state;
+  const { allOutlets, allProducts, allSuppliers } = location.state;
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
 
   const [startDate, setStartDate] = React.useState(new Date());
 
-  const initialValueStock = {
+  const initialValueOrder = {
     outlet_id: "",
+    supplier_id: "",
+    po_number: "",
     notes: "",
     date: startDate,
     items: [
       {
         product_id: "",
-        quantity: 0
+        quantity: 0,
+        price: 0,
+        total_price: 0
       }
     ]
   };
 
-  const StockSchema = Yup.object().shape({
+  const OrderSchema = Yup.object().shape({
     outlet_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose an outlet."),
+      .required("Please choose outlet."),
+    supplier_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose supplier."),
+    po_number: Yup.string().nullable(),
     notes: Yup.string(),
     date: Yup.string().required("Please input date"),
     items: Yup.array().of(
       Yup.object().shape({
         product_id: Yup.number()
           .min(1)
-          .required("Please input a product"),
+          .required("Please input product"),
         quantity: Yup.number()
           .min(1, "Minimum 1")
-          .required("Please input a quantity")
+          .required("Please input quantity"),
+        price: Yup.number()
+          .min(0, "Minimum 0")
+          .required("Please input price"),
+        total_price: Yup.number()
+          .min(0, "Minimum 0")
+          .required("Please input price total")
       })
     )
   });
 
-  const formikStock = useFormik({
-    initialValues: initialValueStock,
-    validationSchema: StockSchema,
+  const formikOrder = useFormik({
+    initialValues: initialValueOrder,
+    validationSchema: OrderSchema,
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
 
-      const stockData = {
+      const orderData = {
         outlet_id: values.outlet_id,
+        supplier_id: values.supplier_id,
         notes: values.notes,
         date: values.date,
         items: values.items
       };
 
+      if (values.po_number) {
+        orderData.po_number = values.po_number;
+      }
+
       try {
         enableLoading();
-        await axios.post(`${API_URL}/api/v1/outcoming-stock`, stockData);
+        await axios.post(`${API_URL}/api/v1/purchase-order`, orderData);
         disableLoading();
-        history.push("/inventory/outcoming-stock");
+        history.push("/inventory");
       } catch (err) {
         setAlert(err.response?.data.message || err.message);
         disableLoading();
@@ -82,12 +102,12 @@ export const AddOutcomingStockPage = ({ location }) => {
     }
   });
 
-  const validationStock = (fieldname) => {
-    if (formikStock.touched[fieldname] && formikStock.errors[fieldname]) {
+  const validationOrder = (fieldname) => {
+    if (formikOrder.touched[fieldname] && formikOrder.errors[fieldname]) {
       return "is-invalid";
     }
 
-    if (formikStock.touched[fieldname] && !formikStock.errors[fieldname]) {
+    if (formikOrder.touched[fieldname] && !formikOrder.errors[fieldname]) {
       return "is-valid";
     }
 
@@ -99,7 +119,15 @@ export const AddOutcomingStockPage = ({ location }) => {
 
   const handleDate = (date) => {
     setStartDate(date);
-    formikStock.setFieldValue("date", date);
+    formikOrder.setFieldValue("date", date);
+  };
+
+  const handleChangePrice = (e, idx) => {
+    const { value } = e.target;
+    const total_price = formikOrder.values.items[idx].quantity * value || 0;
+
+    formikOrder.setFieldValue(`items[${idx}].price`, value);
+    formikOrder.setFieldValue(`items[${idx}].total_price`, total_price);
   };
 
   const CustomInputDate = ({ value, onClick }) => {
@@ -117,13 +145,13 @@ export const AddOutcomingStockPage = ({ location }) => {
     <Row>
       <Col>
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
-          <Form noValidate onSubmit={formikStock.handleSubmit}>
+          <Form noValidate onSubmit={formikOrder.handleSubmit}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Add Outcoming Stock</h3>
+                <h3>Add Purchase Order</h3>
               </div>
               <div className="headerEnd">
-                <Link to="/inventory/outcoming-stock">
+                <Link to="/inventory">
                   <Button variant="secondary">Cancel</Button>
                 </Link>
                 <Button
@@ -140,18 +168,36 @@ export const AddOutcomingStockPage = ({ location }) => {
               </div>
             </div>
 
-              {alert ? <Alert variant="danger">{alert}</Alert> : ""}
+            {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
             <Row style={{ padding: "1rem" }} className="lineBottom">
-
               <Col sm={3}>
+                <Form.Group>
+                  <Form.Label>P.O Number:</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="po_number"
+                    {...formikOrder.getFieldProps("po_number")}
+                    className={validationOrder("po_number")}
+                    required
+                  />
+                  {formikOrder.touched.po_number &&
+                  formikOrder.errors.po_number ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikOrder.errors.po_number}
+                      </div>
+                    </div>
+                  ) : null}
+                </Form.Group>
+
                 <Form.Group>
                   <Form.Label>Location:</Form.Label>
                   <Form.Control
                     as="select"
                     name="outlet_id"
-                    {...formikStock.getFieldProps("outlet_id")}
-                    className={validationStock("outlet_id")}
+                    {...formikOrder.getFieldProps("outlet_id")}
+                    className={validationOrder("outlet_id")}
                     required
                   >
                     <option value={""} disabled hidden>
@@ -165,11 +211,11 @@ export const AddOutcomingStockPage = ({ location }) => {
                       );
                     })}
                   </Form.Control>
-                  {formikStock.touched.outlet_id &&
-                  formikStock.errors.outlet_id ? (
+                  {formikOrder.touched.outlet_id &&
+                  formikOrder.errors.outlet_id ? (
                     <div className="fv-plugins-message-container">
                       <div className="fv-help-block">
-                        {formikStock.errors.outlet_id}
+                        {formikOrder.errors.outlet_id}
                       </div>
                     </div>
                   ) : null}
@@ -192,11 +238,10 @@ export const AddOutcomingStockPage = ({ location }) => {
                       </InputGroup.Text>
                     </InputGroup.Append>
                   </InputGroup>
-                  {formikStock.touched.date &&
-                  formikStock.errors.date ? (
+                  {formikOrder.touched.date && formikOrder.errors.date ? (
                     <div className="fv-plugins-message-container">
                       <div className="fv-help-block">
-                        {formikStock.errors.date}
+                        {formikOrder.errors.date}
                       </div>
                     </div>
                   ) : null}
@@ -205,17 +250,47 @@ export const AddOutcomingStockPage = ({ location }) => {
 
               <Col>
                 <Form.Group>
+                  <Form.Label>Supplier:</Form.Label>
+                  <Form.Control
+                    as="select"
+                    name="outlet_to_id"
+                    {...formikOrder.getFieldProps("supplier_id")}
+                    className={validationOrder("supplier_id")}
+                    required
+                  >
+                    <option value={""} disabled hidden>
+                      Choose Supplier
+                    </option>
+                    {allSuppliers.map((item) => {
+                      return (
+                        <option key={item.id} value={item.id}>
+                          {item.name}
+                        </option>
+                      );
+                    })}
+                  </Form.Control>
+                  {formikOrder.touched.supplier_id &&
+                  formikOrder.errors.supplier_id ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikOrder.errors.supplier_id}
+                      </div>
+                    </div>
+                  ) : null}
+                </Form.Group>
+
+                <Form.Group>
                   <Form.Label>Notes:</Form.Label>
                   <Form.Control
                     as="textarea"
                     name="notes"
-                    {...formikStock.getFieldProps("notes")}
-                    className={validationStock("notes")}
+                    {...formikOrder.getFieldProps("notes")}
+                    className={validationOrder("notes")}
                   />
-                  {formikStock.touched.notes && formikStock.errors.notes ? (
+                  {formikOrder.touched.notes && formikOrder.errors.notes ? (
                     <div className="fv-plugins-message-container">
                       <div className="fv-help-block">
-                        {formikStock.errors.notes}
+                        {formikOrder.errors.notes}
                       </div>
                     </div>
                   ) : null}
@@ -232,16 +307,22 @@ export const AddOutcomingStockPage = ({ location }) => {
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
                     <h6>Quantity</h6>
                   </Col>
+                  <Col style={{ padding: "1rem", textAlign: "center" }}>
+                    <h6>Price</h6>
+                  </Col>
+                  <Col style={{ padding: "1rem", textAlign: "center" }}>
+                    <h6>Price Total</h6>
+                  </Col>
                   <Col sm={1}></Col>
                 </Row>
 
-                <FormikProvider value={formikStock}>
+                <FormikProvider value={formikOrder}>
                   <FieldArray
                     name="items"
                     render={(arrayHelpers) => {
                       return (
                         <div>
-                          {formikStock.values.items.map((item, index) => {
+                          {formikOrder.values.items.map((item, index) => {
                             return (
                               <Row key={index}>
                                 <Col>
@@ -249,7 +330,7 @@ export const AddOutcomingStockPage = ({ location }) => {
                                     <Form.Control
                                       as="select"
                                       name={`items[${index}].product_id`}
-                                      {...formikStock.getFieldProps(
+                                      {...formikOrder.getFieldProps(
                                         `items[${index}].product_id`
                                       )}
                                       required
@@ -265,12 +346,12 @@ export const AddOutcomingStockPage = ({ location }) => {
                                         );
                                       })}
                                     </Form.Control>
-                                    {formikStock.touched.items &&
-                                    formikStock.errors.items ? (
+                                    {formikOrder.touched.items &&
+                                    formikOrder.errors.items ? (
                                       <div className="fv-plugins-message-container">
                                         <div className="fv-help-block">
                                           {
-                                            formikStock.errors.items[index]
+                                            formikOrder.errors.items[index]
                                               ?.product_id
                                           }
                                         </div>
@@ -283,18 +364,70 @@ export const AddOutcomingStockPage = ({ location }) => {
                                     <Form.Control
                                       type="number"
                                       name={`items[${index}].quantity`}
-                                      {...formikStock.getFieldProps(
+                                      {...formikOrder.getFieldProps(
                                         `items[${index}].quantity`
                                       )}
                                       required
                                     />
-                                    {formikStock.touched.items &&
-                                    formikStock.errors.items ? (
+                                    {formikOrder.touched.items &&
+                                    formikOrder.errors.items ? (
                                       <div className="fv-plugins-message-container">
                                         <div className="fv-help-block">
                                           {
-                                            formikStock.errors.items[index]
+                                            formikOrder.errors.items[index]
                                               ?.quantity
+                                          }
+                                        </div>
+                                      </div>
+                                    ) : null}
+                                  </Form.Group>
+                                </Col>
+                                <Col>
+                                  <Form.Group>
+                                    <Form.Control
+                                      type="number"
+                                      name={`items[${index}].price`}
+                                      {...formikOrder.getFieldProps(
+                                        `items[${index}].price`
+                                      )}
+                                      onChange={(e) =>
+                                        handleChangePrice(e, index)
+                                      }
+                                      onBlur={(e) =>
+                                        handleChangePrice(e, index)
+                                      }
+                                      required
+                                    />
+                                    {formikOrder.touched.items &&
+                                    formikOrder.errors.items ? (
+                                      <div className="fv-plugins-message-container">
+                                        <div className="fv-help-block">
+                                          {
+                                            formikOrder.errors.items[index]
+                                              ?.price
+                                          }
+                                        </div>
+                                      </div>
+                                    ) : null}
+                                  </Form.Group>
+                                </Col>
+                                <Col>
+                                  <Form.Group>
+                                    <Form.Control
+                                      type="number"
+                                      name={`items[${index}].total_price`}
+                                      {...formikOrder.getFieldProps(
+                                        `items[${index}].total_price`
+                                      )}
+                                      required
+                                    />
+                                    {formikOrder.touched.items &&
+                                    formikOrder.errors.items ? (
+                                      <div className="fv-plugins-message-container">
+                                        <div className="fv-help-block">
+                                          {
+                                            formikOrder.errors.items[index]
+                                              ?.total_price
                                           }
                                         </div>
                                       </div>
@@ -316,7 +449,7 @@ export const AddOutcomingStockPage = ({ location }) => {
                           <Row style={{ padding: "1rem" }}>
                             <Button
                               onClick={() =>
-                                arrayHelpers.push(initialValueStock.items[0])
+                                arrayHelpers.push(initialValueOrder.items[0])
                               }
                               variant="primary"
                             >

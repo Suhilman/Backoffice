@@ -7,28 +7,27 @@ import { Paper } from "@material-ui/core";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 
-export const DetailOutcomingStockPage = ({ match }) => {
-  const { stockId } = match.params;
+export const DetailPurchaseOrderPage = ({ match }) => {
+  const { orderId } = match.params;
 
-  const [outcomingStock, setOutcomingStock] = React.useState("");
+  const [purchaseOrder, setPurchaseOrder] = React.useState("");
 
-  const getOutcomingStock = async (id) => {
+  const getPurchaseOrder = async (id) => {
     const API_URL = process.env.REACT_APP_API_URL;
-    // const filterCustomer = `?name=${search}&sort=${filter.time}`;
 
     try {
       const { data } = await axios.get(
-        `${API_URL}/api/v1/outcoming-stock/${id}`
+        `${API_URL}/api/v1/purchase-order/${id}`
       );
-      setOutcomingStock(data.data);
+      setPurchaseOrder(data.data);
     } catch (err) {
       console.log(err);
     }
   };
 
   React.useEffect(() => {
-    getOutcomingStock(stockId);
-  }, [stockId]);
+    getPurchaseOrder(orderId);
+  }, [orderId]);
 
   const columns = [
     {
@@ -40,14 +39,26 @@ export const DetailOutcomingStockPage = ({ match }) => {
       name: "Quantity",
       selector: "quantity",
       sortable: true
+    },
+    {
+      name: "Price",
+      selector: "price",
+      sortable: true
+    },
+    {
+      name: "Total Price",
+      selector: "total_price",
+      sortable: true
     }
   ];
 
-  const dataStock = outcomingStock
-    ? outcomingStock.Outcoming_Stock_Products.map((item) => {
+  const dataOrder = purchaseOrder
+    ? purchaseOrder.Purchase_Order_Products.map((item, index) => {
         return {
           product_name: item.Product.name,
-          quantity: item.quantity
+          quantity: item.quantity,
+          price: item.price,
+          total_price: item.total_price
         };
       })
     : [];
@@ -58,12 +69,12 @@ export const DetailOutcomingStockPage = ({ match }) => {
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div className="headerPage">
             <div className="headerStart">
-              <h3>Outcoming Stock Detail Summary</h3>
+              <h3>Purchase Order Detail Summary</h3>
             </div>
             <div className="headerEnd">
               <Link
                 to={{
-                  pathname: "/inventory/outcoming-stock"
+                  pathname: "/inventory"
                 }}
               >
                 <Button variant="outline-secondary">Back</Button>
@@ -81,10 +92,19 @@ export const DetailOutcomingStockPage = ({ match }) => {
           >
             <Col sm={3}>
               <Form.Group>
-                <Form.Label>Stock ID:</Form.Label>
+                <Form.Label>P.O ID:</Form.Label>
                 <Form.Control
                   type="text"
-                  value={outcomingStock ? outcomingStock.code : "-"}
+                  value={purchaseOrder ? purchaseOrder.code : "-"}
+                  disabled
+                />
+              </Form.Group>
+
+              <Form.Group>
+                <Form.Label>P.O Number:</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={purchaseOrder ? purchaseOrder.po_number : "-"}
                   disabled
                 />
               </Form.Group>
@@ -93,7 +113,7 @@ export const DetailOutcomingStockPage = ({ match }) => {
                 <Form.Label>Location:</Form.Label>
                 <Form.Control
                   type="text"
-                  value={outcomingStock ? outcomingStock.Outlet.name : "-"}
+                  value={purchaseOrder ? purchaseOrder.Outlet.name : "-"}
                   disabled
                 />
               </Form.Group>
@@ -103,8 +123,8 @@ export const DetailOutcomingStockPage = ({ match }) => {
                 <Form.Control
                   type="text"
                   value={
-                    outcomingStock
-                      ? dayjs(outcomingStock.date).format("DD/MM/YYYY")
+                    purchaseOrder
+                      ? dayjs(purchaseOrder.date).format("DD/MM/YYYY")
                       : "-"
                   }
                   disabled
@@ -114,11 +134,20 @@ export const DetailOutcomingStockPage = ({ match }) => {
 
             <Col>
               <Form.Group>
+                <Form.Label>Supplier:</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={purchaseOrder ? purchaseOrder.Supplier.name : "-"}
+                  disabled
+                />
+              </Form.Group>
+
+              <Form.Group>
                 <Form.Label>Notes:</Form.Label>
                 <Form.Control
                   as="textarea"
                   name="notes"
-                  value={outcomingStock?.notes || "-"}
+                  value={purchaseOrder?.notes || "-"}
                   disabled
                 />
               </Form.Group>
@@ -129,7 +158,7 @@ export const DetailOutcomingStockPage = ({ match }) => {
             noHeader
             pagination
             columns={columns}
-            data={dataStock}
+            data={dataOrder}
             style={{ minHeight: "100%" }}
           />
         </Paper>
