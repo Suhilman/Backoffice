@@ -14,8 +14,8 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
   const { promoData, allOutlets, allProducts } = location.state;
   const history = useHistory();
 
-  const [photo, setPhoto] = React.useState("");
-  const [photoPreview, setPhotoPreview] = React.useState("");
+  const [photo, setPhoto] = React.useState(promoData.image || "");
+  const [photoPreview, setPhotoPreview] = React.useState(promoData.image || "");
   const [alert, setAlert] = React.useState("");
   const [alertPhoto, setAlertPhoto] = React.useState("");
   const [loading, setLoading] = React.useState(false);

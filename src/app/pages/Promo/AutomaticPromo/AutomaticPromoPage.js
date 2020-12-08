@@ -128,6 +128,8 @@ export const AutomaticPromoPage = () => {
   const formatDate = (date) => dayjs(date).format("DD/MM/YYYY");
 
   const dataPromo = () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+
     return automaticPromos.map((item, index) => {
       const days = item.promo_days
         .split(",")
@@ -151,7 +153,8 @@ export const AutomaticPromoPage = () => {
         Automatic_Promo_Transaction: item.Automatic_Promo_Transaction,
         Automatic_Promo_XY: item.Automatic_Promo_XY,
         status: item.status,
-        days: days.join(", ")
+        days: days.join(", "),
+        image: item.image ? `${API_URL}${item.image}` : ""
       };
     });
   };
@@ -256,7 +259,8 @@ export const AutomaticPromoPage = () => {
                       Automatic_Promo_Quantity: rows.Automatic_Promo_Quantity,
                       Automatic_Promo_Transaction:
                         rows.Automatic_Promo_Transaction,
-                      Automatic_Promo_XY: rows.Automatic_Promo_XY
+                      Automatic_Promo_XY: rows.Automatic_Promo_XY,
+                      image: rows.image
                     },
                     allOutlets,
                     allProducts

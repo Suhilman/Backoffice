@@ -80,7 +80,7 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
             status: item.Payment.status,
             outlet_name: item.Outlet.name,
             sales_type: val.Sales_Type.name,
-            user: item.User.User_Profile.name,
+            user: item.User?.User_Profile.name || "Guest",
             customer_phone_number: item.Customer_Profile?.phone_number || "",
             customer_name: item.Customer_Profile?.name || "",
             sku: val.sku || "",
