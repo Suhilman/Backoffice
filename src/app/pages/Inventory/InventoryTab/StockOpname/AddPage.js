@@ -138,12 +138,10 @@ export const AddStockOpnamePage = ({ location }) => {
     }
 
     const currProduct = allProducts.find((item) => item.id === parseInt(value));
-    const diff =
-      parseInt(formikStock.values.items[index].quantity_system) >= 0
-        ? parseInt(formikStock.values.items[index].quantity_system) -
-          parseInt(formikStock.values.items[index].quantity_actual)
-        : parseInt(formikStock.values.items[index].quantity_system) +
-          parseInt(formikStock.values.items[index].quantity_actual);
+    const diff = Math.abs(
+      parseInt(formikStock.values.items[index].quantity_system) -
+        parseInt(formikStock.values.items[index].quantity_actual)
+    );
 
     formikStock.setFieldValue(`items[${index}].product_id`, value);
     formikStock.setFieldValue(
@@ -161,12 +159,10 @@ export const AddStockOpnamePage = ({ location }) => {
   const handleChangeQuantity = (e, index) => {
     const { value } = e.target;
 
-    const diff =
-      parseInt(formikStock.values.items[index].quantity_system) >= 0
-        ? parseInt(formikStock.values.items[index].quantity_system) -
-          parseInt(value)
-        : parseInt(formikStock.values.items[index].quantity_system) +
-          parseInt(value);
+    const diff = Math.abs(
+      parseInt(formikStock.values.items[index].quantity_system) -
+        parseInt(value)
+    );
     formikStock.setFieldValue(`items[${index}].quantity_actual`, value);
     formikStock.setFieldValue(`items[${index}].difference`, diff);
   };
@@ -425,6 +421,16 @@ export const AddStockOpnamePage = ({ location }) => {
                                       name={`items[${index}].difference`}
                                       {...formikStock.getFieldProps(
                                         `items[${index}].difference`
+                                      )}
+                                      value={Math.abs(
+                                        parseInt(
+                                          formikStock.values.items[index]
+                                            .quantity_system
+                                        ) -
+                                          parseInt(
+                                            formikStock.values.items[index]
+                                              .quantity_actual
+                                          )
                                       )}
                                       disabled
                                       required

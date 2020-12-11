@@ -118,6 +118,14 @@ export const AddIncomingStockPage = ({ location }) => {
     formikStock.setFieldValue(`items[${idx}].total_price`, total_price);
   };
 
+  const handleChangeQuantity = (e, idx) => {
+    const { value } = e.target;
+    const total_price = value * formikStock.values.items[idx].price || 0;
+
+    formikStock.setFieldValue(`items[${idx}].quantity`, value);
+    formikStock.setFieldValue(`items[${idx}].total_price`, total_price);
+  };
+
   const CustomInputDate = ({ value, onClick }) => {
     return (
       <Form.Control
@@ -306,6 +314,12 @@ export const AddIncomingStockPage = ({ location }) => {
                                       {...formikStock.getFieldProps(
                                         `items[${index}].quantity`
                                       )}
+                                      onChange={(e) =>
+                                        handleChangeQuantity(e, index)
+                                      }
+                                      onBlur={(e) =>
+                                        handleChangeQuantity(e, index)
+                                      }
                                       required
                                     />
                                     {formikStock.touched.items &&
