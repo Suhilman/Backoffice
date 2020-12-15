@@ -11,7 +11,8 @@ import {
   Form,
   Alert,
   Spinner,
-  Container
+  Container,
+  ListGroup
 } from "react-bootstrap";
 import {
   IconButton,
@@ -22,6 +23,8 @@ import {
   Switch
 } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
+import DataTable from "react-data-table-component";
+import dayjs from "dayjs";
 
 import "../style.css";
 
@@ -58,7 +61,9 @@ export const DetailStaffPage = ({ match, location }) => {
     location_name: ""
   });
 
-  const allTypes = ["Staff", "Manager", "Kasir", "Waiter"];
+  const [attendance, setAttendance] = React.useState([]);
+
+  // const allTypes = ["Staff", "Manager", "Kasir", "Waiter"];
 
   const StaffSchema = Yup.object().shape({
     outlet_id: Yup.number()
@@ -172,8 +177,23 @@ export const DetailStaffPage = ({ match, location }) => {
     }
   };
 
+  const getAttendance = async (id) => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    try {
+      const { data } = await axios.get(
+        `${API_URL}/api/v1/attendance?user_id=${id}`
+      );
+      const newest = data.data.sort((a, b) => b.id - a.id);
+      const latest = newest.slice(0, 5);
+      setAttendance(latest);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   React.useEffect(() => {
     getStaff(staffId);
+    getAttendance(staffId);
   }, [staffId]);
 
   const handleImage = (e) => {
@@ -210,6 +230,87 @@ export const DetailStaffPage = ({ match, location }) => {
       (a, b) => a.privilege_id - b.privilege_id
     );
     return sortedPrivileges;
+  };
+
+  const columns = [
+    {
+      name: "Date",
+      selector: "date",
+      sortable: true
+    },
+    {
+      name: "Check In",
+      selector: "check_in",
+      sortable: true
+    },
+    {
+      name: "Check Out",
+      selector: "check_out",
+      sortable: true
+    }
+  ];
+
+  const dataAttendance = attendance.map((item) => {
+    return {
+      date: dayjs(item.createdAt).format("dddd, DD/MM/YYYY"),
+      check_in: dayjs(item.clock_in).format("HH:mm"),
+      check_out: item.clock_out ? dayjs(item.clock_out).format("HH:mm") : "-",
+      check_in_image: item.image_in,
+      check_out_image: item.image_out
+    };
+  });
+
+  const ExpandableComponent = ({ data }) => {
+    const keys = [
+      {
+        key: "Check In Image",
+        value: "check_in_image"
+      },
+      {
+        key: "Check Out Image",
+        value: "check_out_image"
+      }
+    ];
+
+    return (
+      <>
+        <ListGroup style={{ padding: "1rem", marginLeft: "1rem" }}>
+          <ListGroup.Item>
+            <Row>
+              <Col sm={4}></Col>
+              <Col style={{ fontWeight: "700" }}>Check In Image</Col>
+              <Col style={{ fontWeight: "700" }}>Check Out Image</Col>
+            </Row>
+          </ListGroup.Item>
+
+          <ListGroup.Item>
+            <Row>
+              <Col sm={4}></Col>
+              {keys.map((val, index) => {
+                return (
+                  <Col key={index}>
+                    {data[val.value] ? (
+                      <img
+                        src={`${process.env.REACT_APP_API_URL}${
+                          data[val.value]
+                        }`}
+                        alt="attendance-img"
+                        style={{
+                          width: "120px",
+                          height: "auto"
+                        }}
+                      />
+                    ) : (
+                      "-"
+                    )}
+                  </Col>
+                );
+              })}
+            </Row>
+          </ListGroup.Item>
+        </ListGroup>
+      </>
+    );
   };
 
   return (
@@ -543,6 +644,25 @@ export const DetailStaffPage = ({ match, location }) => {
                 </Col>
               </Row>
 
+              <Row className="lineBottom">
+                <Col>
+                  <div className="headerPage">
+                    <div className="headerStart">
+                      <h3>Attendance</h3>
+                    </div>
+                  </div>
+
+                  <DataTable
+                    noHeader
+                    columns={columns}
+                    data={dataAttendance}
+                    style={{ padding: "1rem" }}
+                    expandableRows
+                    expandableRowsComponent={<ExpandableComponent />}
+                  />
+                </Col>
+              </Row>
+
               <Row>
                 <Col>
                   <div className="headerPage">
@@ -611,6 +731,7 @@ export const DetailStaffPage = ({ match, location }) => {
                                                         style={{
                                                           cursor: "not-allowed"
                                                         }}
+                                                        disabled
                                                       />
                                                     }
                                                   />

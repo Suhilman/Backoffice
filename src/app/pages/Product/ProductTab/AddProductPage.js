@@ -49,7 +49,7 @@ export const AddProductPage = () => {
     status: "active",
     barcode: "",
     sku: "",
-    product_type_id: 1,
+    product_type_id: 2,
     description: ""
   };
 

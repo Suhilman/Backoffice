@@ -319,56 +319,6 @@ const ModalOutlet = ({
               </Form.Group>
             </Col>
           </Row>
-
-          <Row>
-            <Col>
-              <Form.Group as={Row} style={{ padding: "0 1rem" }}>
-                <Form.Label>Tax & Charge:</Form.Label>
-                <Col style={{ margin: "0 1rem" }}>
-                  {allTaxes?.length
-                    ? allTaxes.map((item, index) => {
-                        return (
-                          <Row key={index}>
-                            <Form.Check
-                              type="checkbox"
-                              name="tax_id"
-                              label={`${item.name} - ${item.Tax_Type.name} (${item.value}%)`}
-                              value={item.id}
-                              checked={formikOutlet
-                                .getFieldProps("tax_id")
-                                .value.includes(item.id)}
-                              onChange={(e) => {
-                                const tax_id = parseInt(e.target.value);
-                                const taxes = [
-                                  ...formikOutlet.getFieldProps("tax_id").value
-                                ];
-
-                                if (!taxes.includes(tax_id)) {
-                                  taxes.push(tax_id);
-                                } else {
-                                  const idx = taxes.indexOf(tax_id);
-                                  taxes.splice(idx, 1);
-                                }
-
-                                formikOutlet.setFieldValue("tax_id", taxes);
-                              }}
-                              className={validationOutlet("tax_id")}
-                            />
-                          </Row>
-                        );
-                      })
-                    : ""}
-                  {formikOutlet.touched.tax_id && formikOutlet.errors.tax_id ? (
-                    <div className="fv-plugins-message-container">
-                      <div className="fv-help-block">
-                        {formikOutlet.errors.tax_id}
-                      </div>
-                    </div>
-                  ) : null}
-                </Col>
-              </Form.Group>
-            </Col>
-          </Row>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>

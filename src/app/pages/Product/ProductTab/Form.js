@@ -260,24 +260,6 @@ const FormTemplate = ({
                 </FormGroup>
               </FormControl>
             </Form.Group>
-
-            <Form.Group>
-              <Form.Label>Product Description</Form.Label>
-              <Form.Control
-                as="textarea"
-                name="description"
-                {...formikProduct.getFieldProps("description")}
-                className={validationProduct("description")}
-              />
-              {formikProduct.touched.description &&
-              formikProduct.errors.description ? (
-                <div className="fv-plugins-message-container">
-                  <div className="fv-help-block">
-                    {formikProduct.errors.description}
-                  </div>
-                </div>
-              ) : null}
-            </Form.Group>
           </Col>
 
           <Col>
@@ -379,7 +361,7 @@ const FormTemplate = ({
               )}
             </Form.Group>
 
-            <Form.Group>
+            {/* <Form.Group>
               <Form.Label>Product Type*</Form.Label>
               <Row style={{ padding: "1rem" }}>
                 {allProductTypes.map((item) => {
@@ -422,6 +404,24 @@ const FormTemplate = ({
                   );
                 })}
               </Row>
+            </Form.Group> */}
+
+            <Form.Group>
+              <Form.Label>Product Description</Form.Label>
+              <Form.Control
+                as="textarea"
+                name="description"
+                {...formikProduct.getFieldProps("description")}
+                className={validationProduct("description")}
+              />
+              {formikProduct.touched.description &&
+              formikProduct.errors.description ? (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    {formikProduct.errors.description}
+                  </div>
+                </div>
+              ) : null}
             </Form.Group>
 
             <div>Product Addons</div>

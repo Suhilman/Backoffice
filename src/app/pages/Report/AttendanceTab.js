@@ -18,7 +18,7 @@ import ExportExcel from "react-html-table-to-excel";
 
 import "../style.css";
 
-export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
+export const AttendanceTab = ({ allOutlets, ranges }) => {
   const [outletId, setOutletId] = React.useState("");
   const [outletName, setOutletName] = React.useState("All Outlets");
 
@@ -28,29 +28,24 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
   const [startRange, setStartRange] = React.useState(new Date());
   const [endRange, setEndRange] = React.useState(new Date());
 
-  const [allTransactions, setAllTransactions] = React.useState([]);
+  const [allAttendances, setAllAttendances] = React.useState([]);
 
   const [status, setStatus] = React.useState("");
 
   const [reports, setReports] = React.useState([
     {
+      user: {
+        email: "",
+        name: "",
+        phone_number: ""
+      },
       date: "",
-      receipt_id: "",
-      status: "",
-      outlet_name: "",
-      sales_type: "",
-      user: "",
-      customer_phone_number: "",
-      customer_name: "",
-      sku: "",
-      product_name: "",
-      category_name: "",
-      quantity: "",
-      price_product: ""
+      check_in: "",
+      check_out: ""
     }
   ]);
 
-  const getTransactions = async (
+  const getAttendances = async (
     id,
     status,
     range_id,
@@ -63,46 +58,38 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
       (item) => item.id === range_id
     );
 
-    const outlet_id = id ? `&outlet_id=${id}` : "";
+    const outlet_id = id ? `outlet_id=${id}` : "";
     const filter = status ? `&status=${status}` : "";
 
     try {
       const { data } = await axios.get(
-        `${API_URL}/api/v1/transaction?order=newest&per_page=999${outlet_id}&date_start=${date_start}&date_end=${date_end}${filter}`
+        `${API_URL}/api/v1/attendance?${outlet_id}&start_date=${date_start}&end_date=${date_end}${filter}`
       );
-      setAllTransactions(data.data);
+      setAllAttendances(data.data);
 
       const compileReports = data.data.map((item) => {
-        const allItems = item.Transaction_Items.map((val) => {
-          return {
-            date: dayjs(item.createdAt).format("DD-MM-YYYY HH:mm:ss"),
-            receipt_id: item.receipt_id,
-            status: item.status,
-            outlet_name: item.Outlet.name,
-            sales_type: val.Sales_Type.name,
-            user: item.User?.User_Profile.name || "Guest",
-            customer_phone_number: item.Customer_Profile?.phone_number || "-",
-            customer_name: item.Customer_Profile?.name || "-",
-            sku: val.sku || "-",
-            product_name: val.Product?.name || "-",
-            category_name: val.Product?.Product_Category.name || "-",
-            quantity: val.quantity,
-            price_product: val.price_product
-          };
-        });
-
-        return allItems;
+        return {
+          user: {
+            email: item.User.email,
+            name: item.User.User_Profile.name,
+            phone_number: item.User.User_Profile.phone_number
+          },
+          outlet: item.Outlet.name,
+          date: item.createdAt,
+          check_in: item.clock_in,
+          check_out: item.clock_out
+        };
       });
 
-      setReports(compileReports.flat(1));
+      setReports(compileReports);
     } catch (err) {
-      setAllTransactions([]);
+      setAllAttendances([]);
       console.log(err);
     }
   };
 
   React.useEffect(() => {
-    getTransactions(outletId, status, rangeId, startRange, endRange);
+    getAttendances(outletId, status, rangeId, startRange, endRange);
   }, [outletId, status, rangeId, startRange, endRange]);
 
   const handleSelectOutlet = (data) => {
@@ -125,8 +112,6 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
     }
   };
 
-  const handleSelectStatus = (e) => setStatus(e.target.value);
-
   const filename = () => {
     const value = ranges(startRange, endRange).find(
       (item) => item.id === rangeId
@@ -139,7 +124,7 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
       .split(" ")
       .join("-")
       .toLowerCase();
-    return `riwayat-transaksi-${processValue}_${date}`;
+    return `laporan-absensi-${processValue}_${date}`;
   };
 
   const columns = [
@@ -150,86 +135,92 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
       width: "50px"
     },
     {
-      name: "Receipt ID",
-      selector: "receipt_id",
+      name: "Staff Name",
+      selector: "staff_name",
       sortable: true
     },
     {
-      name: "Outlet Name",
+      name: "Outlet",
       selector: "outlet_name",
       sortable: true
     },
     {
-      name: "Payment Total",
-      selector: "payment_total",
+      name: "Check In Time",
+      selector: "check_in",
       sortable: true
     },
     {
-      name: "Created At",
-      selector: "created_at",
-      sortable: true
-    },
-    {
-      name: "Status",
-      selector: "status",
+      name: "Check Out Time",
+      selector: "check_out",
       sortable: true
     }
   ];
 
-  const dataTransactions = () => {
-    return allTransactions.map((item, index) => {
+  const dataAttendances = () => {
+    return allAttendances.map((item, index) => {
       return {
         id: item.id,
         no: index + 1,
-        receipt_id: item.receipt_id,
-        payment_total: item.Payment?.payment_total || 0,
+        staff_name: item.User.User_Profile.name,
         outlet_name: item.Outlet?.name || "-",
-        created_at: dayjs(item.createdAt).format("DD-MM-YYYY HH:mm:ss"),
-        status: item.status,
-        items: item.Transaction_Items
+        check_in: dayjs(item.clock_in).format("DD/MM/YYYY HH:mm"),
+        check_out: item.clock_out
+          ? dayjs(item.clock_out).format("DD/MM/YYYY HH:mm")
+          : "-",
+        check_in_image: item.image_in,
+        check_out_image: item.image_out
       };
     });
   };
 
   const ExpandableComponent = ({ data }) => {
-    const head = ["Sales Type", "Product", "Addons", "Quantity", "Price"];
-    const body = data.items.map((item) => {
-      const addons = item.Transaction_Item_Addons.map((val) => val.Addon.name);
-
-      return [
-        item.Sales_Type.name,
-        item.Product?.name || "-",
-        addons.join(","),
-        item.quantity,
-        item.price_product
-      ];
-    });
+    const keys = [
+      {
+        key: "Check In Image",
+        value: "check_in_image"
+      },
+      {
+        key: "Check Out Image",
+        value: "check_out_image"
+      }
+    ];
 
     return (
       <>
         <ListGroup style={{ padding: "1rem", marginLeft: "1rem" }}>
           <ListGroup.Item>
             <Row>
-              {head.map((item, index) => {
+              <Col sm={4}></Col>
+              <Col style={{ fontWeight: "700" }}>Check In Image</Col>
+              <Col style={{ fontWeight: "700" }}>Check Out Image</Col>
+            </Row>
+          </ListGroup.Item>
+
+          <ListGroup.Item>
+            <Row>
+              <Col sm={4}></Col>
+              {keys.map((val, index) => {
                 return (
-                  <Col key={index} style={{ fontWeight: "700" }}>
-                    {item}
+                  <Col key={index}>
+                    {data[val.value] ? (
+                      <img
+                        src={`${process.env.REACT_APP_API_URL}${
+                          data[val.value]
+                        }`}
+                        alt="attendance-img"
+                        style={{
+                          width: "120px",
+                          height: "auto"
+                        }}
+                      />
+                    ) : (
+                      "-"
+                    )}
                   </Col>
                 );
               })}
             </Row>
           </ListGroup.Item>
-          {body.map((item, index) => {
-            return (
-              <ListGroup.Item key={index}>
-                <Row>
-                  {item.map((val, valIndex) => {
-                    return <Col key={valIndex}>{val}</Col>;
-                  })}
-                </Row>
-              </ListGroup.Item>
-            );
-          })}
         </ListGroup>
       </>
     );
@@ -238,10 +229,10 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
   return (
     <>
       <div style={{ display: "none" }}>
-        <table id="table-history-transaction">
+        <table id="table-attendance-report">
           <thead>
             <tr>
-              <th>Laporan Transaksi Penjualan</th>
+              <th>Laporan Absensi</th>
             </tr>
           </thead>
           <tbody>
@@ -258,14 +249,6 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
                 }
               </td>
             </tr>
-            <tr>
-              <th>Status Transaksi</th>
-              <td>{status ? status : "Semua Transaksi"}</td>
-            </tr>
-            <tr>
-              <th>Produk/Pelanggan</th>
-              <td>Semua Pelanggan</td>
-            </tr>
           </thead>
           <tbody>
             <tr></tr>
@@ -273,37 +256,27 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
           <thead>
             <tr>
               <th>Tanggal & Waktu</th>
-              <th>ID Struk</th>
-              <th>Status Pembayaran</th>
+              <th>Nama Staff</th>
               <th>Outlet</th>
-              <th>Tipe Penjualan</th>
-              <th>User</th>
-              <th>No. HP Pelanggan</th>
-              <th>Nama Pelanggan</th>
-              <th>SKU</th>
-              <th>Nama Produk</th>
-              <th>Kategori</th>
-              <th>Jumlah Produk</th>
-              <th>Harga Produk</th>
+              <th>Check In Time</th>
+              <th>Check Out Time</th>
             </tr>
           </thead>
           <tbody>
             {reports.map((item, index) => {
               return (
                 <tr key={index}>
-                  <td>{item.date}</td>
-                  <td>{item.receipt_id}</td>
-                  <td>{item.status}</td>
-                  <td>{item.outlet_name}</td>
-                  <td>{item.sales_type}</td>
-                  <td>{item.user}</td>
-                  <td>{item.customer_phone_number}</td>
-                  <td>{item.customer_name}</td>
-                  <td>{item.sku}</td>
-                  <td>{item.product_name}</td>
-                  <td>{item.category_name}</td>
-                  <td>{item.quantity}</td>
-                  <td>{item.price_product}</td>
+                  <td>{dayjs(item.date).format("DD/MM/YYYY")}</td>
+                  <td>{item.user.name}</td>
+                  <td>{item.outlet}</td>
+                  <td>
+                    {item.check_in ? dayjs(item.check_in).format("HH:mm") : "-"}
+                  </td>
+                  <td>
+                    {item.check_out
+                      ? dayjs(item.check_out).format("HH:mm")
+                      : "-"}
+                  </td>
                 </tr>
               );
             })}
@@ -316,7 +289,7 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Transaction History</h3>
+                <h3>Attendance Report</h3>
               </div>
               <div className="headerEnd">
                 <Row>
@@ -357,31 +330,17 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
 
                   <ExportExcel
                     className="btn btn-outline-primary"
-                    table="table-history-transaction"
+                    table="table-attendance-report"
                     filename={filename()}
-                    sheet="transaction-history"
+                    sheet="attendance-report"
                     buttonText="Export"
                   />
                 </Row>
               </div>
             </div>
 
-            <div className="filterSection lineBottom">
+            {/* <div className="filterSection lineBottom">
               <Row>
-                {/* <Col>
-                <InputGroup className="pb-3">
-                  <InputGroup.Prepend>
-                    <InputGroup.Text style={{ background: "transparent" }}>
-                      <Search />
-                    </InputGroup.Text>
-                  </InputGroup.Prepend>
-                  <Form.Control
-                    placeholder="Search..."
-                    value={search}
-                    onChange={handleSearch}
-                  />
-                </InputGroup>
-              </Col> */}
                 <Col md={6}>
                   <Row>
                     <Col>
@@ -419,7 +378,7 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
                   </Row>
                 </Col>
               </Row>
-            </div>
+            </div> */}
 
             <div
               style={{
@@ -442,7 +401,7 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
               noHeader
               pagination
               columns={columns}
-              data={dataTransactions()}
+              data={dataAttendances()}
               expandableRows
               expandableRowsComponent={<ExpandableComponent />}
               style={{ minHeight: "100%" }}

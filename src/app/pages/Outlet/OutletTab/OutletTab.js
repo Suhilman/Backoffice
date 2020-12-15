@@ -59,7 +59,6 @@ export const OutletTab = ({
     province_id: "",
     city_id: "",
     location_id: "",
-    tax_id: [],
     status: "active"
   };
 
@@ -87,7 +86,6 @@ export const OutletTab = ({
       .integer()
       .min(1)
       .required("Please choose a location."),
-    tax_id: Yup.array().of(Yup.number()),
     status: Yup.string()
       .matches(/(active|inactive)/)
       .required("Please input a status.")
@@ -101,7 +99,6 @@ export const OutletTab = ({
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("location_id", values.location_id);
-      formData.append("tax_id", JSON.stringify(values.tax_id));
       formData.append("status", values.status);
 
       if (photo) formData.append("outlet", photo);
@@ -131,7 +128,6 @@ export const OutletTab = ({
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("location_id", values.location_id);
-      formData.append("tax_id", JSON.stringify(values.tax_id));
       formData.append("status", values.status);
 
       if (photo) formData.append("outlet", photo);
@@ -199,7 +195,6 @@ export const OutletTab = ({
       province_id: data.province_id,
       city_id: data.city_id,
       location_id: data.location_id,
-      tax_id: data.tax_id,
       status: data.status
     });
 
@@ -390,8 +385,6 @@ export const OutletTab = ({
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
 
-      const tax_id = item.Outlet_Taxes.map((item) => item.tax_id);
-
       return {
         id: item.id,
         no: index + 1,
@@ -405,8 +398,8 @@ export const OutletTab = ({
         locationFull: capitalize,
         phone_number: item.phone_number || "",
         status: item.status,
-        tax: tax_id.length ? "Taxable" : "No Tax",
-        tax_id
+        tax: item.Outlet_Taxes.length ? "Taxable" : "No Tax",
+        allTaxes: item.Outlet_Taxes.map((item) => item.Tax.name).join(", ")
       };
     });
   };
@@ -428,11 +421,11 @@ export const OutletTab = ({
       {
         key: "Phone Number",
         value: "phone_number"
+      },
+      {
+        key: "Tax",
+        value: "allTaxes"
       }
-      // {
-      //   key: "Tax Status",
-      //   value: "tax"
-      // }
     ];
 
     return (

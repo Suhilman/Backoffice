@@ -30,6 +30,7 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
   const [allTaxTypes, setAllTaxTypes] = React.useState([]);
   const [allTypes, setAllTypes] = React.useState([]);
+  const [allOutlets, setAllOutlets] = React.useState([]);
 
   const [search, setSearch] = React.useState("");
   const [filter, setFilter] = React.useState({
@@ -43,6 +44,16 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/tax-type`);
       setAllTypes(data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getOutlets = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    try {
+      const { data } = await axios.get(`${API_URL}/api/v1/outlet`);
+      setAllOutlets(data.data);
     } catch (err) {
       console.log(err);
     }
@@ -62,6 +73,7 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
 
   React.useEffect(() => {
     getTypes();
+    getOutlets();
   }, []);
 
   React.useEffect(() => {
@@ -79,7 +91,8 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
   const initialValueTax = {
     name: "",
     value: "",
-    tax_type_id: ""
+    tax_type_id: "",
+    outlet_id: []
   };
 
   const TaxSchema = Yup.object().shape({
@@ -94,7 +107,8 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
     tax_type_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a type.")
+      .required("Please choose a type."),
+    outlet_id: Yup.array().of(Yup.number().min(1))
   });
 
   const formikTax = useFormik({
@@ -105,7 +119,8 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
       const taxData = {
         name: values.name,
         value: values.value,
-        tax_type_id: values.tax_type_id
+        tax_type_id: values.tax_type_id,
+        outlet_id: values.outlet_id
       };
 
       const API_URL = process.env.REACT_APP_API_URL;
@@ -129,7 +144,8 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
       const taxData = {
         name: values.name,
         value: values.value,
-        tax_type_id: values.tax_type_id
+        tax_type_id: values.tax_type_id,
+        outlet_id: values.outlet_id
       };
 
       const API_URL = process.env.REACT_APP_API_URL;
@@ -180,7 +196,8 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
       id: data.id,
       name: data.name,
       value: parseInt(data.amount.slice(0, -1)),
-      tax_type_id: data.tax_type_id
+      tax_type_id: data.tax_type_id,
+      outlet_id: data.outlet_id
     });
 
     setStateEditModal(true);
@@ -211,6 +228,15 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
       cancelDeleteModalTax();
     } catch (err) {
       disableLoading();
+    }
+  };
+
+  const handleSelectOutlet = (value, formik) => {
+    if (value) {
+      const outlet = value.map((item) => item.value);
+      formik.setFieldValue("outlet_id", outlet);
+    } else {
+      formik.setFieldValue("outlet_id", []);
     }
   };
 
@@ -276,7 +302,8 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
         name: item.name,
         type: item.Tax_Type.name,
         tax_type_id: item.tax_type_id,
-        amount: item.value + "%"
+        amount: item.value + "%",
+        outlet_id: item.Outlet_Taxes.map((item) => item.outlet_id)
       };
     });
   };
@@ -291,6 +318,8 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
         formikTax={formikTax}
         validationTax={validationTax}
         allTypes={allTypes}
+        allOutlets={allOutlets}
+        handleSelectOutlet={handleSelectOutlet}
       />
 
       <ModalTax
@@ -301,6 +330,8 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
         formikTax={formikTaxEdit}
         validationTax={validationTaxEdit}
         allTypes={allTypes}
+        allOutlets={allOutlets}
+        handleSelectOutlet={handleSelectOutlet}
       />
 
       <ShowConfirmModal

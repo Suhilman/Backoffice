@@ -9,6 +9,7 @@ import { PaymentMethodTab } from "./PaymentMethodTab";
 import { SalesTypeTab } from "./SalesTypeTab";
 import { CategorySalesTab } from "./CategorySalesTab";
 import { TransactionHistoryTab } from "./TransactionHistoryTab";
+import { AttendanceTab } from "./AttendanceTab";
 
 export const ReportPage = () => {
   const [tabs, setTabs] = React.useState("sales-summary");
@@ -337,6 +338,10 @@ export const ReportPage = () => {
 
       <Tab eventKey="transaction-history" title="Transaction History">
         <TransactionHistoryTab allOutlets={allOutlets} ranges={ranges} />
+      </Tab>
+
+      <Tab eventKey="attendance" title="Attendance">
+        <AttendanceTab allOutlets={allOutlets} ranges={ranges} />
       </Tab>
     </Tabs>
   );
