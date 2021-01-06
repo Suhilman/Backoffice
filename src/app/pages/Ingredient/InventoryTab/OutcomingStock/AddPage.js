@@ -18,9 +18,9 @@ import { Paper } from "@material-ui/core";
 import DatePicker from "react-datepicker";
 import { CalendarToday, Delete } from "@material-ui/icons";
 
-export const AddOutcomingStockPage = ({ location }) => {
+export const AddOutcomingMaterialPage = ({ location }) => {
   const history = useHistory();
-  const { allOutlets, allProducts, allUnits } = location.state;
+  const { allOutlets, allMaterials, allUnits } = location.state;
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
@@ -33,9 +33,8 @@ export const AddOutcomingStockPage = ({ location }) => {
     date: startDate,
     items: [
       {
-        product_id: "",
-        quantity: 0,
-        unit_id: ""
+        raw_material_id: "",
+        quantity: 0
       }
     ]
   };
@@ -49,15 +48,12 @@ export const AddOutcomingStockPage = ({ location }) => {
     date: Yup.string().required("Please input date"),
     items: Yup.array().of(
       Yup.object().shape({
-        product_id: Yup.number()
+        raw_material_id: Yup.number()
           .min(1)
-          .required("Please input a product"),
+          .required("Please input a raw material"),
         quantity: Yup.number()
           .min(1, "Minimum 1")
-          .required("Please input a quantity"),
-        unit_id: Yup.number()
-          .min(1)
-          .required("Please input a unit")
+          .required("Please input a quantity")
       })
     )
   });
@@ -79,7 +75,7 @@ export const AddOutcomingStockPage = ({ location }) => {
         enableLoading();
         await axios.post(`${API_URL}/api/v1/outcoming-stock`, stockData);
         disableLoading();
-        history.push("/inventory/outcoming-stock");
+        history.push("/ingredient-inventory/outcoming-stock");
       } catch (err) {
         setAlert(err.response?.data.message || err.message);
         disableLoading();
@@ -122,7 +118,7 @@ export const AddOutcomingStockPage = ({ location }) => {
     return { value: item.id, label: item.name };
   });
 
-  const optionsMaterial = allProducts
+  const optionsMaterial = allMaterials
     .map((item) => {
       if (item.outlet_id === formikStock.values.outlet_id) {
         return { value: item.id, label: item.name };
@@ -146,7 +142,7 @@ export const AddOutcomingStockPage = ({ location }) => {
                 <h3>Add Outcoming Stock</h3>
               </div>
               <div className="headerEnd">
-                <Link to="/inventory/outcoming-stock">
+                <Link to="/ingredient-inventory/outcoming-stock">
                   <Button variant="secondary">Cancel</Button>
                 </Link>
                 <Button
@@ -178,7 +174,7 @@ export const AddOutcomingStockPage = ({ location }) => {
                       formikStock.setFieldValue("outlet_id", value.value);
                       formikStock.setFieldValue("items", [
                         {
-                          product_id: "",
+                          raw_material_id: "",
                           quantity: 0,
                           unit_id: ""
                         }
@@ -246,7 +242,7 @@ export const AddOutcomingStockPage = ({ location }) => {
               <Col>
                 <Row>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Product Name</h6>
+                    <h6>Raw Material Name</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
                     <h6>Quantity</h6>
@@ -270,12 +266,12 @@ export const AddOutcomingStockPage = ({ location }) => {
                                   <Form.Group>
                                     <Select
                                       options={optionsMaterial}
-                                      name={`items[${index}].product_id`}
+                                      name={`items[${index}].raw_material_id`}
                                       className="basic-single"
                                       classNamePrefix="select"
                                       onChange={(value) =>
                                         formikStock.setFieldValue(
-                                          `items[${index}].product_id`,
+                                          `items[${index}].raw_material_id`,
                                           value.value
                                         )
                                       }
@@ -286,7 +282,7 @@ export const AddOutcomingStockPage = ({ location }) => {
                                         <div className="fv-help-block">
                                           {
                                             formikStock.errors.items[index]
-                                              ?.product_id
+                                              ?.raw_material_id
                                           }
                                         </div>
                                       </div>
@@ -363,7 +359,7 @@ export const AddOutcomingStockPage = ({ location }) => {
                               }
                               variant="primary"
                             >
-                              + Add Another Product
+                              + Add Raw Material
                             </Button>
                           </Row>
                         </div>

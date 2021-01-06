@@ -7,8 +7,8 @@ import { Paper } from "@material-ui/core";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 
-export const DetailOutcomingStockPage = ({ match }) => {
-  const { stockId } = match.params;
+export const DetailOutcomingMaterialPage = ({ match }) => {
+  const { materialId } = match.params;
 
   const [outcomingStock, setOutcomingStock] = React.useState("");
 
@@ -27,13 +27,13 @@ export const DetailOutcomingStockPage = ({ match }) => {
   };
 
   React.useEffect(() => {
-    getOutcomingStock(stockId);
-  }, [stockId]);
+    getOutcomingStock(materialId);
+  }, [materialId]);
 
   const columns = [
     {
-      name: "Product Name",
-      selector: "product_name",
+      name: "Raw Material Name",
+      selector: "material_name",
       sortable: true
     },
     {
@@ -51,9 +51,9 @@ export const DetailOutcomingStockPage = ({ match }) => {
   const dataStock = outcomingStock
     ? outcomingStock.Outcoming_Stock_Products.map((item) => {
         return {
-          product_name: item.Product.name,
+          material_name: item.Raw_Material.name,
           quantity: item.quantity,
-          unit: item.Unit?.name || "-"
+          unit: item.Unit.name
         };
       })
     : [];
@@ -69,7 +69,7 @@ export const DetailOutcomingStockPage = ({ match }) => {
             <div className="headerEnd">
               <Link
                 to={{
-                  pathname: "/inventory/outcoming-stock"
+                  pathname: "/ingredient-inventory/outcoming-stock"
                 }}
               >
                 <Button variant="outline-secondary">Back</Button>

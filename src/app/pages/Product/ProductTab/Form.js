@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Select from "react-select";
 
 import { useDropzone } from "react-dropzone";
 
@@ -17,19 +18,22 @@ import "../../style.css";
 const FormTemplate = ({
   title,
   loading,
-  allOutlets,
-  allProductCategories,
   allTaxes,
   alertPhoto,
   photoPreview,
   photo,
   handlePreviewPhoto,
-  allProductTypes,
   showModalAddons,
   formikProduct,
   validationProduct,
   alert,
-  handleDeletePhoto
+  handleDeletePhoto,
+  optionsOutlet,
+  optionsCategory,
+  optionsUnit,
+  defaultValueOutlet,
+  defaultValueCategory,
+  defaultValueUnit
 }) => {
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
@@ -70,24 +74,16 @@ const FormTemplate = ({
           <Col>
             <Form.Group>
               <Form.Label>Outlet*</Form.Label>
-              <Form.Control
-                as="select"
+              <Select
+                options={optionsOutlet}
+                defaultValue={defaultValueOutlet}
                 name="outlet_id"
-                {...formikProduct.getFieldProps("outlet_id")}
-                className={validationProduct("outlet_id")}
-                required
-              >
-                <option value={""} disabled hidden>
-                  Choose Outlet
-                </option>
-                {allOutlets.map((item) => {
-                  return (
-                    <option key={item.id} value={item.id}>
-                      {item.name}
-                    </option>
-                  );
-                })}
-              </Form.Control>
+                className="basic-single"
+                classNamePrefix="select"
+                onChange={(value) =>
+                  formikProduct.setFieldValue("outlet_id", value.value)
+                }
+              />
               {formikProduct.touched.outlet_id &&
               formikProduct.errors.outlet_id ? (
                 <div className="fv-plugins-message-container">
@@ -126,23 +122,27 @@ const FormTemplate = ({
 
             <Form.Group>
               <Form.Label>Category</Form.Label>
-              <Form.Control
-                as="select"
+              <Select
+                options={optionsCategory}
+                defaultValue={defaultValueCategory}
                 name="product_category_id"
-                {...formikProduct.getFieldProps("product_category_id")}
-                className={validationProduct("product_category_id")}
-              >
-                <option value={""} disabled hidden>
-                  Choose Category
-                </option>
-                {allProductCategories.map((item) => {
-                  return (
-                    <option key={item.id} value={item.id}>
-                      {item.name}
-                    </option>
-                  );
-                })}
-              </Form.Control>
+                className="basic-single"
+                classNamePrefix="select"
+                onChange={(value) =>
+                  formikProduct.setFieldValue(
+                    "product_category_id",
+                    value.value
+                  )
+                }
+              />
+              {formikProduct.touched.product_category_id &&
+              formikProduct.errors.product_category_id ? (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    {formikProduct.errors.product_category_id}
+                  </div>
+                </div>
+              ) : null}
             </Form.Group>
 
             <Form.Group>
@@ -158,6 +158,25 @@ const FormTemplate = ({
                 <div className="fv-plugins-message-container">
                   <div className="fv-help-block">
                     {formikProduct.errors.price}
+                  </div>
+                </div>
+              ) : null}
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>Price Purchase*</Form.Label>
+              <Form.Control
+                type="number"
+                name="price_purchase"
+                {...formikProduct.getFieldProps("price_purchase")}
+                className={validationProduct("price_purchase")}
+                required
+              />
+              {formikProduct.touched.price_purchase &&
+              formikProduct.errors.price_purchase ? (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    {formikProduct.errors.price_purchase}
                   </div>
                 </div>
               ) : null}
@@ -205,7 +224,7 @@ const FormTemplate = ({
                       inline
                       type="radio"
                       name="status"
-                      value={formikProduct.getFieldProps("status").value}
+                      value={formikProduct.values.status}
                       onChange={(e) => {
                         if (e.target.value === "active") {
                           formikProduct.setFieldValue("status", "inactive");
@@ -215,8 +234,7 @@ const FormTemplate = ({
                       }}
                       label={item}
                       checked={
-                        item.toLowerCase() ===
-                        formikProduct.getFieldProps("status").value
+                        item.toLowerCase() === formikProduct.values.status
                           ? true
                           : false
                       }
@@ -238,14 +256,12 @@ const FormTemplate = ({
                     Product Favorite*
                   </Form.Label>
                   <FormControlLabel
-                    value={formikProduct.getFieldProps("is_favorite").value}
+                    value={formikProduct.values.is_favorite}
                     name="is_favorite"
                     control={
                       <Switch
                         color="primary"
-                        checked={
-                          formikProduct.getFieldProps("is_favorite").value
-                        }
+                        checked={formikProduct.values.is_favorite}
                         onChange={(e) => {
                           const { value } = e.target;
                           if (value === "false") {
@@ -259,6 +275,24 @@ const FormTemplate = ({
                   />
                 </FormGroup>
               </FormControl>
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>Product Description</Form.Label>
+              <Form.Control
+                as="textarea"
+                name="description"
+                {...formikProduct.getFieldProps("description")}
+                className={validationProduct("description")}
+              />
+              {formikProduct.touched.description &&
+              formikProduct.errors.description ? (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    {formikProduct.errors.description}
+                  </div>
+                </div>
+              ) : null}
             </Form.Group>
           </Col>
 
@@ -287,6 +321,7 @@ const FormTemplate = ({
                 name="sku"
                 {...formikProduct.getFieldProps("sku")}
                 className={validationProduct("sku")}
+                required
               />
               {formikProduct.touched.sku && formikProduct.errors.sku ? (
                 <div className="fv-plugins-message-container">
@@ -311,6 +346,27 @@ const FormTemplate = ({
                 <div className="fv-plugins-message-container">
                   <div className="fv-help-block">
                     {formikProduct.errors.stock}
+                  </div>
+                </div>
+              ) : null}
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>Unit</Form.Label>
+              <Select
+                options={optionsUnit}
+                defaultValue={defaultValueUnit("unit_id")}
+                name="unit_id"
+                className="basic-single"
+                classNamePrefix="select"
+                onChange={(value) =>
+                  formikProduct.setFieldValue("unit_id", value.value)
+                }
+              />
+              {formikProduct.touched.unit_id && formikProduct.errors.unit_id ? (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    {formikProduct.errors.unit_id}
                   </div>
                 </div>
               ) : null}
@@ -361,13 +417,24 @@ const FormTemplate = ({
               )}
             </Form.Group>
 
-            {/* <Form.Group>
+            <Form.Group>
               <Form.Label>Product Type*</Form.Label>
               <Row style={{ padding: "1rem" }}>
-                {allProductTypes.map((item) => {
+                {[
+                  {
+                    name: "No Recipe",
+                    value: false,
+                    checked: formikProduct.values.has_recipe ? false : true
+                  },
+                  {
+                    name: "With Recipe",
+                    value: true,
+                    checked: formikProduct.values.has_recipe ? true : false
+                  }
+                ].map((item, index) => {
                   return (
                     <Col
-                      key={item.id}
+                      key={index}
                       className="box"
                       style={{ marginRight: "1rem" }}
                     >
@@ -375,59 +442,61 @@ const FormTemplate = ({
                         <Col md={3}>
                           <Form.Check
                             type="radio"
-                            name="product_type_id"
-                            value={item.id}
+                            name="has_recipe"
+                            value={formikProduct.values.has_recipe}
                             onChange={(e) => {
-                              formikProduct.setFieldValue(
-                                "product_type_id",
-                                parseInt(e.target.value)
-                              );
+                              const { value } = e.target;
+
+                              if (value === "true") {
+                                formikProduct.setFieldValue(
+                                  "has_recipe",
+                                  false
+                                );
+                                formikProduct.setFieldValue("recipe_id", null);
+                              } else {
+                                formikProduct.setFieldValue("has_recipe", true);
+                              }
                             }}
-                            checked={
-                              item.id ===
-                              formikProduct.getFieldProps("product_type_id")
-                                .value
-                                ? true
-                                : false
-                            }
-                            className={validationProduct("product_type_id")}
+                            checked={item.checked}
+                            className={validationProduct("has_recipe")}
                             required
-                            feedback={formikProduct.errors.product_type_id}
+                            feedback={formikProduct.errors.has_recipe}
                           />
                         </Col>
                         <Col>
                           <Row>{item.name}</Row>
-                          <Row>{item.description}</Row>
                         </Col>
                       </Row>
                     </Col>
                   );
                 })}
               </Row>
-            </Form.Group> */}
+            </Form.Group>
 
             <Form.Group>
-              <Form.Label>Product Description</Form.Label>
+              <Form.Label>Product Addons</Form.Label>
+              <div style={{ padding: "0.5rem" }}>
+                <Button onClick={showModalAddons}>Manage Addons</Button>
+              </div>
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>Expired Date</Form.Label>
               <Form.Control
-                as="textarea"
-                name="description"
-                {...formikProduct.getFieldProps("description")}
-                className={validationProduct("description")}
+                type="text"
+                name="expired_date"
+                {...formikProduct.getFieldProps("expired_date")}
+                className={validationProduct("expired_date")}
               />
-              {formikProduct.touched.description &&
-              formikProduct.errors.description ? (
+              {formikProduct.touched.expired_date &&
+              formikProduct.errors.expired_date ? (
                 <div className="fv-plugins-message-container">
                   <div className="fv-help-block">
-                    {formikProduct.errors.description}
+                    {formikProduct.errors.expired_date}
                   </div>
                 </div>
               ) : null}
             </Form.Group>
-
-            <div>Product Addons</div>
-            <div style={{ padding: "1rem" }}>
-              <Button onClick={showModalAddons}>Manage Addons</Button>
-            </div>
           </Col>
         </Row>
       </Form>

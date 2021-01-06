@@ -2,15 +2,7 @@ import React from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-import {
-  Row,
-  Col,
-  Button,
-  Form,
-  Dropdown,
-  InputGroup,
-  ListGroup
-} from "react-bootstrap";
+import { Row, Col, Button, Form, Dropdown, InputGroup } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import {
   Switch,
@@ -28,7 +20,15 @@ import ConfirmModal from "../../../components/ConfirmModal";
 
 import "../../style.css";
 
-const ProductTab = ({ refresh, handleRefresh, allCategories, allOutlets }) => {
+const ProductTab = ({
+  refresh,
+  handleRefresh,
+  allCategories,
+  allOutlets,
+  allTaxes,
+  allUnit,
+  allMaterials
+}) => {
   const [loading, setLoading] = React.useState(false);
   const [showConfirm, setShowConfirm] = React.useState(false);
   const [showConfirmBulk, setShowConfirmBulk] = React.useState(false);
@@ -41,6 +41,7 @@ const ProductTab = ({ refresh, handleRefresh, allCategories, allOutlets }) => {
   });
 
   const [allProducts, setAllProducts] = React.useState([]);
+
   const [product, setProduct] = React.useState({
     id: "",
     name: ""
@@ -164,6 +165,26 @@ const ProductTab = ({ refresh, handleRefresh, allCategories, allOutlets }) => {
     }
 
     return data.map((item, index) => {
+      const groupAddons = item.Group_Addons.map((group) => {
+        return {
+          id: group.id,
+          group_name: group.name,
+          group_type: group.type,
+          addons: group.Addons.map((addon) => {
+            return {
+              id: addon.id,
+              name: addon.name,
+              price: addon.price,
+              has_raw_material: addon.has_raw_material,
+              raw_material_id: addon.raw_material_id,
+              quantity: addon.quantity,
+              unit_id: addon.unit_id,
+              status: addon.status
+            };
+          })
+        };
+      });
+
       return {
         id: item.id,
         no: index + 1,
@@ -172,7 +193,10 @@ const ProductTab = ({ refresh, handleRefresh, allCategories, allOutlets }) => {
         price: rupiahFormat.convert(item.price),
         stock: item.stock,
         outlet: item.Outlet.name,
-        status: item.status
+        unit: item.Unit?.name || "-",
+        status: item.status,
+        currProduct: item,
+        groupAddons
       };
     });
   };
@@ -210,6 +234,11 @@ const ProductTab = ({ refresh, handleRefresh, allCategories, allOutlets }) => {
       sortable: true
     },
     {
+      name: "Unit",
+      selector: "unit",
+      sortable: true
+    },
+    {
       name: "Status",
       cell: (rows) => {
         return (
@@ -241,7 +270,20 @@ const ProductTab = ({ refresh, handleRefresh, allCategories, allOutlets }) => {
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
-              <Link to={`/product/${rows.id}`}>
+              <Link
+                to={{
+                  pathname: `/product/${rows.id}`,
+                  state: {
+                    allOutlets,
+                    allCategories,
+                    allTaxes,
+                    allUnit,
+                    allMaterials,
+                    currProduct: rows.currProduct,
+                    groupAddons: rows.groupAddons
+                  }
+                }}
+              >
                 <Dropdown.Item as="button">Edit</Dropdown.Item>
               </Link>
               <Dropdown.Item as="button" onClick={() => showConfirmModal(rows)}>
@@ -253,59 +295,6 @@ const ProductTab = ({ refresh, handleRefresh, allCategories, allOutlets }) => {
       }
     }
   ];
-
-  // const ExpandableComponent = ({ data }) => {
-  //   const keys = [
-  //     {
-  //       key: "Variant Name",
-  //       value: "name"
-  //     },
-  //     {
-  //       key: "Barcode",
-  //       value: "barcode"
-  //     },
-  //     {
-  //       key: "SKU",
-  //       value: "sku"
-  //     },
-  //     {
-  //       key: "Price",
-  //       value: "price"
-  //     }
-  //   ];
-
-  //   return (
-  //     <>
-  //       {data.variants.map((item) => {
-  //         return (
-  //           <ListGroup
-  //             key={item.id}
-  //             style={{ padding: "1rem", marginLeft: "1rem" }}
-  //           >
-  //             {keys.map((val, index) => {
-  //               return (
-  //                 <ListGroup.Item key={index}>
-  //                   <Row>
-  //                     <Col md={3} style={{ fontWeight: "700" }}>
-  //                       {val.key}
-  //                     </Col>
-  //                     {val.value === "price" ? (
-  //                       <Col>
-  //                         {rupiahFormat.convert(item[val.value]) || "-"}
-  //                       </Col>
-  //                     ) : (
-  //                       <Col>{item[val.value] || "-"}</Col>
-  //                     )}
-  //                   </Row>
-  //                 </ListGroup.Item>
-  //               );
-  //             })}
-  //           </ListGroup>
-  //         );
-  //       })}
-  //     </>
-  //   );
-  // };
 
   const handleDelete = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -362,7 +351,18 @@ const ProductTab = ({ refresh, handleRefresh, allCategories, allOutlets }) => {
                   >
                     Export
                   </Button> */}
-                  <Link to="/product/add-product">
+                  <Link
+                    to={{
+                      pathname: "/product/add-product",
+                      state: {
+                        allCategories,
+                        allTaxes,
+                        allOutlets,
+                        allUnit,
+                        allMaterials
+                      }
+                    }}
+                  >
                     <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
                       Add New Product
                     </Button>

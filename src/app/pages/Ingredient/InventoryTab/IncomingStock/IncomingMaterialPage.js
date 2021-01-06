@@ -12,7 +12,7 @@ import useDebounce from "../../../../hooks/useDebounce";
 
 import ConfirmModal from "../../../../components/ConfirmModal";
 
-export const IncomingStockPage = () => {
+export const IncomingMaterialPage = () => {
   const [loading, setLoading] = React.useState(false);
   const [search, setSearch] = React.useState("");
   const [refresh, setRefresh] = React.useState(0);
@@ -32,7 +32,7 @@ export const IncomingStockPage = () => {
   });
   const [incomingStock, setIncomingStock] = React.useState([]);
   const [allOutlets, setAllOutlets] = React.useState([]);
-  const [allProducts, setAllProducts] = React.useState([]);
+  const [allMaterials, setAllMaterials] = React.useState([]);
   const [allUnits, setAllUnits] = React.useState([]);
 
   const getIncomingStock = async (search) => {
@@ -46,7 +46,7 @@ export const IncomingStockPage = () => {
       const dataOutput = data.data
         .map((item) => {
           const rawMaterial = item.Incoming_Stock_Products.filter(
-            (val) => val.product_id
+            (val) => val.raw_material_id
           );
           if (rawMaterial.length) {
             return item;
@@ -72,13 +72,13 @@ export const IncomingStockPage = () => {
     }
   };
 
-  const getProducts = async () => {
+  const getMaterials = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
-      const { data } = await axios.get(`${API_URL}/api/v1/product`);
-      setAllProducts(data.data);
+      const { data } = await axios.get(`${API_URL}/api/v1/raw-material`);
+      setAllMaterials(data.data);
     } catch (err) {
-      setAllProducts([]);
+      setAllMaterials([]);
     }
   };
 
@@ -98,7 +98,7 @@ export const IncomingStockPage = () => {
 
   React.useEffect(() => {
     getOutlets();
-    getProducts();
+    getMaterials();
     getUnits();
   }, []);
 
@@ -174,10 +174,10 @@ export const IncomingStockPage = () => {
             <Dropdown.Menu>
               <Link
                 to={{
-                  pathname: `/inventory/incoming-stock/${rows.id}`,
+                  pathname: `/ingredient-inventory/incoming-stock/${rows.id}`,
                   state: {
                     allOutlets,
-                    allProducts
+                    allMaterials
                   }
                 }}
               >
@@ -226,7 +226,7 @@ export const IncomingStockPage = () => {
               <div className="headerEnd">
                 <Link
                   to={{
-                    pathname: "/inventory"
+                    pathname: "/ingredient-inventory"
                   }}
                 >
                   <Button variant="outline-secondary">Back to Main View</Button>
@@ -234,8 +234,8 @@ export const IncomingStockPage = () => {
 
                 <Link
                   to={{
-                    pathname: "/inventory/incoming-stock/add",
-                    state: { allOutlets, allProducts, allUnits }
+                    pathname: "/ingredient-inventory/incoming-stock/add",
+                    state: { allOutlets, allMaterials, allUnits }
                   }}
                 >
                   <Button variant="primary" style={{ marginLeft: "0.5rem" }}>

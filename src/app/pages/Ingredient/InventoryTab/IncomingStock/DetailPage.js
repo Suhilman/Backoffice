@@ -2,38 +2,39 @@ import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
+import rupiahFormat from "rupiah-format";
 
 import { Paper } from "@material-ui/core";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 
-export const DetailOutcomingStockPage = ({ match }) => {
-  const { stockId } = match.params;
+export const DetailIncomingMaterialPage = ({ match }) => {
+  const { materialId } = match.params;
 
-  const [outcomingStock, setOutcomingStock] = React.useState("");
+  const [incomingStock, setIncomingStock] = React.useState("");
 
-  const getOutcomingStock = async (id) => {
+  const getIncomingStock = async (id) => {
     const API_URL = process.env.REACT_APP_API_URL;
     // const filterCustomer = `?name=${search}&sort=${filter.time}`;
 
     try {
       const { data } = await axios.get(
-        `${API_URL}/api/v1/outcoming-stock/${id}`
+        `${API_URL}/api/v1/incoming-stock/${id}`
       );
-      setOutcomingStock(data.data);
+      setIncomingStock(data.data);
     } catch (err) {
       console.log(err);
     }
   };
 
   React.useEffect(() => {
-    getOutcomingStock(stockId);
-  }, [stockId]);
+    getIncomingStock(materialId);
+  }, [materialId]);
 
   const columns = [
     {
-      name: "Product Name",
-      selector: "product_name",
+      name: "Raw Material Name",
+      selector: "material_name",
       sortable: true
     },
     {
@@ -45,15 +46,27 @@ export const DetailOutcomingStockPage = ({ match }) => {
       name: "Unit",
       selector: "unit",
       sortable: true
+    },
+    {
+      name: "Price",
+      selector: "price",
+      sortable: true
+    },
+    {
+      name: "Total Price",
+      selector: "total_price",
+      sortable: true
     }
   ];
 
-  const dataStock = outcomingStock
-    ? outcomingStock.Outcoming_Stock_Products.map((item) => {
+  const dataStock = incomingStock
+    ? incomingStock.Incoming_Stock_Products.map((item) => {
         return {
-          product_name: item.Product.name,
+          material_name: item.Raw_Material.name,
           quantity: item.quantity,
-          unit: item.Unit?.name || "-"
+          price: rupiahFormat.convert(item.price),
+          unit: item.Unit.name,
+          total_price: rupiahFormat.convert(item.total_price)
         };
       })
     : [];
@@ -64,12 +77,12 @@ export const DetailOutcomingStockPage = ({ match }) => {
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div className="headerPage">
             <div className="headerStart">
-              <h3>Outcoming Stock Detail Summary</h3>
+              <h3>Incoming Stock Detail Summary</h3>
             </div>
             <div className="headerEnd">
               <Link
                 to={{
-                  pathname: "/inventory/outcoming-stock"
+                  pathname: "/ingredient-inventory/incoming-stock"
                 }}
               >
                 <Button variant="outline-secondary">Back</Button>
@@ -90,7 +103,7 @@ export const DetailOutcomingStockPage = ({ match }) => {
                 <Form.Label>Stock ID:</Form.Label>
                 <Form.Control
                   type="text"
-                  value={outcomingStock ? outcomingStock.code : "-"}
+                  value={incomingStock ? incomingStock.code : "-"}
                   disabled
                 />
               </Form.Group>
@@ -99,7 +112,7 @@ export const DetailOutcomingStockPage = ({ match }) => {
                 <Form.Label>Location:</Form.Label>
                 <Form.Control
                   type="text"
-                  value={outcomingStock ? outcomingStock.Outlet.name : "-"}
+                  value={incomingStock ? incomingStock.Outlet.name : "-"}
                   disabled
                 />
               </Form.Group>
@@ -109,8 +122,8 @@ export const DetailOutcomingStockPage = ({ match }) => {
                 <Form.Control
                   type="text"
                   value={
-                    outcomingStock
-                      ? dayjs(outcomingStock.date).format("DD/MM/YYYY")
+                    incomingStock
+                      ? dayjs(incomingStock.date).format("DD/MM/YYYY")
                       : "-"
                   }
                   disabled
@@ -124,7 +137,7 @@ export const DetailOutcomingStockPage = ({ match }) => {
                 <Form.Control
                   as="textarea"
                   name="notes"
-                  value={outcomingStock?.notes || "-"}
+                  value={incomingStock?.notes || "-"}
                   disabled
                 />
               </Form.Group>

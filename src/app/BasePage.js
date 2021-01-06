@@ -38,6 +38,20 @@ import { AddStockOpnamePage } from "./pages/Inventory/InventoryTab/StockOpname/A
 import { DetailStockOpnamePage } from "./pages/Inventory/InventoryTab/StockOpname/DetailPage";
 import { AddPurchaseOrderPage } from "./pages/Inventory/PurchaseOrderTab/AddPage";
 import { DetailPurchaseOrderPage } from "./pages/Inventory/PurchaseOrderTab/DetailPage";
+import { IngredientPage } from "./pages/Ingredient/IngredientPage";
+import { EditRecipePage } from "./pages/Ingredient/RecipeTab/EditPage";
+import { IncomingMaterialPage } from "./pages/Ingredient/InventoryTab/IncomingStock/IncomingMaterialPage";
+import { AddIncomingMaterialPage } from "./pages/Ingredient/InventoryTab/IncomingStock/AddPage";
+import { DetailIncomingMaterialPage } from "./pages/Ingredient/InventoryTab/IncomingStock/DetailPage";
+import { OutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/OutcomingMaterialPage";
+import { AddOutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/AddPage";
+import { DetailOutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/DetailPage";
+import { TransferMaterialPage } from "./pages/Ingredient/InventoryTab/TransferStock/TransferMaterialPage";
+import { AddTransferMaterialPage } from "./pages/Ingredient/InventoryTab/TransferStock/AddPage";
+import { DetailTransferMaterialPage } from "./pages/Ingredient/InventoryTab/TransferStock/DetailPage";
+import { OpnameMaterialPage } from "./pages/Ingredient/InventoryTab/StockOpname/OpnameMaterialPage";
+import { AddOpnameMaterialPage } from "./pages/Ingredient/InventoryTab/StockOpname/AddPage";
+import { DetailOpnameMaterialPage } from "./pages/Ingredient/InventoryTab/StockOpname/DetailPage";
 
 export default function BasePage() {
   const [currPrivileges, setCurrPrivileges] = React.useState({
@@ -49,7 +63,8 @@ export default function BasePage() {
     role_management: false,
     promo_management: false,
     customer_management: false,
-    inventory_management: false
+    inventory_management: false,
+    kitchen_management: false
   });
 
   const localData = JSON.parse(localStorage.getItem("user_info"));
@@ -228,6 +243,105 @@ export default function BasePage() {
           exact={true}
           path="/inventory/purchase-order/:orderId"
           component={DetailPurchaseOrderPage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory"
+          component={IngredientPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/recipe/:recipeId"
+          component={EditRecipePage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/incoming-stock"
+          component={IncomingMaterialPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/incoming-stock/add"
+          component={AddIncomingMaterialPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/incoming-stock/:materialId"
+          component={DetailIncomingMaterialPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/outcoming-stock"
+          component={OutcomingMaterialPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/outcoming-stock/add"
+          component={AddOutcomingMaterialPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/outcoming-stock/:materialId"
+          component={DetailOutcomingMaterialPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/transfer-stock"
+          component={TransferMaterialPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/transfer-stock/add"
+          component={AddTransferMaterialPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/transfer-stock/:materialId"
+          component={DetailTransferMaterialPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/stock-opname"
+          component={OpnameMaterialPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/stock-opname/add"
+          component={AddOpnameMaterialPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/stock-opname/:materialId"
+          component={DetailOpnameMaterialPage}
         />
 
         <ProtectedRoute

@@ -71,13 +71,16 @@ function AsideMenuList(props) {
     const ps = [...productSections];
     const checkProduct = findPrivilege("product_management");
     const checkInventory = findPrivilege("inventory_management");
+    const checkKitchen = findPrivilege("kitchen_management");
 
     if (checkProduct) ps.push("product_management");
     if (checkInventory) ps.push("inventory_management");
+    if (checkKitchen) ps.push("kitchen_management");
 
     if (user === "owner") {
       ps.push("product_management");
       ps.push("inventory_management");
+      ps.push("kitchen_management");
     }
 
     setProductSections(ps);
@@ -224,6 +227,29 @@ function AsideMenuList(props) {
                         />
                       </span>
                       <span className="menu-text">Inventory</span>
+                    </NavLink>
+                  </li>
+                );
+              }
+
+              if (section === "kitchen_management") {
+                return (
+                  <li
+                    key={index}
+                    className={`menu-item ${getMenuItemActive(
+                      "/ingredient-inventory",
+                      false
+                    )}`}
+                  >
+                    <NavLink className="menu-link" to="/ingredient-inventory">
+                      <span className="svg-icon menu-icon">
+                        <SVG
+                          src={toAbsoluteUrl(
+                            "/media/svg/icons/Shopping/Bag2.svg"
+                          )}
+                        />
+                      </span>
+                      <span className="menu-text">Kitchen</span>
                     </NavLink>
                   </li>
                 );

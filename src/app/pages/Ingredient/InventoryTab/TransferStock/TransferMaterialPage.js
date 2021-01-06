@@ -12,7 +12,7 @@ import useDebounce from "../../../../hooks/useDebounce";
 
 import ConfirmModal from "../../../../components/ConfirmModal";
 
-export const IncomingStockPage = () => {
+export const TransferMaterialPage = () => {
   const [loading, setLoading] = React.useState(false);
   const [search, setSearch] = React.useState("");
   const [refresh, setRefresh] = React.useState(0);
@@ -30,23 +30,23 @@ export const IncomingStockPage = () => {
     id: "",
     code: ""
   });
-  const [incomingStock, setIncomingStock] = React.useState([]);
+  const [transferStock, setTransferStock] = React.useState([]);
   const [allOutlets, setAllOutlets] = React.useState([]);
-  const [allProducts, setAllProducts] = React.useState([]);
+  const [allMaterials, setAllMaterials] = React.useState([]);
   const [allUnits, setAllUnits] = React.useState([]);
 
-  const getIncomingStock = async (search) => {
+  const getTransferStock = async (search) => {
     const API_URL = process.env.REACT_APP_API_URL;
     const filterStock = `?code=${search}`;
 
     try {
       const { data } = await axios.get(
-        `${API_URL}/api/v1/incoming-stock${filterStock}`
+        `${API_URL}/api/v1/transfer-stock${filterStock}`
       );
       const dataOutput = data.data
         .map((item) => {
-          const rawMaterial = item.Incoming_Stock_Products.filter(
-            (val) => val.product_id
+          const rawMaterial = item.Transfer_Stock_Products.filter(
+            (val) => val.raw_material_id
           );
           if (rawMaterial.length) {
             return item;
@@ -56,9 +56,9 @@ export const IncomingStockPage = () => {
         })
         .filter((item) => item);
 
-      setIncomingStock(dataOutput);
+      setTransferStock(dataOutput);
     } catch (err) {
-      setIncomingStock([]);
+      setTransferStock([]);
     }
   };
 
@@ -72,13 +72,13 @@ export const IncomingStockPage = () => {
     }
   };
 
-  const getProducts = async () => {
+  const getMaterials = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
-      const { data } = await axios.get(`${API_URL}/api/v1/product`);
-      setAllProducts(data.data);
+      const { data } = await axios.get(`${API_URL}/api/v1/raw-material`);
+      setAllMaterials(data.data);
     } catch (err) {
-      setAllProducts([]);
+      setAllMaterials([]);
     }
   };
 
@@ -93,12 +93,12 @@ export const IncomingStockPage = () => {
   };
 
   React.useEffect(() => {
-    getIncomingStock(debouncedSearch);
+    getTransferStock(debouncedSearch);
   }, [refresh, debouncedSearch]);
 
   React.useEffect(() => {
     getOutlets();
-    getProducts();
+    getMaterials();
     getUnits();
   }, []);
 
@@ -121,7 +121,7 @@ export const IncomingStockPage = () => {
 
     try {
       enableLoading();
-      await axios.delete(`${API_URL}/api/v1/incoming-stock/${id}`);
+      await axios.delete(`${API_URL}/api/v1/transfer-stock/${id}`);
       handleRefresh();
       disableLoading();
       closeDeleteModal();
@@ -148,13 +148,18 @@ export const IncomingStockPage = () => {
       width: "50px"
     },
     {
-      name: "Incoming Stock ID",
+      name: "Transfer Stock ID",
       selector: "code",
       sortable: true
     },
     {
-      name: "Location",
-      selector: "outlet_name",
+      name: "Origin",
+      selector: "origin",
+      sortable: true
+    },
+    {
+      name: "Destination",
+      selector: "destination",
       sortable: true
     },
     {
@@ -174,10 +179,11 @@ export const IncomingStockPage = () => {
             <Dropdown.Menu>
               <Link
                 to={{
-                  pathname: `/inventory/incoming-stock/${rows.id}`,
+                  pathname: `/ingredient-inventory/transfer-stock/${rows.id}`,
                   state: {
                     allOutlets,
-                    allProducts
+                    allMaterials,
+                    allUnits
                   }
                 }}
               >
@@ -193,11 +199,12 @@ export const IncomingStockPage = () => {
     }
   ];
 
-  const dataStock = incomingStock.map((item, index) => {
+  const dataStock = transferStock.map((item, index) => {
     return {
       id: item.id,
       no: index + 1,
-      outlet_name: item.Outlet.name,
+      origin: item.Origin.name,
+      destination: item.Destination.name,
       code: item.code,
       date: dayjs(item.date).format("DD/MM/YYYY")
     };
@@ -221,12 +228,12 @@ export const IncomingStockPage = () => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Incoming Stock</h3>
+                <h3>Transfer Stock</h3>
               </div>
               <div className="headerEnd">
                 <Link
                   to={{
-                    pathname: "/inventory"
+                    pathname: "/ingredient-inventory"
                   }}
                 >
                   <Button variant="outline-secondary">Back to Main View</Button>
@@ -234,12 +241,12 @@ export const IncomingStockPage = () => {
 
                 <Link
                   to={{
-                    pathname: "/inventory/incoming-stock/add",
-                    state: { allOutlets, allProducts, allUnits }
+                    pathname: "/ingredient-inventory/transfer-stock/add",
+                    state: { allOutlets, allMaterials, allUnits }
                   }}
                 >
                   <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
-                    Add New Incoming Stock
+                    Add New Transfer Stock
                   </Button>
                 </Link>
               </div>

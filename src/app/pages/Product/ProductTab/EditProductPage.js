@@ -9,68 +9,52 @@ import { Row, Col } from "react-bootstrap";
 import ModalManageAddons from "./ModalManageAddons";
 import FormTemplate from "./Form";
 
-export const EditProductPage = ({ match }) => {
+export const EditProductPage = ({ match, location }) => {
   const product_id = match.params.productId;
+  const {
+    allOutlets,
+    allCategories,
+    allTaxes,
+    allUnit,
+    allMaterials,
+    currProduct,
+    groupAddons
+  } = location.state;
   const history = useHistory();
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [alertPhoto, setAlertPhoto] = React.useState("");
-  const [photo, setPhoto] = React.useState("");
-  const [photoPreview, setPhotoPreview] = React.useState("");
+  const [photo, setPhoto] = React.useState(currProduct.image || "");
+  const [photoPreview, setPhotoPreview] = React.useState(
+    currProduct.image || ""
+  );
   const [showManageAddons, setShowManageAddons] = React.useState(false);
-  const [validatedModal, setValidatedModal] = React.useState(false);
   const [deletePhoto, setDeletePhoto] = React.useState(false);
 
-  const [allOutlets, setAllOutlets] = React.useState([]);
-  const [allProductCategories, setAllProductCategories] = React.useState([]);
-  const [allProductTypes, setAllProductTypes] = React.useState([]);
-  const [allTaxes, setAllTaxes] = React.useState([]);
+  const product = {
+    outlet_id: currProduct.outlet_id,
+    name: currProduct.name,
+    product_category_id: currProduct.product_category_id || "",
+    price: currProduct.price,
+    price_purchase: currProduct.price_purchase || 0,
+    stock: currProduct.stock,
+    product_tax_id: currProduct.product_tax_id,
+    status: currProduct.status,
+    barcode: currProduct.barcode || "",
+    sku: currProduct.sku || "",
+    is_favorite: currProduct.is_favorite,
+    has_raw_material: currProduct.has_raw_material,
+    raw_material_id: currProduct.raw_material_id,
+    has_recipe: currProduct.recipe_id ? true : false,
+    recipe_id: currProduct.recipe_id || "",
+    unit_id: currProduct.unit_id || "",
+    expired_date: currProduct.expired_date,
+    description: currProduct.description,
+    groupAddons
+  };
 
-  const [product, setProduct] = React.useState({
-    outlet_id: "",
-    name: "",
-    product_category_id: "",
-    price: "",
-    stock: "",
-    product_tax_id: "",
-    status: "active",
-    barcode: "",
-    sku: "",
-    product_type_id: 1,
-    is_favorite: false,
-    description: ""
-  });
-  const [productAddonsInitial, setProductAddonsInitial] = React.useState([
-    {
-      id: "",
-      group_name: "",
-      group_type: "",
-      addons: [
-        {
-          id: "",
-          name: "",
-          price: 0,
-          status: "active"
-        }
-      ]
-    }
-  ]);
-  const [productAddons, setProductAddons] = React.useState([
-    {
-      id: "",
-      group_name: "",
-      group_type: "",
-      addons: [
-        {
-          id: "",
-          name: "",
-          price: 0,
-          status: "active"
-        }
-      ]
-    }
-  ]);
+  const [addonsInitial, setAddonsinitial] = React.useState(groupAddons);
 
   const ProductSchema = Yup.object().shape({
     outlet_id: Yup.number()
@@ -88,6 +72,10 @@ export const EditProductPage = ({ match }) => {
       .integer()
       .min(1)
       .required("Please input a price."),
+    price_purchase: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please input a price purchase."),
     stock: Yup.number()
       .integer()
       .min(0)
@@ -104,13 +92,39 @@ export const EditProductPage = ({ match }) => {
       .max(50, "Maximum 50 characters."),
     sku: Yup.string()
       .min(1, "Minimum 1 character.")
-      .max(50, "Maximum 50 characters."),
-    product_type_id: Yup.number()
-      .integer()
-      .min(1)
-      .required("Please choose a type."),
+      .max(50, "Maximum 50 characters.")
+      .required("Please input SKU"),
     is_favorite: Yup.boolean().required(),
-    description: Yup.string().min(1, "Minimum 1 character.")
+    has_raw_material: Yup.boolean().required(),
+    has_recipe: Yup.boolean().required(),
+    recipe_id: Yup.number().nullable(),
+    raw_material_id: Yup.number().nullable(),
+    unit_id: Yup.string().nullable(),
+    expired_date: Yup.string(),
+    description: Yup.string().nullable(),
+    groupAddons: Yup.array().of(
+      Yup.object().shape({
+        id: Yup.string(),
+        group_name: Yup.string()
+          .min(3, "Minimum 3 characters.")
+          .max(50, "Maximum 50 characters.")
+          .required("Please input group name"),
+        group_type: Yup.string()
+          .matches(/single|multi/)
+          .required("Please input group type"),
+        addons: Yup.array().of(
+          Yup.object().shape({
+            id: Yup.string(),
+            name: Yup.string(),
+            price: Yup.number().nullable(),
+            has_raw_material: Yup.boolean(),
+            quantity: Yup.number().nullable(),
+            unit_id: Yup.string().nullable(),
+            status: Yup.string()
+          })
+        )
+      })
+    )
   });
 
   const formikProduct = useFormik({
@@ -124,15 +138,15 @@ export const EditProductPage = ({ match }) => {
       formData.append("outlet_id", values.outlet_id);
       formData.append("name", values.name);
       formData.append("price", values.price);
+      formData.append("price_purchase", values.price_purchase);
       formData.append("stock", values.stock);
-      formData.append("product_type_id", values.product_type_id);
       formData.append("product_tax_id", values.product_tax_id);
       formData.append("is_favorite", values.is_favorite);
+      formData.append("has_recipe", values.has_recipe);
       formData.append("status", values.status);
 
-      if (productAddons)
-        formData.append("groupAddons", JSON.stringify(productAddons));
-
+      if (values.groupAddons)
+        formData.append("groupAddons", JSON.stringify(values.groupAddons));
       if (values.barcode) formData.append("barcode", values.barcode);
       if (values.sku) formData.append("sku", values.sku);
       if (values.description)
@@ -141,6 +155,16 @@ export const EditProductPage = ({ match }) => {
         formData.append("product_category_id", values.product_category_id);
       if (photo) formData.append("productImage", photo);
       if (deletePhoto) formData.append("deletePhoto", deletePhoto);
+
+      if (values.has_raw_material)
+        formData.append("has_raw_material", values.has_raw_material);
+      if (values.raw_material_id)
+        formData.append("raw_material_id", values.raw_material_id);
+
+      if (values.unit_id) formData.append("unit_id", values.unit_id);
+      if (values.expired_date)
+        formData.append("expired_date", values.expired_date);
+      if (values.recipe_id) formData.append("recipe_id", values.recipe_id);
 
       try {
         enableLoading();
@@ -169,178 +193,19 @@ export const EditProductPage = ({ match }) => {
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
-  const getProductById = async (id) => {
-    const API_URL = process.env.REACT_APP_API_URL;
-    try {
-      const { data } = await axios.get(`${API_URL}/api/v1/product/${id}`);
-      const productData = data.data;
-
-      setProduct({
-        outlet_id: productData.outlet_id,
-        name: productData.name,
-        product_category_id: productData.product_category_id || "",
-        price: productData.price,
-        stock: productData.stock,
-        product_tax_id: productData.product_tax_id,
-        status: productData.status,
-        barcode: productData.barcode || "",
-        sku: productData.sku || "",
-        product_type_id: productData.product_type_id,
-        is_favorite: productData.is_favorite,
-        description: productData.description || ""
-      });
-
-      const addonsInitial = productData.Group_Addons.map((item) => {
-        item.group_name = item.name;
-        item.group_type = item.type;
-        item.addons = item.Addons;
-
-        delete item.name;
-        delete item.type;
-        delete item.Addons;
-
-        return item;
-      });
-
-      setProductAddonsInitial(addonsInitial);
-      setProductAddons(addonsInitial);
-
-      if (productData.image) {
-        setPhoto(`${API_URL}${productData.image}`);
-        setPhotoPreview(`${API_URL}${productData.image}`);
-      }
-    } catch (err) {
-      console.log(err);
-    }
+  const showModalAddons = () => {
+    setShowManageAddons(true);
   };
-
-  const getOutlet = async () => {
-    const API_URL = process.env.REACT_APP_API_URL;
-    try {
-      const outlets = await axios.get(`${API_URL}/api/v1/outlet`);
-      setAllOutlets(outlets.data.data);
-    } catch (err) {
-      setAllOutlets([]);
-    }
-  };
-
-  const getProductCategory = async () => {
-    const API_URL = process.env.REACT_APP_API_URL;
-    try {
-      const productCategory = await axios.get(
-        `${API_URL}/api/v1/product-category`
-      );
-      setAllProductCategories(productCategory.data.data);
-    } catch (err) {
-      setAllProductCategories([]);
-    }
-  };
-
-  const getProductType = async () => {
-    const API_URL = process.env.REACT_APP_API_URL;
-    try {
-      const productTypes = await axios.get(`${API_URL}/api/v1/product-type`);
-      setAllProductTypes(productTypes.data.data);
-    } catch (err) {
-      setAllProductTypes([]);
-    }
-  };
-
-  const getTax = async () => {
-    const API_URL = process.env.REACT_APP_API_URL;
-    try {
-      const taxes = await axios.get(`${API_URL}/api/v1/product-tax`);
-      setAllTaxes(taxes.data.data);
-    } catch (err) {
-      setAllTaxes([]);
-    }
-  };
-
-  const showModalAddons = () => setShowManageAddons(true);
 
   const cancelModalAddons = () => {
-    setProductAddons(productAddonsInitial);
-
-    setValidatedModal(false);
+    formikProduct.setFieldValue("groupAddons", addonsInitial);
     setShowManageAddons(false);
   };
 
   const saveChangesAddons = (e) => {
     e.preventDefault();
-
-    const form = e.currentTarget;
-    setValidatedModal(true);
-    if (form.checkValidity() === false) {
-      return;
-    } else {
-      setValidatedModal(true);
-      setShowManageAddons(false);
-    }
-  };
-
-  const handleAddGroupAddons = () => {
-    setProductAddons([
-      ...productAddons,
-      {
-        id: "",
-        group_name: "",
-        group_type: "",
-        addons: [
-          {
-            id: "",
-            name: "",
-            price: 0,
-            status: "active"
-          }
-        ]
-      }
-    ]);
-  };
-
-  const handleAddAddons = (index) => {
-    const allProductAddons = [...productAddons];
-    const currentAllAddons = allProductAddons[index].addons;
-
-    currentAllAddons.push({
-      id: "",
-      name: "",
-      price: 0,
-      status: "active"
-    });
-
-    setProductAddons(allProductAddons);
-  };
-
-  const handleRemoveAddons = (index, valIndex) => {
-    const allProductAddons = [...productAddons];
-    const currentAllAddons = allProductAddons[index].addons;
-    currentAllAddons.splice(valIndex, 1);
-
-    if (!currentAllAddons.length) {
-      allProductAddons.splice(index, 1);
-    }
-
-    setProductAddons(allProductAddons);
-  };
-
-  const handleChangeAddons = (e) => {
-    const targetName = e.target.name.split("-");
-    const targetValue = e.target.value;
-    const name = targetName[0];
-    const index = parseInt(targetName[1]);
-
-    const allData = [...productAddons];
-
-    if (name === "addons") {
-      const valName = targetName[2];
-      const valIndex = parseInt(targetName[3]);
-
-      allData[index][name][valIndex][valName] = targetValue;
-    } else {
-      allData[index][name] = targetValue;
-    }
-
-    setProductAddons(allData);
+    setAddonsinitial(formikProduct.values.groupAddons);
+    setShowManageAddons(false);
   };
 
   const handlePreviewPhoto = (file) => {
@@ -367,40 +232,51 @@ export const EditProductPage = ({ match }) => {
     setDeletePhoto(true);
   };
 
-  React.useEffect(() => {
-    getOutlet();
-    getProductType();
-    getTax();
-    getProductCategory();
-  }, []);
+  const optionsOutlet = allOutlets.map((item) => {
+    return { value: item.id, label: item.name };
+  });
+  const defaultValueOutlet = optionsOutlet.find(
+    (val) => val.value === formikProduct.values.outlet_id
+  );
 
-  React.useEffect(() => {
-    getProductById(product_id);
-  }, [product_id]);
+  const optionsCategory = allCategories.map((item) => {
+    return { value: item.id, label: item.name };
+  });
+  const defaultValueCategory = optionsCategory.find(
+    (val) => val.value === formikProduct.values.product_category_id
+  );
+
+  const optionsUnit = allUnit.map((item) => {
+    return { value: item.id, label: item.name };
+  });
+  const defaultValueUnit = (key) =>
+    optionsUnit.find((val) => val.value === key);
+
+  const optionsMaterial = allMaterials.map((item) => {
+    return { value: item.id, label: item.name };
+  });
+  const defaultValueMaterial = (key) =>
+    optionsMaterial.find((val) => val.value === key);
 
   return (
     <Row>
       <ModalManageAddons
-        title={`Edit Product Addons for - ${product.name}`}
-        validatedModal={validatedModal}
+        title={`Edit Product Addons for - ${formikProduct.values.name}`}
         showManageAddons={showManageAddons}
         cancelModalAddons={cancelModalAddons}
         saveChangesAddons={saveChangesAddons}
-        productAddons={productAddons}
-        handleAddGroupAddons={handleAddGroupAddons}
-        handleAddAddons={handleAddAddons}
-        handleRemoveAddons={handleRemoveAddons}
-        handleChangeAddons={handleChangeAddons}
+        formikProduct={formikProduct}
+        optionsMaterial={optionsMaterial}
+        optionsUnit={optionsUnit}
+        defaultValueMaterial={defaultValueMaterial}
+        defaultValueUnit={defaultValueUnit}
       />
 
       <Col>
         <FormTemplate
           title="Edit Product"
           loading={loading}
-          allOutlets={allOutlets}
-          allProductCategories={allProductCategories}
           allTaxes={allTaxes}
-          allProductTypes={allProductTypes}
           alertPhoto={alertPhoto}
           photoPreview={photoPreview}
           photo={photo}
@@ -410,6 +286,12 @@ export const EditProductPage = ({ match }) => {
           validationProduct={validationProduct}
           alert={alert}
           handleDeletePhoto={handleDeletePhoto}
+          optionsOutlet={optionsOutlet}
+          optionsCategory={optionsCategory}
+          optionsUnit={optionsUnit}
+          defaultValueOutlet={defaultValueOutlet}
+          defaultValueCategory={defaultValueCategory}
+          defaultValueUnit={defaultValueUnit}
         />
       </Col>
     </Row>

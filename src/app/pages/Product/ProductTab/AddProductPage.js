@@ -9,30 +9,35 @@ import { Row, Col } from "react-bootstrap";
 import ModalManageAddons from "./ModalManageAddons";
 import FormTemplate from "./Form";
 
-export const AddProductPage = () => {
+export const AddProductPage = ({ location }) => {
   const history = useHistory();
+  const {
+    allOutlets,
+    allCategories,
+    allTaxes,
+    allUnit,
+    allMaterials
+  } = location.state;
 
   const [photo, setPhoto] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [alertPhoto, setAlertPhoto] = React.useState("");
   const [showManageAddons, setShowManageAddons] = React.useState(false);
-  const [validatedModal, setValidatedModal] = React.useState(false);
   const [photoPreview, setPhotoPreview] = React.useState("");
 
-  const [allOutlets, setAllOutlets] = React.useState([]);
-  const [allProductCategories, setAllProductCategories] = React.useState([]);
-  const [allProductTypes, setAllProductTypes] = React.useState([]);
-  const [allTaxes, setAllTaxes] = React.useState([]);
-
-  const [productAddons, setProductAddons] = React.useState([
+  const [savedAddons, setSavedAddons] = React.useState([
     {
       group_name: "",
       group_type: "",
       addons: [
         {
           name: "",
-          price: 0,
+          price: "",
+          has_raw_material: false,
+          raw_material_id: "",
+          quantity: 0,
+          unit_id: "",
           status: "active"
         }
       ]
@@ -43,14 +48,22 @@ export const AddProductPage = () => {
     outlet_id: "",
     name: "",
     product_category_id: "",
-    price: "",
-    stock: "",
-    product_tax_id: 1,
+    price: 0,
+    price_purchase: 0,
+    stock: 0,
+    product_tax_id: "",
     status: "active",
     barcode: "",
     sku: "",
-    product_type_id: 2,
-    description: ""
+    is_favorite: false,
+    has_raw_material: false,
+    raw_material_id: "",
+    has_recipe: false,
+    recipe_id: "",
+    unit_id: "",
+    expired_date: "",
+    description: "",
+    groupAddons: []
   };
 
   const ProductSchema = Yup.object().shape({
@@ -69,6 +82,10 @@ export const AddProductPage = () => {
       .integer()
       .min(1)
       .required("Please input a price."),
+    price_purchase: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please input a price purchase."),
     stock: Yup.number()
       .integer()
       .min(0)
@@ -85,12 +102,39 @@ export const AddProductPage = () => {
       .max(50, "Maximum 50 characters."),
     sku: Yup.string()
       .min(1, "Minimum 1 character.")
-      .max(50, "Maximum 50 characters."),
-    product_type_id: Yup.number()
-      .integer()
-      .min(1)
-      .required("Please choose a type."),
-    description: Yup.string().min(1, "Minimum 1 character.")
+      .max(50, "Maximum 50 characters.")
+      .required("Please input SKU"),
+    is_favorite: Yup.boolean().required(),
+    has_raw_material: Yup.boolean().required(),
+    has_recipe: Yup.boolean().required(),
+    recipe_id: Yup.number().nullable(),
+    raw_material_id: Yup.number().nullable(),
+    unit_id: Yup.string().nullable(),
+    expired_date: Yup.string(),
+    description: Yup.string().nullable(),
+    groupAddons: Yup.array().of(
+      Yup.object().shape({
+        id: Yup.string(),
+        group_name: Yup.string()
+          .min(3, "Minimum 3 characters.")
+          .max(50, "Maximum 50 characters.")
+          .required("Please input group name"),
+        group_type: Yup.string()
+          .matches(/single|multi/)
+          .required("Please input group type"),
+        addons: Yup.array().of(
+          Yup.object().shape({
+            id: Yup.string(),
+            name: Yup.string(),
+            price: Yup.number().nullable(),
+            has_raw_material: Yup.boolean(),
+            quantity: Yup.number().nullable(),
+            unit_id: Yup.string().nullable(),
+            status: Yup.string()
+          })
+        )
+      })
+    )
   });
 
   const formikProduct = useFormik({
@@ -103,11 +147,15 @@ export const AddProductPage = () => {
       formData.append("outlet_id", values.outlet_id);
       formData.append("name", values.name);
       formData.append("price", values.price);
+      formData.append("price_purchase", values.price_purchase);
       formData.append("stock", values.stock);
-      formData.append("product_type_id", values.product_type_id);
       formData.append("product_tax_id", values.product_tax_id);
+      formData.append("is_favorite", values.is_favorite);
+      formData.append("has_recipe", values.has_recipe);
       formData.append("status", values.status);
 
+      if (values.groupAddons.length)
+        formData.append("groupAddons", JSON.stringify(values.groupAddons));
       if (values.barcode) formData.append("barcode", values.barcode);
       if (values.sku) formData.append("sku", values.sku);
       if (values.description)
@@ -115,8 +163,16 @@ export const AddProductPage = () => {
       if (values.product_category_id)
         formData.append("product_category_id", values.product_category_id);
       if (photo) formData.append("productImage", photo);
-      if (productAddons[0].group_name)
-        formData.append("groupAddons", JSON.stringify(productAddons));
+
+      if (values.has_raw_material)
+        formData.append("has_raw_material", values.has_raw_material);
+      if (values.raw_material_id)
+        formData.append("raw_material_id", values.raw_material_id);
+
+      if (values.unit_id) formData.append("unit_id", values.unit_id);
+      if (values.expired_date)
+        formData.append("expired_date", values.expired_date);
+      if (values.recipe_id) formData.append("recipe_id", values.recipe_id);
 
       try {
         enableLoading();
@@ -145,141 +201,26 @@ export const AddProductPage = () => {
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
-  const getOutlet = async () => {
-    const API_URL = process.env.REACT_APP_API_URL;
-    try {
-      const outlets = await axios.get(`${API_URL}/api/v1/outlet`);
-      setAllOutlets(outlets.data.data);
-    } catch (err) {
-      setAllOutlets([]);
+  const showModalAddons = () => {
+    if (!formikProduct.values.groupAddons.length) {
+      formikProduct.setFieldValue("groupAddons", savedAddons);
     }
+    setShowManageAddons(true);
   };
-
-  const getProductCategory = async (outlet_id) => {
-    const API_URL = process.env.REACT_APP_API_URL;
-    try {
-      const productCategory = await axios.get(
-        `${API_URL}/api/v1/product-category`
-      );
-      setAllProductCategories(productCategory.data.data);
-    } catch (err) {
-      setAllProductCategories([]);
-    }
-  };
-
-  const getProductType = async () => {
-    const API_URL = process.env.REACT_APP_API_URL;
-    try {
-      const productTypes = await axios.get(`${API_URL}/api/v1/product-type`);
-      setAllProductTypes(productTypes.data.data);
-    } catch (err) {
-      setAllProductTypes([]);
-    }
-  };
-
-  const getTax = async () => {
-    const API_URL = process.env.REACT_APP_API_URL;
-    try {
-      const taxes = await axios.get(`${API_URL}/api/v1/product-tax`);
-      setAllTaxes(taxes.data.data);
-    } catch (err) {
-      setAllTaxes([]);
-    }
-  };
-
-  const showModalAddons = () => setShowManageAddons(true);
 
   const cancelModalAddons = () => {
-    setProductAddons([
-      {
-        group_name: "",
-        group_type: "",
-        addons: [
-          {
-            name: "",
-            price: 0,
-            status: "active"
-          }
-        ]
-      }
-    ]);
-    setValidatedModal(false);
+    if (!formikProduct.values.groupAddons.length) {
+      formikProduct.setFieldValue("groupAddons", []);
+    } else {
+      formikProduct.setFieldValue("groupAddons", savedAddons);
+    }
     setShowManageAddons(false);
   };
 
   const saveChangesAddons = (e) => {
     e.preventDefault();
-
-    const form = e.currentTarget;
-    setValidatedModal(true);
-    if (form.checkValidity() === false) {
-      return;
-    } else {
-      setValidatedModal(true);
-      setShowManageAddons(false);
-    }
-  };
-
-  const handleAddGroupAddons = () => {
-    setProductAddons([
-      ...productAddons,
-      {
-        group_name: "",
-        group_type: "",
-        addons: [
-          {
-            name: "",
-            price: 0,
-            status: "active"
-          }
-        ]
-      }
-    ]);
-  };
-
-  const handleAddAddons = (index) => {
-    const allProductAddons = [...productAddons];
-    const currentAllAddons = allProductAddons[index].addons;
-
-    currentAllAddons.push({
-      name: "",
-      price: 0,
-      status: "active"
-    });
-
-    setProductAddons(allProductAddons);
-  };
-
-  const handleRemoveAddons = (index, valIndex) => {
-    const allProductAddons = [...productAddons];
-    const currentAllAddons = allProductAddons[index].addons;
-    currentAllAddons.splice(valIndex, 1);
-
-    if (!currentAllAddons.length) {
-      allProductAddons.splice(index, 1);
-    }
-
-    setProductAddons(allProductAddons);
-  };
-
-  const handleChangeAddons = (e) => {
-    const targetName = e.target.name.split("-");
-    const targetValue = e.target.value;
-    const name = targetName[0];
-    const index = parseInt(targetName[1]);
-
-    const allData = [...productAddons];
-
-    if (name === "addons") {
-      const valName = targetName[2];
-      const valIndex = parseInt(targetName[3]);
-
-      allData[index][name][valIndex][valName] = targetValue;
-    } else {
-      allData[index][name] = targetValue;
-    }
-
-    setProductAddons(allData);
+    setSavedAddons(formikProduct.values.groupAddons);
+    setShowManageAddons(false);
   };
 
   const handlePreviewPhoto = (file) => {
@@ -305,38 +246,51 @@ export const AddProductPage = () => {
     setPhotoPreview("");
   };
 
-  React.useEffect(() => {
-    getOutlet();
-    getProductType();
-    getTax();
-    getProductCategory();
-  }, []);
+  const optionsOutlet = allOutlets.map((item) => {
+    return { value: item.id, label: item.name };
+  });
+  const defaultValueOutlet = optionsOutlet.find(
+    (val) => val.value === formikProduct.values.outlet_id
+  );
+
+  const optionsCategory = allCategories.map((item) => {
+    return { value: item.id, label: item.name };
+  });
+  const defaultValueCategory = optionsCategory.find(
+    (val) => val.value === formikProduct.values.product_category_id
+  );
+
+  const optionsUnit = allUnit.map((item) => {
+    return { value: item.id, label: item.name };
+  });
+  const defaultValueUnit = (key) =>
+    optionsUnit.find((val) => val.value === key);
+
+  const optionsMaterial = allMaterials.map((item) => {
+    return { value: item.id, label: item.name };
+  });
+  const defaultValueMaterial = (key) =>
+    optionsMaterial.find((val) => val.value === key);
 
   return (
     <Row>
       <ModalManageAddons
-        title={`Add Product Addons for - ${
-          formikProduct.getFieldProps("name").value
-        }`}
-        validatedModal={validatedModal}
+        title={`Add Product Addons for - ${formikProduct.values.name}`}
         showManageAddons={showManageAddons}
         cancelModalAddons={cancelModalAddons}
         saveChangesAddons={saveChangesAddons}
-        productAddons={productAddons}
-        handleAddGroupAddons={handleAddGroupAddons}
-        handleAddAddons={handleAddAddons}
-        handleRemoveAddons={handleRemoveAddons}
-        handleChangeAddons={handleChangeAddons}
+        formikProduct={formikProduct}
+        optionsMaterial={optionsMaterial}
+        optionsUnit={optionsUnit}
+        defaultValueMaterial={defaultValueMaterial}
+        defaultValueUnit={defaultValueUnit}
       />
 
       <Col>
         <FormTemplate
           title="Add Product"
           loading={loading}
-          allOutlets={allOutlets}
-          allProductCategories={allProductCategories}
           allTaxes={allTaxes}
-          allProductTypes={allProductTypes}
           alertPhoto={alertPhoto}
           photoPreview={photoPreview}
           photo={photo}
@@ -346,6 +300,12 @@ export const AddProductPage = () => {
           validationProduct={validationProduct}
           alert={alert}
           handleDeletePhoto={handleDeletePhoto}
+          optionsOutlet={optionsOutlet}
+          optionsCategory={optionsCategory}
+          optionsUnit={optionsUnit}
+          defaultValueOutlet={defaultValueOutlet}
+          defaultValueCategory={defaultValueCategory}
+          defaultValueUnit={defaultValueUnit}
         />
       </Col>
     </Row>

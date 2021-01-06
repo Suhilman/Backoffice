@@ -12,7 +12,7 @@ import useDebounce from "../../../../hooks/useDebounce";
 
 import ConfirmModal from "../../../../components/ConfirmModal";
 
-export const IncomingStockPage = () => {
+export const OpnameMaterialPage = () => {
   const [loading, setLoading] = React.useState(false);
   const [search, setSearch] = React.useState("");
   const [refresh, setRefresh] = React.useState(0);
@@ -30,23 +30,23 @@ export const IncomingStockPage = () => {
     id: "",
     code: ""
   });
-  const [incomingStock, setIncomingStock] = React.useState([]);
+  const [stockOpname, setStockOpname] = React.useState([]);
   const [allOutlets, setAllOutlets] = React.useState([]);
-  const [allProducts, setAllProducts] = React.useState([]);
+  const [allMaterials, setAllMaterials] = React.useState([]);
   const [allUnits, setAllUnits] = React.useState([]);
 
-  const getIncomingStock = async (search) => {
+  const getStockOpname = async (search) => {
     const API_URL = process.env.REACT_APP_API_URL;
     const filterStock = `?code=${search}`;
 
     try {
       const { data } = await axios.get(
-        `${API_URL}/api/v1/incoming-stock${filterStock}`
+        `${API_URL}/api/v1/stock-opname${filterStock}`
       );
       const dataOutput = data.data
         .map((item) => {
-          const rawMaterial = item.Incoming_Stock_Products.filter(
-            (val) => val.product_id
+          const rawMaterial = item.Stock_Opname_Products.filter(
+            (val) => val.raw_material_id
           );
           if (rawMaterial.length) {
             return item;
@@ -56,9 +56,9 @@ export const IncomingStockPage = () => {
         })
         .filter((item) => item);
 
-      setIncomingStock(dataOutput);
+      setStockOpname(dataOutput);
     } catch (err) {
-      setIncomingStock([]);
+      setStockOpname([]);
     }
   };
 
@@ -72,13 +72,13 @@ export const IncomingStockPage = () => {
     }
   };
 
-  const getProducts = async () => {
+  const getMaterials = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
-      const { data } = await axios.get(`${API_URL}/api/v1/product`);
-      setAllProducts(data.data);
+      const { data } = await axios.get(`${API_URL}/api/v1/raw-material`);
+      setAllMaterials(data.data);
     } catch (err) {
-      setAllProducts([]);
+      setAllMaterials([]);
     }
   };
 
@@ -93,12 +93,12 @@ export const IncomingStockPage = () => {
   };
 
   React.useEffect(() => {
-    getIncomingStock(debouncedSearch);
+    getStockOpname(debouncedSearch);
   }, [refresh, debouncedSearch]);
 
   React.useEffect(() => {
     getOutlets();
-    getProducts();
+    getMaterials();
     getUnits();
   }, []);
 
@@ -121,7 +121,7 @@ export const IncomingStockPage = () => {
 
     try {
       enableLoading();
-      await axios.delete(`${API_URL}/api/v1/incoming-stock/${id}`);
+      await axios.delete(`${API_URL}/api/v1/stock-opname/${id}`);
       handleRefresh();
       disableLoading();
       closeDeleteModal();
@@ -148,7 +148,7 @@ export const IncomingStockPage = () => {
       width: "50px"
     },
     {
-      name: "Incoming Stock ID",
+      name: "Stock Opname ID",
       selector: "code",
       sortable: true
     },
@@ -174,10 +174,11 @@ export const IncomingStockPage = () => {
             <Dropdown.Menu>
               <Link
                 to={{
-                  pathname: `/inventory/incoming-stock/${rows.id}`,
+                  pathname: `/ingredient-inventory/stock-opname/${rows.id}`,
                   state: {
                     allOutlets,
-                    allProducts
+                    allMaterials,
+                    allUnits
                   }
                 }}
               >
@@ -193,7 +194,7 @@ export const IncomingStockPage = () => {
     }
   ];
 
-  const dataStock = incomingStock.map((item, index) => {
+  const dataStock = stockOpname.map((item, index) => {
     return {
       id: item.id,
       no: index + 1,
@@ -221,12 +222,12 @@ export const IncomingStockPage = () => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Incoming Stock</h3>
+                <h3>Stock Opname</h3>
               </div>
               <div className="headerEnd">
                 <Link
                   to={{
-                    pathname: "/inventory"
+                    pathname: "/ingredient-inventory"
                   }}
                 >
                   <Button variant="outline-secondary">Back to Main View</Button>
@@ -234,12 +235,12 @@ export const IncomingStockPage = () => {
 
                 <Link
                   to={{
-                    pathname: "/inventory/incoming-stock/add",
-                    state: { allOutlets, allProducts, allUnits }
+                    pathname: "/ingredient-inventory/stock-opname/add",
+                    state: { allOutlets, allMaterials, allUnits }
                   }}
                 >
                   <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
-                    Add New Incoming Stock
+                    Add New Stock Opname
                   </Button>
                 </Link>
               </div>

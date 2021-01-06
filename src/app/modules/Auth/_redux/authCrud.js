@@ -52,8 +52,8 @@ export function logout() {
   const user = privileges ? "staff" : "owner";
 
   if (user === "staff") {
-    return axios.post(`${LOGOUT_OWNER}`);
-  } else {
     return axios.post(`${LOGOUT_STAFF}`);
+  } else {
+    return axios.post(`${LOGOUT_OWNER}`);
   }
 }

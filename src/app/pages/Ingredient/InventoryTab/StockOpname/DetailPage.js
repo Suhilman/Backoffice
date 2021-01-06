@@ -7,53 +7,63 @@ import { Paper } from "@material-ui/core";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 
-export const DetailOutcomingStockPage = ({ match }) => {
-  const { stockId } = match.params;
+export const DetailOpnameMaterialPage = ({ match }) => {
+  const { materialId } = match.params;
 
-  const [outcomingStock, setOutcomingStock] = React.useState("");
+  const [stockOpname, setStockOpname] = React.useState("");
 
-  const getOutcomingStock = async (id) => {
+  const getStockOpname = async (id) => {
     const API_URL = process.env.REACT_APP_API_URL;
     // const filterCustomer = `?name=${search}&sort=${filter.time}`;
 
     try {
-      const { data } = await axios.get(
-        `${API_URL}/api/v1/outcoming-stock/${id}`
-      );
-      setOutcomingStock(data.data);
+      const { data } = await axios.get(`${API_URL}/api/v1/stock-opname/${id}`);
+      setStockOpname(data.data);
     } catch (err) {
       console.log(err);
     }
   };
 
   React.useEffect(() => {
-    getOutcomingStock(stockId);
-  }, [stockId]);
+    getStockOpname(materialId);
+  }, [materialId]);
 
   const columns = [
     {
-      name: "Product Name",
-      selector: "product_name",
+      name: "Raw Material Name",
+      selector: "material_name",
       sortable: true
     },
     {
-      name: "Quantity",
-      selector: "quantity",
+      name: "Quantity System",
+      selector: "quantity_system",
+      sortable: true
+    },
+    {
+      name: "Quantity Actual",
+      selector: "quantity_actual",
       sortable: true
     },
     {
       name: "Unit",
       selector: "unit",
       sortable: true
+    },
+    {
+      name: "Difference",
+      selector: "difference",
+      sortable: true
     }
   ];
 
-  const dataStock = outcomingStock
-    ? outcomingStock.Outcoming_Stock_Products.map((item) => {
+  const dataStock = stockOpname
+    ? stockOpname.Stock_Opname_Products.map((item) => {
         return {
-          product_name: item.Product.name,
-          quantity: item.quantity,
-          unit: item.Unit?.name || "-"
+          material_name: item.Raw_Material.name,
+          quantity_system: item.quantity_system,
+          quantity_actual: item.quantity_actual,
+          unit: item.Unit.name,
+          difference: item.difference
         };
       })
     : [];
@@ -64,12 +74,12 @@ export const DetailOutcomingStockPage = ({ match }) => {
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div className="headerPage">
             <div className="headerStart">
-              <h3>Outcoming Stock Detail Summary</h3>
+              <h3>Stock Opname Detail Summary</h3>
             </div>
             <div className="headerEnd">
               <Link
                 to={{
-                  pathname: "/inventory/outcoming-stock"
+                  pathname: "/ingredient-inventory/stock-opname"
                 }}
               >
                 <Button variant="outline-secondary">Back</Button>
@@ -90,7 +100,7 @@ export const DetailOutcomingStockPage = ({ match }) => {
                 <Form.Label>Stock ID:</Form.Label>
                 <Form.Control
                   type="text"
-                  value={outcomingStock ? outcomingStock.code : "-"}
+                  value={stockOpname ? stockOpname.code : "-"}
                   disabled
                 />
               </Form.Group>
@@ -99,7 +109,7 @@ export const DetailOutcomingStockPage = ({ match }) => {
                 <Form.Label>Location:</Form.Label>
                 <Form.Control
                   type="text"
-                  value={outcomingStock ? outcomingStock.Outlet.name : "-"}
+                  value={stockOpname ? stockOpname.Outlet.name : "-"}
                   disabled
                 />
               </Form.Group>
@@ -109,8 +119,8 @@ export const DetailOutcomingStockPage = ({ match }) => {
                 <Form.Control
                   type="text"
                   value={
-                    outcomingStock
-                      ? dayjs(outcomingStock.date).format("DD/MM/YYYY")
+                    stockOpname
+                      ? dayjs(stockOpname.date).format("DD/MM/YYYY")
                       : "-"
                   }
                   disabled
@@ -124,7 +134,7 @@ export const DetailOutcomingStockPage = ({ match }) => {
                 <Form.Control
                   as="textarea"
                   name="notes"
-                  value={outcomingStock?.notes || "-"}
+                  value={stockOpname?.notes || "-"}
                   disabled
                 />
               </Form.Group>

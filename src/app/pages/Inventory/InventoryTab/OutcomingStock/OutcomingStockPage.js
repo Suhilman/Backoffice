@@ -33,6 +33,7 @@ export const OutcomingStockPage = () => {
   const [outcomingStock, setOutcomingStock] = React.useState([]);
   const [allOutlets, setAllOutlets] = React.useState([]);
   const [allProducts, setAllProducts] = React.useState([]);
+  const [allUnits, setAllUnits] = React.useState([]);
 
   const getOutcomingStock = async (search) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -42,7 +43,20 @@ export const OutcomingStockPage = () => {
       const { data } = await axios.get(
         `${API_URL}/api/v1/outcoming-stock${filterStock}`
       );
-      setOutcomingStock(data.data);
+      const dataOutput = data.data
+        .map((item) => {
+          const rawMaterial = item.Outcoming_Stock_Products.filter(
+            (val) => val.product_id
+          );
+          if (rawMaterial.length) {
+            return item;
+          } else {
+            return "";
+          }
+        })
+        .filter((item) => item);
+
+      setOutcomingStock(dataOutput);
     } catch (err) {
       setOutcomingStock([]);
     }
@@ -68,6 +82,16 @@ export const OutcomingStockPage = () => {
     }
   };
 
+  const getUnits = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    try {
+      const { data } = await axios.get(`${API_URL}/api/v1/unit`);
+      setAllUnits(data.data);
+    } catch (err) {
+      setAllUnits([]);
+    }
+  };
+
   React.useEffect(() => {
     getOutcomingStock(debouncedSearch);
   }, [refresh, debouncedSearch]);
@@ -75,6 +99,7 @@ export const OutcomingStockPage = () => {
   React.useEffect(() => {
     getOutlets();
     getProducts();
+    getUnits();
   }, []);
 
   const enableLoading = () => setLoading(true);
@@ -210,7 +235,7 @@ export const OutcomingStockPage = () => {
                 <Link
                   to={{
                     pathname: "/inventory/outcoming-stock/add",
-                    state: { allOutlets, allProducts }
+                    state: { allOutlets, allProducts, allUnits }
                   }}
                 >
                   <Button variant="primary" style={{ marginLeft: "0.5rem" }}>

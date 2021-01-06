@@ -43,6 +43,11 @@ export const DetailIncomingStockPage = ({ match }) => {
       sortable: true
     },
     {
+      name: "Unit",
+      selector: "unit",
+      sortable: true
+    },
+    {
       name: "Price",
       selector: "price",
       sortable: true
@@ -59,6 +64,7 @@ export const DetailIncomingStockPage = ({ match }) => {
         return {
           product_name: item.Product.name,
           quantity: item.quantity,
+          unit: item.Unit?.name || "-",
           price: rupiahFormat.convert(item.price),
           total_price: rupiahFormat.convert(item.total_price)
         };
