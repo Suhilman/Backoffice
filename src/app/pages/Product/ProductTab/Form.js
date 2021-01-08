@@ -480,7 +480,7 @@ const FormTemplate = ({
               </div>
             </Form.Group>
 
-            <Form.Group>
+            {/* <Form.Group>
               <Form.Label>Expired Date</Form.Label>
               <Form.Control
                 type="text"
@@ -496,7 +496,7 @@ const FormTemplate = ({
                   </div>
                 </div>
               ) : null}
-            </Form.Group>
+            </Form.Group> */}
           </Col>
         </Row>
       </Form>

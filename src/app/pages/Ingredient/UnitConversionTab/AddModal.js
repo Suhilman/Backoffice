@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Button, Modal, Spinner, Form, Alert } from "react-bootstrap";
+import { Button, Modal, Spinner, Form, Alert, Row, Col } from "react-bootstrap";
 import Select from "react-select";
 
 import "../../style.css";
@@ -30,7 +30,7 @@ const AddModal = ({
   );
 
   return (
-    <Modal show={stateModal} onHide={cancelModal} size="sm">
+    <Modal show={stateModal} onHide={cancelModal} size="lg">
       <Modal.Header closeButton>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
@@ -39,87 +39,109 @@ const AddModal = ({
         <Modal.Body>
           {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
-          <Form.Group>
-            <Form.Label>Name:</Form.Label>
-            <Form.Control
-              type="text"
-              name="name"
-              {...formikUnitConversion.getFieldProps("name")}
-              className={validationUnitConverion("name")}
-              required
-            />
-            {formikUnitConversion.touched.name &&
-            formikUnitConversion.errors.name ? (
-              <div className="fv-plugins-message-container">
-                <div className="fv-help-block">
-                  {formikUnitConversion.errors.name}
-                </div>
-              </div>
-            ) : null}
-          </Form.Group>
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>Name:</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="name"
+                  {...formikUnitConversion.getFieldProps("name")}
+                  className={validationUnitConverion("name")}
+                  required
+                />
+                {formikUnitConversion.touched.name &&
+                formikUnitConversion.errors.name ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikUnitConversion.errors.name}
+                    </div>
+                  </div>
+                ) : null}
+              </Form.Group>
+            </Col>
+          </Row>
 
-          <Form.Group>
-            <Form.Label>Unit From:</Form.Label>
-            <Select
-              options={optionsUnitFrom}
-              defaultValue={defaultValueUnitFrom}
-              name="unit_from_id"
-              className="basic-single"
-              classNamePrefix="select"
-              onChange={(value) =>
-                formikUnitConversion.setFieldValue("unit_from_id", value.value)
-              }
-            />
-            {formikUnitConversion.touched.unit_from_id &&
-            formikUnitConversion.errors.unit_from_id ? (
-              <div className="fv-plugins-message-container">
-                <div className="fv-help-block">
-                  {formikUnitConversion.errors.unit_from_id}
-                </div>
-              </div>
-            ) : null}
-          </Form.Group>
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>1 Unit of:</Form.Label>
+                <Select
+                  options={optionsUnitFrom}
+                  defaultValue={defaultValueUnitFrom}
+                  name="unit_from_id"
+                  className="basic-single"
+                  classNamePrefix="select"
+                  onChange={(value) =>
+                    formikUnitConversion.setFieldValue(
+                      "unit_from_id",
+                      value.value
+                    )
+                  }
+                />
+                {formikUnitConversion.touched.unit_from_id &&
+                formikUnitConversion.errors.unit_from_id ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikUnitConversion.errors.unit_from_id}
+                    </div>
+                  </div>
+                ) : null}
+              </Form.Group>
+            </Col>
 
-          <Form.Group>
-            <Form.Label>Unit To:</Form.Label>
-            <Select
-              options={optionsUnitTo}
-              defaultValue={defaultValueUnitTo}
-              name="unit_to_id"
-              className="basic-single"
-              classNamePrefix="select"
-              onChange={(value) =>
-                formikUnitConversion.setFieldValue("unit_to_id", value.value)
-              }
-            />
-            {formikUnitConversion.touched.unit_to_id &&
-            formikUnitConversion.errors.unit_to_id ? (
-              <div className="fv-plugins-message-container">
-                <div className="fv-help-block">
-                  {formikUnitConversion.errors.unit_to_id}
-                </div>
-              </div>
-            ) : null}
-          </Form.Group>
+            <Col sm={1} style={{ padding: 0, alignSelf: "center" }}>
+              <p style={{ margin: 0, textAlign: "center" }}>Equals to</p>
+            </Col>
 
-          <Form.Group>
-            <Form.Label>Value:</Form.Label>
-            <Form.Control
-              type="number"
-              name="value"
-              {...formikUnitConversion.getFieldProps("value")}
-              className={validationUnitConverion("value")}
-              required
-            />
-            {formikUnitConversion.touched.value &&
-            formikUnitConversion.errors.value ? (
-              <div className="fv-plugins-message-container">
-                <div className="fv-help-block">
-                  {formikUnitConversion.errors.value}
-                </div>
-              </div>
-            ) : null}
-          </Form.Group>
+            <Col>
+              <Form.Group>
+                <Form.Label>Value:</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="value"
+                  {...formikUnitConversion.getFieldProps("value")}
+                  className={validationUnitConverion("value")}
+                  required
+                />
+                {formikUnitConversion.touched.value &&
+                formikUnitConversion.errors.value ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikUnitConversion.errors.value}
+                    </div>
+                  </div>
+                ) : null}
+              </Form.Group>
+            </Col>
+
+            <Col>
+              <Form.Group>
+                <Form.Label>Unit To:</Form.Label>
+                <Select
+                  options={optionsUnitTo}
+                  defaultValue={defaultValueUnitTo}
+                  name="unit_to_id"
+                  className="basic-single"
+                  classNamePrefix="select"
+                  onChange={(value) =>
+                    formikUnitConversion.setFieldValue(
+                      "unit_to_id",
+                      value.value
+                    )
+                  }
+                />
+                {formikUnitConversion.touched.unit_to_id &&
+                formikUnitConversion.errors.unit_to_id ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikUnitConversion.errors.unit_to_id}
+                    </div>
+                  </div>
+                ) : null}
+              </Form.Group>
+            </Col>
+          </Row>
         </Modal.Body>
 
         <Modal.Footer>
