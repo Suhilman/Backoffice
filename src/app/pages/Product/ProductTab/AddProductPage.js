@@ -90,10 +90,10 @@ export const AddProductPage = ({ location }) => {
       .integer()
       .min(0)
       .required("Please input a stock."),
-    product_tax_id: Yup.number()
-      .integer()
-      .min(1)
-      .required("Please choose a tax."),
+    // product_tax_id: Yup.number()
+    //   .integer()
+    //   .min(1)
+    //   .required("Please choose a tax."),
     status: Yup.string()
       .matches(/(active|inactive)/)
       .required("Please input a status."),
@@ -149,7 +149,6 @@ export const AddProductPage = ({ location }) => {
       formData.append("price", values.price);
       formData.append("price_purchase", values.price_purchase);
       formData.append("stock", values.stock);
-      formData.append("product_tax_id", values.product_tax_id);
       formData.append("is_favorite", values.is_favorite);
       formData.append("has_recipe", values.has_recipe);
       formData.append("status", values.status);
@@ -173,6 +172,8 @@ export const AddProductPage = ({ location }) => {
       if (values.expired_date)
         formData.append("expired_date", values.expired_date);
       if (values.recipe_id) formData.append("recipe_id", values.recipe_id);
+      if (values.product_tax_id)
+        formData.append("product_tax_id", values.product_tax_id);
 
       try {
         enableLoading();

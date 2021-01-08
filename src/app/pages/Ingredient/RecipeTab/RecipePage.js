@@ -161,28 +161,17 @@ const RecipeTab = ({
       total_nutrition: total_nutrition || 0,
       outlet_id: item.outlet_id,
       product_id: item.product_id,
+      total_calorie: item.total_calorie || 0,
+      total_cogs: item.total_cogs || 0,
       notes: item.notes,
       materials: item.Recipe_Materials.map((val) => {
-        let calorie_per_unit = 0;
-        if (val.calorie_per_unit) {
-          calorie_per_unit = val.calorie_per_unit;
-        } else {
-          if (val.Raw_Material?.calorie_per_unit) {
-            if (val.Raw_Material.calorie_unit === "kcal") {
-              calorie_per_unit = val.Raw_Material.calorie_per_unit * 1000;
-            } else {
-              calorie_per_unit = val.Raw_Material.calorie_per_unit;
-            }
-          }
-        }
-
         return {
           id: val.id,
           raw_material_id: val.raw_material_id || 0,
           quantity: val.quantity || 0,
           unit_id: val.unit_id || 0,
           is_custom_material: val.is_custom_material,
-          calorie_per_unit: calorie_per_unit || 0,
+          calorie_per_unit: val.calorie_per_unit || 0,
           ingredient_price: val.ingredient_price || 0,
           custom_material_name: val.custom_material_name,
           custom_material_price: val.custom_material_price,

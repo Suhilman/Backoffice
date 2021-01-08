@@ -182,7 +182,7 @@ const FormTemplate = ({
               ) : null}
             </Form.Group>
 
-            <Form.Group>
+            {/* <Form.Group>
               <Form.Label>Tax*</Form.Label>
               <Form.Control
                 as="select"
@@ -210,7 +210,7 @@ const FormTemplate = ({
                   </div>
                 </div>
               ) : null}
-            </Form.Group>
+            </Form.Group> */}
 
             <Form.Group>
               <div>

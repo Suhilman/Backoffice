@@ -33,6 +33,8 @@ export const EditRecipePage = ({ location, match }) => {
   const initialValueRecipe = {
     outlet_id: currRecipe.outlet_id,
     product_id: currRecipe.product_id,
+    total_calorie: currRecipe.total_calorie,
+    total_cogs: currRecipe.total_cogs,
     notes: currRecipe.notes,
     materials: currRecipe.materials
   };
@@ -50,6 +52,8 @@ export const EditRecipePage = ({ location, match }) => {
 
   const RecipeSchema = Yup.object().shape({
     outlet_id: Yup.number().required("Please choose an outlet."),
+    total_calorie: Yup.number(),
+    total_cogs: Yup.number(),
     notes: Yup.string(),
     product_id: Yup.number().required("Please choose a product."),
     materials: Yup.array().of(
@@ -88,6 +92,8 @@ export const EditRecipePage = ({ location, match }) => {
       const recipeData = {
         outlet_id: values.outlet_id,
         product_id: values.product_id,
+        total_calorie: values.total_calorie,
+        total_cogs: values.total_cogs,
         notes: values.notes,
         materials: values.materials
       };
@@ -190,17 +196,22 @@ export const EditRecipePage = ({ location, match }) => {
 
   const optionsRaw = (index) =>
     allCategories
-      .map((item) => {
-        if (
+      .filter(
+        (item) =>
           item.id ===
           formikRecipe.values.materials[index].raw_material_category_id
-        ) {
-          return item.Raw_Materials.map((val) => {
-            return { value: val.id, label: val.name };
-          });
-        } else {
-          return [];
-        }
+      )
+      .map((item) => {
+        return item.Raw_Materials.filter(
+          (val) => val.outlet_id === formikRecipe.values.outlet_id
+        ).map((val) => {
+          return {
+            value: val.id,
+            label: val.name,
+            calorie: val.calorie_per_unit,
+            calorie_unit: val.calorie_unit
+          };
+        });
       })
       .flat(1);
 
@@ -270,9 +281,14 @@ export const EditRecipePage = ({ location, match }) => {
                           name="outlet_id"
                           className="basic-single"
                           classNamePrefix="select"
-                          onChange={(value) =>
-                            formikRecipe.setFieldValue("outlet_id", value.value)
-                          }
+                          // onChange={(value) => {
+                          //   formikRecipe.setFieldValue(
+                          //     "outlet_id",
+                          //     value.value
+                          //   );
+                          //   formikRecipe.setFieldValue("materials", []);
+                          // }}
+                          isDisabled={true}
                         />
                         {formikRecipe.touched.outlet_id &&
                         formikRecipe.errors.outlet_id ? (
@@ -411,12 +427,43 @@ export const EditRecipePage = ({ location, match }) => {
                                             name={`materials[${index}].raw_material_id`}
                                             className="basic-single"
                                             classNamePrefix="select"
-                                            onChange={(value) =>
+                                            onChange={(value) => {
                                               formikRecipe.setFieldValue(
                                                 `materials[${index}].raw_material_id`,
                                                 value.value
-                                              )
-                                            }
+                                              );
+                                              formikRecipe.setFieldValue(
+                                                `materials[${index}].quantity`,
+                                                1
+                                              );
+
+                                              const rawMaterial = optionsRaw(
+                                                index
+                                              ).find(
+                                                (val) =>
+                                                  val.value === value.value
+                                              );
+
+                                              let calorie = 0;
+                                              if (rawMaterial.calorie) {
+                                                calorie = rawMaterial.calorie;
+                                                if (
+                                                  rawMaterial.calorie_unit ===
+                                                  "kcal"
+                                                ) {
+                                                  calorie *= 1000;
+                                                }
+                                              }
+
+                                              formikRecipe.setFieldValue(
+                                                `materials[${index}].calorie`,
+                                                calorie
+                                              );
+                                              formikRecipe.setFieldValue(
+                                                `materials[${index}].calorie_per_unit`,
+                                                calorie
+                                              );
+                                            }}
                                           />
                                           {formikRecipe.touched.materials &&
                                           formikRecipe.errors.materials ? (
@@ -440,12 +487,23 @@ export const EditRecipePage = ({ location, match }) => {
                                             {...formikRecipe.getFieldProps(
                                               `materials[${index}].quantity`
                                             )}
-                                            // onChange={(e) =>
-                                            //   handleChangeQuantity(e, index)
-                                            // }
-                                            // onBlur={(e) =>
-                                            //   handleChangeQuantity(e, index)
-                                            // }
+                                            onChange={(e) => {
+                                              const { value } = e.target;
+                                              formikRecipe.setFieldValue(
+                                                `materials[${index}].quantity`,
+                                                value
+                                              );
+
+                                              const calorie =
+                                                (formikRecipe.values.materials[
+                                                  index
+                                                ].calorie || 0) * value;
+
+                                              formikRecipe.setFieldValue(
+                                                `materials[${index}].calorie_per_unit`,
+                                                calorie
+                                              );
+                                            }}
                                             required
                                           />
                                           {formikRecipe.touched.materials &&
@@ -501,12 +559,17 @@ export const EditRecipePage = ({ location, match }) => {
                                             {...formikRecipe.getFieldProps(
                                               `materials[${index}].calorie_per_unit`
                                             )}
-                                            // onChange={(e) =>
-                                            //   handleChangeQuantity(e, index)
-                                            // }
-                                            // onBlur={(e) =>
-                                            //   handleChangeQuantity(e, index)
-                                            // }
+                                            onChange={(e) => {
+                                              const { value } = e.target;
+                                              formikRecipe.setFieldValue(
+                                                `materials[${index}].calorie_per_unit`,
+                                                value
+                                              );
+                                              formikRecipe.setFieldValue(
+                                                `materials[${index}].calorie`,
+                                                value
+                                              );
+                                            }}
                                             required
                                           />
                                           {formikRecipe.touched.materials &&
@@ -531,12 +594,6 @@ export const EditRecipePage = ({ location, match }) => {
                                             {...formikRecipe.getFieldProps(
                                               `materials[${index}].ingredient_price`
                                             )}
-                                            // onChange={(e) =>
-                                            //   handleChangeQuantity(e, index)
-                                            // }
-                                            // onBlur={(e) =>
-                                            //   handleChangeQuantity(e, index)
-                                            // }
                                             required
                                           />
                                           {formikRecipe.touched.materials &&
@@ -673,29 +730,18 @@ export const EditRecipePage = ({ location, match }) => {
                   <Form.Control
                     type="number"
                     name="total_calorie"
+                    {...formikRecipe.getFieldProps("total_calorie")}
                     value={formikRecipe.values.materials.reduce(
                       (init, curr) => (init += curr.calorie_per_unit),
-                      0
+                      formikRecipe.values.total_calorie
                     )}
-                    disabled
                   />
                 </Col>
                 <Col>
                   <Form.Control
                     type="number"
-                    name="total_price"
-                    value={formikRecipe.values.materials.reduce(
-                      (init, curr) => {
-                        if (!curr.is_custom_material) {
-                          init += curr.ingredient_price;
-                        } else {
-                          init += curr.custom_material_price;
-                        }
-                        return init;
-                      },
-                      0
-                    )}
-                    disabled
+                    name="total_cogs"
+                    {...formikRecipe.getFieldProps("total_cogs")}
                   />
                 </Col>
                 <Col sm={1}></Col>
