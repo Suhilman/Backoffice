@@ -40,14 +40,28 @@ export const DetailTransferStockPage = ({ match }) => {
       name: "Quantity",
       selector: "quantity",
       sortable: true
+    },
+    {
+      name: "Unit",
+      selector: "unit",
+      sortable: true
+    },
+    {
+      name: "Expired Date",
+      selector: "expired_date",
+      sortable: true
     }
   ];
 
   const dataStock = transferStock
     ? transferStock.Transfer_Stock_Products.map((item) => {
         return {
-          product_name: item.Product.name,
-          quantity: item.quantity
+          product_name: item.Stock.Product.name,
+          quantity: item.quantity,
+          unit: item.Unit?.name || "-",
+          expired_date: item.Stock.expired_date
+            ? dayjs(item.Stock.expired_date).format("DD-MMM-YYYY")
+            : "-"
         };
       })
     : [];

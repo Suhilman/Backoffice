@@ -46,6 +46,11 @@ export const DetailStockOpnamePage = ({ match }) => {
       sortable: true
     },
     {
+      name: "Unit",
+      selector: "unit",
+      sortable: true
+    },
+    {
       name: "Difference",
       selector: "difference",
       sortable: true
@@ -65,9 +70,10 @@ export const DetailStockOpnamePage = ({ match }) => {
   const dataStock = stockOpname
     ? stockOpname.Stock_Opname_Products.map((item) => {
         return {
-          product_name: item.Product.name,
+          product_name: item.Stock.Product.name,
           quantity_system: item.quantity_system,
           quantity_actual: item.quantity_actual,
+          unit: item.Unit?.name || "-",
           difference: item.difference,
           price_system: rupiahFormat.convert(item.price_system),
           price_new: rupiahFormat.convert(item.price_new)

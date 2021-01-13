@@ -51,9 +51,9 @@ export const DetailTransferMaterialPage = ({ match }) => {
   const dataStock = transferStock
     ? transferStock.Transfer_Stock_Products.map((item) => {
         return {
-          material_name: item.Raw_Material.name,
+          material_name: item.Stock.Raw_Material.name,
           quantity: item.quantity,
-          unit: item.Unit.name
+          unit: item.Unit?.name || "-"
         };
       })
     : [];

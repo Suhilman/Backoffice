@@ -5,7 +5,15 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 
 import { Paper } from "@material-ui/core";
-import { Button, InputGroup, Form, Row, Col, Dropdown } from "react-bootstrap";
+import {
+  Button,
+  InputGroup,
+  Form,
+  Row,
+  Col,
+  Dropdown,
+  ListGroup
+} from "react-bootstrap";
 import DataTable from "react-data-table-component";
 
 import { Search, MoreHoriz } from "@material-ui/icons";
@@ -61,7 +69,8 @@ const InventoryIngredientTab = ({
     unit_id: "",
     calorie_per_unit: "",
     calorie_unit: "",
-    notes: ""
+    notes: "",
+    stock_id: ""
   };
 
   const MaterialSchema = Yup.object().shape({
@@ -100,7 +109,8 @@ const InventoryIngredientTab = ({
         unit_id: values.unit_id,
         calorie_per_unit: values.calorie_per_unit,
         calorie_unit: values.calorie_unit,
-        notes: values.notes
+        notes: values.notes,
+        has_stock: values.has_stock
       };
 
       try {
@@ -144,7 +154,8 @@ const InventoryIngredientTab = ({
         unit_id: values.unit_id,
         calorie_per_unit: values.calorie_per_unit,
         calorie_unit: values.calorie_unit,
-        notes: values.notes
+        notes: values.notes,
+        stock_id: values.stock_id
       };
 
       try {
@@ -228,7 +239,8 @@ const InventoryIngredientTab = ({
       unit_id: data.unit_id,
       calorie_per_unit: data.calorie_per_unit,
       calorie_unit: data.calorie_unit,
-      notes: data.notes
+      notes: data.notes,
+      stock_id: data.stock_id
     });
     setStateEditModal(true);
   };
@@ -333,9 +345,60 @@ const InventoryIngredientTab = ({
       unit_name: item.Unit?.name || "-",
       calorie_per_unit: item.calorie_per_unit,
       calorie_unit: item.calorie_unit,
-      notes: item.notes
+      notes: item.notes,
+      stock_id: item.Stocks.find((item) => item.is_initial).id,
+      stocks: item.Stocks
     };
   });
+
+  const ExpandableComponent = ({ data }) => {
+    const stockData = data.stocks.map((item) => {
+      return {
+        batch: item.Incoming_Stock
+          ? item.Incoming_Stock.code
+          : item.Transfer_Stock
+          ? item.Transfer_Stock.code
+          : "-",
+        stock: item.stock || 0,
+        unit: item.Unit?.name || "-"
+      };
+    });
+
+    return (
+      <>
+        <ListGroup style={{ padding: "1rem", marginLeft: "1rem" }}>
+          <ListGroup.Item>
+            <Row>
+              <Col style={{ fontWeight: "700" }}>Batch</Col>
+              <Col style={{ fontWeight: "700" }}>Stock</Col>
+              <Col style={{ fontWeight: "700" }}>Unit</Col>
+            </Row>
+          </ListGroup.Item>
+          {stockData.length ? (
+            stockData.map((val, index) => {
+              return (
+                <ListGroup.Item key={index}>
+                  <Row>
+                    <Col>{val.batch}</Col>
+                    <Col>{val.stock}</Col>
+                    <Col>{val.unit}</Col>
+                  </Row>
+                </ListGroup.Item>
+              );
+            })
+          ) : (
+            <ListGroup.Item>
+              <Row>
+                <Col>-</Col>
+                <Col>-</Col>
+                <Col>-</Col>
+              </Row>
+            </ListGroup.Item>
+          )}
+        </ListGroup>
+      </>
+    );
+  };
 
   return (
     <>
@@ -477,6 +540,8 @@ const InventoryIngredientTab = ({
               pagination
               columns={columns}
               data={dataRawMaterial}
+              expandableRows
+              expandableRowsComponent={<ExpandableComponent />}
               style={{ minHeight: "100%" }}
             />
           </Paper>

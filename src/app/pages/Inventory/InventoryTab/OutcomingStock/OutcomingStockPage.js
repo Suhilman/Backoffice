@@ -45,10 +45,10 @@ export const OutcomingStockPage = () => {
       );
       const dataOutput = data.data
         .map((item) => {
-          const rawMaterial = item.Outcoming_Stock_Products.filter(
-            (val) => val.product_id
+          const products = item.Outcoming_Stock_Products.filter(
+            (val) => val.Stock?.product_id
           );
-          if (rawMaterial.length) {
+          if (products.length) {
             return item;
           } else {
             return "";

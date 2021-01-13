@@ -33,8 +33,9 @@ export const AddOutcomingMaterialPage = ({ location }) => {
     date: startDate,
     items: [
       {
-        raw_material_id: "",
-        quantity: 0
+        stock_id: "",
+        quantity: 0,
+        unit_id: ""
       }
     ]
   };
@@ -48,12 +49,13 @@ export const AddOutcomingMaterialPage = ({ location }) => {
     date: Yup.string().required("Please input date"),
     items: Yup.array().of(
       Yup.object().shape({
-        raw_material_id: Yup.number()
+        stock_id: Yup.number()
           .min(1)
           .required("Please input a raw material"),
         quantity: Yup.number()
           .min(1, "Minimum 1")
-          .required("Please input a quantity")
+          .required("Please input a quantity"),
+        unit_id: Yup.string().required("Please input a unit")
       })
     )
   });
@@ -121,16 +123,52 @@ export const AddOutcomingMaterialPage = ({ location }) => {
   const optionsMaterial = allMaterials
     .map((item) => {
       if (item.outlet_id === formikStock.values.outlet_id) {
-        return { value: item.id, label: item.name };
+        return item;
       } else {
         return "";
       }
     })
-    .filter((item) => item);
+    .filter((item) => item)
+    .map((item) => {
+      return {
+        label: item.name,
+        options: item.Stocks.map((val) => {
+          return {
+            value: val.id,
+            label: `${item.name} | Stock: ${val.stock}`
+          };
+        })
+      };
+    });
 
   const optionsUnit = allUnits.map((item) => {
     return { value: item.id, label: item.name };
   });
+
+  const groupStyles = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between"
+  };
+  const groupBadgeStyles = {
+    backgroundColor: "#EBECF0",
+    borderRadius: "2em",
+    color: "#172B4D",
+    display: "inline-block",
+    fontSize: 12,
+    fontWeight: "normal",
+    lineHeight: "1",
+    minWidth: 1,
+    padding: "0.16666666666667em 0.5em",
+    textAlign: "center"
+  };
+
+  const formatGroupLabel = (data) => (
+    <div style={groupStyles}>
+      <span>{data.label}</span>
+      <span style={groupBadgeStyles}>{data.options.length}</span>
+    </div>
+  );
 
   return (
     <Row>
@@ -174,7 +212,7 @@ export const AddOutcomingMaterialPage = ({ location }) => {
                       formikStock.setFieldValue("outlet_id", value.value);
                       formikStock.setFieldValue("items", [
                         {
-                          raw_material_id: "",
+                          stock_id: "",
                           quantity: 0,
                           unit_id: ""
                         }
@@ -266,12 +304,13 @@ export const AddOutcomingMaterialPage = ({ location }) => {
                                   <Form.Group>
                                     <Select
                                       options={optionsMaterial}
-                                      name={`items[${index}].raw_material_id`}
-                                      className="basic-single"
-                                      classNamePrefix="select"
+                                      formatGroupLabel={formatGroupLabel}
+                                      name={`items[${index}].stock_id`}
+                                      // className="basic-single"
+                                      // classNamePrefix="select"
                                       onChange={(value) =>
                                         formikStock.setFieldValue(
-                                          `items[${index}].raw_material_id`,
+                                          `items[${index}].stock_id`,
                                           value.value
                                         )
                                       }
@@ -282,7 +321,7 @@ export const AddOutcomingMaterialPage = ({ location }) => {
                                         <div className="fv-help-block">
                                           {
                                             formikStock.errors.items[index]
-                                              ?.raw_material_id
+                                              ?.stock_id
                                           }
                                         </div>
                                       </div>

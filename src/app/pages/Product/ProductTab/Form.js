@@ -4,7 +4,15 @@ import Select from "react-select";
 
 import { useDropzone } from "react-dropzone";
 
-import { Row, Col, Button, Form, Alert, Spinner } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Button,
+  Form,
+  Alert,
+  Spinner,
+  InputGroup
+} from "react-bootstrap";
 import {
   FormControl,
   FormControlLabel,
@@ -12,6 +20,8 @@ import {
   FormGroup
 } from "@material-ui/core";
 import { Paper } from "@material-ui/core";
+import { CalendarToday } from "@material-ui/icons";
+import DatePicker from "react-datepicker";
 
 import "../../style.css";
 
@@ -33,7 +43,9 @@ const FormTemplate = ({
   optionsUnit,
   defaultValueOutlet,
   defaultValueCategory,
-  defaultValueUnit
+  defaultValueUnit,
+  expiredDate,
+  handleExpiredDate
 }) => {
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
@@ -42,6 +54,18 @@ const FormTemplate = ({
       handlePreviewPhoto(file);
     }
   });
+
+  const CustomInputDate = ({ value, onClick }) => {
+    return (
+      <Form.Control
+        type="text"
+        defaultValue={value}
+        onClick={onClick}
+        style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
+        disabled={formikProduct.values.has_stock ? false : true}
+      />
+    );
+  };
 
   return (
     <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
@@ -332,45 +356,100 @@ const FormTemplate = ({
               ) : null}
             </Form.Group>
 
-            <Form.Group>
-              <Form.Label>
-                {title === "Add Product" ? "Starting Stock" : "Stock"}
+            <Form.Group style={{ margin: 0 }}>
+              <Form.Label style={{ alignSelf: "center", marginRight: "1rem" }}>
+                Stock
               </Form.Label>
-              <Form.Control
-                type="number"
-                name="stock"
-                {...formikProduct.getFieldProps("stock")}
-                className={validationProduct("stock")}
-              />
-              {formikProduct.touched.stock && formikProduct.errors.stock ? (
-                <div className="fv-plugins-message-container">
-                  <div className="fv-help-block">
-                    {formikProduct.errors.stock}
-                  </div>
-                </div>
-              ) : null}
-            </Form.Group>
-
-            <Form.Group>
-              <Form.Label>Unit</Form.Label>
-              <Select
-                options={optionsUnit}
-                defaultValue={defaultValueUnit("unit_id")}
-                name="unit_id"
-                className="basic-single"
-                classNamePrefix="select"
-                onChange={(value) =>
-                  formikProduct.setFieldValue("unit_id", value.value)
+              <FormControlLabel
+                value={formikProduct.values.has_stock}
+                name="has_stock"
+                control={
+                  <Switch
+                    color="primary"
+                    checked={formikProduct.values.has_stock}
+                    onChange={(e) => {
+                      const { value } = e.target;
+                      if (value === "false") {
+                        formikProduct.setFieldValue("has_stock", true);
+                      } else {
+                        formikProduct.setFieldValue("has_stock", false);
+                      }
+                    }}
+                  />
                 }
               />
-              {formikProduct.touched.unit_id && formikProduct.errors.unit_id ? (
-                <div className="fv-plugins-message-container">
-                  <div className="fv-help-block">
-                    {formikProduct.errors.unit_id}
-                  </div>
-                </div>
-              ) : null}
             </Form.Group>
+
+            <div className="box" style={{ marginBottom: "1rem" }}>
+              <Form.Group>
+                <Form.Label>
+                  {title === "Add Product" ? "Starting Stock" : "Stock"}
+                </Form.Label>
+                <Form.Control
+                  type="number"
+                  name="stock"
+                  {...formikProduct.getFieldProps("stock")}
+                  className={validationProduct("stock")}
+                  disabled={formikProduct.values.has_stock ? false : true}
+                />
+                {formikProduct.touched.stock && formikProduct.errors.stock ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikProduct.errors.stock}
+                    </div>
+                  </div>
+                ) : null}
+              </Form.Group>
+
+              <Form.Group>
+                <Form.Label>Unit</Form.Label>
+                <Select
+                  options={optionsUnit}
+                  defaultValue={defaultValueUnit(formikProduct.values.unit_id)}
+                  name="unit_id"
+                  className="basic-single"
+                  classNamePrefix="select"
+                  onChange={(value) =>
+                    formikProduct.setFieldValue("unit_id", value.value)
+                  }
+                  isDisabled={formikProduct.values.has_stock ? false : true}
+                />
+                {formikProduct.touched.unit_id &&
+                formikProduct.errors.unit_id ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikProduct.errors.unit_id}
+                    </div>
+                  </div>
+                ) : null}
+              </Form.Group>
+
+              <Form.Group>
+                <Form.Label>Expired Date</Form.Label>
+                <InputGroup>
+                  <DatePicker
+                    name="expired_date"
+                    selected={expiredDate}
+                    onChange={handleExpiredDate}
+                    customInput={<CustomInputDate />}
+                  />
+
+                  <InputGroup.Append>
+                    <InputGroup.Text>
+                      <CalendarToday />
+                    </InputGroup.Text>
+                  </InputGroup.Append>
+                </InputGroup>
+                {formikProduct.touched.expired_date &&
+                formikProduct.errors.expired_date ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikProduct.errors.expired_date}
+                    </div>
+                  </div>
+                ) : null}
+              </Form.Group>
+            </div>
 
             <Form.Group>
               <Form.Label>Product Photo</Form.Label>
@@ -479,24 +558,6 @@ const FormTemplate = ({
                 <Button onClick={showModalAddons}>Manage Addons</Button>
               </div>
             </Form.Group>
-
-            {/* <Form.Group>
-              <Form.Label>Expired Date</Form.Label>
-              <Form.Control
-                type="text"
-                name="expired_date"
-                {...formikProduct.getFieldProps("expired_date")}
-                className={validationProduct("expired_date")}
-              />
-              {formikProduct.touched.expired_date &&
-              formikProduct.errors.expired_date ? (
-                <div className="fv-plugins-message-container">
-                  <div className="fv-help-block">
-                    {formikProduct.errors.expired_date}
-                  </div>
-                </div>
-              ) : null}
-            </Form.Group> */}
           </Col>
         </Row>
       </Form>

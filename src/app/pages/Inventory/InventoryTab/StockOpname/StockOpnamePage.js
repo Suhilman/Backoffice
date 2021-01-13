@@ -33,6 +33,7 @@ export const StockOpnamePage = () => {
   const [stockOpname, setStockOpname] = React.useState([]);
   const [allOutlets, setAllOutlets] = React.useState([]);
   const [allProducts, setAllProducts] = React.useState([]);
+  const [allUnits, setAllUnits] = React.useState([]);
 
   const getStockOpname = async (search) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -42,7 +43,20 @@ export const StockOpnamePage = () => {
       const { data } = await axios.get(
         `${API_URL}/api/v1/stock-opname${filterStock}`
       );
-      setStockOpname(data.data);
+      const dataOutput = data.data
+        .map((item) => {
+          const products = item.Stock_Opname_Products.filter(
+            (val) => val.Stock?.product_id
+          );
+          if (products.length) {
+            return item;
+          } else {
+            return "";
+          }
+        })
+        .filter((item) => item);
+
+      setStockOpname(dataOutput);
     } catch (err) {
       setStockOpname([]);
     }
@@ -68,6 +82,16 @@ export const StockOpnamePage = () => {
     }
   };
 
+  const getUnits = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    try {
+      const { data } = await axios.get(`${API_URL}/api/v1/unit`);
+      setAllUnits(data.data);
+    } catch (err) {
+      setAllUnits([]);
+    }
+  };
+
   React.useEffect(() => {
     getStockOpname(debouncedSearch);
   }, [refresh, debouncedSearch]);
@@ -75,6 +99,7 @@ export const StockOpnamePage = () => {
   React.useEffect(() => {
     getOutlets();
     getProducts();
+    getUnits();
   }, []);
 
   const enableLoading = () => setLoading(true);
@@ -210,7 +235,7 @@ export const StockOpnamePage = () => {
                 <Link
                   to={{
                     pathname: "/inventory/stock-opname/add",
-                    state: { allOutlets, allProducts }
+                    state: { allOutlets, allProducts, allUnits }
                   }}
                 >
                   <Button variant="primary" style={{ marginLeft: "0.5rem" }}>

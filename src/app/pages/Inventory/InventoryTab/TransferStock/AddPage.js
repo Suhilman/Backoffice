@@ -3,6 +3,8 @@ import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import { useFormik, FormikProvider, FieldArray } from "formik";
+import dayjs from "dayjs";
+import Select from "react-select";
 
 import {
   Button,
@@ -19,14 +21,12 @@ import { CalendarToday, Delete } from "@material-ui/icons";
 
 export const AddTransferStockPage = ({ location }) => {
   const history = useHistory();
-  const { allOutlets, allProducts } = location.state;
+  const { allOutlets, allProducts, allUnits } = location.state;
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
 
   const [startDate, setStartDate] = React.useState(new Date());
-
-  const [originProduct, setOriginProduct] = React.useState([]);
 
   const initialValueStock = {
     outlet_from_id: "",
@@ -35,8 +35,9 @@ export const AddTransferStockPage = ({ location }) => {
     date: startDate,
     items: [
       {
-        product_id: "",
-        quantity: 0
+        stock_id: "",
+        quantity: 0,
+        unit_id: ""
       }
     ]
   };
@@ -54,12 +55,13 @@ export const AddTransferStockPage = ({ location }) => {
     date: Yup.string().required("Please input date"),
     items: Yup.array().of(
       Yup.object().shape({
-        product_id: Yup.number()
+        stock_id: Yup.number()
           .min(1)
           .required("Please input a product"),
         quantity: Yup.number()
           .min(1, "Minimum 1")
-          .required("Please input a quantity")
+          .required("Please input a quantity"),
+        unit_id: Yup.string().required("Please input a unit_Id")
       })
     )
   });
@@ -114,16 +116,6 @@ export const AddTransferStockPage = ({ location }) => {
     formikStock.setFieldValue("date", date);
   };
 
-  const handleSelectOrigin = (e) => {
-    const { value } = e.target;
-    formikStock.setFieldValue("outlet_from_id", value);
-    formikStock.setFieldValue("items", initialValueStock.items);
-    const filterProduct = allProducts.filter(
-      (item) => item.outlet_id === parseInt(value)
-    );
-    setOriginProduct(filterProduct);
-  };
-
   const CustomInputDate = ({ value, onClick }) => {
     return (
       <Form.Control
@@ -134,6 +126,64 @@ export const AddTransferStockPage = ({ location }) => {
       />
     );
   };
+
+  const optionsOutlet = allOutlets.map((item) => {
+    return { value: item.id, label: item.name };
+  });
+
+  const optionsUnit = allUnits.map((item) => {
+    return { value: item.id, label: item.name };
+  });
+
+  const optionsProducts = allProducts
+    .map((item) => {
+      if (item.outlet_id === formikStock.values.outlet_from_id) {
+        return item;
+      } else {
+        return "";
+      }
+    })
+    .filter((item) => item)
+    .map((item) => {
+      return {
+        label: item.name,
+        options: item.Stocks.map((val) => {
+          return {
+            value: val.id,
+            label: `${item.name} | Stock: ${val.stock} | Expired: ${
+              val.expired_date
+                ? dayjs(val.expired_date).format("DD-MMM-YYYY")
+                : "-"
+            }`
+          };
+        })
+      };
+    });
+
+  const groupStyles = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between"
+  };
+  const groupBadgeStyles = {
+    backgroundColor: "#EBECF0",
+    borderRadius: "2em",
+    color: "#172B4D",
+    display: "inline-block",
+    fontSize: 12,
+    fontWeight: "normal",
+    lineHeight: "1",
+    minWidth: 1,
+    padding: "0.16666666666667em 0.5em",
+    textAlign: "center"
+  };
+
+  const formatGroupLabel = (data) => (
+    <div style={groupStyles}>
+      <span>{data.label}</span>
+      <span style={groupBadgeStyles}>{data.options.length}</span>
+    </div>
+  );
 
   return (
     <Row>
@@ -168,26 +218,22 @@ export const AddTransferStockPage = ({ location }) => {
               <Col sm={3}>
                 <Form.Group>
                   <Form.Label>Origin:</Form.Label>
-                  <Form.Control
-                    as="select"
+                  <Select
+                    options={optionsOutlet}
                     name="outlet_from_id"
-                    {...formikStock.getFieldProps("outlet_from_id")}
-                    onChange={handleSelectOrigin}
-                    onBlur={handleSelectOrigin}
-                    className={validationStock("outlet_from_id")}
-                    required
-                  >
-                    <option value={""} disabled hidden>
-                      Choose Outlet
-                    </option>
-                    {allOutlets.map((item) => {
-                      return (
-                        <option key={item.id} value={item.id}>
-                          {item.name}
-                        </option>
-                      );
-                    })}
-                  </Form.Control>
+                    className="basic-single"
+                    classNamePrefix="select"
+                    onChange={(value) => {
+                      formikStock.setFieldValue("outlet_from_id", value.value);
+                      formikStock.setFieldValue("items", [
+                        {
+                          stock_id: "",
+                          quantity: 0,
+                          unit_id: ""
+                        }
+                      ]);
+                    }}
+                  />
                   {formikStock.touched.outlet_from_id &&
                   formikStock.errors.outlet_from_id ? (
                     <div className="fv-plugins-message-container">
@@ -200,24 +246,15 @@ export const AddTransferStockPage = ({ location }) => {
 
                 <Form.Group>
                   <Form.Label>Destination:</Form.Label>
-                  <Form.Control
-                    as="select"
+                  <Select
+                    options={optionsOutlet}
                     name="outlet_to_id"
-                    {...formikStock.getFieldProps("outlet_to_id")}
-                    className={validationStock("outlet_to_id")}
-                    required
-                  >
-                    <option value={""} disabled hidden>
-                      Choose Outlet
-                    </option>
-                    {allOutlets.map((item) => {
-                      return (
-                        <option key={item.id} value={item.id}>
-                          {item.name}
-                        </option>
-                      );
-                    })}
-                  </Form.Control>
+                    className="basic-single"
+                    classNamePrefix="select"
+                    onChange={(value) =>
+                      formikStock.setFieldValue("outlet_to_id", value.value)
+                    }
+                  />
                   {formikStock.touched.outlet_to_id &&
                   formikStock.errors.outlet_to_id ? (
                     <div className="fv-plugins-message-container">
@@ -284,6 +321,9 @@ export const AddTransferStockPage = ({ location }) => {
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
                     <h6>Quantity</h6>
                   </Col>
+                  <Col style={{ padding: "1rem", textAlign: "center" }}>
+                    <h6>Unit</h6>
+                  </Col>
                   <Col sm={1}></Col>
                 </Row>
 
@@ -298,32 +338,26 @@ export const AddTransferStockPage = ({ location }) => {
                               <Row key={index}>
                                 <Col>
                                   <Form.Group>
-                                    <Form.Control
-                                      as="select"
-                                      name={`items[${index}].product_id`}
-                                      {...formikStock.getFieldProps(
-                                        `items[${index}].product_id`
-                                      )}
-                                      required
-                                    >
-                                      <option value="" disabled hidden>
-                                        Choose Product
-                                      </option>
-                                      {originProduct.map((item) => {
-                                        return (
-                                          <option key={item.id} value={item.id}>
-                                            {item.name}
-                                          </option>
-                                        );
-                                      })}
-                                    </Form.Control>
+                                    <Select
+                                      options={optionsProducts}
+                                      formatGroupLabel={formatGroupLabel}
+                                      name={`items[${index}].stock_id`}
+                                      // className="basic-single"
+                                      // classNamePrefix="select"
+                                      onChange={(value) =>
+                                        formikStock.setFieldValue(
+                                          `items[${index}].stock_id`,
+                                          value.value
+                                        )
+                                      }
+                                    />
                                     {formikStock.touched.items &&
                                     formikStock.errors.items ? (
                                       <div className="fv-plugins-message-container">
                                         <div className="fv-help-block">
                                           {
                                             formikStock.errors.items[index]
-                                              ?.product_id
+                                              ?.stock_id
                                           }
                                         </div>
                                       </div>
@@ -347,6 +381,33 @@ export const AddTransferStockPage = ({ location }) => {
                                           {
                                             formikStock.errors.items[index]
                                               ?.quantity
+                                          }
+                                        </div>
+                                      </div>
+                                    ) : null}
+                                  </Form.Group>
+                                </Col>
+                                <Col>
+                                  <Form.Group>
+                                    <Select
+                                      options={optionsUnit}
+                                      name={`items[${index}].unit_id`}
+                                      className="basic-single"
+                                      classNamePrefix="select"
+                                      onChange={(value) =>
+                                        formikStock.setFieldValue(
+                                          `items[${index}].unit_id`,
+                                          value.value
+                                        )
+                                      }
+                                    />
+                                    {formikStock.touched.items &&
+                                    formikStock.errors.items ? (
+                                      <div className="fv-plugins-message-container">
+                                        <div className="fv-help-block">
+                                          {
+                                            formikStock.errors.items[index]
+                                              .unit_id
                                           }
                                         </div>
                                       </div>

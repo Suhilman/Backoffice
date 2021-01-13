@@ -3,6 +3,8 @@ import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import { useFormik, FormikProvider, FieldArray } from "formik";
+import dayjs from "dayjs";
+import Select from "react-select";
 
 import {
   Button,
@@ -19,7 +21,7 @@ import { CalendarToday, Delete } from "@material-ui/icons";
 
 export const AddStockOpnamePage = ({ location }) => {
   const history = useHistory();
-  const { allOutlets, allProducts } = location.state;
+  const { allOutlets, allProducts, allUnits } = location.state;
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
@@ -34,9 +36,10 @@ export const AddStockOpnamePage = ({ location }) => {
     date: startDate,
     items: [
       {
-        product_id: "",
+        stock_id: "",
         quantity_system: 0,
         quantity_actual: 0,
+        unit_id: "",
         difference: 0,
         price_system: 0,
         price_new: 0
@@ -53,7 +56,7 @@ export const AddStockOpnamePage = ({ location }) => {
     date: Yup.string().required("Please input date"),
     items: Yup.array().of(
       Yup.object().shape({
-        product_id: Yup.number()
+        stock_id: Yup.number()
           .min(1)
           .required("Please input a product"),
         quantity_system: Yup.number()
@@ -62,6 +65,7 @@ export const AddStockOpnamePage = ({ location }) => {
         quantity_actual: Yup.number()
           .min(0, "Minimum 0")
           .required("Please input a quantity actual"),
+        unit_id: Yup.string().required("Please input a unit_Id"),
         difference: Yup.number()
           .typeError("Please input a quantity actual")
           .required("Please input a difference"),
@@ -120,30 +124,28 @@ export const AddStockOpnamePage = ({ location }) => {
     formikStock.setFieldValue("date", date);
   };
 
-  const handleSelectOutlet = (e) => {
-    const { value } = e.target;
-    formikStock.setFieldValue("outlet_id", value);
-    formikStock.setFieldValue("items", initialValueStock.items);
-    const filterProduct = allProducts.filter(
-      (item) => item.outlet_id === parseInt(value)
-    );
-    setOutletProduct(filterProduct);
-  };
-
-  const handleSelectProduct = (e, index) => {
-    const { value } = e.target;
+  const handleSelectProduct = (val, index) => {
+    const { value } = val;
 
     if (!value) {
       return;
     }
 
-    const currProduct = allProducts.find((item) => item.id === parseInt(value));
+    const currProduct = allProducts.find((item) => {
+      for (const stock of item.Stocks) {
+        if (stock.id === parseInt(value)) {
+          return item;
+        } else {
+          return "";
+        }
+      }
+    });
     const diff = Math.abs(
       parseInt(formikStock.values.items[index].quantity_system) -
         parseInt(formikStock.values.items[index].quantity_actual)
     );
 
-    formikStock.setFieldValue(`items[${index}].product_id`, value);
+    formikStock.setFieldValue(`items[${index}].stock_id`, value);
     formikStock.setFieldValue(
       `items[${index}].quantity_system`,
       currProduct.stock
@@ -178,6 +180,64 @@ export const AddStockOpnamePage = ({ location }) => {
     );
   };
 
+  const optionsOutlet = allOutlets.map((item) => {
+    return { value: item.id, label: item.name };
+  });
+
+  const optionsUnit = allUnits.map((item) => {
+    return { value: item.id, label: item.name };
+  });
+
+  const optionsProducts = allProducts
+    .map((item) => {
+      if (item.outlet_id === formikStock.values.outlet_id) {
+        return item;
+      } else {
+        return "";
+      }
+    })
+    .filter((item) => item)
+    .map((item) => {
+      return {
+        label: item.name,
+        options: item.Stocks.map((val) => {
+          return {
+            value: val.id,
+            label: `${item.name} | Stock: ${val.stock} | Expired: ${
+              val.expired_date
+                ? dayjs(val.expired_date).format("DD-MMM-YYYY")
+                : "-"
+            }`
+          };
+        })
+      };
+    });
+
+  const groupStyles = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between"
+  };
+  const groupBadgeStyles = {
+    backgroundColor: "#EBECF0",
+    borderRadius: "2em",
+    color: "#172B4D",
+    display: "inline-block",
+    fontSize: 12,
+    fontWeight: "normal",
+    lineHeight: "1",
+    minWidth: 1,
+    padding: "0.16666666666667em 0.5em",
+    textAlign: "center"
+  };
+
+  const formatGroupLabel = (data) => (
+    <div style={groupStyles}>
+      <span>{data.label}</span>
+      <span style={groupBadgeStyles}>{data.options.length}</span>
+    </div>
+  );
+
   return (
     <Row>
       <Col>
@@ -211,26 +271,26 @@ export const AddStockOpnamePage = ({ location }) => {
               <Col sm={3}>
                 <Form.Group>
                   <Form.Label>Location:</Form.Label>
-                  <Form.Control
-                    as="select"
+                  <Select
+                    options={optionsOutlet}
                     name="outlet_id"
-                    {...formikStock.getFieldProps("outlet_id")}
-                    onChange={handleSelectOutlet}
-                    onBLur={handleSelectOutlet}
-                    className={validationStock("outlet_id")}
-                    required
-                  >
-                    <option value={""} disabled hidden>
-                      Choose Outlet
-                    </option>
-                    {allOutlets.map((item) => {
-                      return (
-                        <option key={item.id} value={item.id}>
-                          {item.name}
-                        </option>
-                      );
-                    })}
-                  </Form.Control>
+                    className="basic-single"
+                    classNamePrefix="select"
+                    onChange={(value) => {
+                      formikStock.setFieldValue("outlet_id", value.value);
+                      formikStock.setFieldValue("items", [
+                        {
+                          stock_id: "",
+                          quantity_system: 0,
+                          quantity_actual: 0,
+                          unit_id: "",
+                          difference: 0,
+                          price_system: 0,
+                          price_new: 0
+                        }
+                      ]);
+                    }}
+                  />
                   {formikStock.touched.outlet_id &&
                   formikStock.errors.outlet_id ? (
                     <div className="fv-plugins-message-container">
@@ -301,6 +361,9 @@ export const AddStockOpnamePage = ({ location }) => {
                     <h6>Quantity Actual</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
+                    <h6>Unit</h6>
+                  </Col>
+                  <Col style={{ padding: "1rem", textAlign: "center" }}>
                     <h6>Difference</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
@@ -323,38 +386,23 @@ export const AddStockOpnamePage = ({ location }) => {
                               <Row key={index}>
                                 <Col>
                                   <Form.Group>
-                                    <Form.Control
-                                      as="select"
-                                      name={`items[${index}].product_id`}
-                                      {...formikStock.getFieldProps(
-                                        `items[${index}].product_id`
-                                      )}
-                                      onChange={(e) =>
-                                        handleSelectProduct(e, index)
+                                    <Select
+                                      options={optionsProducts}
+                                      formatGroupLabel={formatGroupLabel}
+                                      name={`items[${index}].stock_id`}
+                                      // className="basic-single"
+                                      // classNamePrefix="select"
+                                      onChange={(value) =>
+                                        handleSelectProduct(value, index)
                                       }
-                                      onBlur={(e) =>
-                                        handleSelectProduct(e, index)
-                                      }
-                                      required
-                                    >
-                                      <option value="" disabled hidden>
-                                        Choose Product
-                                      </option>
-                                      {outletProduct.map((item) => {
-                                        return (
-                                          <option key={item.id} value={item.id}>
-                                            {item.name}
-                                          </option>
-                                        );
-                                      })}
-                                    </Form.Control>
+                                    />
                                     {formikStock.touched.items &&
                                     formikStock.errors.items ? (
                                       <div className="fv-plugins-message-container">
                                         <div className="fv-help-block">
                                           {
                                             formikStock.errors.items[index]
-                                              ?.product_id
+                                              ?.stock_id
                                           }
                                         </div>
                                       </div>
@@ -408,6 +456,33 @@ export const AddStockOpnamePage = ({ location }) => {
                                           {
                                             formikStock.errors.items[index]
                                               ?.quantity_actual
+                                          }
+                                        </div>
+                                      </div>
+                                    ) : null}
+                                  </Form.Group>
+                                </Col>
+                                <Col>
+                                  <Form.Group>
+                                    <Select
+                                      options={optionsUnit}
+                                      name={`items[${index}].unit_id`}
+                                      className="basic-single"
+                                      classNamePrefix="select"
+                                      onChange={(value) =>
+                                        formikStock.setFieldValue(
+                                          `items[${index}].unit_id`,
+                                          value.value
+                                        )
+                                      }
+                                    />
+                                    {formikStock.touched.items &&
+                                    formikStock.errors.items ? (
+                                      <div className="fv-plugins-message-container">
+                                        <div className="fv-help-block">
+                                          {
+                                            formikStock.errors.items[index]
+                                              .unit_id
                                           }
                                         </div>
                                       </div>
@@ -495,6 +570,7 @@ export const AddStockOpnamePage = ({ location }) => {
                                     ) : null}
                                   </Form.Group>
                                 </Col>
+
                                 <Col sm={1}>
                                   <Button
                                     onClick={() => arrayHelpers.remove(index)}

@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 import { Paper } from "@material-ui/core";
-import { Button, InputGroup, Form, Row, Col } from "react-bootstrap";
+import { Button, InputGroup, Form, Row, Col, ListGroup } from "react-bootstrap";
 import DataTable from "react-data-table-component";
+import dayjs from "dayjs";
 
 import { Search } from "@material-ui/icons";
 import useDebounce from "../../../hooks/useDebounce";
@@ -102,16 +103,20 @@ const InventoryTab = ({ refresh }) => {
       adjusment = difference < 1 ? difference : "+" + difference;
     }
 
-    if (item.Incoming_Stock_Products.length) {
-      item.Incoming_Stock_Products.forEach(
-        (item) => (incoming_stock += item.quantity)
-      );
-    }
+    if (item.Stocks.length) {
+      for (const val of item.Stocks) {
+        if (val.Incoming_Stock?.Incoming_Stock_Products.length) {
+          for (const stock of val.Incoming_Stock.Incoming_Stock_Products) {
+            incoming_stock += stock.quantity;
+          }
+        }
 
-    if (item.Outcoming_Stock_Products.length) {
-      item.Outcoming_Stock_Products.forEach(
-        (item) => (outcoming_stock += item.quantity)
-      );
+        if (val.Outcoming_Stock_Products.length) {
+          for (const stock of val.Outcoming_Stock_Products) {
+            outcoming_stock += stock.quantity;
+          }
+        }
+      }
     }
 
     return {
@@ -123,9 +128,64 @@ const InventoryTab = ({ refresh }) => {
       stock_starting: item.stock_starting,
       incoming_stock,
       outcoming_stock,
-      adjusment
+      adjusment,
+      stocks: item.Stocks
     };
   });
+
+  const ExpandableComponent = ({ data }) => {
+    const stockData = data.stocks.map((item) => {
+      return {
+        batch: item.Incoming_Stock
+          ? item.Incoming_Stock.code
+          : item.Transfer_Stock
+          ? item.Transfer_Stock.code
+          : "-",
+        stock: item.stock || 0,
+        unit: item.Unit?.name || "-",
+        expired_date: item.expired_date
+          ? dayjs(item.expired_date).format("DD-MMM-YYYY")
+          : "-"
+      };
+    });
+
+    return (
+      <>
+        <ListGroup style={{ padding: "1rem", marginLeft: "1rem" }}>
+          <ListGroup.Item>
+            <Row>
+              <Col style={{ fontWeight: "700" }}>Batch</Col>
+              <Col style={{ fontWeight: "700" }}>Stock</Col>
+              <Col style={{ fontWeight: "700" }}>Unit</Col>
+              <Col style={{ fontWeight: "700" }}>Expired Date</Col>
+            </Row>
+          </ListGroup.Item>
+          {stockData.length ? (
+            stockData.map((val, index) => {
+              return (
+                <ListGroup.Item key={index}>
+                  <Row>
+                    <Col>{val.batch}</Col>
+                    <Col>{val.stock}</Col>
+                    <Col>{val.unit}</Col>
+                    <Col>{val.expired_date}</Col>
+                  </Row>
+                </ListGroup.Item>
+              );
+            })
+          ) : (
+            <ListGroup.Item>
+              <Row>
+                <Col>-</Col>
+                <Col>-</Col>
+                <Col>-</Col>
+              </Row>
+            </ListGroup.Item>
+          )}
+        </ListGroup>
+      </>
+    );
+  };
 
   return (
     <>
@@ -206,6 +266,8 @@ const InventoryTab = ({ refresh }) => {
               pagination
               columns={columns}
               data={dataInventory}
+              expandableRows
+              expandableRowsComponent={<ExpandableComponent />}
               style={{ minHeight: "100%" }}
             />
           </Paper>

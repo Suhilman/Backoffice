@@ -8,6 +8,7 @@ import { Row, Col } from "react-bootstrap";
 
 import ModalManageAddons from "./ModalManageAddons";
 import FormTemplate from "./Form";
+import dayjs from "dayjs";
 
 export const EditProductPage = ({ match, location }) => {
   const product_id = match.params.productId;
@@ -31,6 +32,7 @@ export const EditProductPage = ({ match, location }) => {
   );
   const [showManageAddons, setShowManageAddons] = React.useState(false);
   const [deletePhoto, setDeletePhoto] = React.useState(false);
+  const [expiredDate, setExpiredDate] = React.useState(new Date());
 
   const product = {
     outlet_id: currProduct.outlet_id,
@@ -47,6 +49,7 @@ export const EditProductPage = ({ match, location }) => {
     has_raw_material: currProduct.has_raw_material,
     raw_material_id: currProduct.raw_material_id,
     has_recipe: currProduct.recipe_id ? true : false,
+    has_stock: currProduct.has_stock ? true : false,
     recipe_id: currProduct.recipe_id || "",
     unit_id: currProduct.unit_id || "",
     expired_date: currProduct.expired_date,
@@ -97,6 +100,7 @@ export const EditProductPage = ({ match, location }) => {
     is_favorite: Yup.boolean().required(),
     has_raw_material: Yup.boolean().required(),
     has_recipe: Yup.boolean().required(),
+    has_stock: Yup.boolean().required(),
     recipe_id: Yup.number().nullable(),
     raw_material_id: Yup.number().nullable(),
     unit_id: Yup.string().nullable(),
@@ -142,7 +146,13 @@ export const EditProductPage = ({ match, location }) => {
       formData.append("stock", values.stock);
       formData.append("is_favorite", values.is_favorite);
       formData.append("has_recipe", values.has_recipe);
+      formData.append("has_stock", values.has_stock);
       formData.append("status", values.status);
+
+      formData.append(
+        "stock_id",
+        currProduct.Stocks.find((item) => item.is_initial).id
+      );
 
       if (values.groupAddons)
         formData.append("groupAddons", JSON.stringify(values.groupAddons));
@@ -259,6 +269,14 @@ export const EditProductPage = ({ match, location }) => {
   const defaultValueMaterial = (key) =>
     optionsMaterial.find((val) => val.value === key);
 
+  const handleExpiredDate = (date) => {
+    setExpiredDate(date);
+    formikProduct.setFieldValue(
+      "expired_date",
+      dayjs(date).format("YYYY-MM-DD")
+    );
+  };
+
   return (
     <Row>
       <ModalManageAddons
@@ -293,6 +311,8 @@ export const EditProductPage = ({ match, location }) => {
           defaultValueOutlet={defaultValueOutlet}
           defaultValueCategory={defaultValueCategory}
           defaultValueUnit={defaultValueUnit}
+          expiredDate={expiredDate}
+          handleExpiredDate={handleExpiredDate}
         />
       </Col>
     </Row>

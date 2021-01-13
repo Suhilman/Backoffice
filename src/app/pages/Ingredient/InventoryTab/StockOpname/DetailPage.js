@@ -59,10 +59,10 @@ export const DetailOpnameMaterialPage = ({ match }) => {
   const dataStock = stockOpname
     ? stockOpname.Stock_Opname_Products.map((item) => {
         return {
-          material_name: item.Raw_Material.name,
+          material_name: item.Stock.Raw_Material.name,
           quantity_system: item.quantity_system,
           quantity_actual: item.quantity_actual,
-          unit: item.Unit.name,
+          unit: item.Unit?.name || "-",
           difference: item.difference
         };
       })

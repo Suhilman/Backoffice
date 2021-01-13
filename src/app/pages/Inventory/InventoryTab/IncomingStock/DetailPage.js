@@ -56,6 +56,11 @@ export const DetailIncomingStockPage = ({ match }) => {
       name: "Total Price",
       selector: "total_price",
       sortable: true
+    },
+    {
+      name: "Expired Date",
+      selector: "expired_date",
+      sortable: true
     }
   ];
 
@@ -66,7 +71,10 @@ export const DetailIncomingStockPage = ({ match }) => {
           quantity: item.quantity,
           unit: item.Unit?.name || "-",
           price: rupiahFormat.convert(item.price),
-          total_price: rupiahFormat.convert(item.total_price)
+          total_price: rupiahFormat.convert(item.total_price),
+          expired_date: item.expired_date
+            ? dayjs(item.expired_date).format("DD-MMM-YYYY")
+            : "-"
         };
       })
     : [];

@@ -46,7 +46,7 @@ export const OutcomingMaterialPage = () => {
       const dataOutput = data.data
         .map((item) => {
           const rawMaterial = item.Outcoming_Stock_Products.filter(
-            (val) => val.raw_material_id
+            (val) => val.Stock?.raw_material_id
           );
           if (rawMaterial.length) {
             return item;

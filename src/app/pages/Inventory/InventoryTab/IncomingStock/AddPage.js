@@ -26,6 +26,7 @@ export const AddIncomingStockPage = ({ location }) => {
   const [alert, setAlert] = React.useState("");
 
   const [startDate, setStartDate] = React.useState(new Date());
+  const [expiredDate, setExpiredDate] = React.useState(new Date());
 
   const initialValueStock = {
     outlet_id: "",
@@ -37,7 +38,8 @@ export const AddIncomingStockPage = ({ location }) => {
         quantity: 0,
         unit_id: "",
         price: 0,
-        total_price: 0
+        total_price: 0,
+        expired_date: expiredDate
       }
     ]
   };
@@ -115,6 +117,11 @@ export const AddIncomingStockPage = ({ location }) => {
     formikStock.setFieldValue("date", date);
   };
 
+  const handleExpiredDate = (date, idx) => {
+    setExpiredDate(date);
+    formikStock.setFieldValue(`items[${idx}].expired_date`, date);
+  };
+
   const handleChangePrice = (e, idx) => {
     const { value } = e.target;
     const total_price = formikStock.values.items[idx].quantity * value || 0;
@@ -140,6 +147,10 @@ export const AddIncomingStockPage = ({ location }) => {
         style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
       />
     );
+  };
+
+  const CustomInputExpiredDate = ({ value, onClick }) => {
+    return <Form.Control type="text" defaultValue={value} onClick={onClick} />;
   };
 
   const optionsOutlet = allOutlets.map((item) => {
@@ -285,6 +296,9 @@ export const AddIncomingStockPage = ({ location }) => {
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
                     <h6>Total Price</h6>
+                  </Col>
+                  <Col style={{ padding: "1rem", textAlign: "center" }}>
+                    <h6>Expired Date</h6>
                   </Col>
                   <Col sm={1}></Col>
                 </Row>
@@ -433,6 +447,32 @@ export const AddIncomingStockPage = ({ location }) => {
                                     ) : null}
                                   </Form.Group>
                                 </Col>
+
+                                <Col>
+                                  <Form.Group>
+                                    <DatePicker
+                                      name={`items[${index}].expired_date`}
+                                      selected={expiredDate}
+                                      onChange={(date) =>
+                                        handleExpiredDate(date, index)
+                                      }
+                                      customInput={<CustomInputExpiredDate />}
+                                      required
+                                    />
+                                    {formikStock.touched.items &&
+                                    formikStock.errors.items ? (
+                                      <div className="fv-plugins-message-container">
+                                        <div className="fv-help-block">
+                                          {
+                                            formikStock.errors.items[index]
+                                              ?.expired_date
+                                          }
+                                        </div>
+                                      </div>
+                                    ) : null}
+                                  </Form.Group>
+                                </Col>
+
                                 <Col sm={1}>
                                   <Button
                                     onClick={() => arrayHelpers.remove(index)}

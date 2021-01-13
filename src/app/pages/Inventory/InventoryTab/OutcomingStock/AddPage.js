@@ -4,6 +4,7 @@ import { Link, useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import { useFormik, FormikProvider, FieldArray } from "formik";
 import Select from "react-select";
+import dayjs from "dayjs";
 
 import {
   Button,
@@ -33,7 +34,7 @@ export const AddOutcomingStockPage = ({ location }) => {
     date: startDate,
     items: [
       {
-        product_id: "",
+        stock_id: "",
         quantity: 0,
         unit_id: ""
       }
@@ -49,15 +50,13 @@ export const AddOutcomingStockPage = ({ location }) => {
     date: Yup.string().required("Please input date"),
     items: Yup.array().of(
       Yup.object().shape({
-        product_id: Yup.number()
+        stock_id: Yup.number()
           .min(1)
           .required("Please input a product"),
         quantity: Yup.number()
           .min(1, "Minimum 1")
           .required("Please input a quantity"),
-        unit_id: Yup.number()
-          .min(1)
-          .required("Please input a unit")
+        unit_id: Yup.string().required("Please input a unit")
       })
     )
   });
@@ -122,19 +121,59 @@ export const AddOutcomingStockPage = ({ location }) => {
     return { value: item.id, label: item.name };
   });
 
-  const optionsMaterial = allProducts
+  const optionsProducts = allProducts
     .map((item) => {
       if (item.outlet_id === formikStock.values.outlet_id) {
-        return { value: item.id, label: item.name };
+        return item;
       } else {
         return "";
       }
     })
-    .filter((item) => item);
+    .filter((item) => item)
+    .map((item) => {
+      return {
+        label: item.name,
+        options: item.Stocks.map((val) => {
+          return {
+            value: val.id,
+            label: `${item.name} | Stock: ${val.stock} | Expired: ${
+              val.expired_date
+                ? dayjs(val.expired_date).format("DD-MMM-YYYY")
+                : "-"
+            }`
+          };
+        })
+      };
+    });
 
   const optionsUnit = allUnits.map((item) => {
     return { value: item.id, label: item.name };
   });
+
+  const groupStyles = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between"
+  };
+  const groupBadgeStyles = {
+    backgroundColor: "#EBECF0",
+    borderRadius: "2em",
+    color: "#172B4D",
+    display: "inline-block",
+    fontSize: 12,
+    fontWeight: "normal",
+    lineHeight: "1",
+    minWidth: 1,
+    padding: "0.16666666666667em 0.5em",
+    textAlign: "center"
+  };
+
+  const formatGroupLabel = (data) => (
+    <div style={groupStyles}>
+      <span>{data.label}</span>
+      <span style={groupBadgeStyles}>{data.options.length}</span>
+    </div>
+  );
 
   return (
     <Row>
@@ -178,7 +217,7 @@ export const AddOutcomingStockPage = ({ location }) => {
                       formikStock.setFieldValue("outlet_id", value.value);
                       formikStock.setFieldValue("items", [
                         {
-                          product_id: "",
+                          stock_id: "",
                           quantity: 0,
                           unit_id: ""
                         }
@@ -269,13 +308,14 @@ export const AddOutcomingStockPage = ({ location }) => {
                                 <Col>
                                   <Form.Group>
                                     <Select
-                                      options={optionsMaterial}
-                                      name={`items[${index}].product_id`}
-                                      className="basic-single"
-                                      classNamePrefix="select"
+                                      options={optionsProducts}
+                                      formatGroupLabel={formatGroupLabel}
+                                      name={`items[${index}].stock_id`}
+                                      // className="basic-single"
+                                      // classNamePrefix="select"
                                       onChange={(value) =>
                                         formikStock.setFieldValue(
-                                          `items[${index}].product_id`,
+                                          `items[${index}].stock_id`,
                                           value.value
                                         )
                                       }
@@ -286,7 +326,7 @@ export const AddOutcomingStockPage = ({ location }) => {
                                         <div className="fv-help-block">
                                           {
                                             formikStock.errors.items[index]
-                                              ?.product_id
+                                              ?.stock_id
                                           }
                                         </div>
                                       </div>

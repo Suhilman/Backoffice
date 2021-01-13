@@ -33,6 +33,7 @@ export const TransferStockPage = () => {
   const [transferStock, setTransferStock] = React.useState([]);
   const [allOutlets, setAllOutlets] = React.useState([]);
   const [allProducts, setAllProducts] = React.useState([]);
+  const [allUnits, setAllUnits] = React.useState([]);
 
   const getTransferStock = async (search) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -42,7 +43,20 @@ export const TransferStockPage = () => {
       const { data } = await axios.get(
         `${API_URL}/api/v1/transfer-stock${filterStock}`
       );
-      setTransferStock(data.data);
+      const dataOutput = data.data
+        .map((item) => {
+          const products = item.Transfer_Stock_Products.filter(
+            (val) => val.Stock?.product_id
+          );
+          if (products.length) {
+            return item;
+          } else {
+            return "";
+          }
+        })
+        .filter((item) => item);
+
+      setTransferStock(dataOutput);
     } catch (err) {
       setTransferStock([]);
     }
@@ -68,6 +82,16 @@ export const TransferStockPage = () => {
     }
   };
 
+  const getUnits = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    try {
+      const { data } = await axios.get(`${API_URL}/api/v1/unit`);
+      setAllUnits(data.data);
+    } catch (err) {
+      setAllUnits([]);
+    }
+  };
+
   React.useEffect(() => {
     getTransferStock(debouncedSearch);
   }, [refresh, debouncedSearch]);
@@ -75,6 +99,7 @@ export const TransferStockPage = () => {
   React.useEffect(() => {
     getOutlets();
     getProducts();
+    getUnits();
   }, []);
 
   const enableLoading = () => setLoading(true);
@@ -216,7 +241,7 @@ export const TransferStockPage = () => {
                 <Link
                   to={{
                     pathname: "/inventory/transfer-stock/add",
-                    state: { allOutlets, allProducts }
+                    state: { allOutlets, allProducts, allUnits }
                   }}
                 >
                   <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
