@@ -58,7 +58,8 @@ const InventoryIngredientTab = ({
     unit_id: "",
     calorie_per_unit: "",
     calorie_unit: "",
-    notes: ""
+    notes: "",
+    is_sold: false
   };
   const initialValueMaterialEdit = {
     id: "",
@@ -70,7 +71,8 @@ const InventoryIngredientTab = ({
     calorie_per_unit: "",
     calorie_unit: "",
     notes: "",
-    stock_id: ""
+    stock_id: "",
+    is_sold: false
   };
 
   const MaterialSchema = Yup.object().shape({
@@ -83,7 +85,8 @@ const InventoryIngredientTab = ({
     unit_id: Yup.number().required("Please choose unit"),
     calorie_per_unit: Yup.number().required("Please input calorie"),
     calorie_unit: Yup.string().required("Please input calorie unit"),
-    notes: Yup.string().min(1, "Minimum 1 character")
+    notes: Yup.string().min(1, "Minimum 1 character"),
+    is_sold: Yup.boolean()
   });
 
   const MaterialEditSchema = Yup.object().shape({
@@ -94,7 +97,8 @@ const InventoryIngredientTab = ({
     raw_material_category_id: Yup.number().required("Please choose category"),
     stock: Yup.number().required("Please input stock"),
     unit_id: Yup.number().required("Please choose unit"),
-    notes: Yup.string().min(1, "Minimum 1 character")
+    notes: Yup.string().min(1, "Minimum 1 character"),
+    is_sold: Yup.boolean()
   });
 
   const formikMaterial = useFormik({
@@ -110,7 +114,7 @@ const InventoryIngredientTab = ({
         calorie_per_unit: values.calorie_per_unit,
         calorie_unit: values.calorie_unit,
         notes: values.notes,
-        has_stock: values.has_stock
+        is_sold: values.is_sold
       };
 
       try {
@@ -155,7 +159,8 @@ const InventoryIngredientTab = ({
         calorie_per_unit: values.calorie_per_unit,
         calorie_unit: values.calorie_unit,
         notes: values.notes,
-        stock_id: values.stock_id
+        stock_id: values.stock_id,
+        is_sold: values.is_sold
       };
 
       try {
@@ -240,8 +245,10 @@ const InventoryIngredientTab = ({
       calorie_per_unit: data.calorie_per_unit,
       calorie_unit: data.calorie_unit,
       notes: data.notes,
-      stock_id: data.stock_id
+      stock_id: data.stock_id,
+      is_sold: data.is_sold
     });
+    console.log(formikEditMaterial.values);
     setStateEditModal(true);
   };
   const closeEditModal = () => {
@@ -347,7 +354,8 @@ const InventoryIngredientTab = ({
       calorie_unit: item.calorie_unit,
       notes: item.notes,
       stock_id: item.Stocks.find((item) => item.is_initial).id,
-      stocks: item.Stocks
+      stocks: item.Stocks,
+      is_sold: item.Product ? true : false
     };
   });
 

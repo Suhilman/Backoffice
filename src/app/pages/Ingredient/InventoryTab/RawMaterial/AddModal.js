@@ -201,6 +201,26 @@ const AddModal = ({
               </div>
             ) : null}
           </Form.Group>
+
+          <Form.Group>
+            <Form.Check
+              type="checkbox"
+              label="Sell as product"
+              style={{ marginTop: "0.5rem" }}
+              {...formikMaterial.getFieldProps("is_sold")}
+              checked={
+                formikMaterial.getFieldProps("is_sold").value ? true : false
+              }
+              onChange={(e) => {
+                const { value } = e.target;
+                if (value === "true") {
+                  formikMaterial.setFieldValue("is_sold", false);
+                } else {
+                  formikMaterial.setFieldValue("is_sold", true);
+                }
+              }}
+            />
+          </Form.Group>
         </Modal.Body>
 
         <Modal.Footer>

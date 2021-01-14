@@ -54,7 +54,7 @@ export const EditRecipePage = ({ location, match }) => {
     outlet_id: Yup.number().required("Please choose an outlet."),
     total_calorie: Yup.number(),
     total_cogs: Yup.number(),
-    notes: Yup.string(),
+    notes: Yup.string().nullable(),
     product_id: Yup.number().required("Please choose a product."),
     materials: Yup.array().of(
       Yup.object().shape({
@@ -94,7 +94,7 @@ export const EditRecipePage = ({ location, match }) => {
         product_id: values.product_id,
         total_calorie: values.total_calorie,
         total_cogs: values.total_cogs,
-        notes: values.notes,
+        notes: values.notes || "",
         materials: values.materials
       };
 
