@@ -1,30 +1,14 @@
 import React from "react";
 import axios from "axios";
-
-import { Row, Col, Table, Dropdown, DropdownButton } from "react-bootstrap";
-
-import { Paper } from "@material-ui/core";
+import dayjs from "dayjs";
+import rupiahFormat from "rupiah-format";
+import { Table } from "react-bootstrap";
 
 import "../style.css";
 
-import rupiahFormat from "rupiah-format";
-
-export const SalesTypeTab = ({ allOutlets, ranges }) => {
-  const [loading, setLoading] = React.useState(false);
-
+export const SalesTypeTab = ({ selectedOutlet, startDate, endDate }) => {
   const [allSalesTypes, setAllSalesTypes] = React.useState([]);
   const [allTypes, setAllTypes] = React.useState([]);
-  const [outletId, setOutletId] = React.useState("");
-  const [outletName, setOutletName] = React.useState("All Outlets");
-
-  const [rangeId, setRangeId] = React.useState(1);
-  const [rangeName, setRangeName] = React.useState("Today");
-
-  const [startRange, setStartRange] = React.useState(new Date());
-  const [endRange, setEndRange] = React.useState(new Date());
-
-  const enableLoading = () => setLoading(true);
-  const disableLoading = () => setLoading(false);
 
   const getTypes = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -40,18 +24,28 @@ export const SalesTypeTab = ({ allOutlets, ranges }) => {
     }
   };
 
-  const getSalesType = async (id, range_id, start_range, end_range) => {
+  const getSalesType = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
-
-    const { date_start, date_end } = ranges(start_range, end_range).find(
-      (item) => item.id === range_id
-    );
-
     const outlet_id = id ? `?outlet_id=${id}&` : "?";
+
+    if (start_range === end_range) {
+      end_range = dayjs(end_range)
+        .add(1, "day")
+        .format("YYYY-MM-DD");
+    }
+
+    if (new Date(start_range) > new Date(end_range)) {
+      start_range = dayjs(start_range)
+        .subtract(1, "day")
+        .format("YYYY-MM-DD");
+      end_range = dayjs(end_range)
+        .add(1, "day")
+        .format("YYYY-MM-DD");
+    }
 
     try {
       const { data } = await axios.get(
-        `${API_URL}/api/v1/transaction/sales-type${outlet_id}date_start=${date_start}&date_end=${date_end}`
+        `${API_URL}/api/v1/transaction/sales-type${outlet_id}date_start=${start_range}&date_end=${end_range}`
       );
       setAllSalesTypes(data.data);
     } catch (err) {
@@ -67,28 +61,8 @@ export const SalesTypeTab = ({ allOutlets, ranges }) => {
   }, []);
 
   React.useEffect(() => {
-    getSalesType(outletId, rangeId, startRange, endRange);
-  }, [outletId, rangeId, startRange, endRange]);
-
-  const handleSelectOutlet = (data) => {
-    if (data) {
-      setOutletId(data.id);
-      setOutletName(data.name);
-    } else {
-      setOutletId("");
-      setOutletName("All Outlets");
-    }
-  };
-
-  const handleSelectRange = (data) => {
-    setRangeId(data.id);
-    setRangeName(data.value);
-
-    if (data.id === 9) {
-      setStartRange(new Date());
-      setEndRange(new Date());
-    }
-  };
+    getSalesType(selectedOutlet.id, startDate, endDate);
+  }, [selectedOutlet, startDate, endDate]);
 
   const salesTypeData = () => {
     const data = [];
@@ -160,90 +134,29 @@ export const SalesTypeTab = ({ allOutlets, ranges }) => {
   };
 
   return (
-    <Row>
-      <Col>
-        <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
-          <div
-            className="headerPage lineBottom"
-            style={{ marginBottom: "1rem" }}
-          >
-            <div className="headerStart">
-              <h3 style={{ margin: "0" }}>Sales Type</h3>
-            </div>
-            <div className="headerEnd">
-              <Row>
-                <DropdownButton title={rangeName} variant="outline-secondary">
-                  {ranges(startRange, endRange).map((item) => {
-                    if (item.id === 9) return "";
-
-                    return (
-                      <Dropdown.Item
-                        key={item.id}
-                        onClick={() => handleSelectRange(item)}
-                      >
-                        {item.value}
-                      </Dropdown.Item>
-                    );
-                  })}
-                </DropdownButton>
-
-                <DropdownButton
-                  title={outletName}
-                  style={{ marginLeft: "1rem" }}
-                  variant="outline-secondary"
-                >
-                  <Dropdown.Item onClick={() => handleSelectOutlet()}>
-                    All Outlets
-                  </Dropdown.Item>
-                  {allOutlets.map((item, index) => {
-                    return (
-                      <Dropdown.Item
-                        key={index}
-                        onClick={() => handleSelectOutlet(item)}
-                      >
-                        {item.name}
-                      </Dropdown.Item>
-                    );
-                  })}
-                </DropdownButton>
-              </Row>
-            </div>
-          </div>
-
-          <div style={{ paddingRight: "1rem", textAlign: "right" }}>
-            <p>
-              <b>Date:</b>{" "}
-              {
-                ranges(startRange, endRange).find((item) => item.id === rangeId)
-                  .displayDate
-              }
-            </p>
-          </div>
-
-          <Table striped>
-            <thead>
-              <tr>
-                <th></th>
-                <th>Type</th>
-                <th>Number of Transaction</th>
-                <th>Total Collected</th>
+    <>
+      <Table striped>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Type</th>
+            <th>Number of Transaction</th>
+            <th>Total Collected</th>
+          </tr>
+        </thead>
+        <tbody>
+          {salesTypeData().map((item, index) => {
+            return (
+              <tr key={index}>
+                <td></td>
+                <td>{item.type}</td>
+                <td>{item.transaction}</td>
+                <td>{rupiahFormat.convert(item.total)}</td>
               </tr>
-            </thead>
-            <tbody>
-              {salesTypeData().map((item, index) => {
-                return (
-                  <tr key={index}>
-                    <td></td>
-                    <td>{item.type}</td>
-                    <td>{item.transaction}</td>
-                    <td>{rupiahFormat.convert(item.total)}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
-        </Paper>
-      </Col>
-    </Row>
+            );
+          })}
+        </tbody>
+      </Table>
+    </>
   );
 };

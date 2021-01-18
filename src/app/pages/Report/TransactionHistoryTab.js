@@ -2,36 +2,18 @@ import React from "react";
 import axios from "axios";
 import dayjs from "dayjs";
 
-import {
-  Row,
-  Col,
-  Form,
-  Dropdown,
-  ListGroup,
-  DropdownButton
-} from "react-bootstrap";
+import { Row, Col, ListGroup } from "react-bootstrap";
 import DataTable from "react-data-table-component";
-
-import { Paper } from "@material-ui/core";
-// import { Search, MoreHoriz } from "@material-ui/icons";
-import ExportExcel from "react-html-table-to-excel";
 
 import "../style.css";
 
-export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
-  const [outletId, setOutletId] = React.useState("");
-  const [outletName, setOutletName] = React.useState("All Outlets");
-
-  const [rangeId, setRangeId] = React.useState(1);
-  const [rangeName, setRangeName] = React.useState("Today");
-
-  const [startRange, setStartRange] = React.useState(new Date());
-  const [endRange, setEndRange] = React.useState(new Date());
-
+export const TransactionHistoryTab = ({
+  selectedOutlet,
+  startDate,
+  endDate,
+  status
+}) => {
   const [allTransactions, setAllTransactions] = React.useState([]);
-
-  const [status, setStatus] = React.useState("");
-
   const [reports, setReports] = React.useState([
     {
       date: "",
@@ -50,25 +32,29 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
     }
   ]);
 
-  const getTransactions = async (
-    id,
-    status,
-    range_id,
-    start_range,
-    end_range
-  ) => {
+  const getTransactions = async (id, status, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
-
-    const { date_start, date_end } = ranges(start_range, end_range).find(
-      (item) => item.id === range_id
-    );
-
     const outlet_id = id ? `&outlet_id=${id}` : "";
     const filter = status ? `&status=${status}` : "";
 
+    if (start_range === end_range) {
+      end_range = dayjs(end_range)
+        .add(1, "day")
+        .format("YYYY-MM-DD");
+    }
+
+    if (new Date(start_range) > new Date(end_range)) {
+      start_range = dayjs(start_range)
+        .subtract(1, "day")
+        .format("YYYY-MM-DD");
+      end_range = dayjs(end_range)
+        .add(1, "day")
+        .format("YYYY-MM-DD");
+    }
+
     try {
       const { data } = await axios.get(
-        `${API_URL}/api/v1/transaction?order=newest&per_page=999${outlet_id}&date_start=${date_start}&date_end=${date_end}${filter}`
+        `${API_URL}/api/v1/transaction?order=newest&per_page=999${outlet_id}&date_start=${start_range}&date_end=${end_range}${filter}`
       );
       setAllTransactions(data.data);
 
@@ -102,45 +88,8 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
   };
 
   React.useEffect(() => {
-    getTransactions(outletId, status, rangeId, startRange, endRange);
-  }, [outletId, status, rangeId, startRange, endRange]);
-
-  const handleSelectOutlet = (data) => {
-    if (data) {
-      setOutletId(data.id);
-      setOutletName(data.name);
-    } else {
-      setOutletId("");
-      setOutletName("All Outlets");
-    }
-  };
-
-  const handleSelectRange = (data) => {
-    setRangeId(data.id);
-    setRangeName(data.value);
-
-    if (data.id === 9) {
-      setStartRange(new Date());
-      setEndRange(new Date());
-    }
-  };
-
-  const handleSelectStatus = (e) => setStatus(e.target.value);
-
-  const filename = () => {
-    const value = ranges(startRange, endRange).find(
-      (item) => item.id === rangeId
-    ).valueId;
-    const date = ranges(startRange, endRange).find(
-      (item) => item.id === rangeId
-    ).displayDate;
-
-    const processValue = value
-      .split(" ")
-      .join("-")
-      .toLowerCase();
-    return `riwayat-transaksi-${processValue}_${date}`;
-  };
+    getTransactions(selectedOutlet.id, status, startDate, endDate);
+  }, [selectedOutlet, status, startDate, endDate]);
 
   const columns = [
     {
@@ -251,11 +200,7 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
             <tr>
               <th>Tanggal</th>
               <td>
-                {
-                  ranges(startRange, endRange).find(
-                    (item) => item.id === rangeId
-                  ).displayDate
-                }
+                {startDate} - {endDate}
               </td>
             </tr>
             <tr>
@@ -311,145 +256,15 @@ export const TransactionHistoryTab = ({ allOutlets, ranges }) => {
         </table>
       </div>
 
-      <Row>
-        <Col>
-          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
-            <div className="headerPage">
-              <div className="headerStart">
-                <h3>Transaction History</h3>
-              </div>
-              <div className="headerEnd">
-                <Row>
-                  <DropdownButton title={rangeName} variant="outline-secondary">
-                    {ranges(startRange, endRange).map((item) => {
-                      if (item.id === 9) return "";
-
-                      return (
-                        <Dropdown.Item
-                          key={item.id}
-                          onClick={() => handleSelectRange(item)}
-                        >
-                          {item.value}
-                        </Dropdown.Item>
-                      );
-                    })}
-                  </DropdownButton>
-
-                  <DropdownButton
-                    title={outletName}
-                    style={{ margin: "0 1rem" }}
-                    variant="outline-secondary"
-                  >
-                    <Dropdown.Item onClick={() => handleSelectOutlet()}>
-                      All Outlets
-                    </Dropdown.Item>
-                    {allOutlets.map((item, index) => {
-                      return (
-                        <Dropdown.Item
-                          key={index}
-                          onClick={() => handleSelectOutlet(item)}
-                        >
-                          {item.name}
-                        </Dropdown.Item>
-                      );
-                    })}
-                  </DropdownButton>
-
-                  <ExportExcel
-                    className="btn btn-outline-primary"
-                    table="table-history-transaction"
-                    filename={filename()}
-                    sheet="transaction-history"
-                    buttonText="Export"
-                  />
-                </Row>
-              </div>
-            </div>
-
-            <div className="filterSection lineBottom">
-              <Row>
-                {/* <Col>
-                <InputGroup className="pb-3">
-                  <InputGroup.Prepend>
-                    <InputGroup.Text style={{ background: "transparent" }}>
-                      <Search />
-                    </InputGroup.Text>
-                  </InputGroup.Prepend>
-                  <Form.Control
-                    placeholder="Search..."
-                    value={search}
-                    onChange={handleSearch}
-                  />
-                </InputGroup>
-              </Col> */}
-                <Col md={6}>
-                  <Row>
-                    <Col>
-                      <Form.Group as={Row}>
-                        <Form.Label
-                          style={{ alignSelf: "center", marginBottom: "0" }}
-                        >
-                          Status:
-                        </Form.Label>
-                        <Col>
-                          <Form.Control
-                            as="select"
-                            name="status"
-                            value={status}
-                            onChange={handleSelectStatus}
-                            onBlur={handleSelectStatus}
-                          >
-                            <option value={""}>All Status</option>
-                            {["New", "Done", "Refund", "Closed"].map(
-                              (item, index) => {
-                                return (
-                                  <option
-                                    key={index}
-                                    value={item.toLowerCase()}
-                                  >
-                                    {item}
-                                  </option>
-                                );
-                              }
-                            )}
-                          </Form.Control>
-                        </Col>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            </div>
-
-            <div
-              style={{
-                paddingRight: "1rem",
-                paddingTop: "1rem",
-                textAlign: "right"
-              }}
-            >
-              <p>
-                <b>Date:</b>{" "}
-                {
-                  ranges(startRange, endRange).find(
-                    (item) => item.id === rangeId
-                  ).displayDate
-                }
-              </p>
-            </div>
-
-            <DataTable
-              noHeader
-              pagination
-              columns={columns}
-              data={dataTransactions()}
-              expandableRows
-              expandableRowsComponent={<ExpandableComponent />}
-              style={{ minHeight: "100%" }}
-            />
-          </Paper>
-        </Col>
-      </Row>
+      <DataTable
+        noHeader
+        pagination
+        columns={columns}
+        data={dataTransactions()}
+        expandableRows
+        expandableRowsComponent={<ExpandableComponent />}
+        style={{ minHeight: "100%" }}
+      />
     </>
   );
 };

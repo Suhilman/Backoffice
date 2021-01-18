@@ -27,8 +27,6 @@ export const ReportPage = () => {
   const [tabs, setTabs] = React.useState(1);
 
   const [allOutlets, setAllOutlets] = React.useState([]);
-  const [allTransactions, setAllTransactions] = React.useState([]);
-
   const [selectedOutlet, setSelectedOutlet] = React.useState({
     id: "",
     name: ""
@@ -41,8 +39,8 @@ export const ReportPage = () => {
     dayjs().format("YYYY-MM-DD")
   );
   const [endDate, setEndDate] = React.useState(dayjs().format("YYYY-MM-DD"));
-
   const [stateCustom, setStateCustom] = React.useState(false);
+  const [status, setStatus] = React.useState("");
 
   const tabData = [
     {
@@ -60,41 +58,28 @@ export const ReportPage = () => {
     {
       no: 3,
       title: "Sales Type",
-      table: "sales-type",
       Component: SalesTypeTab
     },
     {
       no: 4,
       title: "Category Sales",
-      table: "category-sales",
       Component: CategorySalesTab
     },
     {
       no: 5,
       title: "Transaction History",
-      table: "transaction-history",
+      table: "table-history-transaction",
+      filename: `riwayat-transaksi_${startDate}-${endDate}`,
       Component: TransactionHistoryTab
     },
     {
       no: 6,
       title: "Attendance",
-      table: "attendance",
+      table: "table-attendance-report",
+      filename: `laporan-absensi_${startDate}-${endDate}`,
       Component: AttendanceTab
     }
   ];
-
-  const [reports, setReports] = React.useState([
-    {
-      product_name: "",
-      addons_name: "",
-      category_name: "",
-      sku: "",
-      totalItems: 0,
-      grossSales: 0,
-      discountSales: 0,
-      totalSales: 0
-    }
-  ]);
 
   const ranges = (startRange, endRange) => [
     {
@@ -251,140 +236,6 @@ export const ReportPage = () => {
     }
   };
 
-  const getTransactions = async (id, start_range, end_range) => {
-    const API_URL = process.env.REACT_APP_API_URL;
-    const outlet_id = id ? `?outlet_id=${id}&` : "?";
-
-    if (start_range === end_range) {
-      end_range = dayjs(end_range)
-        .add(1, "day")
-        .format("YYYY-MM-DD");
-    }
-
-    if (new Date(start_range) > new Date(end_range)) {
-      start_range = dayjs(start_range)
-        .subtract(1, "day")
-        .format("YYYY-MM-DD");
-      end_range = dayjs(end_range)
-        .add(1, "day")
-        .format("YYYY-MM-DD");
-    }
-
-    let allSales;
-    try {
-      const { data } = await axios.get(
-        `${API_URL}/api/v1/transaction${outlet_id}date_start=${start_range}&date_end=${end_range}`
-      );
-      setAllTransactions(data.data);
-      allSales = data.data;
-    } catch (err) {
-      if (err.response.status === 404) {
-        setAllTransactions([]);
-      }
-      allSales = [];
-      console.log(err);
-    }
-
-    const completedTransactions = allSales.filter(
-      (item) => item.Payment?.status === "done"
-    );
-
-    const allItems = completedTransactions.map((item) => {
-      const grossSales = item.Transaction_Items.reduce(
-        (init, curr) => (init += curr.price_total + curr.price_discount),
-        0
-      );
-      const discountSales = item.Transaction_Items.reduce(
-        (init, curr) => (init += curr.price_discount),
-        0
-      );
-      const totalSales = item.Transaction_Items.reduce(
-        (init, curr) => (init += curr.price_total),
-        0
-      );
-
-      const output = item.Transaction_Items.map((val) => {
-        const currAddons = val.Transaction_Item_Addons.map(
-          (addons) => addons.Addon?.name
-        ).filter((val) => val);
-
-        const joinedAddons = currAddons.length ? currAddons.join(",") : "";
-
-        return {
-          product_name: val.Product.name,
-          addons_name: joinedAddons,
-          category_name: val.Product.Product_Category.name,
-          sku: val.Product.sku,
-          totalItems: val.quantity,
-          grossSales: grossSales,
-          discountSales: discountSales,
-          totalSales: totalSales
-        };
-      });
-
-      return output;
-    });
-
-    const allProductNames = allItems.flat(1).reduce((init, curr) => {
-      init[`${curr.product_name}-${curr.addons_name}`] = curr.category_name;
-      return init;
-    }, {});
-
-    const compileReports = Object.keys(allProductNames).map((item) => {
-      const name = item.split("-")[0];
-      const addons = item.split("-")[1];
-      const category = allProductNames[item];
-
-      const sku = allItems
-        .flat(1)
-        .filter(
-          (val) => val.product_name === name && val.addons_name === addons
-        )
-        .reduce((init, curr) => (init = curr.sku), "");
-
-      const totalItems = allItems
-        .flat(1)
-        .filter(
-          (val) => val.product_name === name && val.addons_name === addons
-        )
-        .reduce((init, curr) => (init += curr.totalItems), 0);
-
-      const grossSales = allItems
-        .flat(1)
-        .filter(
-          (val) => val.product_name === name && val.addons_name === addons
-        )
-        .reduce((init, curr) => (init += curr.grossSales), 0);
-
-      const discountSales = allItems
-        .flat(1)
-        .filter(
-          (val) => val.product_name === name && val.addons_name === addons
-        )
-        .reduce((init, curr) => (init += curr.discountSales), 0);
-
-      const totalSales = allItems
-        .flat(1)
-        .filter(
-          (val) => val.product_name === name && val.addons_name === addons
-        )
-        .reduce((init, curr) => (init += curr.totalSales), 0);
-
-      return {
-        product_name: name,
-        addons_name: addons,
-        category_name: category,
-        sku,
-        totalItems,
-        grossSales,
-        discountSales,
-        totalSales
-      };
-    });
-
-    setReports(compileReports);
-  };
-
   React.useEffect(() => {
     getOutlets();
   }, []);
@@ -437,6 +288,8 @@ export const ReportPage = () => {
     setEndDate(dayjs(endRange).format("YYYY-MM-DD"));
     setStateCustom(false);
   };
+
+  const handleSelectStatus = (e) => setStatus(e.target.value);
 
   const displayDate = () => {
     const start = dayjs(startDate).format("DD-MM-YYYY");
@@ -572,6 +425,47 @@ export const ReportPage = () => {
                     </Col>
                   </Form.Group>
                 </Col>
+
+                {tabs === "5" ? (
+                  <Col>
+                    <Row>
+                      <Col>
+                        <Form.Group as={Row}>
+                          <Form.Label
+                            style={{ alignSelf: "center", marginBottom: "0" }}
+                          >
+                            Status:
+                          </Form.Label>
+                          <Col>
+                            <Form.Control
+                              as="select"
+                              name="status"
+                              value={status}
+                              onChange={handleSelectStatus}
+                              onBlur={handleSelectStatus}
+                            >
+                              <option value={""}>All Status</option>
+                              {["New", "Done", "Refund", "Closed"].map(
+                                (item, index) => {
+                                  return (
+                                    <option
+                                      key={index}
+                                      value={item.toLowerCase()}
+                                    >
+                                      {item}
+                                    </option>
+                                  );
+                                }
+                              )}
+                            </Form.Control>
+                          </Col>
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                  </Col>
+                ) : (
+                  ""
+                )}
               </Row>
             </div>
 
@@ -580,12 +474,10 @@ export const ReportPage = () => {
                 return (
                   <item.Component
                     key={index}
-                    getTransactions={getTransactions}
-                    allTransactions={allTransactions}
-                    reports={reports}
                     selectedOutlet={selectedOutlet}
                     startDate={startDate}
                     endDate={endDate}
+                    status={status}
                   />
                 );
               } else {
