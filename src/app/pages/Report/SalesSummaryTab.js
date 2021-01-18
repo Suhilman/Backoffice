@@ -1,59 +1,20 @@
 import React from "react";
-
-import { Row, Col, Table, Dropdown, DropdownButton } from "react-bootstrap";
-
-import { Paper } from "@material-ui/core";
-
-import { sum } from "lodash";
+import { Table } from "react-bootstrap";
 import rupiahFormat from "rupiah-format";
-import ExportExcel from "react-html-table-to-excel";
 
 import "../style.css";
 
 export const SalesSummaryTab = ({
-  allOutlets,
   getTransactions,
   allTransactions,
-  ranges,
-  reports
+  reports,
+  selectedOutlet,
+  startDate,
+  endDate
 }) => {
-  // const [loading, setLoading] = React.useState(false);
-
-  const [outletId, setOutletId] = React.useState("");
-  const [outletName, setOutletName] = React.useState("All Outlets");
-
-  const [rangeId, setRangeId] = React.useState(1);
-  const [rangeName, setRangeName] = React.useState("Today");
-
-  const [startRange, setStartRange] = React.useState(new Date());
-  const [endRange, setEndRange] = React.useState(new Date());
-
-  // const enableLoading = () => setLoading(true);
-  // const disableLoading = () => setLoading(false);
-
   React.useEffect(() => {
-    getTransactions(outletId, rangeId, startRange, endRange);
-  }, [outletId, rangeId, startRange, endRange]);
-
-  const handleSelectOutlet = (data) => {
-    if (data) {
-      setOutletId(data.id);
-      setOutletName(data.name);
-    } else {
-      setOutletId("");
-      setOutletName("All Outlets");
-    }
-  };
-
-  const handleSelectRange = (data) => {
-    setRangeId(data.id);
-    setRangeName(data.value);
-
-    if (data.id === 9) {
-      setStartRange(new Date());
-      setEndRange(new Date());
-    }
-  };
+    getTransactions(selectedOutlet.id, startDate, endDate);
+  }, [selectedOutlet, startDate, endDate]);
 
   const summaryData = () => {
     const data = [
@@ -163,21 +124,6 @@ export const SalesSummaryTab = ({
     return data.reduce((init, curr) => (init += curr[key]), 0);
   };
 
-  const filename = () => {
-    const value = ranges(startRange, endRange).find(
-      (item) => item.id === rangeId
-    ).valueId;
-    const date = ranges(startRange, endRange).find(
-      (item) => item.id === rangeId
-    ).displayDate;
-
-    const processValue = value
-      .split(" ")
-      .join("-")
-      .toLowerCase();
-    return `transaksi-penjualan-produk-${processValue}_${date}`;
-  };
-
   return (
     <>
       <div style={{ display: "none" }}>
@@ -193,19 +139,13 @@ export const SalesSummaryTab = ({
           <thead>
             <tr>
               <th>Outlet</th>
-              <td>{outletName}</td>
+              <td>{selectedOutlet.name}</td>
             </tr>
           </thead>
           <thead>
             <tr>
               <th>Tanggal</th>
-              <td>
-                {
-                  ranges(startRange, endRange).find(
-                    (item) => item.id === rangeId
-                  ).displayDate
-                }
-              </td>
+              <td>{`${startDate} - ${endDate}`}</td>
             </tr>
           </thead>
           <tbody>
@@ -252,91 +192,19 @@ export const SalesSummaryTab = ({
         </table>
       </div>
 
-      <Row>
-        <Col>
-          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
-            <div
-              className="headerPage lineBottom"
-              style={{ marginBottom: "1rem" }}
-            >
-              <div className="headerStart">
-                <h3 style={{ margin: "0" }}>Sales Summary</h3>
-              </div>
-              <div className="headerEnd">
-                <Row>
-                  <DropdownButton title={rangeName} variant="outline-secondary">
-                    {ranges(startRange, endRange).map((item) => {
-                      if (item.id === 9) return "";
-
-                      return (
-                        <Dropdown.Item
-                          key={item.id}
-                          onClick={() => handleSelectRange(item)}
-                        >
-                          {item.value}
-                        </Dropdown.Item>
-                      );
-                    })}
-                  </DropdownButton>
-
-                  <DropdownButton
-                    title={outletName}
-                    style={{ margin: "0 1rem" }}
-                    variant="outline-secondary"
-                  >
-                    <Dropdown.Item onClick={() => handleSelectOutlet()}>
-                      All Outlets
-                    </Dropdown.Item>
-                    {allOutlets.map((item, index) => {
-                      return (
-                        <Dropdown.Item
-                          key={index}
-                          onClick={() => handleSelectOutlet(item)}
-                        >
-                          {item.name}
-                        </Dropdown.Item>
-                      );
-                    })}
-                  </DropdownButton>
-
-                  <ExportExcel
-                    className="btn btn-outline-primary"
-                    table="table-summary"
-                    filename={filename()}
-                    sheet="transaction-report"
-                    buttonText="Export"
-                  />
-                </Row>
-              </div>
-            </div>
-
-            <div style={{ paddingRight: "1rem", textAlign: "right" }}>
-              <p>
-                <b>Date:</b>{" "}
-                {
-                  ranges(startRange, endRange).find(
-                    (item) => item.id === rangeId
-                  ).displayDate
-                }
-              </p>
-            </div>
-
-            <Table striped>
-              <tbody>
-                {summaryData().map((item, index) => {
-                  return (
-                    <tr key={index}>
-                      <td></td>
-                      <td>{item.key}</td>
-                      <td>{rupiahFormat.convert(item.value)}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-          </Paper>
-        </Col>
-      </Row>
+      <Table striped>
+        <tbody>
+          {summaryData().map((item, index) => {
+            return (
+              <tr key={index}>
+                <td></td>
+                <td>{item.key}</td>
+                <td>{rupiahFormat.convert(item.value)}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </Table>
     </>
   );
 };

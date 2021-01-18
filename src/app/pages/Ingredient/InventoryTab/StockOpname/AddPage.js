@@ -172,6 +172,8 @@ export const AddOpnameMaterialPage = ({ location }) => {
       }
     });
 
+    // error di sini
+
     formikStock.setFieldValue(`items[${index}].stock_id`, value.value);
     formikStock.setFieldValue(
       `items[${index}].quantity_system`,

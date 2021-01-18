@@ -180,8 +180,8 @@ const RecipeTab = ({
         };
       }),
       currProduct: {
-        name: item.Product.name,
-        price: item.Product.price
+        name: item.Product?.name,
+        price: item.Product?.price
       }
     };
   });
