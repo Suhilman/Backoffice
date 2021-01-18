@@ -19,6 +19,7 @@ import { SalesTypeTab } from "./SalesTypeTab";
 import { CategorySalesTab } from "./CategorySalesTab";
 import { TransactionHistoryTab } from "./TransactionHistoryTab";
 import { AttendanceTab } from "./AttendanceTab";
+import { DiscountSalesTab } from "./DiscountTab";
 
 import CustomDateRange from "../../components/CustomDateRange";
 import ExportExcel from "react-html-table-to-excel";
@@ -78,6 +79,13 @@ export const ReportPage = () => {
       table: "table-attendance-report",
       filename: `laporan-absensi_${startDate}-${endDate}`,
       Component: AttendanceTab
+    },
+    {
+      no: 7,
+      title: "Discount Sales",
+      // table: "table-attendance-report",
+      // filename: `laporan-absensi_${startDate}-${endDate}`,
+      Component: DiscountSalesTab
     }
   ];
 
