@@ -133,8 +133,8 @@ const ModalOutlet = ({
                   as="select"
                   name="province_id"
                   value={formikOutlet.getFieldProps("province_id").value}
-                  onChange={handleProvince}
-                  onBlur={handleProvince}
+                  onChange={(e) => handleProvince(e, formikOutlet)}
+                  onBlur={(e) => handleProvince(e, formikOutlet)}
                   className={validationOutlet("province_id")}
                   required
                 >
@@ -169,8 +169,8 @@ const ModalOutlet = ({
                   as="select"
                   name="city_id"
                   value={formikOutlet.getFieldProps("city_id").value}
-                  onChange={handleCity}
-                  onBlur={handleCity}
+                  onChange={(e) => handleCity(e, formikOutlet)}
+                  onBlur={(e) => handleCity(e, formikOutlet)}
                   className={validationOutlet("city_id")}
                   required
                 >

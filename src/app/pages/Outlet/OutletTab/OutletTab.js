@@ -234,9 +234,9 @@ export const OutletTab = ({
     setStateDeleteModal(false);
   };
 
-  const handleProvince = (e) => {
+  const handleProvince = (e, formik) => {
     const province_id = e.target.value;
-    formikOutlet.setFieldValue("province_id", province_id);
+    formik.setFieldValue("province_id", province_id);
 
     const provinces = [...allProvinces];
     const [cities] = provinces
@@ -245,9 +245,9 @@ export const OutletTab = ({
     setAllCities(cities);
   };
 
-  const handleCity = (e) => {
+  const handleCity = (e, formik) => {
     const city_id = e.target.value;
-    formikOutlet.setFieldValue("city_id", city_id);
+    formik.setFieldValue("city_id", city_id);
 
     if (allCities.length) {
       const cities = [...allCities];
