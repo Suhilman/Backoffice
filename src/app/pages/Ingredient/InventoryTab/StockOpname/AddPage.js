@@ -20,7 +20,7 @@ import { CalendarToday, Delete } from "@material-ui/icons";
 
 export const AddOpnameMaterialPage = ({ location }) => {
   const history = useHistory();
-  const { allOutlets, allMaterials, allUnits } = location.state;
+  const { allOutlets, allMaterials } = location.state;
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
@@ -39,7 +39,8 @@ export const AddOpnameMaterialPage = ({ location }) => {
         unit_id: "",
         difference: 0,
         price_system: 0,
-        price_new: 0
+        price_new: 0,
+        unit_name: ""
       }
     ]
   };
@@ -66,12 +67,6 @@ export const AddOpnameMaterialPage = ({ location }) => {
         difference: Yup.number()
           .typeError("Please input a quantity actual")
           .required("Please input a difference")
-        // price_system: Yup.number()
-        //   .typeError("Please input a product")
-        //   .required("Please input a price system"),
-        // price_new: Yup.number()
-        //   .min(0, "Minimum 0")
-        //   .required("Please input a price actual")
       })
     )
   });
@@ -162,32 +157,22 @@ export const AddOpnameMaterialPage = ({ location }) => {
       return;
     }
 
-    const currMaterial = allMaterials.find((item) => {
-      for (const stock of item.Stocks) {
-        if (stock.id === parseInt(value.value)) {
-          return item;
-        } else {
-          return "";
-        }
-      }
-    });
-
-    // error di sini
+    const currMaterial = allMaterials.find((item) =>
+      item.Stocks.find((val) => val.id === parseInt(value.value))
+    );
+    const currStock = currMaterial.Stocks.find(
+      (item) => item.id === parseInt(value.value)
+    );
 
     formikStock.setFieldValue(`items[${index}].stock_id`, value.value);
     formikStock.setFieldValue(
       `items[${index}].quantity_system`,
-      currMaterial.stock
+      currStock.stock
     );
-    // formikStock.setFieldValue(
-    //   `items[${index}].price_system`,
-    //   currMaterial.price
-    // );
-    // formikStock.setFieldValue(`items[${index}].price_new`, currMaterial.price);
-    formikStock.setFieldValue(`items[${index}].unit_id`, currMaterial.unit_id);
+    formikStock.setFieldValue(`items[${index}].unit_id`, currStock.unit_id);
     formikStock.setFieldValue(
       `items[${index}].unit_name`,
-      currMaterial.Unit.name
+      currStock.Unit?.name || "-"
     );
   };
 
@@ -330,12 +315,6 @@ export const AddOpnameMaterialPage = ({ location }) => {
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
                     <h6>Difference</h6>
                   </Col>
-                  {/* <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Price System</h6>
-                  </Col>
-                  <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Price New</h6>
-                  </Col> */}
                   <Col sm={1}></Col>
                 </Row>
 
@@ -468,53 +447,6 @@ export const AddOpnameMaterialPage = ({ location }) => {
                                     ) : null}
                                   </Form.Group>
                                 </Col>
-
-                                {/* <Col>
-                                  <Form.Group>
-                                    <Form.Control
-                                      type="number"
-                                      name={`items[${index}].price_system`}
-                                      {...formikStock.getFieldProps(
-                                        `items[${index}].price_system`
-                                      )}
-                                      disabled
-                                    />
-                                    {formikStock.touched.items &&
-                                    formikStock.errors.items ? (
-                                      <div className="fv-plugins-message-container">
-                                        <div className="fv-help-block">
-                                          {
-                                            formikStock.errors.items[index]
-                                              ?.price_system
-                                          }
-                                        </div>
-                                      </div>
-                                    ) : null}
-                                  </Form.Group>
-                                </Col>
-                                <Col>
-                                  <Form.Group>
-                                    <Form.Control
-                                      type="number"
-                                      name={`items[${index}].price_new`}
-                                      {...formikStock.getFieldProps(
-                                        `items[${index}].price_new`
-                                      )}
-                                      required
-                                    />
-                                    {formikStock.touched.items &&
-                                    formikStock.errors.items ? (
-                                      <div className="fv-plugins-message-container">
-                                        <div className="fv-help-block">
-                                          {
-                                            formikStock.errors.items[index]
-                                              ?.price_new
-                                          }
-                                        </div>
-                                      </div>
-                                    ) : null}
-                                  </Form.Group>
-                                </Col> */}
 
                                 <Col sm={1}>
                                   <Button

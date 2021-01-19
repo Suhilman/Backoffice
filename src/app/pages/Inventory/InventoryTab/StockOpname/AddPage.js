@@ -131,15 +131,12 @@ export const AddStockOpnamePage = ({ location }) => {
       return;
     }
 
-    const currProduct = allProducts.find((item) => {
-      for (const stock of item.Stocks) {
-        if (stock.id === parseInt(value)) {
-          return item;
-        } else {
-          return "";
-        }
-      }
-    });
+    const currProduct = allProducts.find((item) =>
+      item.Stocks.find((item) => item.id === parseInt(value))
+    );
+    const currStock = currProduct.Stocks.find(
+      (item) => item.id === parseInt(value)
+    );
     const diff = Math.abs(
       parseInt(formikStock.values.items[index].quantity_system) -
         parseInt(formikStock.values.items[index].quantity_actual)
@@ -148,7 +145,7 @@ export const AddStockOpnamePage = ({ location }) => {
     formikStock.setFieldValue(`items[${index}].stock_id`, value);
     formikStock.setFieldValue(
       `items[${index}].quantity_system`,
-      currProduct.stock
+      currStock.stock
     );
     formikStock.setFieldValue(`items[${index}].difference`, diff);
     formikStock.setFieldValue(
