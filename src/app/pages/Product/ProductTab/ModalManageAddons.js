@@ -131,12 +131,21 @@ const ModalManageVariant = ({
                                                         name={`groupAddons[${index}].addons[${valIndex}].raw_material_id`}
                                                         className="basic-single"
                                                         classNamePrefix="select"
-                                                        onChange={(value) =>
+                                                        onChange={(value) => {
                                                           formikProduct.setFieldValue(
                                                             `groupAddons[${index}].addons[${valIndex}].raw_material_id`,
                                                             value.value
-                                                          )
-                                                        }
+                                                          );
+                                                          const name = optionsMaterial.find(
+                                                            (mat) =>
+                                                              mat.value ===
+                                                              value.value
+                                                          ).label;
+                                                          formikProduct.setFieldValue(
+                                                            `groupAddons[${index}].addons[${valIndex}].name`,
+                                                            name
+                                                          );
+                                                        }}
                                                       />
                                                     </>
                                                   ) : (

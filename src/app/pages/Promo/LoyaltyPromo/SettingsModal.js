@@ -204,10 +204,22 @@ const SpecialPromoModal = ({
                 <Col>
                   <Form.Group>
                     <Form.Label>Exchange Type:</Form.Label>
-                    <Form.Control as="select">
+                    <Form.Control
+                      as="select"
+                      {...formikSettings.getFieldProps("type")}
+                      className={validationPromoSettings("type")}
+                    >
                       <option value="percentage">Percentage</option>
                       <option value="currency">Rupiah</option>
                     </Form.Control>
+                    {formikSettings.touched.type &&
+                    formikSettings.errors.type ? (
+                      <div className="fv-plugins-message-container">
+                        <div className="fv-help-block">
+                          {formikSettings.errors.type}
+                        </div>
+                      </div>
+                    ) : null}
                   </Form.Group>
                 </Col>
                 <Col>

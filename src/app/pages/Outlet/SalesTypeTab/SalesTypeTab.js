@@ -21,6 +21,7 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
+  const [alert, setAlert] = React.useState("");
 
   const [AllSalesTypes, setAllSalesTypes] = React.useState([]);
 
@@ -50,7 +51,9 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
   const initialValueSalesType = {
     name: "",
     require_table: false,
-    charge: ""
+    is_booking: false,
+    is_delivery: false,
+    charge: 0
   };
 
   const SalesTypeSchema = Yup.object().shape({
@@ -59,6 +62,8 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
       .max(50, "Maximum 50 characters.")
       .required("Please input a name."),
     require_table: Yup.boolean(),
+    is_booking: Yup.boolean(),
+    is_delivery: Yup.boolean(),
     charge: Yup.number()
       .integer()
       .min(0)
@@ -73,6 +78,8 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
       const salesTypeData = {
         name: values.name,
         require_table: values.require_table,
+        is_booking: values.is_booking,
+        is_delivery: values.is_delivery,
         charge: values.charge
       };
 
@@ -84,6 +91,7 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
         disableLoading();
         cancelAddModalSalesType();
       } catch (err) {
+        setAlert(err.response?.data.message || err.message);
         disableLoading();
       }
     }
@@ -97,6 +105,8 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
       const salesTypeData = {
         name: values.name,
         require_table: values.require_table,
+        is_booking: values.is_booking,
+        is_delivery: values.is_delivery,
         charge: values.charge
       };
 
@@ -111,6 +121,7 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
         disableLoading();
         cancelEditModalSalesType();
       } catch (err) {
+        setAlert(err.response?.data.message || err.message);
         disableLoading();
       }
     }
@@ -156,6 +167,7 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
   const cancelAddModalSalesType = () => {
     formikSalesType.resetForm();
     setStateAddModal(false);
+    setAlert("");
   };
 
   const showEditModalSalesType = (data) => {
@@ -163,6 +175,8 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
       id: data.id,
       name: data.name,
       require_table: data.require_table,
+      is_booking: data.is_booking,
+      is_delivery: data.is_delivery,
       charge: parseInt(data.charge.slice(0, -1))
     });
 
@@ -171,6 +185,7 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
   const cancelEditModalSalesType = () => {
     formikSalesTypeEdit.resetForm();
     setStateEditModal(false);
+    setAlert("");
   };
   const showDeleteModalSalesType = (data) => {
     formikSalesType.setFieldValue("id", data.id);
@@ -180,6 +195,7 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
   const cancelDeleteModalSalesType = () => {
     formikSalesType.resetForm();
     setStateDeleteModal(false);
+    setAlert("");
   };
 
   const handleDeleteSalesType = async () => {
@@ -193,6 +209,7 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
       disableLoading();
       cancelDeleteModalSalesType();
     } catch (err) {
+      setAlert(err.response?.data.message || err.message);
       disableLoading();
     }
   };
@@ -253,6 +270,8 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
         no: index + 1,
         name: item.name,
         require_table: item.require_table,
+        is_booking: item.is_booking,
+        is_delivery: item.is_delivery,
         charge: item.charge + "%"
       };
     });
@@ -267,6 +286,7 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
         loading={loading}
         formikSalesType={formikSalesType}
         validationSalesType={validationSalesType}
+        alert={alert}
       />
 
       <ModalSalesType
@@ -278,6 +298,7 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
         loading={loading}
         formikSalesType={formikSalesTypeEdit}
         validationSalesType={validationSalesTypeEdit}
+        alert={alert}
       />
 
       <ShowConfirmModal
@@ -290,6 +311,7 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
         loading={loading}
         buttonColor="danger"
         handleClick={handleDeleteSalesType}
+        alert={alert}
       />
 
       <Col>

@@ -7,7 +7,8 @@ import {
   Form,
   Row,
   Col,
-  InputGroup
+  InputGroup,
+  Alert
 } from "react-bootstrap";
 
 import "../../style.css";
@@ -18,7 +19,8 @@ const ModalPayment = ({
   title,
   loading,
   formikSalesType,
-  validationSalesType
+  validationSalesType,
+  alert
 }) => {
   return (
     <Modal show={stateModal} onHide={cancelModal} size="sm">
@@ -27,6 +29,8 @@ const ModalPayment = ({
       </Modal.Header>
       <Form onSubmit={formikSalesType.handleSubmit}>
         <Modal.Body>
+          {alert ? <Alert variant="danger">{alert}</Alert> : ""}
+
           <Row>
             <Col>
               <Form.Group>
@@ -99,6 +103,42 @@ const ModalPayment = ({
                     }
                   }}
                   checked={formikSalesType.getFieldProps("require_table").value}
+                />
+              </Form.Group>
+
+              <Form.Group>
+                <Form.Check
+                  type="checkbox"
+                  label="Is Booking"
+                  name="is_booking"
+                  value={formikSalesType.getFieldProps("is_booking").value}
+                  onChange={(e) => {
+                    const { value } = e.target;
+                    if (value === "false") {
+                      formikSalesType.setFieldValue("is_booking", true);
+                    } else {
+                      formikSalesType.setFieldValue("is_booking", false);
+                    }
+                  }}
+                  checked={formikSalesType.getFieldProps("is_booking").value}
+                />
+              </Form.Group>
+
+              <Form.Group>
+                <Form.Check
+                  type="checkbox"
+                  label="Is Delivery"
+                  name="is_delivery"
+                  value={formikSalesType.getFieldProps("is_delivery").value}
+                  onChange={(e) => {
+                    const { value } = e.target;
+                    if (value === "false") {
+                      formikSalesType.setFieldValue("is_delivery", true);
+                    } else {
+                      formikSalesType.setFieldValue("is_delivery", false);
+                    }
+                  }}
+                  checked={formikSalesType.getFieldProps("is_delivery").value}
                 />
               </Form.Group>
             </Col>

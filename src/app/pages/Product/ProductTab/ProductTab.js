@@ -1,6 +1,9 @@
 import React from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { ExcelRenderer } from "react-excel-renderer";
 
 import { Row, Col, Button, Form, Dropdown, InputGroup } from "react-bootstrap";
 import DataTable from "react-data-table-component";
@@ -17,6 +20,7 @@ import rupiahFormat from "rupiah-format";
 import useDebounce from "../../../hooks/useDebounce";
 
 import ConfirmModal from "../../../components/ConfirmModal";
+import ImportModal from "./ImportModal";
 
 import "../../style.css";
 
@@ -32,6 +36,9 @@ const ProductTab = ({
   const [loading, setLoading] = React.useState(false);
   const [showConfirm, setShowConfirm] = React.useState(false);
   const [showConfirmBulk, setShowConfirmBulk] = React.useState(false);
+  const [stateImport, setStateImport] = React.useState(false);
+  const [alert, setAlert] = React.useState("");
+  const [filename, setFilename] = React.useState("");
 
   const [search, setSearch] = React.useState("");
   const [filter, setFilter] = React.useState({
@@ -309,6 +316,88 @@ const ProductTab = ({
     }
   };
 
+  const initialValueImportProduct = {
+    outlet_id: [],
+    products: [
+      {
+        name: "",
+        price: 0,
+        price_purchase: 0,
+        product_tax_id: "",
+        barcode: "",
+        sku: "",
+        is_favorite: false,
+        description: "",
+        status: "active"
+      }
+    ]
+  };
+
+  const ImportProductSchema = Yup.object().shape({
+    outlet_id: Yup.array().of(Yup.number().required("Please choose an outlet."))
+  });
+
+  const formikImportProduct = useFormik({
+    initialValues: initialValueImportProduct,
+    validationSchema: ImportProductSchema,
+    onSubmit: async (values) => {
+      const API_URL = process.env.REACT_APP_API_URL;
+
+      const merged = values.outlet_id.map((item) => {
+        const output = [];
+        for (const val of values.products) {
+          const obj = { ...val, outlet_id: item };
+          output.push(obj);
+        }
+        return output;
+      });
+
+      try {
+        enableLoading();
+        await axios.post(`${API_URL}/api/v1/product/bulk-create`, {
+          products: merged.flat(1)
+        });
+        disableLoading();
+        handleRefresh();
+        handleCloseImport();
+      } catch (err) {
+        setAlert(err.response?.data.message || err.message);
+        disableLoading();
+      }
+    }
+  });
+
+  const handleOpenImport = () => setStateImport(true);
+  const handleCloseImport = () => {
+    setStateImport(false);
+    setFilename("");
+    formikImportProduct.setFieldValue("outlet_id", []);
+    formikImportProduct.setFieldValue("products", []);
+  };
+
+  const handleFile = (file) => {
+    setFilename(file[0].name);
+    ExcelRenderer(file[0], (err, resp) => {
+      if (err) {
+        setAlert(err);
+      } else {
+        const { rows } = resp;
+
+        const data = [];
+        for (const item of rows.slice(1)) {
+          const val = rows[0].reduce((init, curr, index) => {
+            init[curr] = item[index];
+            init["status"] = "active";
+            return init;
+          }, {});
+          data.push(val);
+        }
+
+        formikImportProduct.setFieldValue("products", data);
+      }
+    });
+  };
+
   return (
     <Row>
       <ConfirmModal
@@ -331,6 +420,17 @@ const ProductTab = ({
         loading={loading}
       />
 
+      <ImportModal
+        state={stateImport}
+        loading={loading}
+        alert={alert}
+        closeModal={handleCloseImport}
+        formikImportProduct={formikImportProduct}
+        allOutlets={allOutlets}
+        handleFile={handleFile}
+        filename={filename}
+      />
+
       <Col md={12}>
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div className="headerPage">
@@ -344,8 +444,13 @@ const ProductTab = ({
             <div className="headerEnd">
               {!multiSelect ? (
                 <>
-                  {/* <Button variant="outline-secondary">Import</Button>
                   <Button
+                    variant="outline-secondary"
+                    onClick={handleOpenImport}
+                  >
+                    Import
+                  </Button>
+                  {/* <Button
                     variant="outline-secondary"
                     style={{ marginLeft: "0.5rem" }}
                   >
