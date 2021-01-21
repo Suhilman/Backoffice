@@ -28,7 +28,7 @@ export const AddStockOpnamePage = ({ location }) => {
 
   const [startDate, setStartDate] = React.useState(new Date());
 
-  const [outletProduct, setOutletProduct] = React.useState([]);
+  const [hasUnit, setHasUnit] = React.useState(false);
 
   const initialValueStock = {
     outlet_id: "",
@@ -65,7 +65,7 @@ export const AddStockOpnamePage = ({ location }) => {
         quantity_actual: Yup.number()
           .min(0, "Minimum 0")
           .required("Please input a quantity actual"),
-        unit_id: Yup.string().required("Please input a unit_Id"),
+        unit_id: Yup.string(),
         difference: Yup.number()
           .typeError("Please input a quantity actual")
           .required("Please input a difference"),
@@ -125,10 +125,16 @@ export const AddStockOpnamePage = ({ location }) => {
   };
 
   const handleSelectProduct = (val, index) => {
-    const { value } = val;
+    const { value, Unit } = val;
 
     if (!value) {
       return;
+    }
+
+    if (Unit) {
+      setHasUnit(true);
+    } else {
+      setHasUnit(false);
     }
 
     const currProduct = allProducts.find((item) =>
@@ -204,7 +210,8 @@ export const AddStockOpnamePage = ({ location }) => {
               val.expired_date
                 ? dayjs(val.expired_date).format("DD-MMM-YYYY")
                 : "-"
-            }`
+            }`,
+            Unit: item.unit_id
           };
         })
       };
@@ -357,9 +364,15 @@ export const AddStockOpnamePage = ({ location }) => {
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
                     <h6>Quantity Actual</h6>
                   </Col>
-                  <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Unit</h6>
-                  </Col>
+
+                  {hasUnit ? (
+                    <Col style={{ padding: "1rem", textAlign: "center" }}>
+                      <h6>Unit</h6>
+                    </Col>
+                  ) : (
+                    ""
+                  )}
+
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
                     <h6>Difference</h6>
                   </Col>
@@ -459,33 +472,39 @@ export const AddStockOpnamePage = ({ location }) => {
                                     ) : null}
                                   </Form.Group>
                                 </Col>
-                                <Col>
-                                  <Form.Group>
-                                    <Select
-                                      options={optionsUnit}
-                                      name={`items[${index}].unit_id`}
-                                      className="basic-single"
-                                      classNamePrefix="select"
-                                      onChange={(value) =>
-                                        formikStock.setFieldValue(
-                                          `items[${index}].unit_id`,
-                                          value.value
-                                        )
-                                      }
-                                    />
-                                    {formikStock.touched.items &&
-                                    formikStock.errors.items ? (
-                                      <div className="fv-plugins-message-container">
-                                        <div className="fv-help-block">
-                                          {
-                                            formikStock.errors.items[index]
-                                              .unit_id
-                                          }
+
+                                {hasUnit ? (
+                                  <Col>
+                                    <Form.Group>
+                                      <Select
+                                        options={optionsUnit}
+                                        name={`items[${index}].unit_id`}
+                                        className="basic-single"
+                                        classNamePrefix="select"
+                                        onChange={(value) =>
+                                          formikStock.setFieldValue(
+                                            `items[${index}].unit_id`,
+                                            value.value
+                                          )
+                                        }
+                                      />
+                                      {formikStock.touched.items &&
+                                      formikStock.errors.items ? (
+                                        <div className="fv-plugins-message-container">
+                                          <div className="fv-help-block">
+                                            {
+                                              formikStock.errors.items[index]
+                                                .unit_id
+                                            }
+                                          </div>
                                         </div>
-                                      </div>
-                                    ) : null}
-                                  </Form.Group>
-                                </Col>
+                                      ) : null}
+                                    </Form.Group>
+                                  </Col>
+                                ) : (
+                                  ""
+                                )}
+
                                 <Col>
                                   <Form.Group>
                                     <Form.Control

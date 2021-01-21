@@ -27,6 +27,7 @@ export const AddTransferStockPage = ({ location }) => {
   const [alert, setAlert] = React.useState("");
 
   const [startDate, setStartDate] = React.useState(new Date());
+  const [hasUnit, setHasUnit] = React.useState(false);
 
   const initialValueStock = {
     outlet_from_id: "",
@@ -61,7 +62,7 @@ export const AddTransferStockPage = ({ location }) => {
         quantity: Yup.number()
           .min(1, "Minimum 1")
           .required("Please input a quantity"),
-        unit_id: Yup.string().required("Please input a unit_Id")
+        unit_id: Yup.string()
       })
     )
   });
@@ -154,7 +155,8 @@ export const AddTransferStockPage = ({ location }) => {
               val.expired_date
                 ? dayjs(val.expired_date).format("DD-MMM-YYYY")
                 : "-"
-            }`
+            }`,
+            Unit: item.unit_id
           };
         })
       };
@@ -321,9 +323,15 @@ export const AddTransferStockPage = ({ location }) => {
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
                     <h6>Quantity</h6>
                   </Col>
-                  <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Unit</h6>
-                  </Col>
+
+                  {hasUnit ? (
+                    <Col style={{ padding: "1rem", textAlign: "center" }}>
+                      <h6>Unit</h6>
+                    </Col>
+                  ) : (
+                    ""
+                  )}
+
                   <Col sm={1}></Col>
                 </Row>
 
@@ -344,12 +352,17 @@ export const AddTransferStockPage = ({ location }) => {
                                       name={`items[${index}].stock_id`}
                                       // className="basic-single"
                                       // classNamePrefix="select"
-                                      onChange={(value) =>
+                                      onChange={(value) => {
                                         formikStock.setFieldValue(
                                           `items[${index}].stock_id`,
                                           value.value
-                                        )
-                                      }
+                                        );
+                                        if (value.Unit) {
+                                          setHasUnit(true);
+                                        } else {
+                                          setHasUnit(false);
+                                        }
+                                      }}
                                     />
                                     {formikStock.touched.items &&
                                     formikStock.errors.items ? (
@@ -387,33 +400,39 @@ export const AddTransferStockPage = ({ location }) => {
                                     ) : null}
                                   </Form.Group>
                                 </Col>
-                                <Col>
-                                  <Form.Group>
-                                    <Select
-                                      options={optionsUnit}
-                                      name={`items[${index}].unit_id`}
-                                      className="basic-single"
-                                      classNamePrefix="select"
-                                      onChange={(value) =>
-                                        formikStock.setFieldValue(
-                                          `items[${index}].unit_id`,
-                                          value.value
-                                        )
-                                      }
-                                    />
-                                    {formikStock.touched.items &&
-                                    formikStock.errors.items ? (
-                                      <div className="fv-plugins-message-container">
-                                        <div className="fv-help-block">
-                                          {
-                                            formikStock.errors.items[index]
-                                              .unit_id
-                                          }
+
+                                {hasUnit ? (
+                                  <Col>
+                                    <Form.Group>
+                                      <Select
+                                        options={optionsUnit}
+                                        name={`items[${index}].unit_id`}
+                                        className="basic-single"
+                                        classNamePrefix="select"
+                                        onChange={(value) =>
+                                          formikStock.setFieldValue(
+                                            `items[${index}].unit_id`,
+                                            value.value
+                                          )
+                                        }
+                                      />
+                                      {formikStock.touched.items &&
+                                      formikStock.errors.items ? (
+                                        <div className="fv-plugins-message-container">
+                                          <div className="fv-help-block">
+                                            {
+                                              formikStock.errors.items[index]
+                                                .unit_id
+                                            }
+                                          </div>
                                         </div>
-                                      </div>
-                                    ) : null}
-                                  </Form.Group>
-                                </Col>
+                                      ) : null}
+                                    </Form.Group>
+                                  </Col>
+                                ) : (
+                                  ""
+                                )}
+
                                 <Col sm={1}>
                                   <Button
                                     onClick={() => arrayHelpers.remove(index)}

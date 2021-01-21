@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Modal, Spinner, Alert, Form } from "react-bootstrap";
+import { Button, Modal, Spinner, Alert, Form, Row, Col } from "react-bootstrap";
 import Select from "react-select";
 import { useDropzone } from "react-dropzone";
 
@@ -35,6 +35,16 @@ const ConfirmModal = ({
     }
   });
 
+  const handleDownload = () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const newWindow = window.open(
+      `${API_URL}/templates/template-product.xlsx`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+    if (newWindow) newWindow.opener = null;
+  };
+
   return (
     <Modal show={state} onHide={closeModal}>
       <Modal.Header closeButton>
@@ -45,41 +55,69 @@ const ConfirmModal = ({
         <Modal.Body>
           {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
-          <Form.Group>
-            <Form.Label>Location:</Form.Label>
-            <Select
-              options={optionsOutlet}
-              isMulti
-              name="outlet_id"
-              className="basic-multi-select"
-              classNamePrefix="select"
-              onChange={(value) => handleSelectOutlet(value)}
-            />
-            {formikImportProduct.touched.outlet_id &&
-            formikImportProduct.errors.outlet_id ? (
-              <div className="fv-plugins-message-container">
-                <div className="fv-help-block">
-                  {formikImportProduct.errors.outlet_id}
-                </div>
-              </div>
-            ) : null}
-          </Form.Group>
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>Location:</Form.Label>
+                <Select
+                  options={optionsOutlet}
+                  isMulti
+                  name="outlet_id"
+                  className="basic-multi-select"
+                  classNamePrefix="select"
+                  onChange={(value) => handleSelectOutlet(value)}
+                />
+                {formikImportProduct.touched.outlet_id &&
+                formikImportProduct.errors.outlet_id ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikImportProduct.errors.outlet_id}
+                    </div>
+                  </div>
+                ) : null}
+              </Form.Group>
+            </Col>
+          </Row>
 
-          <Form.Group>
-            <Form.Label>Import Excel:</Form.Label>
-            <div
-              {...getRootProps({
-                className: "boxDashed dropzone"
-              })}
-            >
-              <input {...getInputProps()} />
-              {filename ? (
-                <p>{filename}</p>
-              ) : (
-                <p>Drag 'n' drop some files here, or click to select files</p>
-              )}
-            </div>
-          </Form.Group>
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>Import Excel:</Form.Label>
+                <div
+                  {...getRootProps({
+                    className: "boxDashed dropzone"
+                  })}
+                >
+                  <input {...getInputProps()} />
+                  {filename ? (
+                    <p>{filename}</p>
+                  ) : (
+                    <p>
+                      Drag 'n' drop some files here, or click to select files
+                    </p>
+                  )}
+                </div>
+              </Form.Group>
+            </Col>
+
+            <Col>
+              <Form.Group>
+                <Form.Label>Download Template Excel:</Form.Label>
+                <div
+                  className="box"
+                  style={{ textAlign: "center", padding: "2rem" }}
+                >
+                  <Button
+                    variant="outline-success"
+                    size="sm"
+                    onClick={handleDownload}
+                  >
+                    Download Template
+                  </Button>
+                </div>
+              </Form.Group>
+            </Col>
+          </Row>
         </Modal.Body>
 
         <Modal.Footer>

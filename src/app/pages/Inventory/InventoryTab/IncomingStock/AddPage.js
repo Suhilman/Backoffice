@@ -28,6 +28,9 @@ export const AddIncomingStockPage = ({ location }) => {
   const [startDate, setStartDate] = React.useState(new Date());
   const [expiredDate, setExpiredDate] = React.useState(new Date());
 
+  const [hasUnit, setHasUnit] = React.useState(false);
+  const [hasExpiredDate, setHasExpiredDate] = React.useState(false);
+
   const initialValueStock = {
     outlet_id: "",
     notes: "",
@@ -59,9 +62,7 @@ export const AddIncomingStockPage = ({ location }) => {
         quantity: Yup.number()
           .min(1, "Minimum 1")
           .required("Please input a quantity"),
-        unit_id: Yup.number()
-          .min(1)
-          .required("Please input a unit"),
+        unit_id: Yup.string(),
         price: Yup.number()
           .min(0, "Minimum 0")
           .required("Please input a price"),
@@ -157,10 +158,15 @@ export const AddIncomingStockPage = ({ location }) => {
     return { value: item.id, label: item.name };
   });
 
-  const optionsMaterial = allProducts
+  const optionsProduct = allProducts
     .map((item) => {
       if (item.outlet_id === formikStock.values.outlet_id) {
-        return { value: item.id, label: item.name };
+        return {
+          value: item.id,
+          label: item.name,
+          Stocks: item.Stocks,
+          Unit: item.unit_id
+        };
       } else {
         return "";
       }
@@ -288,18 +294,30 @@ export const AddIncomingStockPage = ({ location }) => {
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
                     <h6>Quantity</h6>
                   </Col>
-                  <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Unit</h6>
-                  </Col>
+
+                  {hasUnit ? (
+                    <Col style={{ padding: "1rem", textAlign: "center" }}>
+                      <h6>Unit</h6>
+                    </Col>
+                  ) : (
+                    ""
+                  )}
+
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
                     <h6>Price</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
                     <h6>Total Price</h6>
                   </Col>
-                  <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Expired Date</h6>
-                  </Col>
+
+                  {hasExpiredDate ? (
+                    <Col style={{ padding: "1rem", textAlign: "center" }}>
+                      <h6>Expired Date</h6>
+                    </Col>
+                  ) : (
+                    ""
+                  )}
+
                   <Col sm={1}></Col>
                 </Row>
 
@@ -315,16 +333,29 @@ export const AddIncomingStockPage = ({ location }) => {
                                 <Col>
                                   <Form.Group>
                                     <Select
-                                      options={optionsMaterial}
+                                      options={optionsProduct}
                                       name={`items[${index}].product_id`}
                                       className="basic-single"
                                       classNamePrefix="select"
-                                      onChange={(value) =>
+                                      onChange={(value) => {
                                         formikStock.setFieldValue(
                                           `items[${index}].product_id`,
                                           value.value
-                                        )
-                                      }
+                                        );
+                                        const currStock = value.Stocks.find(
+                                          (val) => val.is_initial
+                                        );
+                                        if (currStock?.expired_date) {
+                                          setHasExpiredDate(true);
+                                        } else {
+                                          setHasExpiredDate(false);
+                                        }
+                                        if (value.Unit) {
+                                          setHasUnit(true);
+                                        } else {
+                                          setHasUnit(false);
+                                        }
+                                      }}
                                     />
                                     {formikStock.touched.items &&
                                     formikStock.errors.items ? (
@@ -368,33 +399,39 @@ export const AddIncomingStockPage = ({ location }) => {
                                     ) : null}
                                   </Form.Group>
                                 </Col>
-                                <Col>
-                                  <Form.Group>
-                                    <Select
-                                      options={optionsUnit}
-                                      name={`items[${index}].unit_id`}
-                                      className="basic-single"
-                                      classNamePrefix="select"
-                                      onChange={(value) =>
-                                        formikStock.setFieldValue(
-                                          `items[${index}].unit_id`,
-                                          value.value
-                                        )
-                                      }
-                                    />
-                                    {formikStock.touched.items &&
-                                    formikStock.errors.items ? (
-                                      <div className="fv-plugins-message-container">
-                                        <div className="fv-help-block">
-                                          {
-                                            formikStock.errors.items[index]
-                                              ?.unit_id
-                                          }
+
+                                {hasUnit ? (
+                                  <Col>
+                                    <Form.Group>
+                                      <Select
+                                        options={optionsUnit}
+                                        name={`items[${index}].unit_id`}
+                                        className="basic-single"
+                                        classNamePrefix="select"
+                                        onChange={(value) =>
+                                          formikStock.setFieldValue(
+                                            `items[${index}].unit_id`,
+                                            value.value
+                                          )
+                                        }
+                                      />
+                                      {formikStock.touched.items &&
+                                      formikStock.errors.items ? (
+                                        <div className="fv-plugins-message-container">
+                                          <div className="fv-help-block">
+                                            {
+                                              formikStock.errors.items[index]
+                                                ?.unit_id
+                                            }
+                                          </div>
                                         </div>
-                                      </div>
-                                    ) : null}
-                                  </Form.Group>
-                                </Col>
+                                      ) : null}
+                                    </Form.Group>
+                                  </Col>
+                                ) : (
+                                  ""
+                                )}
+
                                 <Col>
                                   <Form.Group>
                                     <Form.Control
@@ -448,30 +485,34 @@ export const AddIncomingStockPage = ({ location }) => {
                                   </Form.Group>
                                 </Col>
 
-                                <Col>
-                                  <Form.Group>
-                                    <DatePicker
-                                      name={`items[${index}].expired_date`}
-                                      selected={expiredDate}
-                                      onChange={(date) =>
-                                        handleExpiredDate(date, index)
-                                      }
-                                      customInput={<CustomInputExpiredDate />}
-                                      required
-                                    />
-                                    {formikStock.touched.items &&
-                                    formikStock.errors.items ? (
-                                      <div className="fv-plugins-message-container">
-                                        <div className="fv-help-block">
-                                          {
-                                            formikStock.errors.items[index]
-                                              ?.expired_date
-                                          }
+                                {hasExpiredDate ? (
+                                  <Col>
+                                    <Form.Group>
+                                      <DatePicker
+                                        name={`items[${index}].expired_date`}
+                                        selected={expiredDate}
+                                        onChange={(date) =>
+                                          handleExpiredDate(date, index)
+                                        }
+                                        customInput={<CustomInputExpiredDate />}
+                                        required
+                                      />
+                                      {formikStock.touched.items &&
+                                      formikStock.errors.items ? (
+                                        <div className="fv-plugins-message-container">
+                                          <div className="fv-help-block">
+                                            {
+                                              formikStock.errors.items[index]
+                                                ?.expired_date
+                                            }
+                                          </div>
                                         </div>
-                                      </div>
-                                    ) : null}
-                                  </Form.Group>
-                                </Col>
+                                      ) : null}
+                                    </Form.Group>
+                                  </Col>
+                                ) : (
+                                  ""
+                                )}
 
                                 <Col sm={1}>
                                   <Button

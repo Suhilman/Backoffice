@@ -45,7 +45,9 @@ const FormTemplate = ({
   defaultValueCategory,
   defaultValueUnit,
   expiredDate,
-  handleExpiredDate
+  handleExpiredDate,
+  hasExpiredDate,
+  handleHasExpired
 }) => {
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
@@ -62,7 +64,9 @@ const FormTemplate = ({
         defaultValue={value}
         onClick={onClick}
         style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
-        disabled={formikProduct.values.has_stock ? false : true}
+        disabled={
+          hasExpiredDate && formikProduct.values.has_stock ? false : true
+        }
       />
     );
   };
@@ -373,6 +377,8 @@ const FormTemplate = ({
                         formikProduct.setFieldValue("has_stock", true);
                       } else {
                         formikProduct.setFieldValue("has_stock", false);
+
+                        handleHasExpired({ target: { value: "true" } });
                       }
                     }}
                   />
@@ -425,7 +431,22 @@ const FormTemplate = ({
               </Form.Group>
 
               <Form.Group>
-                <Form.Label>Expired Date</Form.Label>
+                <Form.Label style={{ marginRight: "1rem" }}>
+                  Expired Date
+                </Form.Label>
+                <FormControlLabel
+                  value={hasExpiredDate}
+                  name="has_expired"
+                  control={
+                    <Switch
+                      color="primary"
+                      checked={hasExpiredDate}
+                      onChange={handleHasExpired}
+                      disabled={formikProduct.values.has_stock ? false : true}
+                    />
+                  }
+                />
+
                 <InputGroup>
                   <DatePicker
                     name="expired_date"

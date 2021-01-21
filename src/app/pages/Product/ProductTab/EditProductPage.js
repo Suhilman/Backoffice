@@ -32,7 +32,15 @@ export const EditProductPage = ({ match, location }) => {
   );
   const [showManageAddons, setShowManageAddons] = React.useState(false);
   const [deletePhoto, setDeletePhoto] = React.useState(false);
-  const [expiredDate, setExpiredDate] = React.useState(new Date());
+
+  const currStock = currProduct.Stocks.find((item) => item.is_initial);
+
+  const [expiredDate, setExpiredDate] = React.useState(
+    currStock ? new Date(currStock.expired_date) : ""
+  );
+  const [hasExpiredDate, setHasExpiredDate] = React.useState(
+    currStock && currStock.expired_date ? true : false
+  );
 
   const product = {
     outlet_id: currProduct.outlet_id,
@@ -53,7 +61,7 @@ export const EditProductPage = ({ match, location }) => {
     recipe_id: currProduct.recipe_id || "",
     unit_id: currProduct.unit_id || "",
     expired_date: currProduct.expired_date,
-    description: currProduct.description,
+    description: currProduct.description || "",
     groupAddons
   };
 
@@ -277,6 +285,17 @@ export const EditProductPage = ({ match, location }) => {
     );
   };
 
+  const handleHasExpired = (e) => {
+    const { value } = e.target;
+    if (value === "false") {
+      setHasExpiredDate(true);
+      setExpiredDate(new Date());
+    } else {
+      setHasExpiredDate(false);
+      setExpiredDate("");
+    }
+  };
+
   return (
     <Row>
       <ModalManageAddons
@@ -313,6 +332,8 @@ export const EditProductPage = ({ match, location }) => {
           defaultValueUnit={defaultValueUnit}
           expiredDate={expiredDate}
           handleExpiredDate={handleExpiredDate}
+          hasExpiredDate={hasExpiredDate}
+          handleHasExpired={handleHasExpired}
         />
       </Col>
     </Row>

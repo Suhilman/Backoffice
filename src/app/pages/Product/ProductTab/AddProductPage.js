@@ -26,7 +26,8 @@ export const AddProductPage = ({ location }) => {
   const [alertPhoto, setAlertPhoto] = React.useState("");
   const [showManageAddons, setShowManageAddons] = React.useState(false);
   const [photoPreview, setPhotoPreview] = React.useState("");
-  const [expiredDate, setExpiredDate] = React.useState(new Date());
+  const [expiredDate, setExpiredDate] = React.useState("");
+  const [hasExpiredDate, setHasExpiredDate] = React.useState(false);
 
   const [savedAddons, setSavedAddons] = React.useState([
     {
@@ -286,6 +287,17 @@ export const AddProductPage = ({ location }) => {
     );
   };
 
+  const handleHasExpired = (e) => {
+    const { value } = e.target;
+    if (value === "false") {
+      setHasExpiredDate(true);
+      setExpiredDate(new Date());
+    } else {
+      setHasExpiredDate(false);
+      setExpiredDate("");
+    }
+  };
+
   return (
     <Row>
       <ModalManageAddons
@@ -322,6 +334,8 @@ export const AddProductPage = ({ location }) => {
           defaultValueUnit={defaultValueUnit}
           expiredDate={expiredDate}
           handleExpiredDate={handleExpiredDate}
+          hasExpiredDate={hasExpiredDate}
+          handleHasExpired={handleHasExpired}
         />
       </Col>
     </Row>

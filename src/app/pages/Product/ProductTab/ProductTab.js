@@ -2,8 +2,8 @@ import React from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import { ExcelRenderer } from "react-excel-renderer";
+import dayjs from "dayjs";
 
 import { Row, Col, Button, Form, Dropdown, InputGroup } from "react-bootstrap";
 import DataTable from "react-data-table-component";
@@ -323,7 +323,6 @@ const ProductTab = ({
         name: "",
         price: 0,
         price_purchase: 0,
-        product_tax_id: "",
         barcode: "",
         sku: "",
         is_favorite: false,
@@ -333,27 +332,48 @@ const ProductTab = ({
     ]
   };
 
-  const ImportProductSchema = Yup.object().shape({
-    outlet_id: Yup.array().of(Yup.number().required("Please choose an outlet."))
-  });
-
   const formikImportProduct = useFormik({
     initialValues: initialValueImportProduct,
-    validationSchema: ImportProductSchema,
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
 
-      const merged = values.outlet_id.map((item) => {
-        const output = [];
-        for (const val of values.products) {
-          const obj = { ...val, outlet_id: item };
-          output.push(obj);
-        }
-        return output;
-      });
-
       try {
+        if (!values.outlet_id.length) {
+          throw new Error("Please choose an outlet");
+        }
+
+        const merged = values.outlet_id.map((item) => {
+          const output = [];
+          for (const val of values.products) {
+            const obj = {
+              ...val,
+              outlet_id: item,
+              expired_date: val.expired_date
+                ? dayjs(val.expired_date, "DD/MM/YYYY").format("YYYY-MM-DD")
+                : ""
+            };
+            if (!val.barcode) delete obj.barcode;
+            if (!val.category) delete obj.category;
+            if (!val.with_recipe) delete obj.with_recipe;
+            if (!val.stock) delete obj.stock;
+            if (!val.unit) delete obj.unit;
+            if (!val.expired_date) delete obj.expired_date;
+            output.push(obj);
+          }
+          return output;
+        });
+
         enableLoading();
+
+        for (const item of merged.flat(1)) {
+          if (!item.name) {
+            throw new Error("there is product without name");
+          }
+          if (!item.sku) {
+            throw new Error("there is product without sku");
+          }
+        }
+
         await axios.post(`${API_URL}/api/v1/product/bulk-create`, {
           products: merged.flat(1)
         });
@@ -383,9 +403,27 @@ const ProductTab = ({
       } else {
         const { rows } = resp;
 
+        const keys = [
+          "name",
+          "description",
+          "barcode",
+          "sku",
+          "price",
+          "price_purchase",
+          "is_favorite",
+          "category",
+          "with_recipe",
+          "stock",
+          "unit",
+          "expired_date"
+        ];
+
         const data = [];
-        for (const item of rows.slice(1)) {
-          const val = rows[0].reduce((init, curr, index) => {
+        for (const item of rows.slice(5)) {
+          const val = keys.reduce((init, curr, index) => {
+            if (typeof item[index] === "undefined" || item[index] === "-") {
+              item[index] = "";
+            }
             init[curr] = item[index];
             init["status"] = "active";
             return init;
