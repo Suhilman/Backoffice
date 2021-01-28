@@ -91,8 +91,8 @@ export const ReportPage = () => {
     {
       no: 8,
       title: "Recap",
-      // table: "table-attendance-report",
-      // filename: `laporan-absensi_${startDate}-${endDate}`,
+      table: "table-recap",
+      filename: `laporan-rekap_${startDate}-${endDate}`,
       Component: RecapTab
     }
   ];
