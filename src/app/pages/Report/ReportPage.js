@@ -20,6 +20,7 @@ import { CategorySalesTab } from "./CategorySalesTab";
 import { TransactionHistoryTab } from "./TransactionHistoryTab";
 import { AttendanceTab } from "./AttendanceTab";
 import { DiscountSalesTab } from "./DiscountTab";
+import { RecapTab } from "./RecapTab";
 
 import CustomDateRange from "../../components/CustomDateRange";
 import ExportExcel from "react-html-table-to-excel";
@@ -86,150 +87,13 @@ export const ReportPage = () => {
       // table: "table-attendance-report",
       // filename: `laporan-absensi_${startDate}-${endDate}`,
       Component: DiscountSalesTab
-    }
-  ];
-
-  const ranges = (startRange, endRange) => [
-    {
-      id: 1,
-      value: "Today",
-      valueId: "Hari Ini",
-      displayDate: dayjs().format("DD-MM-YYYY"),
-      date_start: dayjs().format("YYYY-MM-DD"),
-      date_end: dayjs()
-        .add(1, "day")
-        .format("YYYY-MM-DD")
     },
     {
-      id: 2,
-      value: "This Week",
-      valueId: "Pekan Ini",
-      displayDate: `${dayjs()
-        .startOf("week")
-        .format("DD-MM-YYYY")} - ${dayjs()
-        .endOf("week")
-        .format("DD-MM-YYYY")}`,
-      date_start: dayjs()
-        .startOf("week")
-        .format("YYYY-MM-DD"),
-      date_end: dayjs()
-        .endOf("week")
-        .format("YYYY-MM-DD")
-    },
-    {
-      id: 3,
-      value: "Last Week",
-      valueId: "Pekan Lalu",
-      displayDate: `${dayjs()
-        .startOf("week")
-        .subtract(1, "week")
-        .format("DD-MM-YYYY")} - ${dayjs()
-        .endOf("week")
-        .subtract(1, "week")
-        .format("DD-MM-YYYY")}`,
-      date_start: dayjs()
-        .startOf("week")
-        .subtract(1, "week")
-        .format("YYYY-MM-DD"),
-      date_end: dayjs()
-        .endOf("week")
-        .subtract(1, "week")
-        .format("YYYY-MM-DD")
-    },
-    {
-      id: 4,
-      value: "This Month",
-      valueId: "Bulan Ini",
-      displayDate: `${dayjs()
-        .startOf("month")
-        .format("DD-MM-YYYY")} - ${dayjs()
-        .endOf("month")
-        .format("DD-MM-YYYY")}`,
-      date_start: dayjs()
-        .startOf("month")
-        .format("YYYY-MM-DD"),
-      date_end: dayjs()
-        .endOf("month")
-        .format("YYYY-MM-DD")
-    },
-    {
-      id: 5,
-      value: "Last Month",
-      valueId: "Bulan Lalu",
-      displayDate: `${dayjs()
-        .subtract(1, "month")
-        .startOf("month")
-        .format("DD-MM-YYYY")} - ${dayjs()
-        .subtract(1, "month")
-        .endOf("month")
-        .format("DD-MM-YYYY")}`,
-      date_start: dayjs()
-        .subtract(1, "month")
-        .startOf("month")
-        .format("YYYY-MM-DD"),
-      date_end: dayjs()
-        .subtract(1, "month")
-        .endOf("month")
-        .format("YYYY-MM-DD")
-    },
-    // {
-    //   id: 6,
-    //   value: "Last 6 Months",
-    //   date_start: dayjs()
-    //     .subtract(6, "month")
-    //     .date(1)
-    //     .format("YYYY-MM-DD"),
-    //   date_end: dayjs()
-    //     .endOf("month")
-    //     .format("YYYY-MM-DD")
-    // },
-    {
-      id: 7,
-      value: "This Year",
-      valueId: "Tahun Ini",
-      displayDate: `${dayjs()
-        .startOf("year")
-        .format("DD-MM-YYYY")} - ${dayjs()
-        .endOf("year")
-        .format("DD-MM-YYYY")}`,
-      date_start: dayjs()
-        .startOf("year")
-        .format("YYYY-MM-DD"),
-      date_end: dayjs()
-        .endOf("year")
-        .format("YYYY-MM-DD")
-    },
-    {
-      id: 8,
-      value: "Last Year",
-      valueId: "Tahun Lalu",
-      displayDate: `${dayjs()
-        .subtract(1, "year")
-        .startOf("year")
-        .format("DD-MM-YYYY")} - ${dayjs()
-        .subtract(1, "year")
-        .endOf("year")
-        .format("DD-MM-YYYY")}`,
-      date_start: dayjs()
-        .subtract(1, "year")
-        .startOf("year")
-        .format("YYYY-MM-DD"),
-      date_end: dayjs()
-        .subtract(1, "year")
-        .endOf("year")
-        .format("YYYY-MM-DD")
-    },
-    {
-      id: 9,
-      value: `${dayjs(startRange).format("YYYY-MM-DD")} - ${dayjs(
-        endRange
-      ).format("YYYY-MM-DD")}`,
-      valueId: "",
-      displayDate: `${dayjs(startRange).format("DD-MM-YYYY")} - ${dayjs(
-        endRange
-      ).format("DD-MM-YYYY")}`,
-      date_start: dayjs(startRange).format("YYYY-MM-DD"),
-      date_end: dayjs(endRange).format("YYYY-MM-DD")
+      no: 8,
+      title: "Recap",
+      // table: "table-attendance-report",
+      // filename: `laporan-absensi_${startDate}-${endDate}`,
+      Component: RecapTab
     }
   ];
 

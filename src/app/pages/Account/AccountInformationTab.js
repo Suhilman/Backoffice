@@ -23,8 +23,14 @@ export const AccountInformation = () => {
     store_id: "-",
     old_password: "",
     new_password: "",
-    password_confirmation: ""
+    password_confirmation: "",
+    old_pin: "",
+    new_pin: "",
+    pin_confirmation: ""
   });
+
+  const userInfo = JSON.parse(localStorage.getItem("user_info"));
+  const isOwner = userInfo.owner_id ? true : false;
 
   const AccountSchema = Yup.object().shape({
     email: Yup.string()
@@ -48,10 +54,45 @@ export const AccountInformation = () => {
       .required("Please input a password confirmation.")
   });
 
+  const AccountStaffSchema = Yup.object().shape({
+    email: Yup.string()
+      .email()
+      .required("Please input an email."),
+    phone_number: Yup.number().typeError("Please input a number only"),
+    old_password: Yup.string()
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!#%*?&]{8,20}$/,
+        "Password at least must have one uppercase, one numeric, and 8 characters long."
+      )
+      .required("Please input a password."),
+    new_password: Yup.string()
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!#%*?&]{8,20}$/,
+        "Password at least must have one uppercase, one numeric, and 8 characters long."
+      )
+      .required("Please input a password."),
+    password_confirmation: Yup.string()
+      .oneOf([Yup.ref("new_password"), null], "Password do not match")
+      .required("Please input a password confirmation."),
+    old_pin: Yup.string()
+      .matches(/^\d+$/, "Please input numbers")
+      .min(6)
+      .max(6)
+      .required("Please input a pin. Pin should be an exact 6 numbers"),
+    new_pin: Yup.string()
+      .matches(/^\d+$/, "Please input numbers")
+      .min(6)
+      .max(6)
+      .required("Please input a pin. Pin should be an exact 6 numbers"),
+    pin_confirmation: Yup.string()
+      .oneOf([Yup.ref("new_pin"), null], "Pin do not match")
+      .required("Please input a pin confirmation.")
+  });
+
   const formikAccount = useFormik({
     enableReinitialize: true,
     initialValues: account,
-    validationSchema: AccountSchema,
+    validationSchema: isOwner ? AccountSchema : AccountStaffSchema,
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
       let url;
@@ -63,19 +104,27 @@ export const AccountInformation = () => {
         new_password: values.new_password
       };
 
+      if (!isOwner) {
+        accountData.old_pin = values.old_pin;
+        accountData.new_pin = values.new_pin;
+      }
+
+      let request;
       if (isOwner) {
         url = `${API_URL}/api/v1/owner/${userInfo.owner_id}`;
+        request = axios.put(url, accountData);
       } else {
         url = `${API_URL}/api/v1/staff/${userInfo.user_id}`;
+        request = axios.patch(url, accountData);
       }
 
       try {
         enableLoading();
-        await axios.put(url, accountData);
+        await request;
         disableLoading();
         closeModal();
       } catch (err) {
-        setAlert(err.response?.message || err);
+        setAlert(err.response?.message || err.message);
         disableLoading();
       }
     }
@@ -100,9 +149,6 @@ export const AccountInformation = () => {
     formikAccount.resetForm();
     setStateModal(false);
   };
-
-  const userInfo = JSON.parse(localStorage.getItem("user_info"));
-  const isOwner = userInfo.owner_id ? true : false;
 
   const getUserInfo = async (user, owner) => {
     const registrationDateFormat = (date) => dayjs(date).format("DD-MM-YYYY");
@@ -193,6 +239,7 @@ export const AccountInformation = () => {
         alert={alert}
         formikAccount={formikAccount}
         validationAccount={validationAccount}
+        isOwner={isOwner}
       />
 
       <Row>
@@ -230,7 +277,8 @@ const ModalAccountInformation = ({
   loading,
   alert,
   formikAccount,
-  validationAccount
+  validationAccount,
+  isOwner
 }) => {
   return (
     <Modal show={state} onHide={closeModal}>
@@ -262,26 +310,6 @@ const ModalAccountInformation = ({
                 ) : null}
               </Form.Group>
 
-              <Form.Group>
-                <Form.Label>Phone Number</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="phone_number"
-                  {...formikAccount.getFieldProps("phone_number")}
-                  className={validationAccount("phone_number")}
-                  required
-                />
-                {formikAccount.touched.phone_number &&
-                formikAccount.errors.phone_number ? (
-                  <div className="fv-plugins-message-container">
-                    <div className="fv-help-block">
-                      {formikAccount.errors.phone_number}
-                    </div>
-                  </div>
-                ) : null}
-              </Form.Group>
-            </Col>
-            <Col md={6}>
               <Form.Group>
                 <Form.Label>Old Password</Form.Label>
                 <Form.Control
@@ -338,6 +366,90 @@ const ModalAccountInformation = ({
                   </div>
                 ) : null}
               </Form.Group>
+            </Col>
+
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Phone Number</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="phone_number"
+                  {...formikAccount.getFieldProps("phone_number")}
+                  className={validationAccount("phone_number")}
+                  required
+                />
+                {formikAccount.touched.phone_number &&
+                formikAccount.errors.phone_number ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikAccount.errors.phone_number}
+                    </div>
+                  </div>
+                ) : null}
+              </Form.Group>
+
+              {!isOwner ? (
+                <>
+                  <Form.Group>
+                    <Form.Label>Old Pin</Form.Label>
+                    <Form.Control
+                      type="password"
+                      name="old_pin"
+                      {...formikAccount.getFieldProps("old_pin")}
+                      className={validationAccount("old_pin")}
+                      required
+                    />
+                    {formikAccount.touched.old_pin &&
+                    formikAccount.errors.old_pin ? (
+                      <div className="fv-plugins-message-container">
+                        <div className="fv-help-block">
+                          {formikAccount.errors.old_pin}
+                        </div>
+                      </div>
+                    ) : null}
+                  </Form.Group>
+
+                  <Form.Group>
+                    <Form.Label>New Pin</Form.Label>
+                    <Form.Control
+                      type="password"
+                      name="new_pin"
+                      {...formikAccount.getFieldProps("new_pin")}
+                      className={validationAccount("new_pin")}
+                      required
+                    />
+                    {formikAccount.touched.new_pin &&
+                    formikAccount.errors.new_pin ? (
+                      <div className="fv-plugins-message-container">
+                        <div className="fv-help-block">
+                          {formikAccount.errors.new_pin}
+                        </div>
+                      </div>
+                    ) : null}
+                  </Form.Group>
+
+                  <Form.Group>
+                    <Form.Label>Confirm Pin</Form.Label>
+                    <Form.Control
+                      type="password"
+                      name="pin_confirmation"
+                      {...formikAccount.getFieldProps("pin_confirmation")}
+                      className={validationAccount("pin_confirmation")}
+                      required
+                    />
+                    {formikAccount.touched.pin_confirmation &&
+                    formikAccount.errors.pin_confirmation ? (
+                      <div className="fv-plugins-message-container">
+                        <div className="fv-help-block">
+                          {formikAccount.errors.pin_confirmation}
+                        </div>
+                      </div>
+                    ) : null}
+                  </Form.Group>
+                </>
+              ) : (
+                ""
+              )}
             </Col>
           </Row>
         </Modal.Body>
