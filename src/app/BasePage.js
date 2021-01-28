@@ -52,6 +52,8 @@ import { DetailTransferMaterialPage } from "./pages/Ingredient/InventoryTab/Tran
 import { OpnameMaterialPage } from "./pages/Ingredient/InventoryTab/StockOpname/OpnameMaterialPage";
 import { AddOpnameMaterialPage } from "./pages/Ingredient/InventoryTab/StockOpname/AddPage";
 import { DetailOpnameMaterialPage } from "./pages/Ingredient/InventoryTab/StockOpname/DetailPage";
+import { AddBundlePage } from "./pages/Product/ProductTab/AddBundle";
+import { EditBundlePage } from "./pages/Product/ProductTab/EditBundle";
 
 export default function BasePage() {
   const [currPrivileges, setCurrPrivileges] = React.useState({
@@ -133,6 +135,21 @@ export default function BasePage() {
           exact={false}
           path="/product/:productId"
           component={EditProductPage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.product_management}
+          isRoute={true}
+          exact={false}
+          path="/product-bundle/add"
+          component={AddBundlePage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.product_management}
+          isRoute={false}
+          exact={true}
+          path="/product-bundle/:productId"
+          component={EditBundlePage}
         />
 
         <ProtectedRoute

@@ -22,13 +22,16 @@ export const EditProductPage = ({ match, location }) => {
     groupAddons
   } = location.state;
   const history = useHistory();
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [alertPhoto, setAlertPhoto] = React.useState("");
-  const [photo, setPhoto] = React.useState(currProduct.image || "");
+  const [photo, setPhoto] = React.useState(
+    currProduct.image ? `${API_URL}/${currProduct.image}` : ""
+  );
   const [photoPreview, setPhotoPreview] = React.useState(
-    currProduct.image || ""
+    currProduct.image ? `${API_URL}/${currProduct.image}` : ""
   );
   const [showManageAddons, setShowManageAddons] = React.useState(false);
   const [deletePhoto, setDeletePhoto] = React.useState(false);

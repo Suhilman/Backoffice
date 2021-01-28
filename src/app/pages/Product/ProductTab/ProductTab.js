@@ -5,7 +5,15 @@ import { useFormik } from "formik";
 import { ExcelRenderer } from "react-excel-renderer";
 import dayjs from "dayjs";
 
-import { Row, Col, Button, Form, Dropdown, InputGroup } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Button,
+  Form,
+  Dropdown,
+  InputGroup,
+  ButtonGroup
+} from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import {
   Switch,
@@ -85,10 +93,10 @@ const ProductTab = ({
     const filterProduct = `?name=${search}&product_category_id=${filter.category}&outlet_id=${filter.outlet}&status=${filter.status}`;
 
     try {
-      const products = await axios.get(
-        `${API_URL}/api/v1/product${filterProduct}&per_page=1000`
+      const { data } = await axios.get(
+        `${API_URL}/api/v1/product${filterProduct}`
       );
-      setAllProducts(products.data.data);
+      setAllProducts(data.data);
     } catch (err) {
       setAllProducts([]);
     }
@@ -192,18 +200,47 @@ const ProductTab = ({
         };
       });
 
+      const bundleItems = [];
+      let initial_stock_id;
+      if (item.has_stock) {
+        if (item.Stocks.length) {
+          const currStock = item.Stocks.find((val) => val.is_initial);
+
+          if (currStock) {
+            initial_stock_id = currStock.id;
+
+            for (const bundle of currStock.Product_Bundle) {
+              bundleItems.push({
+                id: bundle.id,
+                stock_id: bundle.stock_child_id,
+                // quantity: bundle.quantity,
+                base_system_price: bundle.Bundle_Items.Product.price,
+                system_price: bundle.Bundle_Items.Product.price
+                // system_price:
+                //   bundle.Bundle_Items.Product.price * bundle.quantity,
+                // max_quantity: bundle.Bundle_Items.stock
+              });
+            }
+          }
+        }
+      }
+
       return {
         id: item.id,
         no: index + 1,
         name: item.name,
         category: item.Product_Category ? item.Product_Category.name : "",
-        price: rupiahFormat.convert(item.price),
+        price: item.price_purchase
+          ? rupiahFormat.convert(item.price_purchase)
+          : rupiahFormat.convert(0),
         stock: item.stock,
         outlet: item.Outlet.name,
         unit: item.Unit?.name || "-",
         status: item.status,
         currProduct: item,
-        groupAddons
+        groupAddons,
+        bundleItems,
+        initial_stock_id
       };
     });
   };
@@ -279,15 +316,20 @@ const ProductTab = ({
             <Dropdown.Menu>
               <Link
                 to={{
-                  pathname: `/product/${rows.id}`,
+                  pathname: rows.currProduct.is_bundle
+                    ? `/product-bundle/${rows.id}`
+                    : `/product/${rows.id}`,
                   state: {
                     allOutlets,
                     allCategories,
                     allTaxes,
                     allUnit,
                     allMaterials,
+                    allProducts,
                     currProduct: rows.currProduct,
-                    groupAddons: rows.groupAddons
+                    groupAddons: rows.groupAddons,
+                    bundleItems: rows.bundleItems,
+                    initial_stock_id: rows.initial_stock_id
                   }
                 }}
               >
@@ -479,37 +521,63 @@ const ProductTab = ({
                 <h3>{selectedData.length} items selected</h3>
               )}
             </div>
-            <div className="headerEnd">
+            <div className="headerEnd" style={{ display: "flex" }}>
               {!multiSelect ? (
                 <>
-                  <Button
-                    variant="outline-secondary"
-                    onClick={handleOpenImport}
-                  >
-                    Import
-                  </Button>
-                  {/* <Button
-                    variant="outline-secondary"
-                    style={{ marginLeft: "0.5rem" }}
-                  >
-                    Export
-                  </Button> */}
-                  <Link
-                    to={{
-                      pathname: "/product/add-product",
-                      state: {
-                        allCategories,
-                        allTaxes,
-                        allOutlets,
-                        allUnit,
-                        allMaterials
-                      }
-                    }}
-                  >
-                    <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
-                      Add New Product
-                    </Button>
-                  </Link>
+                  <Dropdown>
+                    <Dropdown.Toggle variant="outline-secondary">
+                      Import/Export
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                      <Dropdown.Item as="button" onClick={handleOpenImport}>
+                        Import
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        as="button"
+                        // onClick={handleOpenImport}
+                      >
+                        Export
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+
+                  <Dropdown as={ButtonGroup} style={{ marginLeft: "0.5rem" }}>
+                    <Link
+                      to={{
+                        pathname: "/product/add-product",
+                        state: {
+                          allCategories,
+                          allTaxes,
+                          allOutlets,
+                          allUnit,
+                          allMaterials
+                        }
+                      }}
+                      className="btn btn-primary"
+                    >
+                      <div>Add New Product</div>
+                    </Link>
+
+                    <Dropdown.Toggle split variant="primary" />
+
+                    <Dropdown.Menu>
+                      <Link
+                        to={{
+                          pathname: "/product-bundle/add",
+                          state: {
+                            allCategories,
+                            allOutlets,
+                            allProducts
+                          }
+                        }}
+                      >
+                        <Dropdown.Item as="button">
+                          Add New Product Bundle
+                        </Dropdown.Item>
+                      </Link>
+                    </Dropdown.Menu>
+                  </Dropdown>
                 </>
               ) : (
                 <Button

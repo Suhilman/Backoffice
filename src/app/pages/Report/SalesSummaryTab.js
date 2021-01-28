@@ -83,8 +83,8 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
         return {
           product_name: val.Product.name,
           addons_name: joinedAddons,
-          category_name: val.Product.Product_Category.name,
-          sku: val.Product.sku,
+          category_name: val.Product.Product_Category?.name,
+          sku: val.Product?.sku,
           totalItems: val.quantity,
           grossSales: grossSales,
           discountSales: discountSales,
@@ -96,7 +96,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
     });
 
     const allProductNames = allItems.flat(1).reduce((init, curr) => {
-      init[`${curr.product_name}-${curr.addons_name}`] = curr.category_name;
+      init[`${curr.product_name}-${curr.addons_name}`] = curr?.category_name;
       return init;
     }, {});
 
@@ -110,7 +110,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
         .filter(
           (val) => val.product_name === name && val.addons_name === addons
         )
-        .reduce((init, curr) => (init = curr.sku), "");
+        .reduce((init, curr) => (init = curr?.sku), "");
 
       const totalItems = allItems
         .flat(1)

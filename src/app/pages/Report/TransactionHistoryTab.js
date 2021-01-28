@@ -71,7 +71,7 @@ export const TransactionHistoryTab = ({
             customer_name: item.Customer_Profile?.name || "-",
             sku: val.sku || "-",
             product_name: val.Product?.name || "-",
-            category_name: val.Product?.Product_Category.name || "-",
+            category_name: val.Product?.Product_Category?.name || "-",
             quantity: val.quantity,
             price_product: val.price_product
           };
