@@ -107,7 +107,7 @@ export const DetailOutcomingStockPage = ({ match }) => {
                 <Form.Label>Location:</Form.Label>
                 <Form.Control
                   type="text"
-                  value={outcomingStock ? outcomingStock.Outlet.name : "-"}
+                  value={outcomingStock ? outcomingStock.Outlet?.name : "-"}
                   disabled
                 />
               </Form.Group>

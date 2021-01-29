@@ -198,7 +198,7 @@ export const OpnameMaterialPage = () => {
     return {
       id: item.id,
       no: index + 1,
-      outlet_name: item.Outlet.name,
+      outlet_name: item.Outlet?.name,
       code: item.code,
       date: dayjs(item.date).format("DD/MM/YYYY")
     };

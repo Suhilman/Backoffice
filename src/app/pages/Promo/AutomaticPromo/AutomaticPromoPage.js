@@ -141,7 +141,7 @@ export const AutomaticPromoPage = () => {
         type: item.type,
         name: item.name,
         outlet_id: item.outlet_id,
-        outlet_name: item.Outlet.name,
+        outlet_name: item.Outlet?.name,
         promo_date_start: item.promo_date_start,
         promo_date_end: item.promo_date_end,
         promo_days: item.promo_days,

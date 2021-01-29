@@ -109,7 +109,7 @@ export const DetailOpnameMaterialPage = ({ match }) => {
                 <Form.Label>Location:</Form.Label>
                 <Form.Control
                   type="text"
-                  value={stockOpname ? stockOpname.Outlet.name : "-"}
+                  value={stockOpname ? stockOpname.Outlet?.name : "-"}
                   disabled
                 />
               </Form.Group>

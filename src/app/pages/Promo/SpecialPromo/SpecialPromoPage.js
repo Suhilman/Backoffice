@@ -311,7 +311,7 @@ export const SpecialPromoPage = () => {
         no: index + 1,
         name: item.name,
         outlet_id: item.outlet_id,
-        outlet_name: item.Outlet.name,
+        outlet_name: item.Outlet?.name,
         value,
         rate: item.value,
         type: item.type,

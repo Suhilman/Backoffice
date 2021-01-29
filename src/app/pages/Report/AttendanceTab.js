@@ -54,7 +54,7 @@ export const AttendanceTab = ({ selectedOutlet, startDate, endDate }) => {
             name: item.User.User_Profile.name,
             phone_number: item.User.User_Profile.phone_number
           },
-          outlet: item.Outlet.name,
+          outlet: item.Outlet?.name,
           date: item.createdAt,
           check_in: item.clock_in,
           check_out: item.clock_out

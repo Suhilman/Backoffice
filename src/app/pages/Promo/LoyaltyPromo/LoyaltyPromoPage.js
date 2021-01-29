@@ -494,7 +494,7 @@ export const LoyaltyPromoPage = () => {
         id: item.id,
         no: index + 1,
         outlet_id: item.outlet_id,
-        outlet_name: item.Outlet.name,
+        outlet_name: item.Outlet?.name,
         product_name: item.Product.name,
         product_category: item.Product.Product_Category.name,
         product_price: rupiahFormat.convert(item.Product.price),

@@ -59,7 +59,7 @@ export const RecapTab = ({ selectedOutlet, startDate, endDate }) => {
 
     const allData = closedRecap.map((item) => {
       const date = item.time_open;
-      const outlet = item.Outlet.name;
+      const outlet = item.Outlet?.name;
       const cash = item.cash_total;
       const cash_in = item.Cash.filter((item) => item.type === "in").reduce(
         (init, curr) => init + curr.value,

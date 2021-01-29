@@ -113,7 +113,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
                 <Form.Label>Location:</Form.Label>
                 <Form.Control
                   type="text"
-                  value={purchaseOrder ? purchaseOrder.Outlet.name : "-"}
+                  value={purchaseOrder ? purchaseOrder.Outlet?.name : "-"}
                   disabled
                 />
               </Form.Group>

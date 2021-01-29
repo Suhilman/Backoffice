@@ -248,7 +248,6 @@ const InventoryIngredientTab = ({
       stock_id: data.stock_id,
       is_sold: data.is_sold
     });
-    console.log(formikEditMaterial.values);
     setStateEditModal(true);
   };
   const closeEditModal = () => {
@@ -340,11 +339,13 @@ const InventoryIngredientTab = ({
   ];
 
   const dataRawMaterial = rawMaterial.map((item, index) => {
+    const stock_initial = item.Stocks.find((item) => item.is_initial);
+
     return {
       id: item.id,
       no: index + 1,
       outlet_id: item.outlet_id,
-      location: item.Outlet.name,
+      location: item.Outlet?.name,
       name: item.name,
       raw_material_category_id: item.raw_material_category_id,
       stock: item.stock,
@@ -353,7 +354,7 @@ const InventoryIngredientTab = ({
       calorie_per_unit: item.calorie_per_unit,
       calorie_unit: item.calorie_unit,
       notes: item.notes,
-      stock_id: item.Stocks.find((item) => item.is_initial).id,
+      stock_id: stock_initial ? stock_initial.id : "",
       stocks: item.Stocks,
       is_sold: item.Product ? true : false
     };

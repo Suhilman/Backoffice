@@ -283,7 +283,7 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
         outlet_id: item.outlet_id,
         no: index + 1,
         name: item.name,
-        outlet_name: item.Outlet.name,
+        outlet_name: item.Outlet?.name,
         capacity: item.capacity,
         status: item.status
       };

@@ -234,7 +234,7 @@ const ProductTab = ({
           ? rupiahFormat.convert(item.price_purchase)
           : rupiahFormat.convert(0),
         stock: item.stock,
-        outlet: item.Outlet.name,
+        outlet: item.Outlet?.name,
         unit: item.Unit?.name || "-",
         status: item.status,
         currProduct: item,

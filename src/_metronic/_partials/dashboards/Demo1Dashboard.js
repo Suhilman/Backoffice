@@ -241,7 +241,7 @@ export function Demo1Dashboard() {
       (item) => item.id === range_id
     );
 
-    let allSalesDone;
+    let allSalesDone = [];
     let allSalesRefund;
     const outlet_id = id ? `?outlet_id=${id}&` : "?";
 
@@ -257,7 +257,7 @@ export function Demo1Dashboard() {
         (item) => item.Payment?.status === "refund"
       );
     } catch (err) {
-      if (err.response.status === 404) {
+      if (err.response?.status === 404) {
         allSalesDone = [];
       }
       console.log(err);

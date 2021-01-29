@@ -314,8 +314,6 @@ export const EditBundlePage = ({ match, location }) => {
     </div>
   );
 
-  console.log(formikProduct.values);
-
   return (
     <Row>
       <Col>

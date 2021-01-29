@@ -40,7 +40,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
         .format("YYYY-MM-DD");
     }
 
-    let allSales;
+    let allSales = [];
     try {
       const { data } = await axios.get(
         `${API_URL}/api/v1/transaction${outlet_id}date_start=${start_range}&date_end=${end_range}`
@@ -48,7 +48,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
       setAllTransactions(data.data);
       allSales = data.data;
     } catch (err) {
-      if (err.response.status === 404) {
+      if (err.response?.status === 404) {
         setAllTransactions([]);
       }
       allSales = [];
@@ -282,7 +282,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
           <thead>
             <tr>
               <th>Outlet</th>
-              <td>{selectedOutlet.name}</td>
+              <td>{selectedOutlet?.name}</td>
             </tr>
           </thead>
           <thead>

@@ -32,7 +32,6 @@ export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate }) => {
       const { data } = await axios.get(
         `${API_URL}/api/v1/transaction/promo-sales${outlet_id}date_start=${start_range}&date_end=${end_range}`
       );
-      console.log(data.data);
       setAllPromoSales(data.data);
     } catch (err) {
       if (err.response.status === 404) {

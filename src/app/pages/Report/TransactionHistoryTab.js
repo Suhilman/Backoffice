@@ -64,7 +64,7 @@ export const TransactionHistoryTab = ({
             date: dayjs(item.createdAt).format("DD-MM-YYYY HH:mm:ss"),
             receipt_id: item.receipt_id,
             status: item.status,
-            outlet_name: item.Outlet.name,
+            outlet_name: item.Outlet?.name,
             sales_type: val.Sales_Type.name,
             user: item.User?.User_Profile.name || "Guest",
             customer_phone_number: item.Customer_Profile?.phone_number || "-",
