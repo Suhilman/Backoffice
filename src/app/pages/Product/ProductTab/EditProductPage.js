@@ -148,6 +148,7 @@ export const EditProductPage = ({ match, location }) => {
     validationSchema: ProductSchema,
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
+      const currStock = currProduct.Stocks.find((item) => item.is_initial);
 
       const formData = new FormData();
       formData.append("outlet_id", values.outlet_id);
@@ -160,10 +161,9 @@ export const EditProductPage = ({ match, location }) => {
       formData.append("has_stock", values.has_stock);
       formData.append("status", values.status);
 
-      formData.append(
-        "stock_id",
-        currProduct.Stocks.find((item) => item.is_initial).id
-      );
+      if (currStock) {
+        formData.append("stock_id", currStock.id);
+      }
 
       if (values.groupAddons)
         formData.append("groupAddons", JSON.stringify(values.groupAddons));
@@ -274,9 +274,11 @@ export const EditProductPage = ({ match, location }) => {
   const defaultValueUnit = (key) =>
     optionsUnit.find((val) => val.value === key);
 
-  const optionsMaterial = allMaterials.map((item) => {
-    return { value: item.id, label: item.name };
-  });
+  const optionsMaterial = allMaterials
+    .filter((item) => item.outlet_id === formikProduct.values.outlet_id)
+    .map((item) => {
+      return { value: item.id, label: item.name };
+    });
   const defaultValueMaterial = (key) =>
     optionsMaterial.find((val) => val.value === key);
 

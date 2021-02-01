@@ -347,6 +347,7 @@ export const LoyaltyPromoPage = () => {
     formikPromo.resetForm();
     setSelectedProducts([]);
     setStateAddModal(false);
+    setAlert("");
   };
 
   const showEditModal = (data) => {
@@ -379,6 +380,7 @@ export const LoyaltyPromoPage = () => {
     // setPhoto("");
     // setPhotoPreview("");
     setStateEditModal(false);
+    setAlert("");
   };
 
   const showDeleteModal = (data) => {
@@ -386,7 +388,10 @@ export const LoyaltyPromoPage = () => {
     formikPromo.setFieldValue("name", data.name);
     setStateDeleteModal(true);
   };
-  const closeDeleteModal = () => setStateDeleteModal(false);
+  const closeDeleteModal = () => {
+    setStateDeleteModal(false);
+    setAlert("");
+  };
   const showSettingsModal = () => {
     formikSettings.setValues(initSett);
     if (initSett.expiration_date) {
@@ -410,6 +415,7 @@ export const LoyaltyPromoPage = () => {
       "no-date": false
     });
     setStateSettings(false);
+    setAlert("");
   };
 
   const enableLoading = () => setLoading(true);

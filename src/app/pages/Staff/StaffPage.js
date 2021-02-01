@@ -20,7 +20,7 @@ export const StaffPage = () => {
   const [search, setSearch] = React.useState("");
   const [filter, setFilter] = React.useState({
     time: "newest",
-    type: "",
+    role_id: "",
     outlet_id: ""
   });
 
@@ -55,7 +55,7 @@ export const StaffPage = () => {
 
   const getStaffData = async (search, filter) => {
     const API_URL = process.env.REACT_APP_API_URL;
-    const filterStaff = `?name=${search}&order=${filter.time}&outlet_id=${filter.outlet_id}&type=${filter.type}`;
+    const filterStaff = `?name=${search}&order=${filter.time}&outlet_id=${filter.outlet_id}&role_id=${filter.role_id}`;
 
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/staff${filterStaff}`);
@@ -302,25 +302,23 @@ export const StaffPage = () => {
                     <Form.Label
                       style={{ alignSelf: "center", marginBottom: "0" }}
                     >
-                      Type:
+                      Role:
                     </Form.Label>
                     <Col>
                       <Form.Control
                         as="select"
-                        name="type"
-                        value={filter.type}
+                        name="role_id"
+                        value={filter.role_id}
                         onChange={handleFilter}
                       >
                         <option value="">All</option>
-                        {["Kasir", "Waiter", "Staff", "Manager"].map(
-                          (item, index) => {
-                            return (
-                              <option key={index} value={item}>
-                                {item}
-                              </option>
-                            );
-                          }
-                        )}
+                        {allRoles.map((item, index) => {
+                          return (
+                            <option key={index} value={item.id}>
+                              {item.name}
+                            </option>
+                          );
+                        })}
                       </Form.Control>
                     </Col>
                   </Form.Group>

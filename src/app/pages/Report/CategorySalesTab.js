@@ -64,6 +64,7 @@ export const CategorySalesTab = ({ selectedOutlet, startDate, endDate }) => {
     getCategories();
   }, []);
 
+  // NOTE: jika product tidak ada category, tidak masuk ke report ini. harus diubah cara ambil list category nya
   const categorySalesData = () => {
     const data = [];
 
@@ -75,17 +76,17 @@ export const CategorySalesTab = ({ selectedOutlet, startDate, endDate }) => {
     );
 
     const typesSold = completedTransactions.map((item) =>
-      item.Transaction_Items.map((val) => val.Product.Product_Category.name)
+      item.Transaction_Items.map((val) => val.Product.Product_Category?.name)
     );
     const typesRefund = voidTransactions.map((item) =>
-      item.Transaction_Items.map((val) => val.Product.Product_Category.name)
+      item.Transaction_Items.map((val) => val.Product.Product_Category?.name)
     );
     const countTypesSold = typesSold.map((item, index) => {
       return item.reduce((init, curr) => {
         const filterProduct = completedTransactions[
           index
         ].Transaction_Items.filter(
-          (prod) => prod.Product.Product_Category.name === curr
+          (prod) => prod.Product.Product_Category?.name === curr
         );
         init[curr] = filterProduct.reduce(
           (initItem, currItem) => (initItem += currItem.quantity),
@@ -97,7 +98,7 @@ export const CategorySalesTab = ({ selectedOutlet, startDate, endDate }) => {
     const countTypesRefund = typesRefund.map((item, index) => {
       return item.reduce((init, curr) => {
         const filterProduct = voidTransactions[index].Transaction_Items.filter(
-          (prod) => prod.Product.Product_Category.name === curr
+          (prod) => prod.Product.Product_Category?.name === curr
         );
         init[curr] = filterProduct.reduce(
           (initItem, currItem) => (initItem += currItem.quantity),
@@ -111,7 +112,7 @@ export const CategorySalesTab = ({ selectedOutlet, startDate, endDate }) => {
         const filterProduct = completedTransactions[
           index
         ].Transaction_Items.filter(
-          (prod) => prod.Product.Product_Category.name === curr
+          (prod) => prod.Product.Product_Category?.name === curr
         );
         init[curr] = filterProduct.reduce(
           (initItem, currItem) =>

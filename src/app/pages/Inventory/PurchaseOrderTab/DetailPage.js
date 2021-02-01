@@ -80,9 +80,9 @@ export const DetailPurchaseOrderPage = ({ match }) => {
                 <Button variant="outline-secondary">Back</Button>
               </Link>
 
-              <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
+              {/* <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
                 Download
-              </Button>
+              </Button> */}
             </div>
           </div>
 

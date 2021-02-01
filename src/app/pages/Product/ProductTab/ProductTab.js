@@ -524,7 +524,10 @@ const ProductTab = ({
             <div className="headerEnd" style={{ display: "flex" }}>
               {!multiSelect ? (
                 <>
-                  <Dropdown>
+                  <Button variant="secondary" onClick={handleOpenImport}>
+                    Import
+                  </Button>
+                  {/* <Dropdown>
                     <Dropdown.Toggle variant="outline-secondary">
                       Import/Export
                     </Dropdown.Toggle>
@@ -540,7 +543,7 @@ const ProductTab = ({
                         Export
                       </Dropdown.Item>
                     </Dropdown.Menu>
-                  </Dropdown>
+                  </Dropdown> */}
 
                   <Dropdown as={ButtonGroup} style={{ marginLeft: "0.5rem" }}>
                     <Link

@@ -377,6 +377,7 @@ const FormTemplate = ({
                         formikProduct.setFieldValue("has_stock", true);
                       } else {
                         formikProduct.setFieldValue("has_stock", false);
+                        formikProduct.setFieldValue("stock", 0);
 
                         handleHasExpired({ target: { value: "true" } });
                       }
