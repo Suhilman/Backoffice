@@ -230,9 +230,10 @@ const ProductTab = ({
         no: index + 1,
         name: item.name,
         category: item.Product_Category ? item.Product_Category.name : "",
-        price: item.price_purchase
-          ? rupiahFormat.convert(item.price_purchase)
-          : rupiahFormat.convert(0),
+        // purchase_price: item.price_purchase
+        //   ? rupiahFormat.convert(item.price_purchase)
+        //   : rupiahFormat.convert(0),
+        price: rupiahFormat.convert(item.price),
         stock: item.stock,
         outlet: item.Outlet?.name,
         unit: item.Unit?.name || "-",
