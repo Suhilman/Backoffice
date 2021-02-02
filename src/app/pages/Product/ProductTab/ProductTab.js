@@ -362,14 +362,19 @@ const ProductTab = ({
     outlet_id: [],
     products: [
       {
+        outlet: "",
         name: "",
+        category: "",
         price: 0,
         price_purchase: 0,
-        barcode: "",
-        sku: "",
-        is_favorite: false,
         description: "",
-        status: "active"
+        status: false,
+        is_favorite: false,
+        sku: 0,
+        barcode: 0,
+        pajak: 0,
+        with_recipe: false,
+        stok_awal: 0
       }
     ]
   };
@@ -398,8 +403,8 @@ const ProductTab = ({
             if (!val.category) delete obj.category;
             if (!val.with_recipe) delete obj.with_recipe;
             if (!val.stock) delete obj.stock;
-            if (!val.unit) delete obj.unit;
-            if (!val.expired_date) delete obj.expired_date;
+            // if (!val.unit) delete obj.unit;
+            // if (!val.expired_date) delete obj.expired_date;
             output.push(obj);
           }
           return output;
@@ -416,12 +421,26 @@ const ProductTab = ({
           }
         }
 
-        await axios.post(`${API_URL}/api/v1/product/bulk-create`, {
-          products: merged.flat(1)
-        });
-        disableLoading();
-        handleRefresh();
-        handleCloseImport();
+        console.log(merged.flat(1));
+        // await axios.post(`${API_URL}/api/v1/product/bulk-create`, {
+        //   products: merged.flat(1)
+        // });
+        // disableLoading();
+        // handleRefresh();
+        // handleCloseImport();
+        // barcode: 1111;
+        // deskripsi_produk: false;
+        // harga_jual: 3000;
+        // kategori: "beverage";
+        // nama_product: "Nasi Putih";
+        // outlet: "Ayam Geprek Bekasi";
+        // outlet_id: 11;
+        // pajak: 1;
+        // produk_favorit: 1;
+        // sku: 4434;
+        // status_produk: "active";
+        // stok_awal: 2;
+        // with_recipe: 1;
       } catch (err) {
         setAlert(err.response?.data.message || err.message);
         disableLoading();
@@ -444,35 +463,34 @@ const ProductTab = ({
         setAlert(err);
       } else {
         const { rows } = resp;
-
         const keys = [
+          "outlet",
           "name",
-          "description",
-          "barcode",
-          "sku",
+          "category",
           "price",
           "price_purchase",
+          "description",
+          "status",
           "is_favorite",
-          "category",
+          "sku",
+          "barcode",
+          "pajak",
           "with_recipe",
-          "stock",
-          "unit",
-          "expired_date"
+          "stock"
         ];
-
         const data = [];
-        for (const item of rows.slice(5)) {
-          const val = keys.reduce((init, curr, index) => {
-            if (typeof item[index] === "undefined" || item[index] === "-") {
-              item[index] = "";
+        const obj = {};
+        rows.slice(1).map((j, index) => {
+          for (let i = 0; i < keys.length; i++) {
+            if (keys[i] === "barcode" || keys[i] === "sku") {
+              obj[keys[i]] = j[i].toString();
+            } else {
+              obj[keys[i]] = j[i];
+              if (i === 11) break;
             }
-            init[curr] = item[index];
-            init["status"] = "active";
-            return init;
-          }, {});
-          data.push(val);
-        }
-
+          }
+          data.push(obj);
+        });
         formikImportProduct.setFieldValue("products", data);
       }
     });
