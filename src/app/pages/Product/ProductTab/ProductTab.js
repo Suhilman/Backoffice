@@ -363,14 +363,19 @@ const ProductTab = ({
     outlet_id: [],
     products: [
       {
+        outlet: "",
         name: "",
+        category: "",
         price: 0,
         price_purchase: 0,
-        barcode: "",
-        sku: "",
-        is_favorite: false,
         description: "",
-        status: "active"
+        status: false,
+        is_favorite: false,
+        sku: 0,
+        barcode: 0,
+        pajak: 0,
+        with_recipe: false,
+        stok_awal: 0
       }
     ]
   };
@@ -390,24 +395,22 @@ const ProductTab = ({
           for (const val of values.products) {
             const obj = {
               ...val,
-              outlet_id: item,
-              expired_date: val.expired_date
-                ? dayjs(val.expired_date, "DD/MM/YYYY").format("YYYY-MM-DD")
-                : ""
+              outlet_id: item
+              // expired_date: val.expired_date
+              //   ? dayjs(val.expired_date, "DD/MM/YYYY").format("YYYY-MM-DD")
+              //   : ""
             };
             if (!val.barcode) delete obj.barcode;
             if (!val.category) delete obj.category;
             if (!val.with_recipe) delete obj.with_recipe;
             if (!val.stock) delete obj.stock;
-            if (!val.unit) delete obj.unit;
-            if (!val.expired_date) delete obj.expired_date;
+            // if (!val.unit) delete obj.unit;
+            // if (!val.expired_date) delete obj.expired_date;
             output.push(obj);
           }
           return output;
         });
-
         enableLoading();
-
         for (const item of merged.flat(1)) {
           if (!item.name) {
             throw new Error("there is product without name");
@@ -416,7 +419,6 @@ const ProductTab = ({
             throw new Error("there is product without sku");
           }
         }
-
         await axios.post(`${API_URL}/api/v1/product/bulk-create`, {
           products: merged.flat(1)
         });
@@ -445,34 +447,47 @@ const ProductTab = ({
         setAlert(err);
       } else {
         const { rows } = resp;
-
         const keys = [
+          "outlet",
           "name",
-          "description",
-          "barcode",
-          "sku",
+          "category",
           "price",
           "price_purchase",
+          "description",
+          "status",
           "is_favorite",
-          "category",
+          "sku",
+          "barcode",
+          "pajak",
           "with_recipe",
-          "stock",
-          "unit",
-          "expired_date"
+          "stock"
         ];
-
         const data = [];
-        for (const item of rows.slice(5)) {
-          const val = keys.reduce((init, curr, index) => {
-            if (typeof item[index] === "undefined" || item[index] === "-") {
-              item[index] = "";
+        const obj = {};
+        rows.slice(1).map((j) => {
+          keys.map((i, index) => {
+            if (i === "barcode") {
+              obj[i] = j[index].toString();
+            } else {
+              obj[i] = j[index];
             }
-            init[curr] = item[index];
-            init["status"] = "active";
-            return init;
-          }, {});
-          data.push(val);
-        }
+          });
+          data.push({
+            outlet: obj.outlet,
+            name: obj.name,
+            category: obj.category,
+            price: obj.price,
+            price_purchase: obj.price_purchase,
+            description: obj.description,
+            status: obj.status,
+            is_favorite: obj.is_favorite,
+            sku: obj.sku,
+            barcode: obj.barcode,
+            pajak: obj.pajak,
+            with_recipe: obj.with_recipe,
+            stock: obj.stock
+          });
+        });
 
         formikImportProduct.setFieldValue("products", data);
       }
