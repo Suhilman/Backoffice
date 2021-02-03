@@ -394,10 +394,10 @@ const ProductTab = ({
           for (const val of values.products) {
             const obj = {
               ...val,
-              outlet_id: item,
-              expired_date: val.expired_date
-                ? dayjs(val.expired_date, "DD/MM/YYYY").format("YYYY-MM-DD")
-                : ""
+              outlet_id: item
+              // expired_date: val.expired_date
+              //   ? dayjs(val.expired_date, "DD/MM/YYYY").format("YYYY-MM-DD")
+              //   : ""
             };
             if (!val.barcode) delete obj.barcode;
             if (!val.category) delete obj.category;
@@ -409,9 +409,7 @@ const ProductTab = ({
           }
           return output;
         });
-
         enableLoading();
-
         for (const item of merged.flat(1)) {
           if (!item.name) {
             throw new Error("there is product without name");
@@ -420,27 +418,12 @@ const ProductTab = ({
             throw new Error("there is product without sku");
           }
         }
-
-        console.log(merged.flat(1));
-        // await axios.post(`${API_URL}/api/v1/product/bulk-create`, {
-        //   products: merged.flat(1)
-        // });
-        // disableLoading();
-        // handleRefresh();
-        // handleCloseImport();
-        // barcode: 1111;
-        // deskripsi_produk: false;
-        // harga_jual: 3000;
-        // kategori: "beverage";
-        // nama_product: "Nasi Putih";
-        // outlet: "Ayam Geprek Bekasi";
-        // outlet_id: 11;
-        // pajak: 1;
-        // produk_favorit: 1;
-        // sku: 4434;
-        // status_produk: "active";
-        // stok_awal: 2;
-        // with_recipe: 1;
+        await axios.post(`${API_URL}/api/v1/product/bulk-create`, {
+          products: merged.flat(1)
+        });
+        disableLoading();
+        handleRefresh();
+        handleCloseImport();
       } catch (err) {
         setAlert(err.response?.data.message || err.message);
         disableLoading();
@@ -480,16 +463,33 @@ const ProductTab = ({
         ];
         const data = [];
         const obj = {};
-        rows.slice(1).map((j, index) => {
-          for (let i = 0; i < keys.length; i++) {
-            if (keys[i] === "barcode" || keys[i] === "sku") {
-              obj[keys[i]] = j[i].toString();
+        rows.slice(1).map((j) => {
+          keys.map((i, index) => {
+            if (
+              i.toString() === "sku" ||
+              i.toString() === "description" ||
+              i.toString() === "barcode"
+            ) {
+              obj[i] = j[index].toString();
             } else {
-              obj[keys[i]] = j[i];
-              if (i === 11) break;
+              obj[i] = j[index];
             }
-          }
-          data.push(obj);
+          });
+          data.push({
+            outlet: obj.outlet,
+            name: obj.name,
+            category: obj.category,
+            price: obj.price,
+            price_purchase: obj.price_purchase,
+            description: obj.description,
+            status: obj.status,
+            is_favorite: obj.is_favorite,
+            sku: obj.sku,
+            barcode: obj.barcode,
+            pajak: obj.pajak,
+            with_recipe: obj.with_recipe,
+            stock: obj.stock
+          });
         });
         formikImportProduct.setFieldValue("products", data);
       }
