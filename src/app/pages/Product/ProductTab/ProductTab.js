@@ -465,11 +465,7 @@ const ProductTab = ({
         const obj = {};
         rows.slice(1).map((j) => {
           keys.map((i, index) => {
-            if (
-              i.toString() === "sku" ||
-              i.toString() === "description" ||
-              i.toString() === "barcode"
-            ) {
+            if (i === "barcode") {
               obj[i] = j[index].toString();
             } else {
               obj[i] = j[index];
@@ -491,6 +487,7 @@ const ProductTab = ({
             stock: obj.stock
           });
         });
+
         formikImportProduct.setFieldValue("products", data);
       }
     });
