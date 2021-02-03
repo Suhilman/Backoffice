@@ -433,7 +433,7 @@ export const VoucherPromoPage = () => {
       <VoucherPromoModal
         stateModal={stateAddModal}
         cancelModal={closeAddModal}
-        title="Add New Voucer Promo"
+        title="Add New Voucher Promo"
         loading={loading}
         alert={alert}
         formikPromo={formikPromo}
