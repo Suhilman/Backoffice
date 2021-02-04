@@ -1,7 +1,6 @@
 import React from "react";
 import axios from "axios";
 import dayjs from "dayjs";
-
 import {
   Dropdown,
   Row,
@@ -21,6 +20,7 @@ import { TransactionHistoryTab } from "./TransactionHistoryTab";
 import { AttendanceTab } from "./AttendanceTab";
 import { DiscountSalesTab } from "./DiscountTab";
 import { RecapTab } from "./RecapTab";
+import { SalesPerProductTab } from "./SalesPerProductTab";
 
 import CustomDateRange from "../../components/CustomDateRange";
 import ExportExcel from "react-html-table-to-excel";
@@ -94,6 +94,13 @@ export const ReportPage = () => {
       table: "table-recap",
       filename: `laporan-rekap_${startDate}-${endDate}`,
       Component: RecapTab
+    },
+    {
+      no: 9,
+      title: "Sales Per Product",
+      table: "table-sales-per-product",
+      filename: `laporan-penjualan-per-produk_${startDate}-${endDate}`,
+      Component: SalesPerProductTab
     }
   ];
 
