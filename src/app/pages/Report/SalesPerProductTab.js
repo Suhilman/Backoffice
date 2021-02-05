@@ -36,35 +36,6 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
       }
     }
   };
-  const unDuplicateArraySingleValues = (array) => {
-    // Check if we are dealing with an Array that is not empty
-    if (!array || !Array.isArray(array) || array.length === 0) {
-      return array;
-    }
-
-    // Return a Array of unique values thanks to the Set
-    return [...new Set(array)];
-  };
-  const unDuplicateArrayObjects = (array, propertyName) => {
-    if (
-      !array ||
-      !Array.isArray(array) ||
-      array.length === 0 ||
-      !propertyName
-    ) {
-      return array;
-    }
-    // Create an Array off the values of the keys we want to check
-    let objectArrayKeys = array.map((item) => item[propertyName]);
-
-    // Remove duplicate values from those values with our previous function
-    let uniqueKeys = unDuplicateArraySingleValues(objectArrayKeys);
-
-    // Return an Array with only unique Objects
-    return uniqueKeys.map((key) =>
-      array.find((item) => item[propertyName] === key)
-    );
-  };
   function sum(input) {
     if (toString.call(input) !== "[object Array]") return false;
 
@@ -78,26 +49,41 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
     return total;
   }
   const renderTable = (array) => {
-    const arr = []; // make final array
-    let quantity; // make variable for insert the sum of quantity
-    let price_products; // make variable for insert the sum of price product
-    let price_discounts; // make variable for insert the sum of price discount
-    const duplicate = unDuplicateArrayObjects(array, "product_name"); // check is duplicate object and return it to single object
-    quantity = array.map((i) => i.sold_quantity);
-    price_products = array.map((i) => i.product_price);
-    price_discounts = array.map((i) => i.price_discount);
-    duplicate.map((x) => {
-      //pushing to final array
-      arr.push({
-        product: x.product_name,
-        category: x.category,
-        kuantitas: sum(quantity),
-        price_product: sum(price_products),
-        price_discount: sum(price_discounts),
-        total_sales: sum(price_products) - sum(price_discounts)
+    let final = [];
+    let seen = {};
+    array = array.filter((entry) => {
+      let previous;
+      if (seen.hasOwnProperty(entry.product_name)) {
+        previous = seen[entry.product_name];
+        previous.quantity.push(entry.sold_quantity);
+        previous.price_product.push(entry.product_price);
+        previous.price_discount.push(entry.price_discount);
+        return false;
+      }
+
+      if (!Array.isArray(entry.array)) {
+        entry.product = [entry.product_name];
+        entry.quantity = [entry.sold_quantity];
+        entry.price_product = [entry.product_price];
+        entry.price_discount = [entry.price_discount];
+      }
+
+      seen[entry.product] = entry;
+
+      return true;
+    });
+
+    array.map((i) => {
+      final.push({
+        product: i.product_name,
+        category: i.category,
+        kuantitas: sum(i.quantity),
+        price_product: sum(i.price_product),
+        price_discount: sum(i.price_discount),
+        total_sales: sum(i.price_product) - sum(i.price_discount)
       });
     });
-    return arr;
+    return final;
   };
   const sumReports = (data, key) => {
     return data.reduce((init, curr) => (init += curr[key]), 0);
@@ -105,7 +91,6 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
   useEffect(() => {
     getDataSalesPerProduct(selectedOutlet.id, startDate, endDate);
   }, [selectedOutlet, startDate, endDate]);
-
   return (
     <>
       <div style={{ display: "none" }}>
