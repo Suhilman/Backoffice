@@ -395,17 +395,18 @@ const ProductTab = ({
           for (const val of values.products) {
             const obj = {
               ...val,
-              outlet_id: item
-              // expired_date: val.expired_date
-              //   ? dayjs(val.expired_date, "DD/MM/YYYY").format("YYYY-MM-DD")
-              //   : ""
+              outlet_id: item,
+              stock: val.stock === "-" ? 0 : val.stock,
+              expired_date: val.expired_date
+                ? dayjs(val.expired_date, "DD/MM/YYYY").format("YYYY-MM-DD")
+                : ""
             };
-            if (!val.barcode) delete obj.barcode;
-            if (!val.category) delete obj.category;
+            // if (!val.barcode) delete obj.barcode;
+            // if (!val.category) delete obj.category;
             if (!val.with_recipe) delete obj.with_recipe;
             if (!val.stock) delete obj.stock;
-            // if (!val.unit) delete obj.unit;
-            // if (!val.expired_date) delete obj.expired_date;
+            if (!val.unit) delete obj.unit;
+            if (!val.expired_date) delete obj.expired_date;
             output.push(obj);
           }
           return output;
@@ -448,19 +449,18 @@ const ProductTab = ({
       } else {
         const { rows } = resp;
         const keys = [
-          "outlet",
           "name",
-          "category",
-          "price",
-          "price_purchase",
           "description",
-          "status",
-          "is_favorite",
-          "sku",
           "barcode",
-          "pajak",
+          "sku",
+          "price_purchase",
+          "price",
+          "is_favorite",
+          "category",
           "with_recipe",
-          "stock"
+          "stock",
+          "unit",
+          "expired_date"
         ];
         const data = [];
         const obj = {};
@@ -473,22 +473,20 @@ const ProductTab = ({
             }
           });
           data.push({
-            outlet: obj.outlet,
             name: obj.name,
             category: obj.category,
             price: obj.price,
             price_purchase: obj.price_purchase,
             description: obj.description,
-            status: obj.status,
             is_favorite: obj.is_favorite,
             sku: obj.sku,
             barcode: obj.barcode,
-            pajak: obj.pajak,
             with_recipe: obj.with_recipe,
-            stock: obj.stock
+            stock: obj.stock,
+            unit: obj.unit,
+            expired_date: obj.expired_date
           });
         });
-
         formikImportProduct.setFieldValue("products", data);
       }
     });
