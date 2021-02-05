@@ -464,7 +464,7 @@ const ProductTab = ({
         ];
         const data = [];
         const obj = {};
-        rows.slice(1).map((j) => {
+        rows.slice(5).map((j) => {
           keys.map((i, index) => {
             if (i === "barcode") {
               obj[i] = j[index].toString();
