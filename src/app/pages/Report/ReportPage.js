@@ -21,6 +21,7 @@ import { AttendanceTab } from "./AttendanceTab";
 import { DiscountSalesTab } from "./DiscountTab";
 import { RecapTab } from "./RecapTab";
 import { SalesPerProductTab } from "./SalesPerProductTab";
+import COGSReport from "./COGSReport";
 
 import CustomDateRange from "../../components/CustomDateRange";
 import ExportExcel from "react-html-table-to-excel";
@@ -101,6 +102,13 @@ export const ReportPage = () => {
       table: "table-sales-per-product",
       filename: `laporan-penjualan-per-produk_${startDate}-${endDate}`,
       Component: SalesPerProductTab
+    },
+    {
+      no: 10,
+      title: "Cost of Good Sold",
+      table: "table-cogs",
+      filename: `laporan-COGS_${startDate}-${endDate}`,
+      Component: COGSReport
     }
   ];
 
