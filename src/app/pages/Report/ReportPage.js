@@ -22,7 +22,7 @@ import { DiscountSalesTab } from "./DiscountTab";
 import { RecapTab } from "./RecapTab";
 import { SalesPerProductTab } from "./SalesPerProductTab";
 import COGSReport from "./COGSReport";
-
+import SalesPerHour from "./SalesPerHour";
 import CustomDateRange from "../../components/CustomDateRange";
 import ExportExcel from "react-html-table-to-excel";
 
@@ -109,6 +109,13 @@ export const ReportPage = () => {
       table: "table-cogs",
       filename: `laporan-COGS_${startDate}-${endDate}`,
       Component: COGSReport
+    },
+    {
+      no: 11,
+      title: "Sales Per Hour",
+      table: "table-perhour",
+      filename: `laporan-penjualan-per-jam_${startDate}-${endDate}`,
+      Component: SalesPerHour
     }
   ];
 
@@ -199,7 +206,6 @@ export const ReportPage = () => {
         endRange={endRange}
         handleStartRange={handleStartRange}
       />
-
       <Row>
         <Col>
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
@@ -322,6 +328,43 @@ export const ReportPage = () => {
                             style={{ alignSelf: "center", marginBottom: "0" }}
                           >
                             Status:
+                          </Form.Label>
+                          <Col>
+                            <Form.Control
+                              as="select"
+                              name="status"
+                              value={status}
+                              onChange={handleSelectStatus}
+                              onBlur={handleSelectStatus}
+                            >
+                              <option value={""}>All Status</option>
+                              {["New", "Done", "Refund", "Closed"].map(
+                                (item, index) => {
+                                  return (
+                                    <option
+                                      key={index}
+                                      value={item.toLowerCase()}
+                                    >
+                                      {item}
+                                    </option>
+                                  );
+                                }
+                              )}
+                            </Form.Control>
+                          </Col>
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                  </Col>
+                ) : tabs === "11" ? (
+                  <Col>
+                    <Row>
+                      <Col>
+                        <Form.Group as={Row}>
+                          <Form.Label
+                            style={{ alignSelf: "center", marginBottom: "0" }}
+                          >
+                            Select Time:
                           </Form.Label>
                           <Col>
                             <Form.Control

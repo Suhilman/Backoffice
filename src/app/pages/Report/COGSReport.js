@@ -171,7 +171,7 @@ const COGSReport = ({ selectedOutlet, startDate, endDate }) => {
             <th>Product Name</th>
             <th>Category</th>
             <th>Sold Quantity</th>
-            <th>Cost of Goods Sold</th>
+            <th>Buying Price</th>
             <th>Selling Price</th>
             <th>Profit</th>
           </tr>
@@ -184,9 +184,9 @@ const COGSReport = ({ selectedOutlet, startDate, endDate }) => {
                   <td>{item.product}</td>
                   <td>{item.category}</td>
                   <td>{item.kuantitas}</td>
-                  <td>{item.product_hpp}</td>
-                  <td>{item.product_sold_price}</td>
-                  <td>{item.profit}</td>
+                  <td>{rupiahFormat.convert(item.product_hpp)}</td>
+                  <td>{rupiahFormat.convert(item.product_sold_price)}</td>
+                  <td>{rupiahFormat.convert(item.profit)}</td>
                 </tr>
               );
             })
