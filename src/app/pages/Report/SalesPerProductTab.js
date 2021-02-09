@@ -56,16 +56,12 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
       if (seen.hasOwnProperty(entry.product_name)) {
         previous = seen[entry.product_name];
         previous.quantity.push(entry.sold_quantity);
-        previous.price_product.push(entry.product_price);
-        previous.price_discount.push(entry.price_discount);
         return false;
       }
 
       if (!Array.isArray(entry.array)) {
         entry.product = [entry.product_name];
         entry.quantity = [entry.sold_quantity];
-        entry.price_product = [entry.product_price];
-        entry.price_discount = [entry.price_discount];
       }
 
       seen[entry.product] = entry;
@@ -78,9 +74,10 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
         product: i.product_name,
         category: i.category,
         kuantitas: sum(i.quantity),
-        price_product: sum(i.price_product),
-        price_discount: sum(i.price_discount),
-        total_sales: sum(i.price_product) - sum(i.price_discount)
+        price_product: i.product_price * sum(i.quantity),
+        price_discount: i.price_discount * sum(i.quantity),
+        total_sales:
+          i.product_price * sum(i.quantity) - i.price_discount * sum(i.quantity)
       });
     });
     return final;
