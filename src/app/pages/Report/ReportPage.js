@@ -23,6 +23,7 @@ import { SalesPerProductTab } from "./SalesPerProductTab";
 import COGSReport from "./COGSReport";
 import ProfitReport from "./ProfitReport";
 import StaffTransaction from "./StaffTransaction";
+import VoidTransaction from "./VoidTransaction";
 import CustomDateRange from "../../components/CustomDateRange";
 import ExportExcel from "react-html-table-to-excel";
 
@@ -123,6 +124,13 @@ export const ReportPage = () => {
       table: "table-staff-transaction",
       filename: `laporan-penjualan-staff_${startDate}-${endDate}`,
       Component: StaffTransaction
+    },
+    {
+      no: 13,
+      title: "Void Transaction",
+      table: "table-void",
+      filename: `laporan-transaksi-void/refund_${startDate}-${endDate}`,
+      Component: VoidTransaction
     }
   ];
 
