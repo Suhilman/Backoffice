@@ -11,7 +11,6 @@ import {
 } from "react-bootstrap";
 import { Paper } from "@material-ui/core";
 import { CalendarToday, TodayOutlined } from "@material-ui/icons";
-
 import { SalesSummaryTab } from "./SalesSummaryTab";
 import { PaymentMethodTab } from "./PaymentMethodTab";
 import { SalesTypeTab } from "./SalesTypeTab";
@@ -23,6 +22,7 @@ import { RecapTab } from "./RecapTab";
 import { SalesPerProductTab } from "./SalesPerProductTab";
 import COGSReport from "./COGSReport";
 import ProfitReport from "./ProfitReport";
+import StaffTransaction from "./StaffTransaction";
 import CustomDateRange from "../../components/CustomDateRange";
 import ExportExcel from "react-html-table-to-excel";
 
@@ -116,6 +116,13 @@ export const ReportPage = () => {
       table: "table-profit",
       filename: `laporan-perhitunga-laba_${startDate}-${endDate}`,
       Component: ProfitReport
+    },
+    {
+      no: 12,
+      title: "Staff Transaction",
+      table: "table-staff-transaction",
+      filename: `laporan-penjualan-staff_${startDate}-${endDate}`,
+      Component: StaffTransaction
     }
   ];
 

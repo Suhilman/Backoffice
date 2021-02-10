@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import axios from "axios";
 import rupiahFormat from "rupiah-format";
 import "../style.css";
 import { Table } from "react-bootstrap";
 
-export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
-  const [salesPerProduct, setSalesPerProduct] = useState([]);
-  const getDataSalesPerProduct = async (id, start_range, end_range) => {
+const StaffTransaction = ({ selectedOutlet, startDate, endDate }) => {
+  const [StaffTransaction, setStaffTransaction] = useState([]);
+  const getStaffTransaction = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
     const outlet_id = id ? `?outlet_id=${id}&` : "?";
 
@@ -27,12 +27,12 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
     }
     try {
       const { data } = await axios.get(
-        `${API_URL}/api/v1/transaction/perproduct${outlet_id}date_start=${start_range}&date_end=${end_range}`
+        `${API_URL}/api/v1/transaction/staff-history${outlet_id}date_start=${start_range}&date_end=${end_range}`
       );
-      setSalesPerProduct(renderTable(data.data));
+      setStaffTransaction(renderTable(data.data));
     } catch (err) {
       if (err.response.status === 404) {
-        setSalesPerProduct([]);
+        setStaffTransaction([]);
       }
     }
   };
@@ -53,29 +53,28 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
     let seen = {};
     array = array.filter((entry) => {
       let previous;
-      if (seen.hasOwnProperty(entry.product_name)) {
-        previous = seen[entry.product_name];
-        previous.quantity.push(entry.sold_quantity);
+      if (seen.hasOwnProperty(entry.nama_staff)) {
+        previous = seen[entry.nama_staff];
+        previous.total_transaksi.push(entry.total_transaksi);
         return false;
       }
 
       if (!Array.isArray(entry.array)) {
         entry.product = [entry.product_name];
-        entry.quantity = [entry.sold_quantity];
+        entry.total_transaksi = [entry.total_transaksi];
       }
 
-      seen[entry.product] = entry;
+      seen[entry.nama_staff] = entry;
 
       return true;
     });
 
     array.map((i) => {
       final.push({
-        product: i.product_name,
-        category: i.category,
-        kuantitas: sum(i.quantity),
-        total_sales:
-          i.product_price * sum(i.quantity)
+        staff_name: i.nama_staff,
+        jumlah_rekap: i.jumlah_rekap,
+        jumlah_transaksi: i.jumlah_transaksi,
+        total_transaksi: sum(i.total_transaksi)
       });
     });
     return final;
@@ -84,15 +83,16 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
     return data.reduce((init, curr) => (init += curr[key]), 0);
   };
   useEffect(() => {
-    getDataSalesPerProduct(selectedOutlet.id, startDate, endDate);
+    getStaffTransaction(selectedOutlet.id, startDate, endDate);
   }, [selectedOutlet, startDate, endDate]);
+
   return (
     <>
       <div style={{ display: "none" }}>
-        <table id="table-sales-per-product">
+        <table id="table-staff-transaction">
           <thead>
             <tr>
-              <th>Laporan Penjualan Product</th>
+              <th>Laporan Penjualan Staff</th>
             </tr>
           </thead>
           <tbody>
@@ -124,21 +124,21 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Nama Produk</th>
-              <th>Kategori</th>
-              <th>Jumlah Terjual</th>
+              <th>Nama Staff</th>
+              <th>Jumlah Rekap Kas</th>
+              <th>Jumlah Transaksi</th>
               <th>Total Penjualan</th>
             </tr>
           </thead>
           <tbody>
-            {salesPerProduct.length > 0 ? (
-              salesPerProduct.map((item, index) => {
+            {StaffTransaction.length > 0 ? (
+              StaffTransaction.map((item, index) => {
                 return (
                   <tr key={index}>
-                    <td>{item.product}</td>
-                    <td>{item.category}</td>
-                    <td>{item.kuantitas}</td>
-                    <td>{item.total_sales}</td>
+                    <td>{item.staff_name}</td>
+                    <td>{item.jumlah_rekap}</td>
+                    <td>{item.jumlah_transaksi}</td>
+                    <td>{item.total_transaksi}</td>
                   </tr>
                 );
               })
@@ -150,8 +150,8 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
             <tr>
               <th>Grand Total</th>
               <th></th>
-              <th>{sumReports(salesPerProduct, "kuantitas")} </th>
-              <th>{sumReports(salesPerProduct, "total_sales")} </th>
+              <th></th>
+              <th>{sumReports(StaffTransaction, "total_transaksi")} </th>
             </tr>
           </tbody>
         </table>
@@ -159,21 +159,21 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
       <Table>
         <thead>
           <tr>
-            <th>Product Name</th>
-            <th>Category</th>
-            <th>Sold Quantity</th>
+            <th>Staff Name</th>
+            <th>Total Cash Recap</th>
+            <th>Total Transaction</th>
             <th>Total Sales</th>
           </tr>
         </thead>
         <tbody>
-          {salesPerProduct.length > 0 ? (
-            salesPerProduct.map((item, index) => {
+          {StaffTransaction.length > 0 ? (
+            StaffTransaction.map((item, index) => {
               return (
                 <tr key={index}>
-                  <td>{item.product}</td>
-                  <td>{item.category}</td>
-                  <td>{item.kuantitas}</td>
-                  <td>{rupiahFormat.convert(item.total_sales)}</td>
+                  <td>{item.staff_name}</td>
+                  <td>{item.jumlah_rekap}</td>
+                  <td>{item.jumlah_transaksi}</td>
+                  <td>{rupiahFormat.convert(item.total_transaksi)}</td>
                 </tr>
               );
             })
@@ -185,9 +185,9 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
           <tr>
             <th>Grand Total</th>
             <th></th>
-            <th>{sumReports(salesPerProduct, "kuantitas")} </th>
+            <th></th>
             <th>
-              {rupiahFormat.convert(sumReports(salesPerProduct, "total_sales"))}{" "}
+              {rupiahFormat.convert(sumReports(StaffTransaction, "total_transaksi"))}{" "}
             </th>
           </tr>
         </tbody>
@@ -195,3 +195,5 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
     </>
   );
 };
+
+export default StaffTransaction;

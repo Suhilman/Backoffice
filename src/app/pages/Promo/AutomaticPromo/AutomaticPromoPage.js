@@ -158,7 +158,6 @@ export const AutomaticPromoPage = () => {
       };
     });
   };
-
   const columns = [
     {
       name: "No.",
