@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import dayjs from "dayjs";
-
+import rupiahFormat from "rupiah-format";
 import { Row, Col, ListGroup } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 
@@ -114,6 +114,11 @@ export const TransactionHistoryTab = ({
       sortable: true
     },
     {
+      name: "Total Discount",
+      selector: "total_discount",
+      sortable: true
+    },
+    {
       name: "Created At",
       selector: "created_at",
       sortable: true
@@ -131,7 +136,10 @@ export const TransactionHistoryTab = ({
         id: item.id,
         no: index + 1,
         receipt_id: item.receipt_id,
-        payment_total: item.Payment?.payment_total || 0,
+        payment_total: rupiahFormat.convert(item.Payment?.payment_total || 0),
+        total_discount: rupiahFormat.convert(
+          item.Payment?.payment_discount || 0
+        ),
         outlet_name: item.Outlet?.name || "-",
         created_at: dayjs(item.createdAt).format("DD-MM-YYYY HH:mm:ss"),
         status: item.status,
@@ -141,16 +149,23 @@ export const TransactionHistoryTab = ({
   };
 
   const ExpandableComponent = ({ data }) => {
-    const head = ["Sales Type", "Product", "Addons", "Quantity", "Price"];
-    const body = data.items.map((item) => {
+    const head = [
+      "Sales Type",
+      "Staff On Charge",
+      "Product",
+      "Addons",
+      "Quantity",
+      "Price"
+    ];
+    const body = data.items.map((item, index) => {
       const addons = item.Transaction_Item_Addons.map((val) => val.Addon.name);
-
       return [
         item.Sales_Type.name,
+        reports[index]["user"],
         item.Product?.name || "-",
         addons.join(","),
         item.quantity,
-        item.price_product
+        rupiahFormat.convert(item.price_product)
       ];
     });
 
