@@ -104,6 +104,11 @@ export const TransactionHistoryTab = ({
       sortable: true
     },
     {
+      name: "Staff On Charge",
+      selector: "staff_charge",
+      sortable: true
+    },
+    {
       name: "Outlet Name",
       selector: "outlet_name",
       sortable: true
@@ -136,6 +141,7 @@ export const TransactionHistoryTab = ({
         id: item.id,
         no: index + 1,
         receipt_id: item.receipt_id,
+        staff_charge: item.User.User_Profile.name,
         payment_total: rupiahFormat.convert(item.Payment?.payment_total || 0),
         total_discount: rupiahFormat.convert(
           item.Payment?.payment_discount || 0
@@ -149,19 +155,11 @@ export const TransactionHistoryTab = ({
   };
 
   const ExpandableComponent = ({ data }) => {
-    const head = [
-      "Sales Type",
-      "Staff On Charge",
-      "Product",
-      "Addons",
-      "Quantity",
-      "Price"
-    ];
+    const head = ["Sales Type", "Product", "Addons", "Quantity", "Price"];
     const body = data.items.map((item, index) => {
       const addons = item.Transaction_Item_Addons.map((val) => val.Addon.name);
       return [
         item.Sales_Type.name,
-        reports[index]["user"],
         item.Product?.name || "-",
         addons.join(","),
         item.quantity,
