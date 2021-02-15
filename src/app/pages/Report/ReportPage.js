@@ -240,18 +240,32 @@ export const ReportPage = () => {
                         .title || "-"
                     }
                   >
-                    {tabData.map((item) => {
-                      return (
-                        <Dropdown.Item
-                          as="button"
-                          key={item.no}
-                          value={item.no}
-                          onClick={handleSelectTab}
-                        >
-                          {item.title}
-                        </Dropdown.Item>
-                      );
-                    })}
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(3,1fr)",
+                        gridGap: "5px",
+                        padding: "5px"
+                      }}
+                    >
+                      {tabData.map((item) => {
+                        return (
+                          <Dropdown.Item
+                            as="button"
+                            key={item.no}
+                            value={item.no}
+                            onClick={handleSelectTab}
+                            className="selected"
+                            style={{
+                              border: "1.5px solid #ccc",
+                              borderRadius: "5px"
+                            }}
+                          >
+                            {item.title}
+                          </Dropdown.Item>
+                        );
+                      })}
+                    </div>
                   </DropdownButton>
 
                   {tabData.find((item) => item.no === parseInt(tabs)).table ? (

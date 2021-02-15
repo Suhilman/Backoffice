@@ -74,6 +74,8 @@ const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
         tanggal: dayjs(i.tanggal).format("DD/MM/YYYY"),
         receipt: i.receiptId,
         nama_staff: i.staff,
+        note: i.note,
+        refund_name: i.refund_type,
         total_transaksi: sum(i.total_transaksi)
       });
     });
@@ -127,7 +129,9 @@ const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
               <th>Tanggal</th>
               <th>ID Transaksi</th>
               <th>Staff</th>
+              <th>Tipe Void</th>
               <th>Total Transaksi Void</th>
+              <th>Alasan</th>
             </tr>
           </thead>
           <tbody>
@@ -138,7 +142,9 @@ const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
                     <td>{item.tanggal}</td>
                     <td>{item.receipt}</td>
                     <td>{item.nama_staff}</td>
+                    <td>{item.refund_name}</td>
                     <td>{item.total_transaksi}</td>
+                    <td>{item.note}</td>
                   </tr>
                 );
               })
@@ -151,7 +157,9 @@ const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
               <th>Grand Total</th>
               <th></th>
               <th></th>
+              <th></th>
               <th>{sumReports(voidTransaction, "total_transaksi")} </th>
+              <th></th>
             </tr>
           </tbody>
         </table>
@@ -162,7 +170,9 @@ const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
             <th>Date</th>
             <th>Transaction ID</th>
             <th>Staff</th>
+            <th>Void Type</th>
             <th>Total Void Transaction</th>
+            <th>Note</th>
           </tr>
         </thead>
         <tbody>
@@ -173,7 +183,9 @@ const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
                   <td>{item.tanggal}</td>
                   <td>{item.receipt}</td>
                   <td>{item.nama_staff}</td>
+                  <td>{item.refund_name}</td>
                   <td>{rupiahFormat.convert(item.total_transaksi)}</td>
+                  <td>{item.note}</td>
                 </tr>
               );
             })
@@ -186,11 +198,13 @@ const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
             <th>Grand Total</th>
             <th></th>
             <th></th>
+            <th></th>
             <th>
               {rupiahFormat.convert(
                 sumReports(voidTransaction, "total_transaksi")
               )}{" "}
             </th>
+            <th></th>
           </tr>
         </tbody>
       </Table>
