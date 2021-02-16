@@ -91,8 +91,8 @@ export const ReportPage = () => {
     {
       no: 7,
       title: "Discount Sales",
-      table: "table-attendance-report",
-      filename: `laporan-absensi_${startDate}-${endDate}`,
+      table: "table-discount",
+      filename: `laporan-diskon_${startDate}-${endDate}`,
       Component: DiscountSalesTab
     },
     {
@@ -143,6 +143,13 @@ export const ReportPage = () => {
       table: "table-sales-per-hour",
       filename: `laporan-transaksi-penjualan-per-jam_${startDate}-${endDate}`,
       Component: SalesPerHour
+    },
+    {
+      no: 14,
+      title: "Stock Report",
+      table: "table-stock",
+      filename: `laporan-stock-barang_${startDate}-${endDate}`
+      // Component: SalesPerHour
     }
   ];
 
@@ -205,7 +212,11 @@ export const ReportPage = () => {
   };
   const handleSaveCustom = () => {
     setStartDate(dayjs(startRange).format("YYYY-MM-DD"));
-    setEndDate(dayjs(endRange).format("YYYY-MM-DD"));
+    setEndDate(
+      dayjs(endRange)
+        .add(1, "days")
+        .format("YYYY-MM-DD")
+    );
     setStateCustom(false);
   };
 
@@ -213,7 +224,7 @@ export const ReportPage = () => {
 
   const displayDate = () => {
     const start = dayjs(startDate).format("DD-MM-YYYY");
-    const end = dayjs(endDate).format("DD-MM-YYYY");
+    const end = dayjs(endRange).format("DD-MM-YYYY");
 
     if (start === end) {
       return start;

@@ -132,8 +132,6 @@ const SalesPerHour = ({
       endTime
     );
   }, [selectedOutlet, startDate, endDate, startTime, endTime]);
-
-  console.log(salesPerHour);
   return (
     <>
       <div style={{ display: "none" }}>

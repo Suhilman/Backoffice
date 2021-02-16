@@ -198,8 +198,78 @@ export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate }) => {
     return data;
   };
 
+  const sumReports = (data, key) => {
+    return data.reduce((init, curr) => (init += curr[key]), 0);
+  };
   return (
     <>
+      <div style={{ display: "none" }}>
+        <table id="table-discount">
+          <thead>
+            <tr>
+              <th>Laporan Diskon</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr></tr>
+          </tbody>
+          <thead>
+            <tr>
+              <th>Outlet</th>
+              <td>
+                {selectedOutlet.id === " " ||
+                selectedOutlet.id === null ||
+                selectedOutlet.id === undefined
+                  ? "Semua Outlet"
+                  : selectedOutlet.name}
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr></tr>
+          </tbody>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <td>{`${startDate} - ${endDate}`}</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr></tr>
+          </tbody>
+          <thead>
+            <tr>
+              <th>Nama Diskon</th>
+              <th>Penggunaan</th>
+              <th>Total Penggunaan</th>
+            </tr>
+          </thead>
+          <tbody>
+            {promoSalesData().length > 0 ? (
+              promoSalesData().map((item, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{item.name}</td>
+                    <td>
+                      {item.quota ? `${item.usage}/${item.quota}` : item.usage}
+                    </td>
+                    <td>{item.total}</td>
+                  </tr>
+                );
+              })
+            ) : (
+              <tr>
+                <td>Data Not Found</td>
+              </tr>
+            )}
+            <tr>
+              <td>Grand Total</td>
+              <td>{sumReports(promoSalesData(), "usage")}</td>
+              <td>{sumReports(promoSalesData(), "total")} </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <Table striped>
         <thead>
           <tr>
@@ -210,18 +280,32 @@ export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate }) => {
           </tr>
         </thead>
         <tbody>
-          {promoSalesData().map((item, index) => {
-            return (
-              <tr key={index}>
-                <td></td>
-                <td>{item.name}</td>
-                <td>
-                  {item.quota ? `${item.usage}/${item.quota}` : item.usage}
-                </td>
-                <td>{rupiahFormat.convert(item.total)}</td>
-              </tr>
-            );
-          })}
+          {promoSalesData().length > 0 ? (
+            promoSalesData().map((item, index) => {
+              return (
+                <tr key={index}>
+                  <td></td>
+                  <td>{item.name}</td>
+                  <td>
+                    {item.quota ? `${item.usage}/${item.quota}` : item.usage}
+                  </td>
+                  <td>{rupiahFormat.convert(item.total)}</td>
+                </tr>
+              );
+            })
+          ) : (
+            <tr>
+              <td>Data Not Found</td>
+            </tr>
+          )}
+          <tr>
+            <td></td>
+            <td>Grand Total</td>
+            <td>{sumReports(promoSalesData(), "usage")}</td>
+            <td>
+              {rupiahFormat.convert(sumReports(promoSalesData(), "total"))}{" "}
+            </td>
+          </tr>
         </tbody>
       </Table>
     </>

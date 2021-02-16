@@ -53,18 +53,18 @@ const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
     let seen = {};
     array = array.filter((entry) => {
       let previous;
-      if (seen.hasOwnProperty(entry.staff)) {
-        previous = seen[entry.staff];
+      if (seen.hasOwnProperty(entry.receiptId)) {
+        previous = seen[entry.receiptId];
         previous.total_transaksi.push(entry.total);
         return false;
       }
 
       if (!Array.isArray(entry.array)) {
-        entry.staff = [entry.staff];
+        entry.receipt = [entry.receiptId];
         entry.total_transaksi = [entry.total];
       }
 
-      seen[entry.staff] = entry;
+      seen[entry.receipt] = entry;
 
       return true;
     });
@@ -88,6 +88,7 @@ const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
     getVoidTransaction(selectedOutlet.id, startDate, endDate);
   }, [selectedOutlet, startDate, endDate]);
 
+  console.log(voidTransaction);
   return (
     <>
       <div style={{ display: "none" }}>
