@@ -59,43 +59,101 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
       (item) => item.Payment?.status === "done"
     );
 
-    const allItems = completedTransactions.map((item) => {
-      const grossSales = item.Transaction_Items.reduce(
+    const transItems = [];
+    const prodIdList = [];
+    for (const item of completedTransactions) {
+      item.Transaction_Items.forEach((val) => {
+        transItems.push(val);
+        if (!prodIdList.includes(val.product_id))
+          prodIdList.push(val.product_id);
+      });
+    }
+
+    // sort transItems by product
+    transItems.sort((a, b) => {
+      if (a.product_id > b.product_id) return 1;
+      if (b.product_id > a.product_id) return -1;
+    });
+    prodIdList.sort();
+
+    // get gross sales of each product
+    let allItems2 = [];
+    prodIdList.forEach((val) => {
+      const temp = transItems.filter((item) => item.product_id === val);
+      const grossSales = temp.reduce(
         (init, curr) => (init += curr.price_total + curr.price_discount),
         0
       );
-      const discountSales = item.Transaction_Items.reduce(
-        (init, curr) => (init += curr.price_discount),
-        0
-      );
-      const totalSales = item.Transaction_Items.reduce(
+      // const discountSales = temp.reduce(
+      //   (init, curr) => (init += curr.),
+      //   0
+      // );
+      const totalSales = temp.reduce(
         (init, curr) => (init += curr.price_total),
         0
       );
-
-      const output = item.Transaction_Items.map((val) => {
-        const currAddons = val.Transaction_Item_Addons.map(
+      const quantity = temp.reduce((init, curr) => (init += curr.quantity), 0);
+      let joinedAddons = "";
+      for (const item of temp) {
+        const currAddons = item.Transaction_Item_Addons.map(
           (addons) => addons.Addon?.name
         ).filter((val) => val);
 
-        const joinedAddons = currAddons.length ? currAddons.join(",") : "";
+        joinedAddons = currAddons.length ? currAddons.join(",") : "";
+      }
 
-        return {
-          product_name: val.Product.name,
-          addons_name: joinedAddons,
-          category_name: val.Product.Product_Category?.name,
-          sku: val.Product?.sku,
-          totalItems: val.quantity,
-          grossSales: grossSales,
-          discountSales: discountSales,
-          totalSales: totalSales
-        };
+      allItems2.push({
+        product_name: temp[0].Product.name,
+        addons_name: joinedAddons,
+        category_name: temp[0].Product.Product_Category?.name,
+        sku: temp[0].Product?.sku,
+        totalItems: quantity,
+        grossSales: grossSales,
+        // discountSales: discountSales,
+        totalSales: totalSales
       });
-
-      return output;
     });
 
-    const allProductNames = allItems.flat(1).reduce((init, curr) => {
+    //
+    //
+    //
+    // const allItems = completedTransactions.map((item) => {
+    //   const grossSales = item.Transaction_Items.reduce(
+    //     (init, curr) => (init += curr.price_total + curr.price_discount),
+    //     0
+    //   );
+    //   const discountSales = item.Transaction_Items.reduce(
+    //     (init, curr) => (init += curr.price_discount),
+    //     0
+    //   );
+    //   const totalSales = item.Transaction_Items.reduce(
+    //     (init, curr) => (init += curr.price_total),
+    //     0
+    //   );
+
+    //   const output = item.Transaction_Items.map((val) => {
+    //     const currAddons = val.Transaction_Item_Addons.map(
+    //       (addons) => addons.Addon?.name
+    //     ).filter((val) => val);
+
+    //     const joinedAddons = currAddons.length ? currAddons.join(",") : "";
+
+    //     return {
+    //       product_name: val.Product.name,
+    //       addons_name: joinedAddons,
+    //       category_name: val.Product.Product_Category?.name,
+    //       sku: val.Product?.sku,
+    //       totalItems: val.quantity,
+    //       grossSales: grossSales,
+    //       discountSales: discountSales,
+    //       totalSales: totalSales
+    //     };
+    //   });
+
+    //   return output;
+    // });
+
+    const allProductNames = allItems2.flat(1).reduce((init, curr) => {
       init[`${curr.product_name}-${curr.addons_name}`] = curr?.category_name;
       return init;
     }, {});
@@ -105,41 +163,39 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
       const addons = item.split("-")[1];
       const category = allProductNames[item];
 
-      const sku = allItems
+      const sku = allItems2
         .flat(1)
         .filter(
           (val) => val.product_name === name && val.addons_name === addons
         )
         .reduce((init, curr) => (init = curr?.sku), "");
 
-      const totalItems = allItems
+      const totalItems = allItems2
         .flat(1)
         .filter(
           (val) => val.product_name === name && val.addons_name === addons
         )
         .reduce((init, curr) => (init += curr.totalItems), 0);
 
-      const grossSales = allItems
+      const grossSales = allItems2
         .flat(1)
         .filter(
           (val) => val.product_name === name && val.addons_name === addons
         )
         .reduce((init, curr) => (init += curr.grossSales), 0);
 
-      const discountSales = allItems
-        .flat(1)
-        .filter(
-          (val) => val.product_name === name && val.addons_name === addons
-        )
-        .reduce((init, curr) => (init += curr.discountSales), 0);
-
-      const totalSales = allItems
+      // const discountSales = allItems2
+      //   .flat(1)
+      //   .filter(
+      //     (val) => val.product_name === name && val.addons_name === addons
+      //   )
+      //   .reduce((init, curr) => (init += curr.discountSales), 0);
+      const totalSales = allItems2
         .flat(1)
         .filter(
           (val) => val.product_name === name && val.addons_name === addons
         )
         .reduce((init, curr) => (init += curr.totalSales), 0);
-
       return {
         product_name: name,
         addons_name: addons,
@@ -147,11 +203,10 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
         sku,
         totalItems,
         grossSales,
-        discountSales,
+        // discountSales,
         totalSales
       };
     });
-
     setReports(compileReports);
   };
 
@@ -238,7 +293,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
     data[3].value = voidSales;
 
     // nett sales
-    const nettSales = grossSales - discount - voidSales;
+    const nettSales = grossSales - voidSales;
     data[4].value = nettSales;
 
     // bonus
@@ -266,6 +321,22 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
   const sumReports = (data, key) => {
     return data.reduce((init, curr) => (init += curr[key]), 0);
   };
+
+  let totalDiscount = 0;
+  if (allTransactions.length) {
+    const temp = allTransactions.filter(
+      (item) => item.Payment?.status === "done"
+    );
+    // temp.forEach((item) => {
+    //   totalDiscount += item.Payment.payment_discount;
+    // });
+    totalDiscount = temp.reduce(
+      (init, curr) => (init += curr.Payment?.payment_discount),
+      0
+    );
+  }
+
+  const grandTotal = sumReports(reports, "totalSales") - totalDiscount;
 
   return (
     <>
@@ -302,7 +373,6 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
               <th>SKU</th>
               <th>Terjual</th>
               <th>Penjualan Kotor</th>
-              <th>Diskon</th>
               <th>Total</th>
             </tr>
           </thead>
@@ -316,20 +386,36 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
                   <td>{item.sku}</td>
                   <td>{item.totalItems}</td>
                   <td>{item.grossSales}</td>
-                  <td>{item.discountSales}</td>
                   <td>{item.totalSales}</td>
                 </tr>
               );
             })}
             <tr>
-              <th>Grand Total</th>
+              <th>Subtotal</th>
               <th></th>
               <th></th>
               <th></th>
               <th>{sumReports(reports, "totalItems")} </th>
               <th>{sumReports(reports, "grossSales")} </th>
-              <th></th>
               <th>{sumReports(reports, "totalSales")} </th>
+            </tr>
+            <tr>
+              <th>Discount Given</th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th>{totalDiscount}</th>
+            </tr>
+            <tr>
+              <th>Grand Total</th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th>{grandTotal}</th>
             </tr>
           </tbody>
         </table>
