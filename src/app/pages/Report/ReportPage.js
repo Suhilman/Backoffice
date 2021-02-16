@@ -10,7 +10,7 @@ import {
   InputGroup
 } from "react-bootstrap";
 import { Paper } from "@material-ui/core";
-import { CalendarToday, TodayOutlined } from "@material-ui/icons";
+import { CalendarToday, TodayOutlined, Schedule } from "@material-ui/icons";
 import { SalesSummaryTab } from "./SalesSummaryTab";
 import { PaymentMethodTab } from "./PaymentMethodTab";
 import { SalesTypeTab } from "./SalesTypeTab";
@@ -25,11 +25,16 @@ import ProfitReport from "./ProfitReport";
 import StaffTransaction from "./StaffTransaction";
 import VoidTransaction from "./VoidTransaction";
 import CustomDateRange from "../../components/CustomDateRange";
+import CustomTimeRangePicker from "../../components/CustomTimeRangePicker";
 import ExportExcel from "react-html-table-to-excel";
+import SalesPerHour from "./SalesPerHour";
 
 export const ReportPage = () => {
   const [tabs, setTabs] = React.useState(1);
-
+  const [startTime, setStartTime] = React.useState(new Date());
+  const [endTime, setEndTime] = React.useState(new Date());
+  const [time, setTime] = React.useState("");
+  const [showTimePicker, setShowTimePicker] = React.useState(false);
   const [allOutlets, setAllOutlets] = React.useState([]);
   const [selectedOutlet, setSelectedOutlet] = React.useState({
     id: "",
@@ -86,8 +91,8 @@ export const ReportPage = () => {
     {
       no: 7,
       title: "Discount Sales",
-      // table: "table-attendance-report",
-      // filename: `laporan-absensi_${startDate}-${endDate}`,
+      table: "table-attendance-report",
+      filename: `laporan-absensi_${startDate}-${endDate}`,
       Component: DiscountSalesTab
     },
     {
@@ -131,6 +136,13 @@ export const ReportPage = () => {
       table: "table-void",
       filename: `laporan-transaksi-void/refund_${startDate}-${endDate}`,
       Component: VoidTransaction
+    },
+    {
+      no: 14,
+      title: "Sales Per Hour",
+      table: "table-sales-per-hour",
+      filename: `laporan-transaksi-penjualan-per-jam_${startDate}-${endDate}`,
+      Component: SalesPerHour
     }
   ];
 
@@ -185,7 +197,6 @@ export const ReportPage = () => {
     setStartRange(start);
     setEndRange(end);
   };
-
   const handleOpenCustom = () => setStateCustom(true);
   const handleCloseCustom = () => {
     setStartRange(new Date(startDate));
@@ -210,7 +221,14 @@ export const ReportPage = () => {
       return `${start} - ${end}`;
     }
   };
-
+  const handleTimeStart = (date) => setStartTime(date);
+  const handleTimeEnd = (date) => setEndTime(date);
+  const handleSaveTime = () => {
+    let time_start = dayjs(startTime).format("HH:mm");
+    let end_time = dayjs(endTime).format("HH:mm");
+    setTime(`${time_start} - ${end_time}`);
+    setShowTimePicker(false);
+  };
   return (
     <>
       <CustomDateRange
@@ -220,6 +238,15 @@ export const ReportPage = () => {
         startRange={startRange}
         endRange={endRange}
         handleStartRange={handleStartRange}
+      />
+      <CustomTimeRangePicker
+        show={showTimePicker}
+        handleClose={() => setShowTimePicker(false)}
+        handleSave={handleSaveTime}
+        startTime={startTime}
+        endTime={endTime}
+        handleStartTime={handleTimeStart}
+        handleEndTime={handleTimeEnd}
       />
       <Row>
         <Col>
@@ -385,6 +412,42 @@ export const ReportPage = () => {
                       </Col>
                     </Row>
                   </Col>
+                ) : tabs === "14" ? (
+                  <Col>
+                    <Row>
+                      <Col>
+                        <Form.Group as={Row}>
+                          <Form.Label
+                            style={{ alignSelf: "center", marginBottom: "0" }}
+                          >
+                            Time :
+                          </Form.Label>
+                          <Col>
+                            <InputGroup>
+                              <Form.Control
+                                type="text"
+                                value={time}
+                                onClick={() =>
+                                  setShowTimePicker(!showTimePicker)
+                                }
+                                style={{
+                                  borderTopRightRadius: 0,
+                                  borderBottomRightRadius: 0
+                                }}
+                                readOnly
+                              />
+
+                              <InputGroup.Append>
+                                <InputGroup.Text>
+                                  <Schedule />
+                                </InputGroup.Text>
+                              </InputGroup.Append>
+                            </InputGroup>
+                          </Col>
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                  </Col>
                 ) : (
                   ""
                 )}
@@ -399,6 +462,8 @@ export const ReportPage = () => {
                     selectedOutlet={selectedOutlet}
                     startDate={startDate}
                     endDate={endDate}
+                    startTime={startTime}
+                    endTime={endTime}
                     status={status}
                   />
                 );
