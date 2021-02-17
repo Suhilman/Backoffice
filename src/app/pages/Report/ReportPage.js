@@ -101,56 +101,56 @@ export const ReportPage = () => {
       table: "table-recap",
       filename: `laporan-rekap_${startDate}-${endDate}`,
       Component: RecapTab
-    },
-    {
-      no: 9,
-      title: "Sales Per Product",
-      table: "table-sales-per-product",
-      filename: `laporan-penjualan-per-produk_${startDate}-${endDate}`,
-      Component: SalesPerProductTab
-    },
-    {
-      no: 10,
-      title: "Cost of Good Sold",
-      table: "table-cogs",
-      filename: `laporan-COGS_${startDate}-${endDate}`,
-      Component: COGSReport
-    },
-    {
-      no: 11,
-      title: "Profit Calculation",
-      table: "table-profit",
-      filename: `laporan-perhitunga-laba_${startDate}-${endDate}`,
-      Component: ProfitReport
-    },
-    {
-      no: 12,
-      title: "Staff Transaction",
-      table: "table-staff-transaction",
-      filename: `laporan-penjualan-staff_${startDate}-${endDate}`,
-      Component: StaffTransaction
-    },
-    {
-      no: 13,
-      title: "Void Transaction",
-      table: "table-void",
-      filename: `laporan-transaksi-void/refund_${startDate}-${endDate}`,
-      Component: VoidTransaction
-    },
-    {
-      no: 14,
-      title: "Sales Per Hour",
-      table: "table-sales-per-hour",
-      filename: `laporan-transaksi-penjualan-per-jam_${startDate}-${endDate}`,
-      Component: SalesPerHour
-    },
-    {
-      no: 14,
-      title: "Stock Report",
-      table: "table-stock",
-      filename: `laporan-stock-barang_${startDate}-${endDate}`
-      // Component: SalesPerHour
     }
+    // {
+    //   no: 9,
+    //   title: "Sales Per Product",
+    //   table: "table-sales-per-product",
+    //   filename: `laporan-penjualan-per-produk_${startDate}-${endDate}`,
+    //   Component: SalesPerProductTab
+    // },
+    // {
+    //   no: 10,
+    //   title: "Cost of Good Sold",
+    //   table: "table-cogs",
+    //   filename: `laporan-COGS_${startDate}-${endDate}`,
+    //   Component: COGSReport
+    // },
+    // {
+    //   no: 11,
+    //   title: "Profit Calculation",
+    //   table: "table-profit",
+    //   filename: `laporan-perhitunga-laba_${startDate}-${endDate}`,
+    //   Component: ProfitReport
+    // },
+    // {
+    //   no: 12,
+    //   title: "Staff Transaction",
+    //   table: "table-staff-transaction",
+    //   filename: `laporan-penjualan-staff_${startDate}-${endDate}`,
+    //   Component: StaffTransaction
+    // },
+    // {
+    //   no: 13,
+    //   title: "Void Transaction",
+    //   table: "table-void",
+    //   filename: `laporan-transaksi-void/refund_${startDate}-${endDate}`,
+    //   Component: VoidTransaction
+    // },
+    // {
+    //   no: 14,
+    //   title: "Sales Per Hour",
+    //   table: "table-sales-per-hour",
+    //   filename: `laporan-transaksi-penjualan-per-jam_${startDate}-${endDate}`,
+    //   Component: SalesPerHour
+    // },
+    // {
+    //   no: 14,
+    //   title: "Stock Report",
+    //   table: "table-stock",
+    //   filename: `laporan-stock-barang_${startDate}-${endDate}`
+    //   // Component: SalesPerHour
+    // }
   ];
 
   const getOutlets = async () => {
