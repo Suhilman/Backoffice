@@ -54,7 +54,7 @@ const SalesPerHour = ({
       const { data } = await axios.get(
         `${API_URL}/api/v1/transaction/sales-hour${outlet_id}date_start=${start_range}&date_end=${end_range}&time_start=${timeStart}&time_end=${timeEnd}`
       );
-      setSalesPerHour(renderTable(data.data));
+      setSalesPerHour(renderTime(renderReceipt(data.data)));
     } catch (err) {
       if (err.response.status === 404) {
         setSalesPerHour([]);
@@ -85,34 +85,56 @@ const SalesPerHour = ({
     }
     return comparison;
   }
-  const renderTable = (array) => {
+  const renderReceipt = (array) => {
     let final = [];
     let seen = {};
+    let secondCompare;
     array = array.filter((entry) => {
       let previous;
-      if (seen.hasOwnProperty(entry.time)) {
-        previous = seen[entry.time];
+      if (seen.hasOwnProperty(entry.receiptId)) {
+        previous = seen[entry.receiptId];
         previous.penjualan.push(entry.penjualan);
         return false;
       }
 
       if (!Array.isArray(entry.array)) {
-        entry.time = [entry.time];
         entry.penjualan = [entry.penjualan];
       }
 
-      seen[entry.time] = entry;
+      seen[entry.receiptId] = entry;
+
+      return true;
+    });
+    return array;
+  };
+  const renderTime = (array) => {
+    let final = [];
+    let seen2 = {};
+    array = array.filter((entry) => {
+      let previous;
+      if (seen2.hasOwnProperty(entry.time)) {
+        previous = seen2[entry.time];
+        previous.receiptId.push(entry.receiptId);
+        previous.penjualan.push(entry.penjualan);
+        return false;
+      }
+
+      if (!Array.isArray(entry.array)) {
+        entry.receiptId = [entry.receiptId];
+        entry.penjualan = [entry.penjualan];
+      }
+
+      seen2[entry.time] = entry;
 
       return true;
     });
 
     array.map((i) => {
       final.push({
-        time: i.time[0],
-        total_penjualan: sum(i.penjualan),
-        penjualan: i.penjualan,
-        jumlah_transaksi: i.penjualan.length,
-        rata_rata: Math.round(sum(i.penjualan) / i.penjualan.length)
+        time: i.time,
+        total_penjualan: sum(i.penjualan.flat(1)),
+        jumlah_transaksi: i.receiptId.length,
+        rata_rata: Math.round(sum(i.penjualan.flat(1)) / i.receiptId.length)
       });
     });
     return final.sort(compare);
@@ -132,6 +154,7 @@ const SalesPerHour = ({
       endTime
     );
   }, [selectedOutlet, startDate, endDate, startTime, endTime]);
+
   return (
     <>
       <div style={{ display: "none" }}>
@@ -253,6 +276,7 @@ const SalesPerHour = ({
           </tr>
         </tbody>
       </Table>
+   
     </>
   );
 };

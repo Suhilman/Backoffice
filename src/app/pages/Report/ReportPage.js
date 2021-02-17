@@ -28,6 +28,7 @@ import CustomDateRange from "../../components/CustomDateRange";
 import CustomTimeRangePicker from "../../components/CustomTimeRangePicker";
 import ExportExcel from "react-html-table-to-excel";
 import SalesPerHour from "./SalesPerHour";
+import StockReport from "./StockReport";
 
 export const ReportPage = () => {
   const [tabs, setTabs] = React.useState(1);
@@ -145,11 +146,11 @@ export const ReportPage = () => {
       Component: SalesPerHour
     },
     {
-      no: 14,
+      no: 15,
       title: "Stock Report",
       table: "table-stock",
-      filename: `laporan-stock-barang_${startDate}-${endDate}`
-      // Component: SalesPerHour
+      filename: `laporan-stock-barang_${startDate}-${endDate}`,
+      Component: StockReport
     }
   ];
 
