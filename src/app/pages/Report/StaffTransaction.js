@@ -60,7 +60,6 @@ const StaffTransaction = ({ selectedOutlet, startDate, endDate }) => {
       }
 
       if (!Array.isArray(entry.array)) {
-        entry.product = [entry.product_name];
         entry.total_transaksi = [entry.total_transaksi];
       }
 
@@ -187,7 +186,9 @@ const StaffTransaction = ({ selectedOutlet, startDate, endDate }) => {
             <th></th>
             <th></th>
             <th>
-              {rupiahFormat.convert(sumReports(StaffTransaction, "total_transaksi"))}{" "}
+              {rupiahFormat.convert(
+                sumReports(StaffTransaction, "total_transaksi")
+              )}{" "}
             </th>
           </tr>
         </tbody>
