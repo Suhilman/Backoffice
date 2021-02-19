@@ -380,7 +380,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
               <th>Kategori</th>
               <th>SKU</th>
               <th>Terjual</th>
-              <th>Penjualan Kotor</th>
+              {/* <th>Penjualan Kotor</th> */}
               <th>Total</th>
             </tr>
           </thead>
@@ -393,7 +393,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
                   <td>{item.category_name}</td>
                   <td>{item.sku}</td>
                   <td>{item.totalItems}</td>
-                  <td>{item.grossSales}</td>
+                  {/* <td>{item.grossSales}</td> */}
                   <td>{item.totalSales}</td>
                 </tr>
               );
@@ -404,7 +404,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
               <th></th>
               <th></th>
               <th>{sumReports(reports, "totalItems")} </th>
-              <th>{sumReports(reports, "grossSales")} </th>
+              {/* <th>{sumReports(reports, "grossSales")} </th> */}
               <th>{sumReports(reports, "totalSales")} </th>
             </tr>
             <tr>
@@ -413,7 +413,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
               <th></th>
               <th></th>
               <th></th>
-              <th></th>
+              {/* <th></th> */}
               <th>{totalDiscount}</th>
             </tr>
             <tr>
@@ -422,7 +422,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
               <th></th>
               <th></th>
               <th></th>
-              <th></th>
+              {/* <th></th> */}
               <th>{totalService}</th>
             </tr>
             <tr>
@@ -431,7 +431,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
               <th></th>
               <th></th>
               <th></th>
-              <th></th>
+              {/* <th></th> */}
               <th>{grandTotal}</th>
             </tr>
           </tbody>
