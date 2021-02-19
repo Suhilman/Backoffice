@@ -237,7 +237,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
         value: 0
       },
       {
-        key: "(Bonus)",
+        key: "(Services)",
         value: 0
       },
       {
@@ -294,12 +294,17 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
     );
     data[3].value = voidSales;
 
+    // bonus or services
+    const bonus = completedTransactions.reduce(
+      (init, curr) => (init += curr.Payment?.payment_service),
+      0
+    );
+
     // nett sales
-    const nettSales = grossSales - voidSales;
+    const nettSales = grossSales - voidSales - bonus;
     data[4].value = nettSales;
 
-    // bonus
-    const bonus = 0;
+    // bonus or services
     data[5].value = bonus;
 
     // tax
@@ -314,7 +319,8 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
     data[7].value = roundingSales;
 
     // total
-    const totalCollected = nettSales - bonus - taxSales + roundingSales;
+    //const totalCollected = nettSales - bonus - taxSales + roundingSales;
+    const totalCollected = nettSales + bonus - taxSales + roundingSales;
     data[8].value = totalCollected;
 
     return data;
