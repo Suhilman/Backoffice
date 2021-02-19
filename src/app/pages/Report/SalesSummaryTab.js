@@ -320,7 +320,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
 
     // total
     //const totalCollected = nettSales - bonus - taxSales + roundingSales;
-    const totalCollected = nettSales - taxSales + roundingSales;
+    const totalCollected = nettSales + bonus - taxSales + roundingSales;
     data[8].value = totalCollected;
 
     return data;
