@@ -270,19 +270,21 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
       0
     );
 
-    // income sales
-    const incomeSales = income;
-    data[0].value = incomeSales;
-
-    // gross sales dikurangi hpp
-    const grossSales = income;
-    data[1].value = grossSales;
-
     // discount
     const discount = completedTransactions.reduce(
       (init, curr) => (init += curr.Payment?.payment_discount),
       0
     );
+
+    // income sales
+    const incomeSales = income;
+    data[0].value = incomeSales + discount;
+
+    // gross sales dikurangi hpp
+    const grossSales = income;
+    data[1].value = grossSales + discount;
+
+    // discount
     data[2].value = discount;
 
     // refund / void
