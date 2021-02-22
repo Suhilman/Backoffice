@@ -29,6 +29,7 @@ const StaffTransaction = ({ selectedOutlet, startDate, endDate }) => {
       const { data } = await axios.get(
         `${API_URL}/api/v1/transaction/staff-history${outlet_id}date_start=${start_range}&date_end=${end_range}`
       );
+
       setStaffTransaction(renderTable(data.data));
     } catch (err) {
       if (err.response.status === 404) {
@@ -56,11 +57,15 @@ const StaffTransaction = ({ selectedOutlet, startDate, endDate }) => {
       if (seen.hasOwnProperty(entry.nama_staff)) {
         previous = seen[entry.nama_staff];
         previous.total_transaksi.push(entry.total_transaksi);
+        previous.jumlah_rekap.push(entry.jumlah_rekap);
+        previous.jumlah_transaksi.push(entry.jumlah_transaksi);
         return false;
       }
 
       if (!Array.isArray(entry.array)) {
         entry.total_transaksi = [entry.total_transaksi];
+        entry.jumlah_rekap = [entry.jumlah_rekap];
+        entry.jumlah_transaksi = [entry.jumlah_transaksi];
       }
 
       seen[entry.nama_staff] = entry;
@@ -71,8 +76,8 @@ const StaffTransaction = ({ selectedOutlet, startDate, endDate }) => {
     array.map((i) => {
       final.push({
         staff_name: i.nama_staff,
-        jumlah_rekap: i.jumlah_rekap,
-        jumlah_transaksi: i.jumlah_transaksi,
+        jumlah_rekap: sum(i.jumlah_rekap),
+        jumlah_transaksi: sum(i.jumlah_transaksi),
         total_transaksi: sum(i.total_transaksi)
       });
     });

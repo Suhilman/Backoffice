@@ -1,12 +1,8 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import { Row, Col, ListGroup } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import dayjs from "dayjs";
-import rupiahFormat from "rupiah-format";
-import "../style.css";
-import { Table } from "react-bootstrap";
 
 // import { Search } from "@material-ui/icons";
 // import useDebounce from "../../hooks/useDebounce";
