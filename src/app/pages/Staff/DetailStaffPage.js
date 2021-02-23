@@ -408,7 +408,8 @@ export const DetailStaffPage = ({ match, location }) => {
                   </Paper>
 
                   <p className="text-muted mt-1">
-                    Allowed file types: .png, .jpg, .jpeg
+                    Allowed file types: .png, .jpg, .jpeg | File size limit: 2
+                    MB
                   </p>
                 </Col>
 

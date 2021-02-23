@@ -491,7 +491,10 @@ export const BusinessInformation = () => {
                       </Form.Group>
                     </Col>
                     <Col md={6}>
-                      <label>Upload KTP Picture</label>
+                      <label>
+                        Upload KTP Picture
+                        <small className="ml-4">File size limit: 2 MB</small>
+                      </label>
                       <Row className="box">
                         <Col>
                           <div
@@ -522,7 +525,10 @@ export const BusinessInformation = () => {
                         </Col>
                       </Row>
 
-                      <label>Upload NPWP Picture</label>
+                      <label>
+                        Upload NPWP Picture
+                        <small className="ml-4">File size limit: 2 MB</small>
+                      </label>
                       <Row className="box">
                         <Col>
                           <div
@@ -554,7 +560,10 @@ export const BusinessInformation = () => {
                         </Col>
                       </Row>
 
-                      <label>Upload Business Picture</label>
+                      <label>
+                        Upload Business Picture
+                        <small className="ml-4">File size limit: 2 MB</small>
+                      </label>
                       <Row className="box">
                         <Col>
                           <div
