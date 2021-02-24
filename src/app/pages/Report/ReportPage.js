@@ -29,6 +29,7 @@ import CustomTimeRangePicker from "../../components/CustomTimeRangePicker";
 import ExportExcel from "react-html-table-to-excel";
 import SalesPerHour from "./SalesPerHour";
 import StockReport from "./StockReport";
+import LoyaltiReport from "./LoyaltiReport";
 
 export const ReportPage = () => {
   const [tabs, setTabs] = React.useState(1);
@@ -151,6 +152,13 @@ export const ReportPage = () => {
       table: "table-stock",
       filename: `laporan-stock-barang_${startDate}-${endDate}`,
       Component: StockReport
+    },
+    {
+      no: 16,
+      title: "Loyalty report",
+      table: "table-loyalty",
+      filename: `laporan-loyalty_${startDate}-${endDate}`,
+      Component: LoyaltiReport
     }
   ];
 
