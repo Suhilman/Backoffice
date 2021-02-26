@@ -1,14 +1,17 @@
 import React from "react";
 import axios from "axios";
 import { KeyboardTimePicker } from "@material-ui/pickers";
-
+import dayjs from "dayjs";
 import { Row, Col, Button, Spinner } from "react-bootstrap";
 import {
   Switch,
   FormGroup,
   FormControl,
   FormControlLabel,
-  Paper
+  Paper,
+  InputLabel,
+  Select,
+  TextField
 } from "@material-ui/core";
 
 import "../style.css";
@@ -20,6 +23,13 @@ export const EmailNotifications = () => {
     weeklySales: false,
     lowStock: false
   });
+  const [timingState, setTimingState] = React.useState({
+    daily_sales: new Date(),
+    weekly_sales: new Date(),
+    stock_alert: new Date()
+  });
+  const [minimum, setMinimum] = React.useState(5);
+  const [day, setDay] = React.useState(0);
   const [initialSwitchState, setInitialSwitchState] = React.useState({
     cashRecap: false,
     dailySales: false,
@@ -34,32 +44,78 @@ export const EmailNotifications = () => {
     const userInfo = JSON.parse(localStorage.getItem("user_info"));
 
     try {
-      const emailNotifications = await axios.get(
+      const settingsNotification = await axios.get(
         `${API_URL}/api/v1/email-notification/${userInfo.business_id}`
       );
-
+      console.log(settingsNotification);
       setSwitchState({
-        cashRecap: emailNotifications.data.data.rekap_kas || false,
+        cashRecap:
+          settingsNotification.data.data.emailNotification.rekap_kas || false,
         dailySales:
-          emailNotifications.data.data.penjualan_produk_harian || false,
+          settingsNotification.data.data.emailNotification
+            .penjualan_produk_harian || false,
         weeklySales:
-          emailNotifications.data.data.penjualan_produk_mingguan || false,
-        lowStock: emailNotifications.data.data.stok_habis_harian || false
+          settingsNotification.data.data.emailNotification
+            .penjualan_produk_mingguan || false,
+        lowStock:
+          settingsNotification.data.data.emailNotification.stok_habis_harian ||
+          false
       });
 
       setInitialSwitchState({
-        cashRecap: emailNotifications.data.data.rekap_kas || false,
+        cashRecap:
+          settingsNotification.data.data.emailNotification.rekap_kas || false,
         dailySales:
-          emailNotifications.data.data.penjualan_produk_harian || false,
+          settingsNotification.data.data.emailNotification
+            .penjualan_produk_harian || false,
         weeklySales:
-          emailNotifications.data.data.penjualan_produk_mingguan || false,
-        lowStock: emailNotifications.data.data.stok_habis_harian || false
+          settingsNotification.data.data.emailNotification
+            .penjualan_produk_mingguan || false,
+        lowStock:
+          settingsNotification.data.data.emailNotification.stok_habis_harian ||
+          false
       });
+
+      setTimingState({
+        daily_sales: settingsNotification.data.data.timeState[0].time,
+        weekly_sales: settingsNotification.data.data.timeState[1].time,
+        stock_alert: settingsNotification.data.data.timeState[2].time
+      });
+
+      setMinimum(settingsNotification.data.data.minimum);
+      setDay(settingsNotification.data.data.day);
     } catch (err) {
       console.log(err);
     }
   };
 
+  const handleMinimumChange = (e) => setMinimum(e.target.value);
+  const handleDayChange = (e) => setDay(e.target.value);
+
+  const handleDailyChange = (e) => {
+    setTimingState({
+      ...e,
+      daily_sales: dayjs(e).format(),
+      weekly_sales: timingState.weekly_sales,
+      stock_alert: timingState.stock_alert
+    });
+  };
+  const handleWeeklyChange = (e) => {
+    setTimingState({
+      ...e,
+      daily_sales: timingState.daily_sales,
+      weekly_sales: dayjs(e).format(),
+      stock_alert: timingState.stock_alert
+    });
+  };
+  const handleStockChange = (e) => {
+    setTimingState({
+      ...e,
+      daily_sales: timingState.daily_sales,
+      weekly_sales: timingState.weekly_sales,
+      stock_alert: dayjs(e).format()
+    });
+  };
   React.useEffect(() => {
     getEmailNotifications();
   }, []);
@@ -76,15 +132,18 @@ export const EmailNotifications = () => {
       field: "Daily Sales Report",
       description: "Get a sales report notification email once a day",
       value: switchState.dailySales,
+      timeValue: timingState.daily_sales,
       name: "dailySales",
       component: (
         <KeyboardTimePicker
           margin="normal"
           id="daily-sales"
           label="Select Time"
+          ampm={false}
+          name="daily_sales"
           disabled={stateComponent === "show" ? true : false}
-          // value={selectedDate}
-          // onChange={handleDateChange}
+          value={timingState.daily_sales}
+          onChange={handleDailyChange}
           KeyboardButtonProps={{
             "aria-label": "change time"
           }}
@@ -96,42 +155,86 @@ export const EmailNotifications = () => {
       field: "Weekly Sales Report",
       description: "Get a sales report notification email once a week",
       value: switchState.weeklySales,
+      timeValue: timingState.weekly_sales,
       name: "weeklySales",
       component: (
         <KeyboardTimePicker
           margin="normal"
           id="weekly-sales"
-          label="Select Date"
+          name="weekly_sales"
+          label="Select Time"
+          ampm={false}
           disabled={stateComponent === "show" ? true : false}
-          // value={selectedDate}
-          // onChange={handleDateChange}
+          value={timingState.weekly_sales}
+          onChange={handleWeeklyChange}
           KeyboardButtonProps={{
             "aria-label": "change time"
           }}
         />
       ),
-      text: "You can choose date for sending email Weekly Sales Report"
+      text: "You can choose timing for sending email Weekly Sales Report",
+      low: (
+        <FormControl style={{ width: "100%" }}>
+          <InputLabel htmlFor="hari">Day</InputLabel>
+          <Select
+            native
+            value={day}
+            onChange={handleDayChange}
+            disabled={stateComponent === "show" ? true : false}
+            inputProps={{
+              name: "hari",
+              id: "hari"
+            }}
+          >
+            <option aria-label="None" value="" />
+            <option value={1}>Monday</option>
+            <option value={2}>Tuesday</option>
+            <option value={3}>Wednesday</option>
+            <option value={4}>Thursday</option>
+            <option value={5}>Friday</option>
+            <option value={6}>Saturday</option>
+            <option value={0}>Sunday</option>
+          </Select>
+        </FormControl>
+      ),
+      text2: "You can change the day for set Weekly Reports"
     },
     {
       field: "Low Stock Alert",
       description:
         "Get a daily notification when a product stock is nearly empty / empty",
       value: switchState.lowStock,
+      timeValue: timingState.stock_alert,
       name: "lowStock",
+      low: (
+        <TextField
+          label="Minimum"
+          type="number"
+          disabled={stateComponent === "show" ? true : false}
+          onChange={handleMinimumChange}
+          value={minimum}
+          min="0"
+          id="standard-size-normal"
+          defaultValue="Normal"
+        />
+      ),
       component: (
         <KeyboardTimePicker
           margin="normal"
           id="low-stock"
+          name="stock_alert"
+          ampm={false}
           label="Select Time"
           disabled={stateComponent === "show" ? true : false}
-          // value={selectedDate}
-          // onChange={handleDateChange}
+          value={timingState.stock_alert}
+          onChange={handleStockChange}
           KeyboardButtonProps={{
             "aria-label": "change time"
           }}
         />
       ),
-      text: "You can select time for sending email Low Stock Alert"
+      text: "You can select time for sending email Low Stock Alert",
+      text2: "You can set the minimum all stock for notifications"
     }
   ];
 
@@ -143,7 +246,12 @@ export const EmailNotifications = () => {
       rekap_kas: switchState.cashRecap,
       stok_habis_harian: switchState.lowStock,
       penjualan_produk_harian: switchState.dailySales,
-      penjualan_produk_mingguan: switchState.weeklySales
+      penjualan_produk_mingguan: switchState.weeklySales,
+      daily_sales_time: timingState.daily_sales,
+      weekly_sales_time: timingState.weekly_sales,
+      stock_alert_time: timingState.stock_alert,
+      minimum_stock: minimum,
+      day: day
     };
 
     try {
@@ -226,7 +334,7 @@ export const EmailNotifications = () => {
             return (
               <>
                 <Row key={index} style={{ padding: "1rem" }}>
-                  <Col md={6}>
+                  <Col md={4}>
                     {item.field} <br /> {item.description}
                   </Col>
                   <Col md={3}>
@@ -250,6 +358,10 @@ export const EmailNotifications = () => {
                         />
                       </FormGroup>
                     </FormControl>
+                  </Col>
+                  <Col md={2}>
+                    {item.low ? item.low : ""}
+                    {item.text2 ? item.text2 : ""}
                   </Col>
                   <Col md={3} style={{ marginTop: "-30px" }}>
                     {item.component ? item.component : ""}
