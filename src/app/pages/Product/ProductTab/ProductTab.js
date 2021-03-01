@@ -398,7 +398,9 @@ const ProductTab = ({
               outlet_id: item,
               stock: val.stock === "-" ? 0 : val.stock,
               expired_date: val.expired_date
-                ? dayjs(val.expired_date).format("YYYY-MM-DD")
+                ? dayjs(val.expired_date)
+                    .subtract(1, "days")
+                    .format("YYYY-MM-DD")
                 : ""
             };
             // if (!val.barcode) delete obj.barcode;
