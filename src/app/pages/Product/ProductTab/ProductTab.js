@@ -398,7 +398,7 @@ const ProductTab = ({
               outlet_id: item,
               stock: val.stock === "-" ? 0 : val.stock,
               expired_date: val.expired_date
-                ? dayjs(val.expired_date, "DD/MM/YYYY").format("YYYY-MM-DD")
+                ? dayjs(val.expired_date).format("YYYY-MM-DD")
                 : ""
             };
             // if (!val.barcode) delete obj.barcode;
@@ -440,7 +440,9 @@ const ProductTab = ({
     formikImportProduct.setFieldValue("outlet_id", []);
     formikImportProduct.setFieldValue("products", []);
   };
-
+  const getJsDateFromExcel = (excelDate) => {
+    return new Date((excelDate - (25567 + 1)) * 86400 * 1000);
+  };
   const handleFile = (file) => {
     setFilename(file[0].name);
     ExcelRenderer(file[0], (err, resp) => {
@@ -472,6 +474,12 @@ const ProductTab = ({
               } else {
                 obj[i] = "-";
               }
+            } else if (i === "expired_date") {
+              if (j[index]) {
+                obj[i] = j[index];
+              } else {
+                obj[i] = "-";
+              }
             } else {
               obj[i] = j[index];
             }
@@ -488,7 +496,7 @@ const ProductTab = ({
             with_recipe: obj.with_recipe,
             stock: obj.stock,
             unit: obj.unit,
-            expired_date: obj.expired_date
+            expired_date: getJsDateFromExcel(obj.expired_date)
           });
         });
         formikImportProduct.setFieldValue("products", data);
