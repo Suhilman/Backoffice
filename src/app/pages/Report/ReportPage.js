@@ -153,13 +153,13 @@ export const ReportPage = () => {
       filename: `laporan-stock-barang_${startDate}-${endDate}`,
       Component: StockReport
     },
-    {
-      no: 16,
-      title: "Loyalty report",
-      table: "table-loyalty",
-      filename: `laporan-loyalty_${startDate}-${endDate}`,
-      Component: LoyaltiReport
-    }
+    // {
+    //   no: 16,
+    //   title: "Loyalty report",
+    //   table: "table-loyalty",
+    //   filename: `laporan-loyalty_${startDate}-${endDate}`,
+    //   Component: LoyaltiReport
+    // }
   ];
 
   const getOutlets = async () => {
