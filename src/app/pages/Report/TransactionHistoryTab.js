@@ -124,11 +124,6 @@ export const TransactionHistoryTab = ({
       sortable: true
     },
     {
-      name: "Created At",
-      selector: "created_at",
-      sortable: true
-    },
-    {
       name: "Status",
       selector: "status",
       sortable: true
@@ -147,7 +142,7 @@ export const TransactionHistoryTab = ({
           item.Payment?.payment_discount || 0
         ),
         outlet_name: item.Outlet?.name || "-",
-        created_at: dayjs(item.createdAt).format("DD-MM-YYYY HH:mm:ss"),
+        // created_at: dayjs(item.createdAt).format("DD-MM-YYYY HH:mm:ss"),
         status: item.status,
         items: item.Transaction_Items
       };

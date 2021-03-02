@@ -483,7 +483,12 @@ const FormTemplate = ({
               >
                 <input {...getInputProps()} />
                 {!photoPreview ? (
-                  <p>Drag 'n' drop some files here, or click to select files</p>
+                  <>
+                    <p>
+                      Drag 'n' drop some files here, or click to select files
+                    </p>
+                    <p style={{ color: "gray" }}>File Size Limit: 2 MB</p>
+                  </>
                 ) : (
                   <>
                     <div
