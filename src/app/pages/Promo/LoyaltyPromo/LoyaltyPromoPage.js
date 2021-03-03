@@ -502,7 +502,7 @@ export const LoyaltyPromoPage = () => {
         outlet_id: item.outlet_id,
         outlet_name: item.Outlet?.name,
         product_name: item.Product ? item.Product.name : '-',
-        product_category: item.Product.Product_Category.name,
+        product_category: item.Product.Product_Category ? item.Product.Product_Category.name: '-',
         product_price: rupiahFormat.convert(item.Product.price),
         product_id: item.product_id,
         point: item.point,
