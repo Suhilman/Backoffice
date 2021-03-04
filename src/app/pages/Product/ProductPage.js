@@ -4,6 +4,9 @@ import axios from "axios";
 import { Tabs, Tab } from "react-bootstrap";
 
 import ProductTab from "./ProductTab/ProductTab";
+
+import UnitTab from "../Ingredient/UnitTab/UnitTab";
+
 import ProductCategoryTab from "./ProductCategoryTab/ProductCategoryTab";
 
 export const ProductPage = () => {
@@ -94,6 +97,10 @@ export const ProductPage = () => {
           refresh={refresh}
           handleRefresh={handleRefresh}
         />
+      </Tab>
+
+      <Tab eventKey="unit" title="Unit">
+        <UnitTab refresh={refresh} handleRefresh={handleRefresh} />
       </Tab>
 
       <Tab eventKey="product-category" title="Product Category">
