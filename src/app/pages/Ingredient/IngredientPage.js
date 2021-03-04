@@ -97,9 +97,9 @@ export const IngredientPage = () => {
         <CategoryTab refresh={refresh} handleRefresh={handleRefresh} />
       </Tab>
 
-      <Tab eventKey="unit" title="Unit">
+      {/* <Tab eventKey="unit" title="Unit">
         <UnitTab refresh={refresh} handleRefresh={handleRefresh} />
-      </Tab>
+      </Tab> */}
 
       <Tab eventKey="unit-conversion" title="Unit Conversion">
         <UnitConversionTab

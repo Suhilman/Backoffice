@@ -5,6 +5,7 @@ import { Tabs, Tab } from "react-bootstrap";
 
 import ProductTab from "./ProductTab/ProductTab";
 import ProductCategoryTab from "./ProductCategoryTab/ProductCategoryTab";
+import UnitTab from "../Ingredient/UnitTab/UnitTab";
 
 export const ProductPage = () => {
   const [tabs, setTabs] = React.useState("product");
@@ -94,6 +95,10 @@ export const ProductPage = () => {
           refresh={refresh}
           handleRefresh={handleRefresh}
         />
+      </Tab>
+
+      <Tab eventKey="unit" title="Unit">
+        <UnitTab refresh={refresh} handleRefresh={handleRefresh} />
       </Tab>
 
       <Tab eventKey="product-category" title="Product Category">
