@@ -8,6 +8,7 @@ import ProductTab from "./ProductTab/ProductTab";
 import UnitTab from "../Ingredient/UnitTab/UnitTab";
 
 import ProductCategoryTab from "./ProductCategoryTab/ProductCategoryTab";
+import UnitTab from "../Ingredient/UnitTab/UnitTab";
 
 export const ProductPage = () => {
   const [tabs, setTabs] = React.useState("product");

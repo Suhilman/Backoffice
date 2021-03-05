@@ -502,8 +502,13 @@ export const LoyaltyPromoPage = () => {
         outlet_id: item.outlet_id,
         outlet_name: item.Outlet?.name,
         product_name: item.Product ? item.Product.name : '-',
+<<<<<<< HEAD
         product_category: item.Product.Product_Category ? item.Product.Product_Category.name: '-',
         product_price: rupiahFormat.convert(item.Product.price),
+=======
+        product_category: item.Product ? item.Product.Product_Category ? item.Product.Product_Category.name: '-' : "-",
+        product_price: item.Product ? rupiahFormat.convert(item.Product.price) : rupiahFormat.convert(0),
+>>>>>>> origin/production-dashboard
         product_id: item.product_id,
         point: item.point,
         point_status: item.status

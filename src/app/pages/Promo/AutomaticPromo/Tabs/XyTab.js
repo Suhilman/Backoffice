@@ -36,16 +36,16 @@ const XyTab = ({
 }) => {
   const defaultValueX = formikPromo.values["xy_product_x_id"].map((item) => {
     const product = allProducts.find((val) => val.id === item);
-    return { value: item, label: product.name };
+    return { value: item, label: product ? product.name: "-" };
   });
 
   const defaultValueY = formikPromo.values["xy_product_y_id"].map((item) => {
     const product = allProducts.find((val) => val.id === item);
-    return { value: item, label: product.name };
+    return { value: item, label: product ? product.name: "-" };
   });
 
   const options = allProducts.map((item) => {
-    return { value: item.id, label: item.name };
+    return { value: item.id, label: item ? item.name: "-" };
   });
 
   return (
