@@ -56,7 +56,7 @@ export const DetailTransferStockPage = ({ match }) => {
   const dataStock = transferStock
     ? transferStock.Transfer_Stock_Products.map((item) => {
         return {
-          product_name: item.Stock.Product.name,
+          product_name: item.Stock.Product ? item.Stock.Product.name : "-",
           quantity: item.quantity,
           unit: item.Unit?.name || "-",
           expired_date: item.Stock.expired_date

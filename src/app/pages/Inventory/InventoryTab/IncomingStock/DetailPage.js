@@ -67,7 +67,7 @@ export const DetailIncomingStockPage = ({ match }) => {
   const dataStock = incomingStock
     ? incomingStock.Incoming_Stock_Products.map((item) => {
         return {
-          product_name: item.Product.name,
+          product_name: item.Product ? item.Product.name : "",
           quantity: item.quantity,
           unit: item.Unit?.name || "-",
           price: rupiahFormat.convert(item.price),

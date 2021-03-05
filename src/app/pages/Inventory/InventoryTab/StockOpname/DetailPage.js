@@ -70,7 +70,7 @@ export const DetailStockOpnamePage = ({ match }) => {
   const dataStock = stockOpname
     ? stockOpname.Stock_Opname_Products.map((item) => {
         return {
-          product_name: item.Stock.Product.name,
+          product_name: item.Stock.Product ? item.Stock.Product.name : "-",
           quantity_system: item.quantity_system,
           quantity_actual: item.quantity_actual,
           unit: item.Unit?.name || "-",

@@ -290,9 +290,9 @@ const UnitConversionTab = ({ allUnits, refresh, handleRefresh }) => {
       no: index + 1,
       name: item.name,
       unit_from_id: item.unit_from_id,
-      unit_from: item.Unit_From.name || "-",
+      unit_from: item.Unit_From ? item.Unit_From.name : "-",
       unit_to_id: item.unit_to_id,
-      unit_to: item.Unit_To.name || "-",
+      unit_to: item.Unit_To ?item.Unit_To.name : "-",
       value: item.value
     };
   });
