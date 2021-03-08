@@ -9,6 +9,7 @@ export const REQUEST_PASSWORD_URL = `${API_URL}/api/v1/forget-password`;
 export const ME_URL = `${API_URL}/api/v1/business`;
 export const LOGOUT_OWNER = `${API_URL}/api/v1/auth/logout`;
 export const LOGOUT_STAFF = `${API_URL}/api/v1/auth/staff/logout`;
+export const ROLLBACK_REGISTRATION = `${API_URL}/api/v1/auth/rollback`;
 
 export function login(email, password, captcha) {
   return axios.post(LOGIN_URL, {
@@ -35,6 +36,11 @@ export function register(email, name, phone_number, password, captcha) {
     password,
     "g-recaptcha-response": captcha
   });
+}
+
+export function cancelRegistration() {
+  const { business_id } = JSON.parse(localStorage.getItem("user_info"));
+  return axios.delete(`${ROLLBACK_REGISTRATION}?id=${business_id}`);
 }
 
 export function requestPassword(email) {

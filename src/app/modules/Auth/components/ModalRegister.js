@@ -9,6 +9,8 @@ const ModalRegister = ({
   allBusinessTypes,
   allProvinces,
   allCities,
+  cancelLoading,
+  cancel,
   allLocations,
   formikBusiness,
   validationBusiness,
@@ -16,7 +18,11 @@ const ModalRegister = ({
   handleCity
 }) => {
   return (
-    <Modal show={showBusinessModal} onHide={closeBusinessModal}>
+    <Modal
+      show={showBusinessModal}
+      onHide={closeBusinessModal}
+      backdrop="static"
+    >
       <Modal.Header closeButton>
         <Modal.Title>Welcome to BeetPOS</Modal.Title>
       </Modal.Header>
@@ -186,6 +192,13 @@ const ModalRegister = ({
         <Modal.Footer>
           <Button variant="primary" type="submit">
             {loading ? <Spinner animation="border" variant="light" /> : "Next"}
+          </Button>
+          <Button variant="danger" type="button" onClick={cancel}>
+            {cancelLoading ? (
+              <Spinner animation="border" variant="light" />
+            ) : (
+              "Cancel"
+            )}
           </Button>
         </Modal.Footer>
       </Form>

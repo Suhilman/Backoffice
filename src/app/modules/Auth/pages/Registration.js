@@ -14,7 +14,7 @@ import ModalVerify from "../components/ModalVerify";
 import ModalRegister from "../components/ModalRegister";
 
 import * as auth from "../_redux/authRedux";
-import { register } from "../_redux/authCrud";
+import { register, cancelRegistration } from "../_redux/authCrud";
 
 const initialValues = {
   name: "",
@@ -86,7 +86,7 @@ function Registration(props) {
   const [token, setToken] = useState(false);
   const [second, setSecond] = useState(0);
   const [verificationCode, setVerificationCode] = useState(0);
-
+  const [cancelLoading, setCancelLoading] = useState(false);
   const [allBusinessTypes, setAllBusinessTypes] = useState([]);
   const [allProvinces, setAllProvinces] = useState([]);
   const [allCities, setAllCities] = useState([]);
@@ -340,6 +340,12 @@ function Registration(props) {
     }
   };
 
+  const rollbackRegist = async () => {
+    setCancelLoading(true);
+    await cancelRegistration();
+    setCancelLoading(false);
+    setShowBusinessModal(false);
+  };
   const checkCode = async () => {
     try {
       const API_URL = process.env.REACT_APP_API_URL;
@@ -388,6 +394,8 @@ function Registration(props) {
         validationBusiness={validationBusiness}
         handleProvince={handleProvince}
         handleCity={handleCity}
+        cancel={rollbackRegist}
+        cancelLoading={cancelLoading}
       />
 
       <div className="text-center mb-10 mb-lg-20">
