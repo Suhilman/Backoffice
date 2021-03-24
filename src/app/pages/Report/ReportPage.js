@@ -64,16 +64,22 @@ export const ReportPage = () => {
     {
       no: 2,
       title: "Payment Method",
+      table: "table-payment",
+      filename: `payment-method_${startDate}-${endDate}`,
       Component: PaymentMethodTab
     },
     {
       no: 3,
       title: "Sales Type",
+      table: "table-sales",
+      filename: `sales-type_${startDate}-${endDate}`,
       Component: SalesTypeTab
     },
     {
       no: 4,
       title: "Category Sales",
+      table: "table-category",
+      filename: `table-category_${startDate}-${endDate}`,
       Component: CategorySalesTab
     },
     {
@@ -315,7 +321,8 @@ export const ReportPage = () => {
                     </div>
                   </DropdownButton>
 
-                  {tabData.find((item) => item.no === parseInt(tabs)).table ? (
+                  {tabData.find((item) => 
+                  item.no === parseInt(tabs)).table ? (
                     <ExportExcel
                       className="btn btn-outline-primary ml-2"
                       table={

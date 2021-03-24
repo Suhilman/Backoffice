@@ -4,6 +4,8 @@ import { Button, Modal, Spinner, Form, Row, Col } from "react-bootstrap";
 
 import "../../style.css";
 
+import QRCode from 'qrcode.react'
+
 const ModalPayment = ({
   stateModal,
   cancelModal,
@@ -13,6 +15,14 @@ const ModalPayment = ({
   validationTable,
   allOutlets
 }) => {
+  const data = {
+    "application": "beetpos",
+    "outlet_id": formikTable.getFieldProps("outlet_id").value,
+    "business_id": formikTable.getFieldProps("business_id").value,
+    "table_id": formikTable.getFieldProps("id").value
+  }
+  const dataObj = JSON.stringify(data)
+  console.log(dataObj)
   return (
     <Modal show={stateModal} onHide={cancelModal} size="sm">
       <Modal.Header closeButton>
@@ -55,7 +65,6 @@ const ModalPayment = ({
               </Form.Group>
             </Col>
           </Row>
-
           <Row>
             <Col>
               <Form.Group>
@@ -78,7 +87,6 @@ const ModalPayment = ({
               </Form.Group>
             </Col>
           </Row>
-
           <Row>
             <Col>
               <Form.Group>
@@ -97,6 +105,15 @@ const ModalPayment = ({
                       {formikTable.errors.capacity}
                     </div>
                   </div>
+                ) : null}
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col md="auto">
+              <Form.Group>
+                {formikTable.getFieldProps("name").value ? (
+                  <QRCode value={dataObj} level="L" />
                 ) : null}
               </Form.Group>
             </Col>

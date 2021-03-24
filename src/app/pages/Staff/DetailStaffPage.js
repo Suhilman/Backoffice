@@ -708,7 +708,7 @@ export const DetailStaffPage = ({ match, location }) => {
                                                   }}
                                                 >
                                                   <Form.Label>
-                                                    {privilege.Privilege.name}
+                                                    {privilege.Privilege.name === "Changing Transaction" ? "Delete Transaction" : privilege.Privilege.name}
                                                   </Form.Label>
                                                 </Col>
                                                 <Col

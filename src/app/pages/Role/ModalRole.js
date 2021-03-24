@@ -32,7 +32,6 @@ const ModalRole = ({
       <Modal.Header closeButton>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
-
       <Form onSubmit={formikRole.handleSubmit}>
         <Modal.Body>
           {alert ? <Alert variant="danger">{alert}</Alert> : ""}
@@ -55,6 +54,9 @@ const ModalRole = ({
 
           <Form.Group>
             <Form.Label>Privilege:</Form.Label>
+            {
+              console.log(formikRole.getFieldProps("privileges").value)
+            }
             <Row>
               {formikRole.getFieldProps("privileges").value.length
                 ? accessLists.map((access, accessIdx) => {
@@ -85,7 +87,7 @@ const ModalRole = ({
                                           }}
                                         >
                                           <Form.Label>
-                                            {privilege.name}
+                                            {privilege.name === "Changing Transaction" ? "Delete Transaction" : privilege.name}
                                           </Form.Label>
                                         </Col>
                                         <Col style={{ textAlign: "end" }}>

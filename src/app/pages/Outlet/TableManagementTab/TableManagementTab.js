@@ -280,6 +280,7 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
     return allTables.map((item, index) => {
       return {
         id: item.id,
+        business_id: item.business_id,
         outlet_id: item.outlet_id,
         no: index + 1,
         name: item.name,

@@ -84,7 +84,7 @@ export const PaymentMethodTab = ({ selectedOutlet, startDate, endDate }) => {
 
   return (
     <>
-      <Table striped>
+      <Table id="table-payment" striped>
         <thead>
           <tr>
             <th></th>

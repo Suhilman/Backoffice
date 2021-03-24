@@ -439,7 +439,7 @@ export const AddStaffPage = ({ location }) => {
                                     >
                                       <Col style={{ alignSelf: "center" }}>
                                         <Form.Label>
-                                          {privilege.Privilege.name}
+                                          {privilege.Privilege.name === "Changing Transaction" ? "Delete Transaction" : privilege.Privilege.name}
                                         </Form.Label>
                                       </Col>
                                       <Col style={{ textAlign: "end" }}>

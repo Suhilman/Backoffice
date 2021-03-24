@@ -179,7 +179,7 @@ export const CategorySalesTab = ({ selectedOutlet, startDate, endDate }) => {
 
   return (
     <>
-      <Table striped>
+      <Table id="table-category" striped>
         <thead>
           <tr>
             <th></th>

@@ -135,7 +135,7 @@ export const SalesTypeTab = ({ selectedOutlet, startDate, endDate }) => {
 
   return (
     <>
-      <Table striped>
+      <Table id="table-sales" striped>
         <thead>
           <tr>
             <th></th>
