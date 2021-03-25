@@ -89,7 +89,7 @@ export const DetailCustomerPage = ({ match }) => {
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("email", values.email);
-      if (image) formData.append("profile_picture", image);
+      if (image) formData.append("profilePicture", image);
       formData.append("phone_number", values.phone_number);
       formData.append("address", values.address);
       formData.append("notes", values.notes);

@@ -299,6 +299,9 @@ export const AutomaticPromoPage = () => {
                 <h3>Automatic Promo</h3>
               </div>
               <div className="headerEnd">
+              <Link to={{ pathname: "/promo"}}>
+                  <Button variant="outline-secondary">Back to Main View</Button>
+                </Link>
                 <Link
                   to={{
                     pathname: "/promo/automatic-promo/add-automatic-promo",

@@ -1,6 +1,8 @@
 import React from "react";
 import axios from "axios";
 import { useFormik } from "formik";
+import { Link } from "react-router-dom";
+
 import * as Yup from "yup";
 import rupiahFormat from "rupiah-format";
 
@@ -460,6 +462,9 @@ export const SpecialPromoPage = () => {
                 <h3>Special Promo</h3>
               </div>
               <div className="headerEnd">
+                <Link to={{ pathname: "/promo"}}>
+                  <Button variant="outline-secondary">Back to Main View</Button>
+                </Link>
                 <Button
                   variant="primary"
                   style={{ marginLeft: "0.5rem" }}

@@ -64,6 +64,8 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
   const handleSearch = (e) => setSearch(e.target.value);
 
   const initialValueTable = {
+    id: "",
+    business_id: "",
     outlet_id: "",
     name: "",
     capacity: "",
@@ -182,10 +184,10 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
       id: data.id,
       outlet_id: data.outlet_id,
       name: data.name,
+      business_id: data.business_id,
       capacity: data.capacity,
       status: data.status
     });
-
     setStateEditModal(true);
   };
   const cancelEditModalTable = () => {

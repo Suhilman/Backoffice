@@ -3,6 +3,7 @@ import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import dayjs from "dayjs";
+import { Link } from "react-router-dom";
 
 import { Row, Col, Button, Dropdown } from "react-bootstrap";
 import {
@@ -486,6 +487,9 @@ export const VoucherPromoPage = () => {
                 <h3>Voucher Promo</h3>
               </div>
               <div className="headerEnd">
+                <Link to={{ pathname: "/promo"}}>
+                  <Button variant="outline-secondary">Back to Main View</Button>
+                </Link>
                 <Button
                   variant="primary"
                   style={{ marginLeft: "0.5rem" }}

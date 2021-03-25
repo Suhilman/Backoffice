@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Button, Modal, Spinner, Form, Row, Col } from "react-bootstrap";
 
@@ -15,6 +15,7 @@ const ModalPayment = ({
   validationTable,
   allOutlets
 }) => {
+  const [imageUrl, setImageUrl] = useState({})
   const data = {
     "application": "beetpos",
     "outlet_id": formikTable.getFieldProps("outlet_id").value,
@@ -23,6 +24,20 @@ const ModalPayment = ({
   }
   const dataObj = JSON.stringify(data)
   console.log(dataObj)
+
+  const downloadQR = () => {
+    const canvas = document.getElementById("qrcode");
+    const pngUrl = canvas
+      .toDataURL("image/png")
+      .replace("image/png", "image/octet-stream");
+    let downloadLink = document.createElement("a");
+    downloadLink.href = pngUrl;
+    downloadLink.download = "qrcode-outlet-beetpos.png";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
+
   return (
     <Modal show={stateModal} onHide={cancelModal} size="sm">
       <Modal.Header closeButton>
@@ -113,7 +128,16 @@ const ModalPayment = ({
             <Col md="auto">
               <Form.Group>
                 {formikTable.getFieldProps("name").value ? (
-                  <QRCode value={dataObj} level="L" />
+                  <div className="">
+                    <QRCode 
+                      id="qrcode"
+                      value={dataObj} 
+                      level={"L"}
+                      includeMargin={true}
+                      onClick={downloadQR}
+                    />
+                    <p>please click qr code for download</p>
+                  </div>
                 ) : null}
               </Form.Group>
             </Col>

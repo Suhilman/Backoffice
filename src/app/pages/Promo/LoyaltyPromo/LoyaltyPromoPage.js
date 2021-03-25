@@ -4,6 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import rupiahFormat from "rupiah-format";
 import dayjs from "dayjs";
+import { Link } from "react-router-dom";
 
 import { Row, Col, Button, Dropdown } from "react-bootstrap";
 import {
@@ -649,6 +650,9 @@ export const LoyaltyPromoPage = () => {
                 <h3>Loyalty Promo</h3>
               </div>
               <div className="headerEnd">
+                <Link to={{ pathname: "/promo"}}>
+                  <Button variant="outline-secondary">Back to Main View</Button>
+                </Link>
                 <Button variant="primary" onClick={showAddModal}>
                   Add New Product Point
                 </Button>
