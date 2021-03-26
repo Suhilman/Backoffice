@@ -49,6 +49,7 @@ const ProductTab = ({
   const [alert, setAlert] = React.useState("");
   const [filename, setFilename] = React.useState("");
   const [outletProduct, setOutletProduct] = React.useState([])
+  const [dataProduct, setDataProduct] = React.useState([])
 
   const [search, setSearch] = React.useState("");
   const [filter, setFilter] = React.useState({
@@ -73,7 +74,6 @@ const ProductTab = ({
 
   const handleOutletProduct = (data) => {
     var uniqueArray = [];
-    // Loop through array values
     for(let i = 0; i < data.length; i++){
       if(uniqueArray.indexOf(data[i].Outlet.name) === -1) {
         uniqueArray.push(data[i].Outlet.name);
@@ -83,7 +83,13 @@ const ProductTab = ({
   }
 
   const handleExports = (data) => {
-    console.log('ini handle exports', data)
+    const result = []
+    allProducts.map(value => {
+      if (value.Outlet.name === data) {
+        result.push(value)
+      }
+    })
+    setDataProduct(result)
   }
 
   const showConfirmBulkModal = (data) => {
@@ -579,12 +585,58 @@ const ProductTab = ({
 
                     <Dropdown.Menu>
                       {outletProduct.map(item => 
-                        <Dropdown.Item as="button" onClick={handleExports(item)}>
-                          {item}
+                        <Dropdown.Item as="button" onClick={() => handleExports(item)}>
+                        <ExportExcel
+                          id="test-table-xls-button"
+                          className="border-0 bg-transparent"
+                          table="table-to-xls"
+                          filename="tablexls"
+                          sheet="tablexls"
+                          buttonText={item}
+                        />
                         </Dropdown.Item>
                       )}
                     </Dropdown.Menu>
-
+                    {/* Start table excel */}
+                    <div style={{ display: "none" }}>
+                      <table id="table-to-xls">
+                        <thead>
+                          <tr>
+                              <th>Product Name</th>
+                              <th>Description</th>
+                              <th>Barcode</th>
+                              <th>SKU</th>
+                              <th>Price</th>
+                              <th>Purchase Price</th>
+                              <th>Favorite</th>
+                              {/* <th>Category</th> */}
+                              <th>With Recipe</th>
+                              <th>Stock</th>
+                              {/* <th>Unit</th> */}
+                              <th>Expired Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          {dataProduct.map((value, index) =>
+                            <tr key={index}>
+                              <td>{value.name}</td>
+                              <td>{value.description}</td>
+                              <td>{value.barcode}</td>
+                              <td>{value.sku}</td>
+                              <td>{value.price}</td>
+                              <td>{value.price_purchase}</td>
+                              <td>{value.is_favorite}</td>
+                              {/* <td>{value.Product_Category ? value.Product_Category.name : null}</td> */}
+                              <td>{value.recipe_id}</td>
+                              <td>{value.stock}</td>
+                              {/* <td>{value.Unit.name}</td> */}
+                              <td>{value.Stocks[0].expired_date}</td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                    {/* End table excel */}
                   </Dropdown>
                   <Button variant="secondary" onClick={handleOpenImport}>
                     Import

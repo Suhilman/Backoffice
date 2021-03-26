@@ -18,6 +18,7 @@ import {
 import { Paper } from "@material-ui/core";
 import DatePicker from "react-datepicker";
 import { CalendarToday, Delete } from "@material-ui/icons";
+import ConfirmModal from "../../../../components/ConfirmModal";
 
 export const AddOutcomingStockPage = ({ location }) => {
   const history = useHistory();
@@ -28,6 +29,8 @@ export const AddOutcomingStockPage = ({ location }) => {
 
   const [startDate, setStartDate] = React.useState(new Date());
   const [hasUnit, setHasUnit] = React.useState(false);
+
+  const [showConfirm, setShowConfirm] = React.useState(false)
 
   const initialValueStock = {
     outlet_id: "",
@@ -177,213 +180,183 @@ export const AddOutcomingStockPage = ({ location }) => {
     </div>
   );
 
+  const handleShowConfirm = (e) => {
+    e.preventDefault()
+    setShowConfirm(true)
+  }
+
+  const closeConfirmModal = () => setShowConfirm(false);
+
+  const handleConfirm = () => {
+    formikStock.handleSubmit()
+    closeConfirmModal()
+  };
+
   return (
-    <Row>
-      <Col>
-        <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
-          <Form noValidate onSubmit={formikStock.handleSubmit}>
-            <div className="headerPage">
-              <div className="headerStart">
-                <h3>Add Outcoming Stock</h3>
+    <>
+      <ConfirmModal
+        title={`Confirm`}
+        body="Are you sure want to add outcoming stock?"
+        buttonColor="warning"
+        handleClick={handleConfirm}
+        state={showConfirm}
+        closeModal={closeConfirmModal}
+        loading={loading}
+      />
+      <Row>
+        <Col>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <Form noValidate onSubmit={handleShowConfirm}>
+              <div className="headerPage">
+                <div className="headerStart">
+                  <h3>Add Outcoming Stock</h3>
+                </div>
+                <div className="headerEnd">
+                  <Link to="/inventory/outcoming-stock">
+                    <Button variant="secondary">Cancel</Button>
+                  </Link>
+                  <Button
+                    variant="primary"
+                    style={{ marginLeft: "0.5rem" }}
+                    type="submit"
+                  >
+                    {loading ? (
+                      <Spinner animation="border" variant="light" size="sm" />
+                    ) : (
+                      "Save"
+                    )}
+                  </Button>
+                </div>
               </div>
-              <div className="headerEnd">
-                <Link to="/inventory/outcoming-stock">
-                  <Button variant="secondary">Cancel</Button>
-                </Link>
-                <Button
-                  variant="primary"
-                  style={{ marginLeft: "0.5rem" }}
-                  type="submit"
-                >
-                  {loading ? (
-                    <Spinner animation="border" variant="light" size="sm" />
-                  ) : (
-                    "Save"
-                  )}
-                </Button>
-              </div>
-            </div>
 
-            {alert ? <Alert variant="danger">{alert}</Alert> : ""}
+              {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
-            <Row style={{ padding: "1rem" }} className="lineBottom">
-              <Col sm={3}>
-                <Form.Group>
-                  <Form.Label>Location:</Form.Label>
-                  <Select
-                    options={optionsOutlet}
-                    name="outlet_id"
-                    className="basic-single"
-                    classNamePrefix="select"
-                    onChange={(value) => {
-                      formikStock.setFieldValue("outlet_id", value.value);
-                      formikStock.setFieldValue("items", [
-                        {
-                          stock_id: "",
-                          quantity: 0,
-                          unit_id: ""
-                        }
-                      ]);
-                    }}
-                  />
-                  {formikStock.touched.outlet_id &&
-                  formikStock.errors.outlet_id ? (
-                    <div className="fv-plugins-message-container">
-                      <div className="fv-help-block">
-                        {formikStock.errors.outlet_id}
-                      </div>
-                    </div>
-                  ) : null}
-                </Form.Group>
-
-                <Form.Group>
-                  <Form.Label>Date:</Form.Label>
-                  <InputGroup>
-                    <DatePicker
-                      name="date"
-                      selected={startDate}
-                      onChange={handleDate}
-                      customInput={<CustomInputDate />}
-                      required
+              <Row style={{ padding: "1rem" }} className="lineBottom">
+                <Col sm={3}>
+                  <Form.Group>
+                    <Form.Label>Location:</Form.Label>
+                    <Select
+                      options={optionsOutlet}
+                      name="outlet_id"
+                      className="basic-single"
+                      classNamePrefix="select"
+                      onChange={(value) => {
+                        formikStock.setFieldValue("outlet_id", value.value);
+                        formikStock.setFieldValue("items", [
+                          {
+                            stock_id: "",
+                            quantity: 0,
+                            unit_id: ""
+                          }
+                        ]);
+                      }}
                     />
-
-                    <InputGroup.Append>
-                      <InputGroup.Text>
-                        <CalendarToday />
-                      </InputGroup.Text>
-                    </InputGroup.Append>
-                  </InputGroup>
-                  {formikStock.touched.date && formikStock.errors.date ? (
-                    <div className="fv-plugins-message-container">
-                      <div className="fv-help-block">
-                        {formikStock.errors.date}
+                    {formikStock.touched.outlet_id &&
+                    formikStock.errors.outlet_id ? (
+                      <div className="fv-plugins-message-container">
+                        <div className="fv-help-block">
+                          {formikStock.errors.outlet_id}
+                        </div>
                       </div>
-                    </div>
-                  ) : null}
-                </Form.Group>
-              </Col>
+                    ) : null}
+                  </Form.Group>
 
-              <Col>
-                <Form.Group>
-                  <Form.Label>Notes:</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    name="notes"
-                    {...formikStock.getFieldProps("notes")}
-                    className={validationStock("notes")}
-                  />
-                  {formikStock.touched.notes && formikStock.errors.notes ? (
-                    <div className="fv-plugins-message-container">
-                      <div className="fv-help-block">
-                        {formikStock.errors.notes}
+                  <Form.Group>
+                    <Form.Label>Date:</Form.Label>
+                    <InputGroup>
+                      <DatePicker
+                        name="date"
+                        selected={startDate}
+                        onChange={handleDate}
+                        customInput={<CustomInputDate />}
+                        required
+                      />
+
+                      <InputGroup.Append>
+                        <InputGroup.Text>
+                          <CalendarToday />
+                        </InputGroup.Text>
+                      </InputGroup.Append>
+                    </InputGroup>
+                    {formikStock.touched.date && formikStock.errors.date ? (
+                      <div className="fv-plugins-message-container">
+                        <div className="fv-help-block">
+                          {formikStock.errors.date}
+                        </div>
                       </div>
-                    </div>
-                  ) : null}
-                </Form.Group>
-              </Col>
-            </Row>
+                    ) : null}
+                  </Form.Group>
+                </Col>
 
-            <Row style={{ padding: "1rem" }}>
-              <Col>
-                <Row>
-                  <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Product Name</h6>
-                  </Col>
-                  <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Quantity</h6>
-                  </Col>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>Notes:</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      name="notes"
+                      {...formikStock.getFieldProps("notes")}
+                      className={validationStock("notes")}
+                    />
+                    {formikStock.touched.notes && formikStock.errors.notes ? (
+                      <div className="fv-plugins-message-container">
+                        <div className="fv-help-block">
+                          {formikStock.errors.notes}
+                        </div>
+                      </div>
+                    ) : null}
+                  </Form.Group>
+                </Col>
+              </Row>
 
-                  {hasUnit ? (
+              <Row style={{ padding: "1rem" }}>
+                <Col>
+                  <Row>
                     <Col style={{ padding: "1rem", textAlign: "center" }}>
-                      <h6>Unit</h6>
+                      <h6>Product Name</h6>
                     </Col>
-                  ) : (
-                    ""
-                  )}
+                    <Col style={{ padding: "1rem", textAlign: "center" }}>
+                      <h6>Quantity</h6>
+                    </Col>
 
-                  <Col sm={1}></Col>
-                </Row>
+                    {hasUnit ? (
+                      <Col style={{ padding: "1rem", textAlign: "center" }}>
+                        <h6>Unit</h6>
+                      </Col>
+                    ) : (
+                      ""
+                    )}
 
-                <FormikProvider value={formikStock}>
-                  <FieldArray
-                    name="items"
-                    render={(arrayHelpers) => {
-                      return (
-                        <div>
-                          {formikStock.values.items.map((item, index) => {
-                            return (
-                              <Row key={index}>
-                                <Col>
-                                  <Form.Group>
-                                    <Select
-                                      options={optionsProducts}
-                                      formatGroupLabel={formatGroupLabel}
-                                      name={`items[${index}].stock_id`}
-                                      // className="basic-single"
-                                      // classNamePrefix="select"
-                                      onChange={(value) => {
-                                        formikStock.setFieldValue(
-                                          `items[${index}].stock_id`,
-                                          value.value
-                                        );
-                                        if (value.Unit) {
-                                          setHasUnit(true);
-                                        } else {
-                                          setHasUnit(false);
-                                        }
-                                      }}
-                                    />
-                                    {formikStock.touched.items &&
-                                    formikStock.errors.items ? (
-                                      <div className="fv-plugins-message-container">
-                                        <div className="fv-help-block">
-                                          {
-                                            formikStock.errors.items[index]
-                                              ?.stock_id
-                                          }
-                                        </div>
-                                      </div>
-                                    ) : null}
-                                  </Form.Group>
-                                </Col>
-                                <Col>
-                                  <Form.Group>
-                                    <Form.Control
-                                      type="number"
-                                      name={`items[${index}].quantity`}
-                                      {...formikStock.getFieldProps(
-                                        `items[${index}].quantity`
-                                      )}
-                                      required
-                                    />
-                                    {formikStock.touched.items &&
-                                    formikStock.errors.items ? (
-                                      <div className="fv-plugins-message-container">
-                                        <div className="fv-help-block">
-                                          {
-                                            formikStock.errors.items[index]
-                                              ?.quantity
-                                          }
-                                        </div>
-                                      </div>
-                                    ) : null}
-                                  </Form.Group>
-                                </Col>
+                    <Col sm={1}></Col>
+                  </Row>
 
-                                {hasUnit ? (
+                  <FormikProvider value={formikStock}>
+                    <FieldArray
+                      name="items"
+                      render={(arrayHelpers) => {
+                        return (
+                          <div>
+                            {formikStock.values.items.map((item, index) => {
+                              return (
+                                <Row key={index}>
                                   <Col>
                                     <Form.Group>
                                       <Select
-                                        options={optionsUnit}
-                                        name={`items[${index}].unit_id`}
-                                        className="basic-single"
-                                        classNamePrefix="select"
-                                        onChange={(value) =>
+                                        options={optionsProducts}
+                                        formatGroupLabel={formatGroupLabel}
+                                        name={`items[${index}].stock_id`}
+                                        // className="basic-single"
+                                        // classNamePrefix="select"
+                                        onChange={(value) => {
                                           formikStock.setFieldValue(
-                                            `items[${index}].unit_id`,
+                                            `items[${index}].stock_id`,
                                             value.value
-                                          )
-                                        }
+                                          );
+                                          if (value.Unit) {
+                                            setHasUnit(true);
+                                          } else {
+                                            setHasUnit(false);
+                                          }
+                                        }}
                                       />
                                       {formikStock.touched.items &&
                                       formikStock.errors.items ? (
@@ -391,49 +364,102 @@ export const AddOutcomingStockPage = ({ location }) => {
                                           <div className="fv-help-block">
                                             {
                                               formikStock.errors.items[index]
-                                                ?.unit_id
+                                                ?.stock_id
                                             }
                                           </div>
                                         </div>
                                       ) : null}
                                     </Form.Group>
                                   </Col>
-                                ) : (
-                                  ""
-                                )}
+                                  <Col>
+                                    <Form.Group>
+                                      <Form.Control
+                                        type="number"
+                                        name={`items[${index}].quantity`}
+                                        {...formikStock.getFieldProps(
+                                          `items[${index}].quantity`
+                                        )}
+                                        required
+                                      />
+                                      {formikStock.touched.items &&
+                                      formikStock.errors.items ? (
+                                        <div className="fv-plugins-message-container">
+                                          <div className="fv-help-block">
+                                            {
+                                              formikStock.errors.items[index]
+                                                ?.quantity
+                                            }
+                                          </div>
+                                        </div>
+                                      ) : null}
+                                    </Form.Group>
+                                  </Col>
 
-                                <Col sm={1}>
-                                  <Button
-                                    onClick={() => arrayHelpers.remove(index)}
-                                    variant="danger"
-                                  >
-                                    <Delete />
-                                  </Button>
-                                </Col>
-                              </Row>
-                            );
-                          })}
+                                  {hasUnit ? (
+                                    <Col>
+                                      <Form.Group>
+                                        <Select
+                                          options={optionsUnit}
+                                          name={`items[${index}].unit_id`}
+                                          className="basic-single"
+                                          classNamePrefix="select"
+                                          onChange={(value) =>
+                                            formikStock.setFieldValue(
+                                              `items[${index}].unit_id`,
+                                              value.value
+                                            )
+                                          }
+                                        />
+                                        {formikStock.touched.items &&
+                                        formikStock.errors.items ? (
+                                          <div className="fv-plugins-message-container">
+                                            <div className="fv-help-block">
+                                              {
+                                                formikStock.errors.items[index]
+                                                  ?.unit_id
+                                              }
+                                            </div>
+                                          </div>
+                                        ) : null}
+                                      </Form.Group>
+                                    </Col>
+                                  ) : (
+                                    ""
+                                  )}
 
-                          <Row style={{ padding: "1rem" }}>
-                            <Button
-                              onClick={() =>
-                                arrayHelpers.push(initialValueStock.items[0])
-                              }
-                              variant="primary"
-                            >
-                              + Add Another Product
-                            </Button>
-                          </Row>
-                        </div>
-                      );
-                    }}
-                  />
-                </FormikProvider>
-              </Col>
-            </Row>
-          </Form>
-        </Paper>
-      </Col>
-    </Row>
+                                  <Col sm={1}>
+                                    <Button
+                                      onClick={() => arrayHelpers.remove(index)}
+                                      variant="danger"
+                                    >
+                                      <Delete />
+                                    </Button>
+                                  </Col>
+                                </Row>
+                              );
+                            })}
+
+                            <Row style={{ padding: "1rem" }}>
+                              <Button
+                                onClick={() =>
+                                  arrayHelpers.push(initialValueStock.items[0])
+                                }
+                                variant="primary"
+                              >
+                                + Add Another Product
+                              </Button>
+                            </Row>
+                          </div>
+                        );
+                      }}
+                    />
+                  </FormikProvider>
+                </Col>
+              </Row>
+            </Form>
+          </Paper>
+        </Col>
+      </Row>
+    </>
   );
 };
