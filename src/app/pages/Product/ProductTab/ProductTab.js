@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import { ExcelRenderer } from "react-excel-renderer";
 import dayjs from "dayjs";
+import ExportExcel from "react-html-table-to-excel";
 
 import {
   Row,
@@ -47,6 +48,7 @@ const ProductTab = ({
   const [stateImport, setStateImport] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [filename, setFilename] = React.useState("");
+  const [outletProduct, setOutletProduct] = React.useState([])
 
   const [search, setSearch] = React.useState("");
   const [filter, setFilter] = React.useState({
@@ -68,6 +70,21 @@ const ProductTab = ({
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
+
+  const handleOutletProduct = (data) => {
+    var uniqueArray = [];
+    // Loop through array values
+    for(let i = 0; i < data.length; i++){
+      if(uniqueArray.indexOf(data[i].Outlet.name) === -1) {
+        uniqueArray.push(data[i].Outlet.name);
+      }
+    }
+    setOutletProduct(uniqueArray)
+  }
+
+  const handleExports = (data) => {
+    console.log('ini handle exports', data)
+  }
 
   const showConfirmBulkModal = (data) => {
     if (!data.length) {
@@ -97,13 +114,16 @@ const ProductTab = ({
         `${API_URL}/api/v1/product${filterProduct}`
       );
       setAllProducts(data.data);
+      handleOutletProduct(data.data)
     } catch (err) {
       setAllProducts([]);
     }
   };
 
   React.useEffect(() => {
+    let isMounted = true; // note this flag denote mount status
     getProduct(debouncedSearch, filter);
+    return () => { isMounted = false }; // use effect cleanup to set flag false, if unmounted
   }, [refresh, debouncedSearch, filter]);
 
   const handleMode = () => {
@@ -552,26 +572,23 @@ const ProductTab = ({
             <div className="headerEnd" style={{ display: "flex" }}>
               {!multiSelect ? (
                 <>
-                  <Button variant="secondary" onClick={handleOpenImport}>
-                    Import
-                  </Button>
-                  {/* <Dropdown>
+                  <Dropdown style={{ marginRight: "0.5rem" }}>
                     <Dropdown.Toggle variant="outline-secondary">
-                      Import/Export
+                      Export
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                      <Dropdown.Item as="button" onClick={handleOpenImport}>
-                        Import
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        as="button"
-                        // onClick={handleOpenImport}
-                      >
-                        Export
-                      </Dropdown.Item>
+                      {outletProduct.map(item => 
+                        <Dropdown.Item as="button" onClick={handleExports(item)}>
+                          {item}
+                        </Dropdown.Item>
+                      )}
                     </Dropdown.Menu>
-                  </Dropdown> */}
+
+                  </Dropdown>
+                  <Button variant="secondary" onClick={handleOpenImport}>
+                    Import
+                  </Button>
 
                   <Dropdown as={ButtonGroup} style={{ marginLeft: "0.5rem" }}>
                     <Link

@@ -650,7 +650,7 @@ export const LoyaltyPromoPage = () => {
                 <h3>Loyalty Promo</h3>
               </div>
               <div className="headerEnd">
-                <Link to={{ pathname: "/promo"}}>
+                <Link to={{ pathname: "/promo"}} style={{ marginRight: "0.5rem" }}>
                   <Button variant="outline-secondary">Back to Main View</Button>
                 </Link>
                 <Button variant="primary" onClick={showAddModal}>

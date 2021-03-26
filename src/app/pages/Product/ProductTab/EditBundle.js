@@ -58,7 +58,6 @@ export const EditBundlePage = ({ match, location }) => {
       .required("Please input a price."),
     price_purchase: Yup.number()
       .integer()
-      .min(1)
       .required("Please input a price purchase."),
     // stock: Yup.number()
     //   .integer()
