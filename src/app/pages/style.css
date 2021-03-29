@@ -1,3 +1,19 @@
+/* start styling pdf Purchase Order */
+.style-pdf{
+  position: absolute;
+  width: 100%;
+  padding: 15px 25px;
+}
+.logo-wrapper{
+  width: 150px;
+  height: 70px;
+}
+.logo-wrapper>img{
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+}
+/* end styling pdf Purchase Order */
 .headerPage {
   padding: 1rem;
   display: flex;
