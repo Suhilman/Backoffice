@@ -639,7 +639,7 @@ const ProductTab = ({
                                   <td>{value.recipe_id ? "With Recipe" : "-"}</td>
                                   <td>{value.stock ? value.stock : "-"}</td>
                                   <td>{value.Unit === null ? "-" : value.Unit.name}</td>
-                                  <td>{value.Stocks[0].length > 0 ? value.Stocks[0].expired_date : "-"}</td>
+                                  <td>{value.Stocks.length > 0 ? value.Stocks[0].expired_date : "-"}</td>
                                 </tr>
                               )}
                             </tbody>
