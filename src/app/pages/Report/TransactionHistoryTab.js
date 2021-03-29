@@ -136,7 +136,7 @@ export const TransactionHistoryTab = ({
         id: item.id,
         no: index + 1,
         receipt_id: item.receipt_id,
-        staff_charge: item.User.User_Profile.name,
+        staff_charge: item.User ? item.User.User_Profile.name: "",
         payment_total: rupiahFormat.convert(item.Payment?.payment_total || 0),
         total_discount: rupiahFormat.convert(
           item.Payment?.payment_discount || 0
