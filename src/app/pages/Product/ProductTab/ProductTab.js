@@ -621,7 +621,7 @@ const ProductTab = ({
                                   <th>Category</th>
                                   <th>With Recipe</th>
                                   <th>Stock</th>
-                                  {/* <th>Unit</th> */}
+                                  <th>Unit</th>
                                   <th>Expired Date</th>
                                 </tr>
                             </thead>
@@ -634,12 +634,12 @@ const ProductTab = ({
                                   <td>{value.sku ? value.sku : "-"}</td>
                                   <td>{value.price ? <NumberFormat value={parseInt(value.price)} className="foo" displayType={'text'} thousandSeparator={true} prefix={'Rp.'} renderText={(value, props) => <div {...props}>{value}</div>} /> : "-"}</td>
                                   <td>{value.price_purchase ? <NumberFormat value={parseInt(value.price_purchase)} className="foo" displayType={'text'} thousandSeparator={true} prefix={'Rp.'} renderText={(value, props) => <div {...props}>{value}</div>} /> : "-"}</td>
-                                  <td>{value.is_favorite ? value.is_favorite : "-"}</td>
-                                  <td>{value.Product_Category.name ? value.Product_Category.name : "-"}</td>
-                                  <td>{value.recipe_id ? value.recipe_id : "-"}</td>
+                                  <td>{value.is_favorite ? "Is Favorite" : "-"}</td>
+                                  <td>{value.Product_Category === null ? "-" : value.Product_Category.name}</td>
+                                  <td>{value.recipe_id ? "With Recipe" : "-"}</td>
                                   <td>{value.stock ? value.stock : "-"}</td>
-                                  {/* <td>{value.Unit.name}</td> */}
-                                  <td>{value.Stocks[0].expired_date ? value.Stocks[0].expired_date : "-"}</td>
+                                  <td>{value.Unit === null ? "-" : value.Unit.name}</td>
+                                  <td>{value.Stocks[0].length > 0 ? value.Stocks[0].expired_date : "-"}</td>
                                 </tr>
                               )}
                             </tbody>
