@@ -1,7 +1,8 @@
 /* start styling pdf Purchase Order */
 .style-pdf{
   position: absolute;
-  width: 80%;
+  margin-left: -100%;
+  width: 100%;
   padding: 15px 25px;
 }
 .logo-wrapper{

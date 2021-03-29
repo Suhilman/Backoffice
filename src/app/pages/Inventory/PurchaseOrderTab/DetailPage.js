@@ -196,7 +196,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
             </div>
           </div>
         </div>
-      <Row>
+      <Row className="modal-detail">
         <Col>
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
@@ -209,7 +209,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
                     pathname: "/inventory"
                   }}
                 >
-                  <Pdf targetRef={ref} filename="purchase-order.pdf" options={options}>
+                  <Pdf targetRef={ref} filename="purchase-order.pdf" options={options} x={.5} y={.5} scale={0.8}>
                     {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>Export to PDF</Button>}
                   </Pdf>
                   {/* <Button variant="btn btn-outline-primary mr-2" onClick={handleExportPdf}>Export</Button> */}

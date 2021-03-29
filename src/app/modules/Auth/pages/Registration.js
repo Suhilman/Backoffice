@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import { connect } from "react-redux";
@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { injectIntl } from "react-intl";
 
-import { Modal, Button } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
 import ReCAPTCHA from "react-google-recaptcha";
 
@@ -22,6 +22,11 @@ const initialValues = {
   phone_number: "",
   password: "",
   changepassword: "",
+  business_type_id: "",
+  business_province_id: "",
+  business_city_id: "",
+  business_location_id: "",
+  outlet_location_id: "",
   acceptTerms: false
 };
 
@@ -77,6 +82,26 @@ function Registration(props) {
           "Password and Confirm Password didn't match"
         )
       }),
+    business_type_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose a business type."),
+    business_province_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose a province."),
+    business_city_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose a city."),
+    business_location_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose a business location."),
+    outlet_location_id: Yup.number()
+      .integer()
+      .min(1)
+      .required("Please choose an outlet location."),
     acceptTerms: Yup.bool().required("You must accept the terms and conditions")
   });
 
@@ -91,6 +116,7 @@ function Registration(props) {
   const [allProvinces, setAllProvinces] = useState([]);
   const [allCities, setAllCities] = useState([]);
   const [allLocations, setAllLocations] = useState([]);
+  const [dataFormik, setDataFormik] = useState({})
 
   const [code, setCode] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
@@ -126,6 +152,48 @@ function Registration(props) {
       .required("Please choose an outlet location.")
   });
 
+  const handleFormikBusiness = async (values, accessToken) => {
+    const API_URL = process.env.REACT_APP_API_URL;
+      try {
+        setAlertModal("");
+        const { business_id } = JSON.parse(localStorage.getItem("user_info"));
+
+        const { data } = await axios.get(`${API_URL}/api/v1/outlet`, {
+          headers: { Authorization: accessToken }
+        });
+
+        const outlet_id = data.data[0].id;
+
+        console.log('ini data outlet', data)
+        console.log('ini data outlet_id', outlet_id)
+
+        const businessData = {
+          business_type_id: values.business_type_id,
+          location_id: values.business_location_id
+        };
+
+        const outletData = {
+          location_id: values.outlet_location_id
+        };
+
+        await axios.patch(
+          `${API_URL}/api/v1/business/${business_id}`,
+          businessData,
+          { headers: { Authorization: accessToken } }
+        );
+
+        await axios.patch(`${API_URL}/api/v1/outlet/${outlet_id}`, outletData, {
+          headers: { Authorization: accessToken }
+        });
+        verifyAccount();
+        // disableLoading();
+        props.register(accessToken.split(" ")[1]);
+      } catch (err) {
+        setAlertModal(err.response.data.message);
+        disableLoading();
+      }
+  }
+
   const formikBusiness = useFormik({
     enableReinitialize: true,
     initialValues: initialValueBusiness,
@@ -143,6 +211,9 @@ function Registration(props) {
         });
 
         const outlet_id = data.data[0].id;
+
+        console.log('ini data outlet', data)
+        console.log('ini data outlet_id', outlet_id)
 
         const businessData = {
           business_type_id: values.business_type_id,
@@ -174,13 +245,13 @@ function Registration(props) {
   });
 
   const validationBusiness = (fieldname) => {
-    if (formikBusiness.touched[fieldname] && formikBusiness.errors[fieldname]) {
+    if (formik.touched[fieldname] && formik.errors[fieldname]) {
       return "is-invalid";
     }
 
     if (
-      formikBusiness.touched[fieldname] &&
-      !formikBusiness.errors[fieldname]
+      formik.touched[fieldname] &&
+      !formik.errors[fieldname]
     ) {
       return "is-valid";
     }
@@ -237,8 +308,10 @@ function Registration(props) {
     initialValues,
     validationSchema: RegistrationSchema,
     onSubmit: (values, { setStatus, setSubmitting }) => {
+      console.log('hellow')
       enableLoading();
       setPhonenumber(values.phone_number.toString());
+      setDataFormik(values)
       register(
         values.email,
         values.name,
@@ -247,17 +320,22 @@ function Registration(props) {
         captchaToken
       )
         .then(({ data }) => {
+          console.log('ini data setelah then register', data)
           const { owner, accessToken } = data.data;
-
           setToken(`Bearer ${accessToken}`);
           setVerificationCode(owner.verification_code);
           localStorage.setItem("user_info", JSON.stringify(owner));
-
-          disableLoading();
-          openVerifyModal();
-          setSecond(60);
+          console.log('ini owner', owner)
+          if (!owner.is_verified) {
+            setSubmitting(false);
+            openVerifyModal();
+            setSecond(60);
+          } else {
+            props.login(token);
+          }
         })
         .catch((err) => {
+          console.log('ini error formik', err)
           setSubmitting(false);
           setStatus(err.response.data.message);
           disableLoading();
@@ -266,11 +344,14 @@ function Registration(props) {
   });
 
   const handleProvince = (e) => {
+    if (!e.target.value) {
+      return;
+    }
     const province_id = e.target.value;
-    formikBusiness.setFieldValue("business_province_id", province_id);
-    formikBusiness.setFieldValue("business_city_id", "");
-    formikBusiness.setFieldValue("business_location_id", "");
-    formikBusiness.setFieldValue("outlet_location_id", "");
+    formik.setFieldValue("business_province_id", province_id);
+    formik.setFieldValue("business_city_id", "");
+    formik.setFieldValue("business_location_id", "");
+    formik.setFieldValue("outlet_location_id", "");
     setAllLocations([]);
 
     const provinces = [...allProvinces];
@@ -282,9 +363,9 @@ function Registration(props) {
 
   const handleCity = (e) => {
     const city_id = e.target.value;
-    formikBusiness.setFieldValue("business_city_id", city_id);
-    formikBusiness.setFieldValue("business_location_id", "");
-    formikBusiness.setFieldValue("outlet_location_id", "");
+    formik.setFieldValue("business_city_id", city_id);
+    formik.setFieldValue("business_location_id", "");
+    formik.setFieldValue("outlet_location_id", "");
 
     if (!city_id) return "";
 
@@ -321,6 +402,11 @@ function Registration(props) {
     }
   };
 
+  useEffect(() => {
+    getBusinessTypes()
+    getProvinces()
+  }, [])
+
   const verifyAccount = async () => {
     try {
       const API_URL = process.env.REACT_APP_API_URL;
@@ -333,7 +419,7 @@ function Registration(props) {
       );
       disableLoading();
       closeVerifyModal();
-      openBusinessModal();
+      // openBusinessModal();
     } catch (err) {
       setAlertModal(err.response.data.message);
       disableLoading();
@@ -349,16 +435,14 @@ function Registration(props) {
   const checkCode = async () => {
     try {
       const API_URL = process.env.REACT_APP_API_URL;
-      enableLoading();
       setAlertModal("");
       await axios.post(
         `${API_URL}/api/v1/auth/verify-account?check=${true}`,
         { code },
         { headers: { Authorization: token } }
       );
-      disableLoading();
       closeVerifyModal();
-      openBusinessModal();
+      handleFormikBusiness(dataFormik, token)
     } catch (err) {
       setAlertModal(err.response?.data.message);
       disableLoading();
@@ -474,6 +558,167 @@ function Registration(props) {
           ) : null}
         </div>
         {/* end: Phone number */}
+
+        {/* Start business location */}
+          <Form.Group>
+            <Form.Label>Select Business Type</Form.Label>
+            <Form.Control
+              as="select"
+              name="business_type_id"
+              {...formik.getFieldProps("business_type_id")}
+              className={validationBusiness("business_type_id")}
+              required
+            >
+              <option value="" disabled hidden>
+                Choose Business Type
+              </option>
+
+              {allBusinessTypes.map((item) => {
+                return (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                );
+              })}
+            </Form.Control>
+            {formik.touched.business_type_id &&
+            formik.errors.business_type_id ? (
+              <div className="fv-plugins-message-container">
+                <div className="fv-help-block">
+                  {formik.errors.business_type_id}
+                </div>
+              </div>
+            ) : null}
+          </Form.Group>
+
+          <Form.Group>
+            <Form.Label>Select Province</Form.Label>
+            <Form.Control
+              as="select"
+              name="business_province_id"
+              {...formik.getFieldProps("business_province_id")}
+              onChange={handleProvince}
+              onBlur={handleProvince}
+              className={validationBusiness("business_province_id")}
+              required
+            >
+              <option value="" disabled hidden>
+                Choose Province
+              </option>
+
+              {allProvinces.map((item) => {
+                return (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                );
+              })}
+            </Form.Control>
+            {formik.touched.business_province_id &&
+            formik.errors.business_province_id ? (
+              <div className="fv-plugins-message-container">
+                <div className="fv-help-block">
+                  {formik.errors.business_province_id}
+                </div>
+              </div>
+            ) : null}
+          </Form.Group>
+
+          <Form.Group>
+            <Form.Label>Select City</Form.Label>
+            <Form.Control
+              as="select"
+              name="business_city_id"
+              {...formik.getFieldProps("business_city_id")}
+              onChange={handleCity}
+              onBlur={handleCity}
+              className={validationBusiness("business_city_id")}
+              required
+            >
+              <option value="" disabled hidden>
+                Choose City
+              </option>
+
+              {allCities.map((item) => {
+                return (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                );
+              })}
+            </Form.Control>
+            {formik.touched.business_city_id &&
+            formik.errors.business_city_id ? (
+              <div className="fv-plugins-message-container">
+                <div className="fv-help-block">
+                  {formik.errors.business_city_id}
+                </div>
+              </div>
+            ) : null}
+          </Form.Group>
+
+          <Form.Group>
+            <Form.Label>Select Location</Form.Label>
+            <Form.Control
+              as="select"
+              name="business_location_id"
+              {...formik.getFieldProps("business_location_id")}
+              className={validationBusiness("business_location_id")}
+              required
+            >
+              <option value="" disabled hidden>
+                Choose Location
+              </option>
+
+              {allLocations.map((item) => {
+                return (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                );
+              })}
+            </Form.Control>
+            {formik.touched.business_location_id &&
+            formik.errors.business_location_id ? (
+              <div className="fv-plugins-message-container">
+                <div className="fv-help-block">
+                  {formik.errors.business_location_id}
+                </div>
+              </div>
+            ) : null}
+          </Form.Group>
+
+          <Form.Group>
+            <Form.Label>Select Outlet Location</Form.Label>
+            <Form.Control
+              as="select"
+              name="outlet_location_id"
+              {...formik.getFieldProps("outlet_location_id")}
+              className={validationBusiness("outlet_location_id")}
+              required
+            >
+              <option value="" disabled hidden>
+                Choose Outlet Location
+              </option>
+
+              {allLocations.map((item) => {
+                return (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                );
+              })}
+            </Form.Control>
+            {formik.touched.outlet_location_id &&
+            formik.errors.outlet_location_id ? (
+              <div className="fv-plugins-message-container">
+                <div className="fv-help-block">
+                  {formik.errors.outlet_location_id}
+                </div>
+              </div>
+            ) : null}
+          </Form.Group>
+        {/* End business location*/}
 
         {/* begin: Password */}
         <div className="form-group fv-plugins-icon-container">

@@ -5,6 +5,7 @@ import { useFormik } from "formik";
 import { ExcelRenderer } from "react-excel-renderer";
 import dayjs from "dayjs";
 import ExportExcel from "react-html-table-to-excel";
+import NumberFormat from 'react-number-format';
 
 import {
   Row,
@@ -89,7 +90,14 @@ const ProductTab = ({
         result.push(value)
       }
     })
+    console.log('ini result apa', result)
     setDataProduct(result)
+  }
+
+  const avoidExport = () => {
+    setTimeout(() => {
+      setDataProduct([])
+    }, 2000);
   }
 
   const showConfirmBulkModal = (data) => {
@@ -250,7 +258,6 @@ const ProductTab = ({
           }
         }
       }
-
       return {
         id: item.id,
         no: index + 1,
@@ -580,62 +587,66 @@ const ProductTab = ({
                 <>
                   <Dropdown style={{ marginRight: "0.5rem" }}>
                     <Dropdown.Toggle variant="outline-secondary">
-                      Export
+                      Choose outlet
                     </Dropdown.Toggle>
-
                     <Dropdown.Menu>
                       {outletProduct.map(item => 
-                        <Dropdown.Item as="button" onClick={() => handleExports(item)}>
-                        <ExportExcel
-                          id="test-table-xls-button"
-                          className="border-0 bg-transparent"
-                          table="table-to-xls"
-                          filename="tablexls"
-                          sheet="tablexls"
-                          buttonText={item}
-                        />
+                        <Dropdown.Item as="button" onClick={() => handleExports(item)} value={item}>
+                          {item}
                         </Dropdown.Item>
                       )}
                     </Dropdown.Menu>
                     {/* Start table excel */}
-                    <div style={{ display: "none" }}>
-                      <table id="table-to-xls">
-                        <thead>
-                          <tr>
-                              <th>Product Name</th>
-                              <th>Description</th>
-                              <th>Barcode</th>
-                              <th>SKU</th>
-                              <th>Price</th>
-                              <th>Purchase Price</th>
-                              <th>Favorite</th>
-                              {/* <th>Category</th> */}
-                              <th>With Recipe</th>
-                              <th>Stock</th>
-                              {/* <th>Unit</th> */}
-                              <th>Expired Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                          {dataProduct.map((value, index) =>
-                            <tr key={index}>
-                              <td>{value.name}</td>
-                              <td>{value.description}</td>
-                              <td>{value.barcode}</td>
-                              <td>{value.sku}</td>
-                              <td>{value.price}</td>
-                              <td>{value.price_purchase}</td>
-                              <td>{value.is_favorite}</td>
-                              {/* <td>{value.Product_Category ? value.Product_Category.name : null}</td> */}
-                              <td>{value.recipe_id}</td>
-                              <td>{value.stock}</td>
-                              {/* <td>{value.Unit.name}</td> */}
-                              <td>{value.Stocks[0].expired_date}</td>
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
+                    {dataProduct.length > 0 ? (
+                      <>
+                        <ExportExcel
+                          id="test-table-xls-button"
+                          className="btn btn-outline-primary mx-2"
+                          table="table-to-xls"
+                          filename="tablexls"
+                          sheet="tablexls"
+                          buttonText="export"
+                        />
+                        <div style={{ display: "none" }}>
+                          <table id="table-to-xls">
+                            <thead>
+                              <tr>
+                                  <th>Product Name</th>
+                                  <th>Description</th>
+                                  <th>Barcode</th>
+                                  <th>SKU</th>
+                                  <th>Price</th>
+                                  <th>Purchase Price</th>
+                                  <th>Favorite</th>
+                                  <th>Category</th>
+                                  <th>With Recipe</th>
+                                  <th>Stock</th>
+                                  {/* <th>Unit</th> */}
+                                  <th>Expired Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                              {dataProduct.map((value, index) =>
+                                <tr key={index}>
+                                  <td>{value.name ? value.name : "-"}</td>
+                                  <td>{value.description ? value.description : "-"}</td>
+                                  <td>{value.barcode ? value.barcode : "-"}</td>
+                                  <td>{value.sku ? value.sku : "-"}</td>
+                                  <td>{value.price ? <NumberFormat value={parseInt(value.price)} className="foo" displayType={'text'} thousandSeparator={true} prefix={'Rp.'} renderText={(value, props) => <div {...props}>{value}</div>} /> : "-"}</td>
+                                  <td>{value.price_purchase ? <NumberFormat value={parseInt(value.price_purchase)} className="foo" displayType={'text'} thousandSeparator={true} prefix={'Rp.'} renderText={(value, props) => <div {...props}>{value}</div>} /> : "-"}</td>
+                                  <td>{value.is_favorite ? value.is_favorite : "-"}</td>
+                                  <td>{value.Product_Category.name ? value.Product_Category.name : "-"}</td>
+                                  <td>{value.recipe_id ? value.recipe_id : "-"}</td>
+                                  <td>{value.stock ? value.stock : "-"}</td>
+                                  {/* <td>{value.Unit.name}</td> */}
+                                  <td>{value.Stocks[0].expired_date ? value.Stocks[0].expired_date : "-"}</td>
+                                </tr>
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      </>
+                    ) : ""}
                     {/* End table excel */}
                   </Dropdown>
                   <Button variant="secondary" onClick={handleOpenImport}>

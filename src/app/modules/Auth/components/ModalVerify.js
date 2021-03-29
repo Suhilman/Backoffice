@@ -3,19 +3,21 @@ import { Modal, Button } from "react-bootstrap";
 
 const ModalVerify = ({
   showVerifyModal,
-  closeVerifyModal,
   alertModal,
   phonenumber,
   handleVerifyModal,
   code,
   checkCode,
-  loading,
+  // loading,
   second,
   handleResendCode,
   verification_code
 }) => {
+  const hanldeHide = () => {
+    console.log('Please insert code')
+  }
   return (
-    <Modal show={showVerifyModal} onHide={closeVerifyModal}>
+    <Modal show={showVerifyModal} onHide={hanldeHide}>
       <Modal.Header closeButton>
         <Modal.Title>Account Verification</Modal.Title>
       </Modal.Header>
@@ -62,7 +64,7 @@ const ModalVerify = ({
           onClick={checkCode}
         >
           Verify
-          {loading && <span className="ml-3 spinner spinner-white"></span>}
+          {/* {loading && <span className="ml-3 spinner spinner-white"></span>} */}
         </Button>
       </Modal.Footer>
     </Modal>
