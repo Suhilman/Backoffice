@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import imageCompression from 'browser-image-compression';
 
 import { Paper } from "@material-ui/core";
 import { Button, InputGroup, Form, Row, Col, Dropdown } from "react-bootstrap";
@@ -70,10 +71,20 @@ export const CustomerPage = () => {
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
 
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
+
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("email", values.email);
-      if (photo) formData.append("profilePicture", photo);
+      if (photo && photoPreview) {
+        console.log('originalFile instanceof Blob', photo instanceof Blob)
+        const compressedPhoto = await imageCompression(photo, options)
+        formData.append("profilePicture", compressedPhoto);
+      }
       formData.append("phone_number", values.phone_number);
       formData.append("address", values.address);
       formData.append("notes", values.notes);

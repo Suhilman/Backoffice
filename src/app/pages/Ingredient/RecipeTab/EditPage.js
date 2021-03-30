@@ -28,6 +28,8 @@ export const EditRecipePage = ({ location, match }) => {
   const [currTotalPrice, setCurrTotalPrice] = React.useState(0);
   const [currTotalCalorie, setCurrTotalCalorie] = React.useState(0);
 
+  const [valueMaterial, setValueMaterial] = React.useState({})
+
   const [stateCustom, setStateCustom] = React.useState(false);
 
   const initialValueRecipe = {
@@ -49,6 +51,28 @@ export const EditRecipePage = ({ location, match }) => {
     ingredient_price: 0,
     is_custom_material: false
   };
+
+  const handleMaterial = async (value) => {
+    try {
+      console.log('ini function handle material')
+      const API_URL = process.env.REACT_APP_API_URL;
+      const result = await axios.get(`${API_URL}/api/v1/raw-material`);
+      result.data.data.map((item) => {
+        if (item.name === value.label) {
+          setValueMaterial(item)
+        }
+      })
+      console.log('ini result handle material', result)
+    } catch (err) {
+      setAlert(err.response?.data.message || err.message);
+    }
+  }
+  if (valueMaterial.Unit) {
+    console.log('ini value materialnya', valueMaterial.Unit.name)
+  } else {
+    console.log('value material nya tidak ada')
+  }
+  // console.log('ini value materialnya', valueMaterial.Unit.name)
 
   const RecipeSchema = Yup.object().shape({
     outlet_id: Yup.number().required("Please choose an outlet."),
@@ -89,6 +113,7 @@ export const EditRecipePage = ({ location, match }) => {
     initialValues: initialValueRecipe,
     validationSchema: RecipeSchema,
     onSubmit: async (values) => {
+      console.log('apa nihhhhhhh')
       const recipeData = {
         outlet_id: values.outlet_id,
         product_id: values.product_id,
@@ -98,6 +123,7 @@ export const EditRecipePage = ({ location, match }) => {
         materials: values.materials
       };
 
+      console.log('ini data apa?', recipeData)
       const API_URL = process.env.REACT_APP_API_URL;
       try {
         enableLoading();
@@ -125,6 +151,8 @@ export const EditRecipePage = ({ location, match }) => {
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
+
+  console.log('ini option category', formikRecipe.values.materials)
 
   const initialValueCustom = {
     name: "",
@@ -428,6 +456,8 @@ export const EditRecipePage = ({ location, match }) => {
                                             className="basic-single"
                                             classNamePrefix="select"
                                             onChange={(value) => {
+                                              console.log('ini material', value)
+                                              handleMaterial(value)
                                               formikRecipe.setFieldValue(
                                                 `materials[${index}].raw_material_id`,
                                                 value.value
@@ -521,6 +551,32 @@ export const EditRecipePage = ({ location, match }) => {
                                         </Form.Group>
                                       </Col>
                                       <Col>
+                                        {/* <Form.Group>
+                                          <Form.Control
+                                            type="text"
+                                            value={valueMaterial.Unit ? valueMaterial.Unit.name : ""}
+                                            disabled
+                                            name={`materials[${index}].unit_id`}
+                                            onChange={() => 
+                                              valueMaterial.Unit ? formikRecipe.setFieldValue(
+                                                `materials[${index}].unit_id`,
+                                                valueMaterial.Unit.name
+                                              ) : ""
+                                            }
+                                          />
+                                          {formikRecipe.touched.materials &&
+                                            formikRecipe.errors.materials ? (
+                                              <div className="fv-plugins-message-container">
+                                                <div className="fv-help-block">
+                                                  {
+                                                    formikRecipe.errors.materials[
+                                                      index
+                                                    ]?.unit_id
+                                                  }
+                                                </div>
+                                              </div>
+                                            ) : null}
+                                          </Form.Group> */}
                                         <Form.Group>
                                           <Select
                                             options={optionsUnit}

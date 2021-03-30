@@ -144,6 +144,24 @@ const AddModal = ({
             ) : null}
           </Form.Group>
 
+          {/* <Form.Group>
+            <Form.Label>Price Per Unit:</Form.Label>
+            <Form.Control
+              type="number"
+              name="price_per_unit"
+              {...formikMaterial.getFieldProps("price_per_unit")}
+              className={validationMaterial("price_per_unit")}
+              required
+            />
+            {formikMaterial.touched.stock && formikMaterial.errors.stock ? (
+              <div className="fv-plugins-message-container">
+                <div className="fv-help-block">
+                  {formikMaterial.errors.price_per_unit}
+                </div>
+              </div>
+            ) : null}
+          </Form.Group> */}
+
           <Form.Group>
             <Form.Label>Calorie Per Unit:</Form.Label>
             <Form.Control

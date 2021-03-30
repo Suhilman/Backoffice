@@ -5,6 +5,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import dayjs from "dayjs";
 import rupiahFormat from "rupiah-format";
+import imageCompression from 'browser-image-compression';
 
 import {
   Button,
@@ -86,10 +87,20 @@ export const DetailCustomerPage = ({ match }) => {
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
 
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
+
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("email", values.email);
-      if (image) formData.append("profilePicture", image);
+      if (image && preview) {
+        console.log('originalFile instanceof Blob', image instanceof Blob)
+        const commpressedImage = await imageCompression(image, options)
+        formData.append("profilePicture", commpressedImage);
+      }
       formData.append("phone_number", values.phone_number);
       formData.append("address", values.address);
       formData.append("notes", values.notes);

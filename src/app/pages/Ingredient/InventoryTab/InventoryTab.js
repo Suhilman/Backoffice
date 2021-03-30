@@ -56,6 +56,7 @@ const InventoryIngredientTab = ({
     raw_material_category_id: "",
     stock: "",
     unit_id: "",
+    // price_per_unit: "",
     calorie_per_unit: "",
     calorie_unit: "",
     notes: "",
@@ -83,6 +84,7 @@ const InventoryIngredientTab = ({
     raw_material_category_id: Yup.number().required("Please choose category"),
     stock: Yup.number().required("Please input stock"),
     unit_id: Yup.number().required("Please choose unit"),
+    // price_per_unit: Yup.number().required("Please input price per unit"),
     calorie_per_unit: Yup.number().required("Please input calorie"),
     calorie_unit: Yup.string().required("Please input calorie unit"),
     notes: Yup.string().min(1, "Minimum 1 character"),
@@ -111,6 +113,7 @@ const InventoryIngredientTab = ({
         raw_material_category_id: values.raw_material_category_id,
         stock: values.stock,
         unit_id: values.unit_id,
+        // price_per_unit: values.price_per_unit,
         calorie_per_unit: values.calorie_per_unit,
         calorie_unit: values.calorie_unit,
         notes: values.notes,
@@ -118,6 +121,7 @@ const InventoryIngredientTab = ({
       };
 
       try {
+        console.log('ini data materialnya', materialData)
         const API_URL = process.env.REACT_APP_API_URL;
         enableLoading();
         await axios.post(`${API_URL}/api/v1/raw-material`, materialData);

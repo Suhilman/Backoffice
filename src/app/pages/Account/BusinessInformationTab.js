@@ -87,7 +87,6 @@ export const BusinessInformation = () => {
       const API_URL = process.env.REACT_APP_API_URL;
       const userInfo = JSON.parse(localStorage.getItem("user_info"));
 
-
       const options = {
         maxSizeMB: 0.5,
         maxWidthOrHeight: 1920,
