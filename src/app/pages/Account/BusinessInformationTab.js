@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import imageCompression from 'browser-image-compression';
 
 import { Row, Col, Button, Form, Spinner } from "react-bootstrap";
 import { Paper } from "@material-ui/core";
@@ -86,6 +87,13 @@ export const BusinessInformation = () => {
       const API_URL = process.env.REACT_APP_API_URL;
       const userInfo = JSON.parse(localStorage.getItem("user_info"));
 
+
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
+
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("phone_number", values.business_phone_number);
@@ -94,11 +102,21 @@ export const BusinessInformation = () => {
       formData.append("npwp_business", values.npwp_number);
       formData.append("business_type_id", values.business_type_id);
       formData.append("address", values.business_address);
-
-      if (imageKtp) formData.append("ktp_picture", imageKtp);
-      if (imageNpwp) formData.append("npwp_picture", imageNpwp);
-      if (businessImage) formData.append("image", businessImage);
-
+      if (imageKtp && previewKtp) {
+        console.log('originalFile instanceof Blob', imageKtp instanceof Blob)
+        const compressedBusinessImage = await imageCompression(imageKtp, options)
+        formData.append("ktp_picture", compressedBusinessImage);
+      }
+      if (imageNpwp && previewNpwp) {
+        console.log('originalFile instanceof Blob', imageNpwp instanceof Blob)
+        const compressedBusinessImage = await imageCompression(imageNpwp, options)
+        formData.append("npwp_picture", compressedBusinessImage)
+      }
+      if (businessImage && previewBusinessImage) {
+        console.log('originalFile instanceof Blob', businessImage instanceof Blob)
+        const compressedBusinessImage = await imageCompression(businessImage, options)
+        formData.append("image", compressedBusinessImage);
+      }
       try {
         enableLoading();
         await axios.put(
@@ -165,7 +183,7 @@ export const BusinessInformation = () => {
           data.data.npwp_picture ? `${API_URL}/${data.data.npwp_picture}` : ""
         }`
       );
-
+      
       setBusinessImage(
         `${data.data.image ? `${API_URL}/${data.data.image}` : ""}`
       );
@@ -310,7 +328,6 @@ export const BusinessInformation = () => {
   const handlePreviewKtp = (e) => {
     let preview;
     let img;
-
     if (e.target.files && e.target.files[0]) {
       preview = URL.createObjectURL(e.target.files[0]);
       img = e.target.files[0];
