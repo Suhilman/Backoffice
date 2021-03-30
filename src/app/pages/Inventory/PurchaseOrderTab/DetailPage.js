@@ -124,7 +124,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
     : [];
   return (
     <>
-      <div className="style-pdf" ref={ref}>
+      {/* <div className="style-pdf" ref={ref}>
           <div className="container">
             <div className="row justify-content-between mb-5">
               <div className="col-md-6">
@@ -195,7 +195,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       <Row className="modal-detail">
         <Col>
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
@@ -209,9 +209,9 @@ export const DetailPurchaseOrderPage = ({ match }) => {
                     pathname: "/inventory"
                   }}
                 >
-                  <Pdf targetRef={ref} filename="purchase-order.pdf" options={options} x={.5} y={.5} scale={0.8}>
+                  {/* <Pdf targetRef={ref} filename="purchase-order.pdf" options={options} x={.5} y={.5} scale={0.8}>
                     {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>Export to PDF</Button>}
-                  </Pdf>
+                  </Pdf> */}
                   {/* <Button variant="btn btn-outline-primary mr-2" onClick={handleExportPdf}>Export</Button> */}
                   <Button variant="outline-secondary">Back</Button>
                 </Link>
