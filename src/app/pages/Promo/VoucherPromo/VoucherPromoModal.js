@@ -36,7 +36,7 @@ const VoucherPromoModal = ({
 }) => {
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
-    maxSize: 2 * 1000 * 1000,
+    maxSize: 3 * 1000 * 1000,
     onDrop(file) {
       handlePreviewPhoto(file);
     }

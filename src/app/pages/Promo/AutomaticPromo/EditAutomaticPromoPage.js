@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import dayjs from "dayjs";
+import imageCompression from 'browser-image-compression';
 
 import QuantityTab from "./Tabs/QuantityTab";
 import TransactionTab from "./Tabs/TransactionTab";
@@ -179,6 +180,11 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
     validationSchema: PromoQuantitySchema,
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
       const formData = new FormData();
 
       formData.append("name", values.name);
@@ -195,9 +201,12 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
       formData.append("quantity_type", values.quantity_type);
       formData.append("quantity_amount", values.quantity_amount);
 
-      if (values.description)
-        formData.append("description", values.description);
-      if (photo) formData.append("automaticPromoImage", photo);
+      if (values.description) formData.append("description", values.description);
+      if (photo && photoPreview) {
+        console.log('originalFile instanceof Blob', photo instanceof Blob)
+        const compressedPhoto = await imageCompression(photo, options)
+        formData.append("automaticPromoImage", compressedPhoto);
+      }
 
       try {
         enableLoading();
@@ -218,6 +227,11 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
     initialValues: initialValuePromoTransaction,
     validationSchema: PromoTransactionSchema,
     onSubmit: async (values) => {
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
       const API_URL = process.env.REACT_APP_API_URL;
       const formData = new FormData();
 
@@ -236,8 +250,11 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
 
       if (values.description)
         formData.append("description", values.description);
-      if (photo) formData.append("automaticPromoImage", photo);
-
+      if (photo && photoPreview) {
+        console.log('originalFile instanceof Blob', photo instanceof Blob)
+        const compressedPhoto = await imageCompression(photo, options)
+        formData.append("automaticPromoImage", compressedPhoto);
+      }
       try {
         enableLoading();
         await axios.put(
@@ -257,6 +274,11 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
     initialValues: initialValuePromoXY,
     validationSchema: PromoXYSchema,
     onSubmit: async (values) => {
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
       const API_URL = process.env.REACT_APP_API_URL;
       const formData = new FormData();
 
@@ -283,7 +305,11 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
 
       if (values.description)
         formData.append("description", values.description);
-      if (photo) formData.append("automaticPromoImage", photo);
+      if (photo && photoPreview) {
+        console.log('originalFile instanceof Blob', photo instanceof Blob)
+        const compressedPhoto = await imageCompression(photo, options)
+        formData.append("automaticPromoImage", compressedPhoto);
+      }
 
       try {
         enableLoading();

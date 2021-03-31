@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import imageCompression from 'browser-image-compression';
 
 import {
   Button,
@@ -99,13 +100,23 @@ export const DetailStaffPage = ({ match, location }) => {
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
 
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
+
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("staff_id", values.staff_id);
       formData.append("email", values.email);
       formData.append("role_id", values.role_id);
       formData.append("type", values.type);
-      formData.append("profile_picture", image);
+      if (image && preview) {
+        console.log('originalFile instanceof Blob', image instanceof Blob)
+        const compressedImage = await imageCompression(image, options)
+        formData.append("profile_picture", compressedImage);
+      }
       formData.append("phone_number", values.phone_number);
       formData.append("outlet_id", values.outlet_id);
 

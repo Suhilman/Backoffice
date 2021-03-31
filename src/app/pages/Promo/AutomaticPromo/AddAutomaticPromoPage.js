@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import dayjs from "dayjs";
+import imageCompression from 'browser-image-compression';
 
 import { Tabs, Tab } from "react-bootstrap";
 
@@ -163,6 +164,11 @@ export const AddAutomaticPromoPage = ({ location }) => {
     enableReinitialize: true,
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
       const formData = new FormData();
 
       formData.append("name", values.name);
@@ -179,9 +185,12 @@ export const AddAutomaticPromoPage = ({ location }) => {
       formData.append("quantity_type", values.quantity_type);
       formData.append("quantity_amount", values.quantity_amount);
 
-      if (values.description)
-        formData.append("description", values.description);
-      if (photo) formData.append("automaticPromoImage", photo);
+      if (values.description) formData.append("description", values.description);
+      if (photo && photoPreview) {
+        console.log('originalFile instanceof Blob', photo instanceof Blob)
+        const compressedPhoto = await imageCompression(photo, options)
+        formData.append("automaticPromoImage", compressedPhoto);
+      }
 
       try {
         enableLoading();
@@ -199,6 +208,11 @@ export const AddAutomaticPromoPage = ({ location }) => {
     initialValues: initialValuePromoTransaction,
     validationSchema: PromoTransactionSchema,
     onSubmit: async (values) => {
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
       const API_URL = process.env.REACT_APP_API_URL;
       const formData = new FormData();
 
@@ -215,9 +229,12 @@ export const AddAutomaticPromoPage = ({ location }) => {
       formData.append("transaction_type", values.transaction_type);
       formData.append("transaction_amount", values.transaction_amount);
 
-      if (values.description)
-        formData.append("description", values.description);
-      if (photo) formData.append("automaticPromoImage", photo);
+      if (values.description) formData.append("description", values.description);
+      if (photo && photoPreview) {
+        console.log('originalFile instanceof Blob', photo instanceof Blob)
+        const compressedPhoto = await imageCompression(photo, options)
+        formData.append("automaticPromoImage", compressedPhoto);
+      }
 
       try {
         enableLoading();
@@ -235,6 +252,11 @@ export const AddAutomaticPromoPage = ({ location }) => {
     initialValues: initialValuePromoXY,
     validationSchema: PromoXYSchema,
     onSubmit: async (values) => {
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
       const API_URL = process.env.REACT_APP_API_URL;
       const formData = new FormData();
 
@@ -243,7 +265,8 @@ export const AddAutomaticPromoPage = ({ location }) => {
       formData.append("outlet_id", JSON.stringify(values.outlet_id));
       formData.append("description_type", values.description_type);
       formData.append("promo_date_start", values.promo_date_start);
-      formData.append("promo_date_end", values.promo_date_end);
+      formData.append("promo_date_end",
+       values.promo_date_end);
       formData.append("promo_days", values.promo_days);
       formData.append("promo_hour_start", values.promo_hour_start);
       formData.append("promo_hour_end", values.promo_hour_end);
@@ -261,7 +284,11 @@ export const AddAutomaticPromoPage = ({ location }) => {
 
       if (values.description)
         formData.append("description", values.description);
-      if (photo) formData.append("automaticPromoImage", photo);
+      if (photo && photoPreview) {
+        console.log('originalFile instanceof Blob', photo instanceof Blob)
+        const compressedPhoto = await imageCompression(photo, options)
+        formData.append("automaticPromoImage", compressedPhoto);
+      }
 
       try {
         enableLoading();

@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import { Link } from "react-router-dom";
+import imageCompression from 'browser-image-compression';
 
 import * as Yup from "yup";
 import rupiahFormat from "rupiah-format";
@@ -80,6 +81,11 @@ export const SpecialPromoPage = () => {
     initialValues: initialValuePromo,
     validationSchema: PromoSchema,
     onSubmit: async (values) => {
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
       const promoData = new FormData();
       promoData.append("outlet_id", values.outlet_id);
       promoData.append("name", values.name);
@@ -88,7 +94,11 @@ export const SpecialPromoPage = () => {
       promoData.append("type", values.type);
       promoData.append("value", values.value);
       promoData.append("promo_category_id", values.promo_category_id);
-      if (photo) promoData.append("specialPromoImage", photo);
+      if (photo && photoPreview) {
+        console.log('originalFile instanceof Blob', photo instanceof Blob)
+        const compressedPhoto = await imageCompression(photo, options)
+        promoData.append("specialPromoImage", compressedPhoto);
+      }
 
       const API_URL = process.env.REACT_APP_API_URL;
       try {
@@ -121,6 +131,11 @@ export const SpecialPromoPage = () => {
     initialValues: initialValuePromo,
     validationSchema: PromoSchema,
     onSubmit: async (values) => {
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
       const promoData = new FormData();
       promoData.append("outlet_id", values.outlet_id);
       promoData.append("name", values.name);
@@ -129,8 +144,11 @@ export const SpecialPromoPage = () => {
       promoData.append("type", values.type);
       promoData.append("value", values.value);
       promoData.append("promo_category_id", values.promo_category_id);
-      if (photo) promoData.append("specialPromoImage", photo);
-
+      if (photo && photoPreview) {
+        console.log('originalFile instanceof Blob', photo instanceof Blob)
+        const compressedPhoto = await imageCompression(photo, options)
+        promoData.append("specialPromoImage", compressedPhoto);
+      }
       const API_URL = process.env.REACT_APP_API_URL;
       try {
         enableLoading();

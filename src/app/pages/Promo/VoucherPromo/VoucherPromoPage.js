@@ -3,6 +3,7 @@ import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import dayjs from "dayjs";
+import imageCompression from 'browser-image-compression';
 import { Link } from "react-router-dom";
 
 import { Row, Col, Button, Dropdown } from "react-bootstrap";
@@ -86,6 +87,11 @@ export const VoucherPromoPage = () => {
     initialValues: initialValuePromo,
     validationSchema: PromoSchema,
     onSubmit: async (values) => {
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
       const promoData = new FormData();
       promoData.append("outlet_id", values.outlet_id);
       promoData.append("name", values.name);
@@ -97,7 +103,11 @@ export const VoucherPromoPage = () => {
       promoData.append("quota", values.quota);
       promoData.append("promo_date_start", startDate);
       promoData.append("promo_date_end", endDate);
-      if (photo) promoData.append("voucherPromoImage", photo);
+      if (photo && photoPreview) {
+        console.log('originalFile instanceof Blob', photo instanceof Blob)
+        const compressedPhoto = await imageCompression(photo, options)
+        promoData.append("voucherPromoImage", compressedPhoto);
+      }
 
       const API_URL = process.env.REACT_APP_API_URL;
       try {
@@ -130,6 +140,11 @@ export const VoucherPromoPage = () => {
     initialValues: initialValuePromo,
     validationSchema: PromoSchema,
     onSubmit: async (values) => {
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
       const promoData = new FormData();
       promoData.append("outlet_id", values.outlet_id);
       promoData.append("name", values.name);
@@ -141,7 +156,11 @@ export const VoucherPromoPage = () => {
       promoData.append("quota", values.quota);
       promoData.append("promo_date_start", startDate);
       promoData.append("promo_date_end", endDate);
-      if (photo) promoData.append("voucherPromoImage", photo);
+      if (photo && photoPreview) {
+        console.log('originalFile instanceof Blob', photo instanceof Blob)
+        const compressedPhoto = await imageCompression(photo, options)
+        promoData.append("voucherPromoImage", compressedPhoto);
+      }
 
       const API_URL = process.env.REACT_APP_API_URL;
       try {

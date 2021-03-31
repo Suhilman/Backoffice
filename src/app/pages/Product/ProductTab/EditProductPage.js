@@ -3,6 +3,7 @@ import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import imageCompression from 'browser-image-compression';
 
 import { Row, Col } from "react-bootstrap";
 
@@ -146,6 +147,11 @@ export const EditProductPage = ({ match, location }) => {
     initialValues: product,
     validationSchema: ProductSchema,
     onSubmit: async (values) => {
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
       const API_URL = process.env.REACT_APP_API_URL;
       const currStock = currProduct.Stocks.find((item) => item.is_initial);
 
@@ -172,7 +178,11 @@ export const EditProductPage = ({ match, location }) => {
         formData.append("description", values.description);
       if (values.product_category_id)
         formData.append("product_category_id", values.product_category_id);
-      if (photo) formData.append("productImage", photo);
+      if (photo && photoPreview) {
+        console.log('originalFile instanceof Blob', photo instanceof Blob)
+        const compressedPhoto = await imageCompression(photo, options)
+        formData.append("productImage", compressedPhoto);
+      }
       if (deletePhoto) formData.append("deletePhoto", deletePhoto);
 
       if (values.has_raw_material)

@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import imageCompression from 'browser-image-compression';
 
 import {
   Row,
@@ -96,12 +97,21 @@ export const OutletTab = ({
     initialValues: initialValueOutlet,
     validationSchema: OutletSchema,
     onSubmit: async (values) => {
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("location_id", values.location_id);
       formData.append("status", values.status);
 
-      if (photo) formData.append("outlet", photo);
+      if (photo && photoPreview) {
+        console.log('originalFile instanceof Blob', photo instanceof Blob)
+        const compressedPhoto = await imageCompression(photo, options)
+        formData.append("outlet", compressedPhoto);
+      }
       if (values.address) formData.append("address", values.address);
       if (values.postcode) formData.append("postcode", values.postcode);
       if (values.phone_number)
@@ -125,17 +135,23 @@ export const OutletTab = ({
     initialValues: initialValueOutlet,
     validationSchema: OutletSchema,
     onSubmit: async (values) => {
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("location_id", values.location_id);
       formData.append("status", values.status);
-
-      if (photo) formData.append("outlet", photo);
+      if (photo && photoPreview) {
+        console.log('originalFile instanceof Blob', photo instanceof Blob)
+        const compressedPhoto = await imageCompression(photo, options)
+        formData.append("outlet", compressedPhoto);
+      }
       if (values.address) formData.append("address", values.address);
       if (values.postcode) formData.append("postcode", values.postcode);
-      if (values.phone_number)
-        formData.append("phone_number", values.phone_number);
-
+      if (values.phone_number) formData.append("phone_number", values.phone_number);
       const API_URL = process.env.REACT_APP_API_URL;
       try {
         enableLoading();
@@ -275,7 +291,6 @@ export const OutletTab = ({
 
   const handlePreviewPhoto = (file) => {
     setAlertPhoto("");
-
     let preview;
     let img;
 
@@ -287,6 +302,7 @@ export const OutletTab = ({
       setAlertPhoto("file is too large or not supported");
     }
 
+    console.log('ini preview outlet', preview)
     setPhotoPreview(preview);
     setPhoto(img);
   };
@@ -310,6 +326,10 @@ export const OutletTab = ({
       const { data } = await axios.get(
         `${API_URL}/api/v1/outlet${filterOutlet}`
       );
+      console.log('ini data outlet', data.data)
+      setPhoto(
+        `${data.data.image ? `${API_URL}/${data.data.image}` : ""}`
+      )
       setAllOutlets(data.data);
     } catch (err) {
       setAllOutlets([]);
