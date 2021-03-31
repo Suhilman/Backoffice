@@ -21,7 +21,7 @@ export const EditRecipePage = ({ location, match }) => {
     currRecipe
   } = location.state;
   const { recipeId } = match.params;
-
+  // console.log('ini currRecipe di edit page', currRecipe)
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
 
@@ -36,7 +36,7 @@ export const EditRecipePage = ({ location, match }) => {
     outlet_id: currRecipe.outlet_id,
     product_id: currRecipe.product_id,
     total_calorie: currRecipe.total_calorie,
-    total_cogs: currRecipe.total_cogs,
+    total_cogs: 0,
     notes: currRecipe.notes,
     materials: currRecipe.materials
   };
@@ -54,7 +54,7 @@ export const EditRecipePage = ({ location, match }) => {
 
   const handleMaterial = async (value) => {
     try {
-      console.log('ini function handle material')
+      // console.log('ini function handle material')
       const API_URL = process.env.REACT_APP_API_URL;
       const result = await axios.get(`${API_URL}/api/v1/raw-material`);
       result.data.data.map((item) => {
@@ -62,17 +62,12 @@ export const EditRecipePage = ({ location, match }) => {
           setValueMaterial(item)
         }
       })
-      console.log('ini result handle material', result)
+      // console.log('ini result handle material', result)
     } catch (err) {
       setAlert(err.response?.data.message || err.message);
     }
   }
-  if (valueMaterial.Unit) {
-    console.log('ini value materialnya', valueMaterial.Unit.name)
-  } else {
-    console.log('value material nya tidak ada')
-  }
-  // console.log('ini value materialnya', valueMaterial.Unit.name)
+  // console.log('ini value materialnya', valueMaterial.price_per_unit)
 
   const RecipeSchema = Yup.object().shape({
     outlet_id: Yup.number().required("Please choose an outlet."),
@@ -93,9 +88,7 @@ export const EditRecipePage = ({ location, match }) => {
           .min(0, "Minimum 0")
           .typeError("Please input a quantity")
           .required("Please input a quantity"),
-        unit_id: Yup.number()
-          .typeError("Please input a unit")
-          .required("Please input a unit"),
+        unit_id: Yup.number(),
         calorie_per_unit: Yup.number()
           .min(0, "Minimum 0")
           .typeError("Please input a calorie")
@@ -109,11 +102,12 @@ export const EditRecipePage = ({ location, match }) => {
     )
   });
 
+  // console.log('ini total nya', currTotalPrice)
+
   const formikRecipe = useFormik({
     initialValues: initialValueRecipe,
     validationSchema: RecipeSchema,
     onSubmit: async (values) => {
-      console.log('apa nihhhhhhh')
       const recipeData = {
         outlet_id: values.outlet_id,
         product_id: values.product_id,
@@ -123,7 +117,6 @@ export const EditRecipePage = ({ location, match }) => {
         materials: values.materials
       };
 
-      console.log('ini data apa?', recipeData)
       const API_URL = process.env.REACT_APP_API_URL;
       try {
         enableLoading();
@@ -152,7 +145,6 @@ export const EditRecipePage = ({ location, match }) => {
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
-  console.log('ini option category', formikRecipe.values.materials)
 
   const initialValueCustom = {
     name: "",
@@ -221,7 +213,7 @@ export const EditRecipePage = ({ location, match }) => {
         val.value ===
         formikRecipe.values.materials[index].raw_material_category_id
     );
-
+  // console.log('ini default kategori', defaultValueCategory )
   const optionsRaw = (index) =>
     allCategories
       .filter(
@@ -233,10 +225,12 @@ export const EditRecipePage = ({ location, match }) => {
         return item.Raw_Materials.filter(
           (val) => val.outlet_id === formikRecipe.values.outlet_id
         ).map((val) => {
+          // console.log('ini adalah looping all categories', val.price_per_unit)
           return {
             value: val.id,
             label: val.name,
             calorie: val.calorie_per_unit,
+            total_price: val.price_per_unit,
             calorie_unit: val.calorie_unit
           };
         });
@@ -246,8 +240,10 @@ export const EditRecipePage = ({ location, match }) => {
   const defaultValueRaw = (index) =>
     optionsRaw(index).find(
       (val) =>
-        val.value === formikRecipe.values.materials[index].raw_material_id
+        val.value === formikRecipe.values.materials[index].raw_material_id,
+        // console.log('default value raw', formikRecipe.values.materials[index].raw_material_id)
     );
+
 
   const optionsUnit = allUnits.map((item) => {
     return { value: item.id, label: item.name };
@@ -406,6 +402,7 @@ export const EditRecipePage = ({ location, match }) => {
                           <div>
                             {formikRecipe.values.materials.map(
                               (item, index) => {
+                                // console.log('item formik recipe', item)
                                 if (!item.is_custom_material) {
                                   return (
                                     <Row key={index}>
@@ -456,7 +453,6 @@ export const EditRecipePage = ({ location, match }) => {
                                             className="basic-single"
                                             classNamePrefix="select"
                                             onChange={(value) => {
-                                              console.log('ini material', value)
                                               handleMaterial(value)
                                               formikRecipe.setFieldValue(
                                                 `materials[${index}].raw_material_id`,
@@ -465,6 +461,27 @@ export const EditRecipePage = ({ location, match }) => {
                                               formikRecipe.setFieldValue(
                                                 `materials[${index}].quantity`,
                                                 1
+                                              );
+
+                                              const resultPriceIngredient = optionsRaw(
+                                                index
+                                              ).find(
+                                                (val) =>
+                                                  val.value === value.value
+                                              );
+                                            
+                                              let price = 0;
+                                              if (resultPriceIngredient.total_price) {
+                                                price = resultPriceIngredient.total_price;
+                                              }
+                                              
+                                              formikRecipe.setFieldValue(
+                                                `materials[${index}].total_price`,
+                                                price
+                                              );
+                                              formikRecipe.setFieldValue(
+                                                `materials[${index}].ingredient_price`,
+                                                price
                                               );
 
                                               const rawMaterial = optionsRaw(
@@ -532,6 +549,16 @@ export const EditRecipePage = ({ location, match }) => {
                                               formikRecipe.setFieldValue(
                                                 `materials[${index}].calorie_per_unit`,
                                                 calorie
+                                              );
+
+                                              const price =
+                                                (formikRecipe.values.materials[
+                                                  index
+                                                ].total_price || 0) * value;
+
+                                              formikRecipe.setFieldValue(
+                                                `materials[${index}].ingredient_price`,
+                                                price
                                               );
                                             }}
                                             required
@@ -650,6 +677,18 @@ export const EditRecipePage = ({ location, match }) => {
                                             {...formikRecipe.getFieldProps(
                                               `materials[${index}].ingredient_price`
                                             )}
+                                            onChange={(e) => {
+                                              const { value } = e.target;
+                                              // console.log('apa ini', value)
+                                              formikRecipe.setFieldValue(
+                                                `materials[${index}].ingredient_price`,
+                                                value
+                                              );
+                                              formikRecipe.setFieldValue(
+                                                `materials[${index}].total_price`,
+                                                value
+                                              );
+                                            }}
                                             required
                                           />
                                           {formikRecipe.touched.materials &&
@@ -794,10 +833,15 @@ export const EditRecipePage = ({ location, match }) => {
                   />
                 </Col>
                 <Col>
+                {/* {console.log('ini total_cogs', formikRecipe.getFieldProps("total_cogs").value)} */}
                   <Form.Control
                     type="number"
                     name="total_cogs"
                     {...formikRecipe.getFieldProps("total_cogs")}
+                    value={formikRecipe.values.materials.reduce(
+                      (init, curr) => (init += curr.ingredient_price),
+                      formikRecipe.values.total_cogs
+                    )}
                   />
                 </Col>
                 <Col sm={1}></Col>

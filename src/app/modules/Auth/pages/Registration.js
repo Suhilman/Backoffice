@@ -507,7 +507,7 @@ function Registration(props) {
           <input
             placeholder="Business Name"
             type="text"
-            className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
+            className={`form-control py-5 px-6 ${getInputClasses(
               "name"
             )}`}
             name="name"
@@ -526,7 +526,7 @@ function Registration(props) {
           <input
             placeholder="Email"
             type="email"
-            className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
+            className={`form-control py-5 px-6 ${getInputClasses(
               "email"
             )}`}
             name="email"
@@ -545,7 +545,7 @@ function Registration(props) {
           <input
             placeholder="Phone number"
             type="number"
-            className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
+            className={`form-control py-5 px-6 ${getInputClasses(
               "phone_number"
             )}`}
             name="phone_number"
@@ -561,7 +561,7 @@ function Registration(props) {
 
         {/* Start business location */}
           <Form.Group>
-            <Form.Label>Select Business Type</Form.Label>
+            {/* <Form.Label>Select Business Type</Form.Label> */}
             <Form.Control
               as="select"
               name="business_type_id"
@@ -592,7 +592,7 @@ function Registration(props) {
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Select Province</Form.Label>
+            {/* <Form.Label>Select Province</Form.Label> */}
             <Form.Control
               as="select"
               name="business_province_id"
@@ -625,7 +625,7 @@ function Registration(props) {
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Select City</Form.Label>
+            {/* <Form.Label>Select City</Form.Label> */}
             <Form.Control
               as="select"
               name="business_city_id"
@@ -658,7 +658,7 @@ function Registration(props) {
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Select Location</Form.Label>
+            {/* <Form.Label>Select Location</Form.Label> */}
             <Form.Control
               as="select"
               name="business_location_id"
@@ -689,7 +689,7 @@ function Registration(props) {
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Select Outlet Location</Form.Label>
+            {/* <Form.Label>Select Outlet Location</Form.Label> */}
             <Form.Control
               as="select"
               name="outlet_location_id"
@@ -725,7 +725,7 @@ function Registration(props) {
           <input
             placeholder="Password"
             type="password"
-            className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
+            className={`form-control py-5 px-6 ${getInputClasses(
               "password"
             )}`}
             name="password"
@@ -744,7 +744,7 @@ function Registration(props) {
           <input
             placeholder="Confirm Password"
             type="password"
-            className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
+            className={`form-control py-5 px-6 ${getInputClasses(
               "changepassword"
             )}`}
             name="changepassword"
