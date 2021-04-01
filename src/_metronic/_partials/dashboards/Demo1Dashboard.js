@@ -84,11 +84,11 @@ export function Demo1Dashboard() {
       valueId: "Hari Ini",
       displayDate: dayjs().format("DD-MM-YYYY"),
       date_start: dayjs()
-        .subtract(1, "day")
-        .format("YYYY-MM-DD"),
+        //.subtract(1, "day")
+        .format("YYYY-MM-DD 00:00:00"),
       date_end: dayjs()
-        .add(1, "day")
-        .format("YYYY-MM-DD")
+        //.add(1, "day")
+        .format("YYYY-MM-DD 23:59:59")
     },
     {
       id: 2,
