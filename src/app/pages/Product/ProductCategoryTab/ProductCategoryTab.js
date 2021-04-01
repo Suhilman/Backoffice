@@ -25,7 +25,7 @@ import ModalAddToProduct from "./ModalAddToProduct";
 
 import "../../style.css";
 
-const ProductCategoryTab = ({ refresh, handleRefresh }) => {
+const ProductCategoryTab = ({ refresh, handleRefresh, t }) => {
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [alertModal, setAlertModal] = React.useState("");
@@ -287,8 +287,9 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
       };
     });
   };
-
+ 
   const columns = [
+
     {
       name: "No.",
       selector: "no",
@@ -296,17 +297,17 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
       width: "50px"
     },
     {
-      name: "Category Name",
+      name: `${t("productModule.categoryName")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: "Number of Products",
+      name: `${t("productModule.numberOfProject")}`,
       selector: "products",
       sortable: true
     },
     {
-      name: "Actions",
+      name: `${t("productModule.actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -316,16 +317,16 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
 
             <Dropdown.Menu>
               <Dropdown.Item as="button" onClick={() => showAddToProduct(rows)}>
-                Add To Product
+                {t("productModule.addNewProductCategory")}
               </Dropdown.Item>
               <Dropdown.Item
                 as="button"
                 onClick={() => showEditCategoryModal(rows)}
               >
-                Edit
+                {t("edit")}
               </Dropdown.Item>
               <Dropdown.Item as="button" onClick={() => showConfirmModal(rows)}>
-                Delete
+                {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -357,8 +358,8 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
   return (
     <Row>
       <ConfirmModal
-        title="Delete Product Category"
-        body="Are you sure want to delete?"
+        title={t("deleteProductCategory")}
+        body={t("areYouSureWantToDelete?")}
         buttonColor="danger"
         handleClick={handleDelete}
         state={showConfirm}
@@ -367,28 +368,30 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
       />
 
       <ProductCategoryModal
+        t={t}
         state={showAddCategory}
         closeModal={closeAddCategoryModal}
         loading={loading}
         alert={alertModal}
-        title="Add Product Category"
+        title={t("addProductCategory")}
         formikCategory={formikAddCategory}
         inputRef={inputRef}
       />
 
       <ProductCategoryModal
+        t={t}
         state={showEditCategory}
         closeModal={closeEditCategoryModal}
         loading={loading}
         alert={alertModal}
-        title="Edit Product Category"
+        title={t("editProductCategory")}
         formikCategory={formikEditCategory}
         inputRef={inputRef}
       />
 
       <ConfirmModal
-        title={`Delete ${selectedData.length} Selected Modifiers`}
-        body="Are you sure want to delete?"
+        title={`${t("delete")} ${selectedData.length} ${t("selectedModifiers")}`}
+        body={t("areYouSureWantToDelete?")}
         buttonColor="danger"
         handleClick={() => handleBulkDelete(selectedData)}
         state={showConfirmBulk}
@@ -397,11 +400,12 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
       />
 
       <ModalAddToProduct
+        t={t}
         state={modalAddToProduct}
         closeModal={closeAddToProduct}
         loading={loading}
         alert={alertModal}
-        title={`Add "${selectedCategory.category_name}" to Products`}
+        title={`${t("add")} "${selectedCategory.category_name}" ${t("toProducts")}`}
         selectedCategory={selectedCategory}
         selectedProducts={selectedProducts}
         allProducts={allProducts}
@@ -416,15 +420,15 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
           <div className="headerPage">
             <div className="headerStart">
               {!selectedData.length ? (
-                <h3>Product Category List</h3>
+                <h3>{t("productModule.categoryTitle")}</h3>
               ) : (
-                <h3>{selectedData.length} items selected</h3>
+                <h3>{selectedData.length}{t("productModule.itemSelected")}</h3>
               )}
             </div>
             <div className="headerEnd">
               {!multiSelect ? (
                 <Button variant="primary" onClick={showAddCategoryModal}>
-                  Add New Product Category
+                  {t("productModule.addNewProductCategory")}
                 </Button>
               ) : (
                 <Button
@@ -432,7 +436,7 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
                   style={{ marginLeft: "0.5rem" }}
                   onClick={() => showConfirmBulkModal(selectedData)}
                 >
-                  Delete
+                  {t("delete")}
                 </Button>
               )}
               {allCategories.length ? (
@@ -441,7 +445,7 @@ const ProductCategoryTab = ({ refresh, handleRefresh }) => {
                   style={{ marginLeft: "0.5rem" }}
                   onClick={handleMode}
                 >
-                  {!multiSelect ? <Delete /> : "Cancel"}
+                  {!multiSelect ? <Delete /> : `${t("cancel")}`}
                 </Button>
               ) : (
                 ""

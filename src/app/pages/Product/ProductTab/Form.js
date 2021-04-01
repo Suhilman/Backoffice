@@ -4,6 +4,8 @@ import Select from "react-select";
 
 import { useDropzone } from "react-dropzone";
 
+import { useTranslation } from "react-i18next";
+
 import {
   Row,
   Col,
@@ -71,6 +73,8 @@ const FormTemplate = ({
     );
   };
 
+  const { t } = useTranslation();
+
   return (
     <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
       <Form noValidate onSubmit={formikProduct.handleSubmit}>
@@ -101,7 +105,7 @@ const FormTemplate = ({
         <Row style={{ padding: "1rem" }}>
           <Col>
             <Form.Group>
-              <Form.Label>Outlet*</Form.Label>
+              <Form.Label>{t("productModule.outlet")}*</Form.Label>
               <Select
                 options={optionsOutlet}
                 defaultValue={defaultValueOutlet}
@@ -123,7 +127,7 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>Product Name*</Form.Label>
+              <Form.Label>{t("productModule.productName")}*</Form.Label>
               <Form.Control
                 type="text"
                 name="name"
@@ -149,7 +153,7 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>Category</Form.Label>
+              <Form.Label>{t("productModule.category")}</Form.Label>
               <Select
                 options={optionsCategory}
                 defaultValue={defaultValueCategory}
@@ -174,7 +178,7 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>Price*</Form.Label>
+              <Form.Label>{t("productModule.price")}*</Form.Label>
               <Form.Control
                 type="number"
                 name="price"
@@ -192,7 +196,7 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>Price Purchase*</Form.Label>
+              <Form.Label>{t("productModule.purchasePrice")}*</Form.Label>
               <Form.Control
                 type="number"
                 name="price_purchase"
@@ -242,7 +246,7 @@ const FormTemplate = ({
 
             <Form.Group>
               <div>
-                <Form.Label>Product Status*</Form.Label>
+                <Form.Label>{t("productModule.productStatus")}*</Form.Label>
               </div>
               <div>
                 {["Active", "Inactive"].map((item, index) => {
@@ -281,7 +285,7 @@ const FormTemplate = ({
                   <Form.Label
                     style={{ alignSelf: "center", marginRight: "1rem" }}
                   >
-                    Product Favorite*
+                    {t("productModule.productFavorite")}*
                   </Form.Label>
                   <FormControlLabel
                     value={formikProduct.values.is_favorite}
@@ -306,7 +310,7 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>Product Description</Form.Label>
+              <Form.Label>{t("productModule.productDescription")}</Form.Label>
               <Form.Control
                 as="textarea"
                 name="description"
@@ -326,7 +330,7 @@ const FormTemplate = ({
 
           <Col>
             <Form.Group>
-              <Form.Label>Barcode</Form.Label>
+              <Form.Label>{t("productModule.barcode")}</Form.Label>
               <Form.Control
                 type="text"
                 name="barcode"
@@ -343,7 +347,7 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>SKU</Form.Label>
+              <Form.Label>{t("productModule.sku")}</Form.Label>
               <Form.Control
                 type="text"
                 name="sku"
@@ -362,7 +366,7 @@ const FormTemplate = ({
 
             <Form.Group style={{ margin: 0 }}>
               <Form.Label style={{ alignSelf: "center", marginRight: "1rem" }}>
-                Stock
+                {t("productModule.stock")}
               </Form.Label>
               <FormControlLabel
                 value={formikProduct.values.has_stock}
@@ -390,7 +394,7 @@ const FormTemplate = ({
             <div className="box" style={{ marginBottom: "1rem" }}>
               <Form.Group>
                 <Form.Label>
-                  {title === "Add Product" ? "Starting Stock" : "Stock"}
+                  {title === "Add Product" ? `${t("productModule.startingStock")}` : `${t("productModule.stock")}`}
                 </Form.Label>
                 <Form.Control
                   type="number"
@@ -409,13 +413,13 @@ const FormTemplate = ({
               </Form.Group>
 
               <Form.Group>
-                <Form.Label>Unit</Form.Label>
+                <Form.Label>{t("productModule.unit")}</Form.Label>
                 <Select
                   options={optionsUnit}
                   defaultValue={defaultValueUnit(formikProduct.values.unit_id)}
                   name="unit_id"
                   className="basic-single"
-                  classNamePrefix="select"
+                  classNamePrefix={t("select")}
                   onChange={(value) =>
                     formikProduct.setFieldValue("unit_id", value.value)
                   }
@@ -433,7 +437,7 @@ const FormTemplate = ({
 
               <Form.Group>
                 <Form.Label style={{ marginRight: "1rem" }}>
-                  Expired Date
+                  {t("productModule.expiredDate")}
                 </Form.Label>
                 <FormControlLabel
                   value={hasExpiredDate}
@@ -474,7 +478,7 @@ const FormTemplate = ({
             </div>
 
             <Form.Group>
-              <Form.Label>Product Photo</Form.Label>
+              <Form.Label>{t("productModule.productPhoto")}</Form.Label>
               {alertPhoto ? <Alert variant="danger">{alertPhoto}</Alert> : ""}
               <div
                 {...getRootProps({
@@ -485,9 +489,9 @@ const FormTemplate = ({
                 {!photoPreview ? (
                   <>
                     <p>
-                      Drag 'n' drop some files here, or click to select files
+                      {t("dragAndDrop")}
                     </p>
-                    <p style={{ color: "gray" }}>File Size Limit: 2 MB</p>
+                    <p style={{ color: "gray" }}>{t("fileSizeLimit")}</p>
                   </>
                 ) : (
                   <>
@@ -515,7 +519,7 @@ const FormTemplate = ({
                     size="sm"
                     onClick={handleDeletePhoto}
                   >
-                    Remove Photo
+                    {t("removePhoto")}
                   </Button>
                 </div>
               ) : (
@@ -524,16 +528,16 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>Product Type*</Form.Label>
+              <Form.Label>{t("productModule.productType")}*</Form.Label>
               <Row style={{ padding: "1rem" }}>
                 {[
                   {
-                    name: "No Recipe",
+                    name: `${t("noRecipe")}`,
                     value: false,
                     checked: formikProduct.values.has_recipe ? false : true
                   },
                   {
-                    name: "With Recipe",
+                    name: `${t("productModule.withRecipe")}`,
                     value: true,
                     checked: formikProduct.values.has_recipe ? true : false
                   }
@@ -580,9 +584,9 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>Product Addons</Form.Label>
+              <Form.Label>{t("productModule.productAddOns")}</Form.Label>
               <div style={{ padding: "0.5rem" }}>
-                <Button onClick={showModalAddons}>Manage Addons</Button>
+                <Button onClick={showModalAddons}>{t("productModule.manageAddOns")}</Button>
               </div>
             </Form.Group>
           </Col>

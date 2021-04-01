@@ -3,6 +3,7 @@ import React from "react";
 import { Button, Modal, Form, Spinner, Alert } from "react-bootstrap";
 
 const ModalAddToProduct = ({
+  t,
   state,
   closeModal,
   loading,
@@ -29,7 +30,7 @@ const ModalAddToProduct = ({
           {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
           <Form.Group>
-            <Form.Label>Category Name</Form.Label>
+            <Form.Label>{t("productModule.categoryName")}</Form.Label>
             <Form.Control
               type="text"
               value={selectedCategory.category_name}
@@ -38,7 +39,7 @@ const ModalAddToProduct = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Products:</Form.Label>
+            <Form.Label>{t("products")}</Form.Label>
             <Form.Control
               as="select"
               multiple
@@ -58,13 +59,13 @@ const ModalAddToProduct = ({
 
         <Modal.Footer>
           <Button variant="secondary" onClick={closeModal}>
-            Close
+            {t("close")}
           </Button>
           <Button type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         </Modal.Footer>

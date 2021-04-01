@@ -56,6 +56,7 @@ export const OutletTab = ({
     name: "",
     phone_number: "",
     address: "",
+    payment_description: "",
     postcode: "",
     province_id: "",
     city_id: "",
@@ -72,6 +73,7 @@ export const OutletTab = ({
     address: Yup.string()
       .min(3, "Minimum 3 characters.")
       .max(100, "Maximum 100 characters."),
+    payment_description: Yup.string(),
     postcode: Yup.number()
       .integer()
       .min(1),
@@ -106,7 +108,7 @@ export const OutletTab = ({
       formData.append("name", values.name);
       formData.append("location_id", values.location_id);
       formData.append("status", values.status);
-
+      formData.append("payment_description", values.payment_description)
       if (photo && photoPreview) {
         console.log('originalFile instanceof Blob', photo instanceof Blob)
         const compressedPhoto = await imageCompression(photo, options)
@@ -140,10 +142,12 @@ export const OutletTab = ({
         maxWidthOrHeight: 1920,
         useWebWorker: true
       }
+      console.log('ini data di edit', values)
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("location_id", values.location_id);
       formData.append("status", values.status);
+      formData.append("payment_description", values.payment_description)
       if (photo && photoPreview) {
         console.log('originalFile instanceof Blob', photo instanceof Blob)
         const compressedPhoto = await imageCompression(photo, options)
@@ -202,11 +206,13 @@ export const OutletTab = ({
   };
 
   const showEditModalOutlet = (data) => {
+    console.log('ini adalah data yang mau di edit', data)
     formikOutletEdit.setValues({
       id: data.id,
       name: data.name,
       phone_number: data.phone_number,
       address: data.address,
+      payment_description: data.payment_description,
       postcode: data.postcode,
       province_id: data.province_id,
       city_id: data.city_id,
@@ -370,6 +376,7 @@ export const OutletTab = ({
     {
       name: "Actions",
       cell: (rows) => {
+        console.log('ini rows apaan bro', rows)
         return (
           <Dropdown>
             <Dropdown.Toggle variant="secondary">
@@ -411,6 +418,7 @@ export const OutletTab = ({
         name: item.name,
         location: item.Location.name,
         address: item.address || "",
+        payment_description: item.payment_description,
         postcode: item.postcode || "",
         location_id: item.Location.id,
         city_id: item.Location.City.id,

@@ -22,7 +22,7 @@ import useDebounce from "../../../hooks/useDebounce";
 import AddModal from "./AddModal";
 import ConfirmModal from "../../../components/ConfirmModal";
 
-const UnitTab = ({ refresh, handleRefresh }) => {
+const UnitTab = ({ refresh, handleRefresh, t }) => {
   const [alert, setAlert] = React.useState("");
   const [loading, setLoading] = React.useState(false);
 
@@ -216,17 +216,17 @@ const UnitTab = ({ refresh, handleRefresh }) => {
       width: "50px"
     },
     {
-      name: "Name",
+      name: `${t("name")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: "Unit Conversion",
+      name: `${t("productModule.unitConvertion")}`,
       selector: "unit_conversion",
       sortable: true
     },
     {
-      name: "Actions",
+      name: `${t("productModule.actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -236,10 +236,10 @@ const UnitTab = ({ refresh, handleRefresh }) => {
 
             <Dropdown.Menu>
               <Dropdown.Item as="button" onClick={() => showEditModal(rows)}>
-                Edit
+                {t("edit")}
               </Dropdown.Item>
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                Delete
+                {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -265,9 +265,9 @@ const UnitTab = ({ refresh, handleRefresh }) => {
           <ListGroup.Item>
             <Row>
               <Col sm={5} style={{ fontWeight: "700" }}>
-                Name
+                {t("name")}
               </Col>
-              <Col style={{ fontWeight: "700" }}>Value</Col>
+              <Col style={{ fontWeight: "700" }}>{t("value")}</Col>
             </Row>
           </ListGroup.Item>
 
@@ -289,18 +289,20 @@ const UnitTab = ({ refresh, handleRefresh }) => {
   return (
     <>
       <AddModal
+        t={t}
         stateModal={stateAddModal}
         cancelModal={closeAddModal}
-        title="Add New Unit"
+        title={t("productModule.addNewUnit")}
         loading={loading}
         alert={alert}
         formikUnit={formikUnit}
         validationUnit={validationUnit}
       />
       <AddModal
+        t={t}
         stateModal={stateEditModal}
         cancelModal={closeEditModal}
-        title={`Edit Unit - ${formikEditUnit.values.name}`}
+        title={`${t("editUnit")} - ${formikEditUnit.values.name}`}
         loading={loading}
         alert={alert}
         formikUnit={formikEditUnit}
@@ -308,10 +310,11 @@ const UnitTab = ({ refresh, handleRefresh }) => {
       />
 
       <ConfirmModal
+        t={t}
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
-        title={`Delete Unit - ${currUnit.name}`}
-        body={"Are you sure want to delete?"}
+        title={`${t("deleteUnit")} - ${currUnit.name}`}
+        body={t("areYouSureWantToDelete")}
         loading={loading}
         buttonColor="danger"
         handleClick={() => handleDeleteUnit(currUnit.id)}
@@ -322,11 +325,11 @@ const UnitTab = ({ refresh, handleRefresh }) => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Unit</h3>
+                <h3>{t("productModule.titleTabUnit")}</h3>
               </div>
               <div className="headerEnd">
                 <Button variant="primary" onClick={showAddModal}>
-                  Add New Unit
+                  {t("productModule.addNewUnit")}
                 </Button>
               </div>
             </div>
@@ -341,7 +344,7 @@ const UnitTab = ({ refresh, handleRefresh }) => {
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control
-                      placeholder="Search..."
+                      placeholder={t("productModule.search")}
                       value={search}
                       onChange={handleSearch}
                     />

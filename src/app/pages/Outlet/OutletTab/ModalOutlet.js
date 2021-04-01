@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Button, Modal, Spinner, Form, Row, Col, Alert } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
+import { Editor } from '@tinymce/tinymce-react'; 
 
 import "../../style.css";
 
@@ -23,6 +24,7 @@ const ModalOutlet = ({
   photo,
   handlePreviewPhoto
 }) => {
+  const [paymentDescription, setPaymentDescription] = useState("")
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
     maxSize: 3 * 1000 * 1000,
@@ -31,6 +33,16 @@ const ModalOutlet = ({
     }
   });
 
+  const handleEditorChange = (e) => {
+    formikOutlet.setFieldValue("payment_description", e.target.getContent())
+    console.log(
+      'Content was updated:',
+      e.target.getContent()
+    );
+  }
+  useEffect(() => {
+    setPaymentDescription(formikOutlet.getFieldProps("payment_description").value)
+  }, [])
   return (
     <Modal show={stateModal} onHide={cancelModal} size="lg">
       <Modal.Header closeButton>
@@ -276,6 +288,47 @@ const ModalOutlet = ({
                     </div>
                   </div>
                 ) : null}
+              </Form.Group>
+            </Col>
+          </Row>
+          {console.log("address", formikOutlet.getFieldProps("address"))}
+          {console.log()}
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>Payment Instruction:</Form.Label>
+                {/* <Editor
+                  // initialValue={!formikOutlet.getFieldProps("payment_description").value ? "please describe to make a payment at your outlet" : formikOutlet.getFieldProps("payment_description").value }
+                  init={{
+                    selector: {paymentDescription},
+                    menubar: 'file',
+                    toolbar: 'fullpage',
+                    height: 500,
+                    menubar: false,
+                    plugins: [
+                      'fullpage',
+                      'advlist autolink lists link image', 
+                      'charmap print preview anchor help',
+                      'searchreplace visualblocks code',
+                      'insertdatetime media table paste wordcount'
+                    ],
+                    toolbar:
+                      'undo redo | formatselect | bold italic | \
+                      alignleft aligncenter alignright | \
+                      bullist numlist outdent indent | help'
+                  }}
+                  outputFormat='text'
+                  apiKey="0eeusytyrfgdlkvifhuqjn88hwz7n7zar8qcc3s5dazfhkvl"
+                  onChange={handleEditorChange}
+                />
+                {formikOutlet.touched.payment_description && formikOutlet.errors.payment_description ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikOutlet.errors.payment_description}
+                    </div>
+                  </div>
+                ) : null} */}
+
               </Form.Group>
             </Col>
           </Row>

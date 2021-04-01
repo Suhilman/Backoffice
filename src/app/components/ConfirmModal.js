@@ -1,6 +1,8 @@
 import React from "react";
 import { Button, Modal, Spinner, Alert } from "react-bootstrap";
 
+import { useTranslation } from "react-i18next";
+
 const ConfirmModal = ({
   title,
   body,
@@ -12,6 +14,7 @@ const ConfirmModal = ({
   alert,
   children
 }) => {
+  const { t } = useTranslation();
   return (
     <Modal show={state} onHide={closeModal}>
       <Modal.Header closeButton>
@@ -26,14 +29,14 @@ const ConfirmModal = ({
 
       <Modal.Footer>
         <Button variant="secondary" onClick={closeModal}>
-          Close
+          {t("close")}
         </Button>
         {handleClick ? (
           <Button variant={buttonColor} onClick={handleClick}>
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         ) : (

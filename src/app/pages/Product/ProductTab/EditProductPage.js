@@ -11,6 +11,8 @@ import ModalManageAddons from "./ModalManageAddons";
 import FormTemplate from "./Form";
 import dayjs from "dayjs";
 
+import { useTranslation } from "react-i18next";
+
 export const EditProductPage = ({ match, location }) => {
   const product_id = match.params.productId;
   const {
@@ -310,10 +312,13 @@ export const EditProductPage = ({ match, location }) => {
     }
   };
 
+  const { t } = useTranslation();
+
   return (
     <Row>
       <ModalManageAddons
-        title={`Edit Product Addons for - ${formikProduct.values.name}`}
+        t={t}
+        title={`${t("editProductAddonsFor")} - ${formikProduct.values.name}`}
         showManageAddons={showManageAddons}
         cancelModalAddons={cancelModalAddons}
         saveChangesAddons={saveChangesAddons}
@@ -326,7 +331,7 @@ export const EditProductPage = ({ match, location }) => {
 
       <Col>
         <FormTemplate
-          title="Edit Product"
+          title={t("editProduct")}
           loading={loading}
           allTaxes={allTaxes}
           alertPhoto={alertPhoto}

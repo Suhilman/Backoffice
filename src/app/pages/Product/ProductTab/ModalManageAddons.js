@@ -4,6 +4,7 @@ import Select from "react-select";
 import { Button, Modal, Form, Row, Col } from "react-bootstrap";
 import { Delete } from "@material-ui/icons";
 import { FormikProvider, FieldArray } from "formik";
+import { useTranslation } from "react-i18next";
 
 const ModalManageVariant = ({
   title,
@@ -16,6 +17,7 @@ const ModalManageVariant = ({
   defaultValueUnit,
   defaultValueMaterial
 }) => {
+  const { t } = useTranslation();
   return (
     <Modal show={showManageAddons} onHide={cancelModalAddons} size="lg">
       <Modal.Header closeButton>
@@ -43,7 +45,7 @@ const ModalManageVariant = ({
                             <Row>
                               <Col>
                                 <Form.Group>
-                                  <Form.Label>Group Name</Form.Label>
+                                  <Form.Label>{t("groupName")}</Form.Label>
                                   <Form.Control
                                     type="text"
                                     name={`groupAddons[${index}].group_name`}
@@ -72,7 +74,7 @@ const ModalManageVariant = ({
                             <Row>
                               <Col md={3}>
                                 <Form.Group>
-                                  <Form.Label>Group Type</Form.Label>
+                                  <Form.Label>{t("groupType")}</Form.Label>
                                   <Form.Control
                                     as="select"
                                     name={`groupAddons[${index}].group_type`}
@@ -82,10 +84,10 @@ const ModalManageVariant = ({
                                     required
                                   >
                                     <option value="" disabled hidden>
-                                      Select a Type
+                                      {t("selectType")}
                                     </option>
-                                    <option value="single">Single</option>
-                                    <option value="multi">Multi</option>
+                                    <option value="single">{t("single")}</option>
+                                    <option value="multi">{t("multi")}</option>
                                   </Form.Control>
                                   {formikProduct.touched.groupAddons &&
                                   formikProduct.errors.groupAddons ? (
@@ -151,7 +153,7 @@ const ModalManageVariant = ({
                                                   ) : (
                                                     <>
                                                       <Form.Label>
-                                                        Addons Name
+                                                        {t("addonsName")}
                                                       </Form.Label>
                                                       <Form.Control
                                                         type="text"
@@ -199,7 +201,7 @@ const ModalManageVariant = ({
                                                 <>
                                                   <Col>
                                                     <Form.Label>
-                                                      Quantity
+                                                      {t("quantity")}
                                                     </Form.Label>
                                                     <Form.Control
                                                       type="number"
@@ -213,7 +215,7 @@ const ModalManageVariant = ({
 
                                                   <Col>
                                                     <Form.Label>
-                                                      Unit
+                                                      {t("productModule.unit")}
                                                     </Form.Label>
                                                     <Select
                                                       options={optionsUnit}
@@ -240,7 +242,7 @@ const ModalManageVariant = ({
                                               )}
 
                                               <Col>
-                                                <Form.Label>Price</Form.Label>
+                                                <Form.Label>{t("productModule.price")}</Form.Label>
                                                 <Form.Control
                                                   type="number"
                                                   name={`groupAddons[${index}].addons[${valIndex}].price`}
@@ -301,7 +303,7 @@ const ModalManageVariant = ({
                                                 })
                                               }
                                             >
-                                              + Add Addons
+                                              + {t("addAddons")}
                                             </Button>
                                           </Col>
                                         </Row>
@@ -344,7 +346,7 @@ const ModalManageVariant = ({
                           }
                           style={{ marginRight: "1rem" }}
                         >
-                          + Add Group
+                          + {t("addGroup")}
                         </Button>
                       </Col>
                     </Row>
@@ -357,10 +359,10 @@ const ModalManageVariant = ({
 
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModalAddons}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button variant="primary" type="submit">
-            Save Changes
+            {t("saveChanges")}
           </Button>
         </Modal.Footer>
       </Form>

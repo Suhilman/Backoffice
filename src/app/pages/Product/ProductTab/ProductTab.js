@@ -35,6 +35,7 @@ import ImportModal from "./ImportModal";
 import "../../style.css";
 
 const ProductTab = ({
+  t,
   refresh,
   handleRefresh,
   allCategories,
@@ -287,32 +288,32 @@ const ProductTab = ({
       width: "50px"
     },
     {
-      name: "Product",
+      name: `${t("productModule.titleTabProduct")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: "Category",
+      name: `${t("productModule.category")}`,
       selector: "category",
       sortable: true
     },
     {
-      name: "Price",
+      name: `${t("productModule.price")}`,
       selector: "price",
       sortable: true
     },
     {
-      name: "Outlet",
+      name: `${t("productModule.outlet")}`,
       selector: "outlet",
       sortable: true
     },
     {
-      name: "Stock",
+      name: `${t("productModule.stock")}`,
       selector: "stock",
       sortable: true
     },
     {
-      name: "Unit",
+      name: `${t("productModule.unit")}`,
       selector: "unit",
       sortable: true
     },
@@ -367,10 +368,10 @@ const ProductTab = ({
                   }
                 }}
               >
-                <Dropdown.Item as="button">Edit</Dropdown.Item>
+                <Dropdown.Item as="button">{t("edit")}</Dropdown.Item>
               </Link>
               <Dropdown.Item as="button" onClick={() => showConfirmModal(rows)}>
-                Delete
+                {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -577,9 +578,9 @@ const ProductTab = ({
           <div className="headerPage">
             <div className="headerStart">
               {!selectedData.length ? (
-                <h3>Product List</h3>
+                <h3>{t("productModule.productTitle")}</h3>
               ) : (
-                <h3>{selectedData.length} items selected</h3>
+                <h3>{selectedData.length} {t("productModule.itemSelected")}</h3>
               )}
             </div>
             <div className="headerEnd" style={{ display: "flex" }}>
@@ -587,7 +588,7 @@ const ProductTab = ({
                 <>
                   <Dropdown style={{ marginRight: "0.5rem" }}>
                     <Dropdown.Toggle variant="outline-secondary">
-                      Choose outlet
+                      {t("productModule.chooseOutlet")}
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       {outletProduct.map(item => 
@@ -611,18 +612,18 @@ const ProductTab = ({
                           <table id="table-to-xls">
                             <thead>
                               <tr>
-                                  <th>Product Name</th>
-                                  <th>Description</th>
-                                  <th>Barcode</th>
-                                  <th>SKU</th>
-                                  <th>Price</th>
-                                  <th>Purchase Price</th>
-                                  <th>Favorite</th>
-                                  <th>Category</th>
-                                  <th>With Recipe</th>
-                                  <th>Stock</th>
-                                  <th>Unit</th>
-                                  <th>Expired Date</th>
+                                  <th>{t("productModule.productName")}</th>
+                                  <th>{t("productModule.description")}</th>
+                                  <th>{t("productModule.barcode")}</th>
+                                  <th>{t("productModule.sku")}</th>
+                                  <th>{t("productModule.price")}</th>
+                                  <th>{t("productModule.purchasePrice")}</th>
+                                  <th>{t("productModule.favorite")}</th>
+                                  <th>{t("productModule.category")}</th>
+                                  <th>{t("productModule.withRecipe")}</th>
+                                  <th>{t("productModule.stock")}</th>
+                                  <th>{t("productModule.unit")}</th>
+                                  <th>{t("productModule.expiredDate")}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -650,7 +651,7 @@ const ProductTab = ({
                     {/* End table excel */}
                   </Dropdown>
                   <Button variant="secondary" onClick={handleOpenImport}>
-                    Import
+                    {t("productModule.import")}
                   </Button>
 
                   <Dropdown as={ButtonGroup} style={{ marginLeft: "0.5rem" }}>
@@ -667,7 +668,7 @@ const ProductTab = ({
                       }}
                       className="btn btn-primary"
                     >
-                      <div>Add New Product</div>
+                      <div>{t("productModule.addNewProduct")}</div>
                     </Link>
 
                     <Dropdown.Toggle split variant="primary" />
@@ -684,7 +685,7 @@ const ProductTab = ({
                         }}
                       >
                         <Dropdown.Item as="button">
-                          Add New Product Bundle
+                          {t("productModule.addNewProductBundle")}
                         </Dropdown.Item>
                       </Link>
                     </Dropdown.Menu>
@@ -696,7 +697,7 @@ const ProductTab = ({
                   style={{ marginLeft: "0.5rem" }}
                   onClick={() => showConfirmBulkModal(selectedData)}
                 >
-                  Delete
+                  {t("productModule.delete")}
                 </Button>
               )}
               {allProducts.length ? (
@@ -705,7 +706,7 @@ const ProductTab = ({
                   style={{ marginLeft: "0.5rem" }}
                   onClick={handleMode}
                 >
-                  {!multiSelect ? <Delete /> : "Cancel"}
+                  {!multiSelect ? <Delete /> : `${t("cancel")}`}
                 </Button>
               ) : (
                 ""
@@ -723,7 +724,7 @@ const ProductTab = ({
                     </InputGroup.Text>
                   </InputGroup.Prepend>
                   <Form.Control
-                    placeholder="Search..."
+                    placeholder={t("productModule.search")}
                     value={search}
                     onChange={handleSearch}
                   />
@@ -737,7 +738,7 @@ const ProductTab = ({
                       <Form.Label
                         style={{ alignSelf: "center", marginBottom: "0" }}
                       >
-                        Category:
+                        {t("productModule.category")}
                       </Form.Label>
                       <Col>
                         <Form.Control
@@ -746,7 +747,7 @@ const ProductTab = ({
                           value={filter.category}
                           onChange={handleFilter}
                         >
-                          <option value="">All</option>
+                          <option value="">{t("productModule.all")}</option>
                           {allCategories.map((item) => {
                             return (
                               <option key={item.id} value={item.id}>
@@ -764,7 +765,7 @@ const ProductTab = ({
                       <Form.Label
                         style={{ alignSelf: "center", marginBottom: "0" }}
                       >
-                        Outlet:
+                        {t("productModule.outlet")}
                       </Form.Label>
                       <Col>
                         <Form.Control
@@ -773,7 +774,7 @@ const ProductTab = ({
                           value={filter.outlet}
                           onChange={handleFilter}
                         >
-                          <option value="">All</option>
+                          <option value="">{t("productModule.all")}</option>
                           {allOutlets.map((item) => {
                             return (
                               <option key={item.id} value={item.id}>
@@ -791,7 +792,7 @@ const ProductTab = ({
                       <Form.Label
                         style={{ alignSelf: "center", marginBottom: "0" }}
                       >
-                        Status:
+                        {t("productModule.status")}
                       </Form.Label>
                       <Col>
                         <Form.Control
@@ -800,9 +801,9 @@ const ProductTab = ({
                           value={filter.status}
                           onChange={handleFilter}
                         >
-                          <option value="">All</option>
-                          <option value="active">Active</option>
-                          <option value="inactive">Inactive</option>
+                          <option value="">{t("productModule.all")}</option>
+                          <option value="active">{t("productModule.active")}</option>
+                          <option value="inactive">{t("productModule.inactive")}</option>
                         </Form.Control>
                       </Col>
                     </Form.Group>

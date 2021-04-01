@@ -28,6 +28,8 @@ import {
 } from "./_metronic/layout";
 import { MetronicI18nProvider } from "./_metronic/i18n";
 
+import './i18n'
+import { Suspense } from "react-is";
 /**
  * Base URL of the website.
  *
@@ -56,7 +58,9 @@ ReactDOM.render(
       <MetronicSubheaderProvider>
         <MetronicSplashScreenProvider>
           <MuiPickersUtilsProvider utils={DayJSUtils}>
-            <App store={store} persistor={persistor} basename={PUBLIC_URL} />
+            <Suspense fallback={<div>Loadingg . . . .</div>}>
+              <App store={store} persistor={persistor} basename={PUBLIC_URL} />
+            </Suspense>
           </MuiPickersUtilsProvider>
         </MetronicSplashScreenProvider>
       </MetronicSubheaderProvider>

@@ -9,6 +9,10 @@ import UnitTab from "../Ingredient/UnitTab/UnitTab";
 
 import ProductCategoryTab from "./ProductCategoryTab/ProductCategoryTab";
 
+import ProductConvertion from './ProductConvertion/ProductConvertion'
+
+import { useTranslation } from "react-i18next";
+
 export const ProductPage = () => {
   const [tabs, setTabs] = React.useState("product");
   const [refresh, setRefresh] = React.useState(0);
@@ -85,31 +89,47 @@ export const ProductPage = () => {
     getProductCategory();
   }, [refresh]);
 
+  const { t } = useTranslation();
+
   return (
-    <Tabs activeKey={tabs} onSelect={(v) => setTabs(v)}>
-      <Tab eventKey="product" title="Product">
-        <ProductTab
-          allOutlets={allOutlets}
-          allCategories={allCategories}
-          allTaxes={allTaxes}
-          allUnit={allUnit}
-          allMaterials={allMaterials}
-          refresh={refresh}
-          handleRefresh={handleRefresh}
-        />
-      </Tab>
+    <>
+      <hr/>
+      <Tabs activeKey={tabs} onSelect={(v) => setTabs(v)}>
+        <Tab eventKey="product" title={t("productModule.titleTabProduct")}>
+          <ProductTab
+            t={t}
+            allOutlets={allOutlets}
+            allCategories={allCategories}
+            allTaxes={allTaxes}
+            allUnit={allUnit}
+            allMaterials={allMaterials}
+            refresh={refresh}
+            handleRefresh={handleRefresh}
+          />
+        </Tab>
 
-      <Tab eventKey="unit" title="Unit">
-        <UnitTab refresh={refresh} handleRefresh={handleRefresh} />
-      </Tab>
+        <Tab eventKey="unit" title={t("productModule.titleTabUnit")}>
+          <UnitTab refresh={refresh} t={t} handleRefresh={handleRefresh} />
+        </Tab>
 
-      <Tab eventKey="product-category" title="Product Category">
-        <ProductCategoryTab
-          allOutlets={allOutlets}
-          refresh={refresh}
-          handleRefresh={handleRefresh}
-        />
-      </Tab>
-    </Tabs>
+        <Tab eventKey="product-category" title={t("productModule.titleTabCategory")}>
+          <ProductCategoryTab
+            t={t}
+            allOutlets={allOutlets}
+            refresh={refresh}
+            handleRefresh={handleRefresh}
+          />
+        </Tab>
+
+        {/* <Tab eventKey="product-convertion" title="Product Convertion">
+          <ProductConvertion
+            allOutlets={allOutlets}
+            refresh={refresh}
+            handleRefresh={handleRefresh}
+          />
+        </Tab> */}
+
+      </Tabs>
+    </>
   );
 };

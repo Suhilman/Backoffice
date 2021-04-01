@@ -9,6 +9,7 @@ import { useHtmlClassService } from "../../../_core/MetronicLayout";
 import { toAbsoluteUrl } from "../../../../_helpers";
 import { DropdownTopbarItemToggler } from "../../../../_partials/dropdowns";
 
+import { useTranslation } from "react-i18next";
 export function UserProfileDropdown() {
   const { user } = useSelector((state) => state.auth);
 
@@ -20,6 +21,23 @@ export function UserProfileDropdown() {
         "light"
     };
   }, [uiService]);
+
+  const chooseLanguages = [
+    {
+      key: "id",
+      language: "Indonesia"
+    },
+    {
+      key: "en",
+      language: "English"
+    }
+  ]
+  
+  const { t, i18n } = useTranslation();
+  
+  const changeLanguage = (language) => {
+    i18n.changeLanguage(language)
+  };
 
   return (
     <Dropdown drop="down" alignRight>
@@ -155,13 +173,22 @@ export function UserProfileDropdown() {
             </a> */}
           <div className="navi-separator mt-3"></div>
 
-          <div className="navi-footer  px-8 py-5">
+          <div className="navi-footer px-8 py-5">
             <Link
               to="/logout"
               className="btn btn-light-primary font-weight-bold"
             >
               Sign Out
             </Link>
+            <Dropdown>
+              <Dropdown.Toggle variant="light">Choose Language</Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                {chooseLanguages.map(item =>
+                  <Dropdown.Item as="button" onClick={() => changeLanguage(item.key)}>{item.language}</Dropdown.Item>
+                )}
+              </Dropdown.Menu>
+            </Dropdown>
             {/* <a href="#" className="btn btn-clean font-weight-bold">
               Upgrade Plan
             </a> */}

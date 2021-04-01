@@ -9,7 +9,8 @@ const ProductCategoryModal = ({
   alert,
   title,
   formikCategory,
-  inputRef
+  inputRef,
+  t
 }) => {
   return (
     <Modal show={state} onHide={closeModal}>
@@ -22,7 +23,7 @@ const ProductCategoryModal = ({
           {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
           <Form.Group>
-            <Form.Label>Category Name</Form.Label>
+            <Form.Label>{t("productModule.categoryName")}</Form.Label>
             <Form.Control
               type="text"
               placeholder="Ex. : Food"
@@ -35,13 +36,13 @@ const ProductCategoryModal = ({
 
         <Modal.Footer>
           <Button variant="secondary" onClick={closeModal}>
-            Close
+            {t("close")}
           </Button>
           <Button type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         </Modal.Footer>
