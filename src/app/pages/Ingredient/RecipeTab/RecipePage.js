@@ -43,6 +43,7 @@ const RecipeTab = ({
 
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/recipe${filter}`);
+      // console.log('ini all recipe', data.data)
       setAllRecipes(data.data);
     } catch (err) {
       setAllRecipes([]);
@@ -75,6 +76,8 @@ const RecipeTab = ({
     setAlert("");
     setStateDeleteModal(false);
   };
+
+  // console.log('ini curr recipe di recipe page', currRecipe)
 
   const handleDeleteRecipe = async (id) => {
     const API_URL = process.env.REACT_APP_API_URL;

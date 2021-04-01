@@ -144,7 +144,7 @@ const AddModal = ({
             ) : null}
           </Form.Group>
 
-          {/* <Form.Group>
+          <Form.Group>
             <Form.Label>Price Per Unit:</Form.Label>
             <Form.Control
               type="number"
@@ -160,7 +160,7 @@ const AddModal = ({
                 </div>
               </div>
             ) : null}
-          </Form.Group> */}
+          </Form.Group>
 
           <Form.Group>
             <Form.Label>Calorie Per Unit:</Form.Label>
