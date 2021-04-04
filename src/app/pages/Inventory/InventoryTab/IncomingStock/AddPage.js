@@ -4,6 +4,7 @@ import { Link, useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import { useFormik, FormikProvider, FieldArray } from "formik";
 import Select from "react-select";
+import { useTranslation } from "react-i18next";
 
 import {
   Button,
@@ -22,6 +23,7 @@ import ConfirmModal from "../../../../components/ConfirmModal";
 export const AddIncomingStockPage = ({ location }) => {
   const history = useHistory();
   const { allOutlets, allProducts, allUnits } = location.state;
+  const { t } = useTranslation();
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
@@ -194,8 +196,8 @@ export const AddIncomingStockPage = ({ location }) => {
   return (
     <>
       <ConfirmModal
-        title={`Confirm`}
-        body="Are you sure want to add incoming stock?"
+        title={t("confirm")}
+        body={t("areYouSureWantToAddIncomingStock")}
         buttonColor="warning"
         handleClick={handleConfirm}
         state={showConfirm}
@@ -208,7 +210,7 @@ export const AddIncomingStockPage = ({ location }) => {
             <Form noValidate onSubmit={handleShowConfirm}>
               <div className="headerPage">
                 <div className="headerStart">
-                  <h3>Add Incoming Stock</h3>
+                  <h3>{t("addIncomingStock")}</h3>
                 </div>
                 <div className="headerEnd">
                   <Link to="/inventory/incoming-stock">
@@ -233,7 +235,7 @@ export const AddIncomingStockPage = ({ location }) => {
               <Row style={{ padding: "1rem" }} className="lineBottom">
                 <Col sm={3}>
                   <Form.Group>
-                    <Form.Label>Location:</Form.Label>
+                    <Form.Label>{t("location")}:</Form.Label>
                     <Select
                       options={optionsOutlet}
                       name="outlet_id"
@@ -263,7 +265,7 @@ export const AddIncomingStockPage = ({ location }) => {
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>Date:</Form.Label>
+                    <Form.Label>{t("date")}:</Form.Label>
                     <InputGroup>
                       <DatePicker
                         name="date"
@@ -291,7 +293,7 @@ export const AddIncomingStockPage = ({ location }) => {
 
                 <Col>
                   <Form.Group>
-                    <Form.Label>Notes:</Form.Label>
+                    <Form.Label>{t("notes")}:</Form.Label>
                     <Form.Control
                       as="textarea"
                       name="notes"
@@ -313,30 +315,30 @@ export const AddIncomingStockPage = ({ location }) => {
                 <Col>
                   <Row>
                     <Col style={{ padding: "1rem", textAlign: "center" }}>
-                      <h6>Product Name</h6>
+                      <h6>{t("productModule.productName")}</h6>
                     </Col>
                     <Col style={{ padding: "1rem", textAlign: "center" }}>
-                      <h6>Quantity</h6>
+                      <h6>{t("quantity")}</h6>
                     </Col>
 
                     {hasUnit ? (
                       <Col style={{ padding: "1rem", textAlign: "center" }}>
-                        <h6>Unit</h6>
+                        <h6>{t("unit")}</h6>
                       </Col>
                     ) : (
                       ""
                     )}
 
                     <Col style={{ padding: "1rem", textAlign: "center" }}>
-                      <h6>Price</h6>
+                      <h6>{t("productModule.price")}</h6>
                     </Col>
                     <Col style={{ padding: "1rem", textAlign: "center" }}>
-                      <h6>Total Price</h6>
+                      <h6>{t("priceTotal")}</h6>
                     </Col>
 
                     {hasExpiredDate ? (
                       <Col style={{ padding: "1rem", textAlign: "center" }}>
-                        <h6>Expired Date</h6>
+                        <h6>{t("expiredDate")}</h6>
                       </Col>
                     ) : (
                       ""
@@ -557,7 +559,7 @@ export const AddIncomingStockPage = ({ location }) => {
                                 }
                                 variant="primary"
                               >
-                                + Add Another Product
+                                + {t("addAnotherProduct")}
                               </Button>
                             </Row>
                           </div>

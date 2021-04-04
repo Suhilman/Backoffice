@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 
 import { Paper } from "@material-ui/core";
 import { Button, InputGroup, Form, Row, Col, Dropdown } from "react-bootstrap";
@@ -19,6 +20,7 @@ export const TransferStockPage = () => {
   const [alert, setAlert] = React.useState(0);
 
   const debouncedSearch = useDebounce(search, 1000);
+  const { t } = useTranslation();
 
   // const [filter, setFilter] = React.useState({
   //   time: "newest"
@@ -148,27 +150,27 @@ export const TransferStockPage = () => {
       width: "50px"
     },
     {
-      name: "Transfer Stock ID",
+      name: `${t("transferStokID")}`,
       selector: "code",
       sortable: true
     },
     {
-      name: "Origin Location",
+      name: `${t("originLocation")}`,
       selector: "outlet_origin",
       sortable: true
     },
     {
-      name: "Destination Location",
+      name: `${t("destinationLocation")}`,
       selector: "outlet_destination",
       sortable: true
     },
     {
-      name: "Date",
+      name: `${t("date")}`,
       selector: "date",
       sortable: true
     },
     {
-      name: "Actions",
+      name: `${t("actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -186,10 +188,10 @@ export const TransferStockPage = () => {
                   }
                 }}
               >
-                <Dropdown.Item as="button">Detail</Dropdown.Item>
+                <Dropdown.Item as="button">{t("detail")}</Dropdown.Item>
               </Link>
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                Delete
+                {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -212,8 +214,8 @@ export const TransferStockPage = () => {
   return (
     <>
       <ConfirmModal
-        title={`Delete Stock - ${currStock.code}`}
-        body="Are you sure want to delete?"
+        title={`${t("deleteStock")} - ${currStock.code}`}
+        body={t("areYouSureWantToDelete?")}
         buttonColor="danger"
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
@@ -235,7 +237,7 @@ export const TransferStockPage = () => {
                     pathname: "/inventory"
                   }}
                 >
-                  <Button variant="outline-secondary">Back to Main View</Button>
+                  <Button variant="outline-secondary">{t("backToMainMenu")}</Button>
                 </Link>
 
                 <Link
@@ -245,7 +247,7 @@ export const TransferStockPage = () => {
                   }}
                 >
                   <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
-                    Add New Transfer Stock
+                    {t("addNewTransferStock")}
                   </Button>
                 </Link>
               </div>
@@ -261,7 +263,7 @@ export const TransferStockPage = () => {
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control
-                      placeholder="Search..."
+                      placeholder={t("search")}
                       value={search}
                       onChange={handleSearch}
                     />

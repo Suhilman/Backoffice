@@ -14,7 +14,7 @@ import useDebounce from "../../../hooks/useDebounce";
 import SupplierModal from "./SupplierModal";
 import ConfirmModal from "../../../components/ConfirmModal";
 
-const SupplierTab = ({ refresh, handleRefresh }) => {
+const SupplierTab = ({ refresh, handleRefresh, t }) => {
   const [alert, setAlert] = React.useState("");
   const [loading, setLoading] = React.useState(false);
 
@@ -248,40 +248,39 @@ const SupplierTab = ({ refresh, handleRefresh }) => {
       width: "50px"
     },
     {
-      name: "Supplier Name",
+      name: `${t("supplierName")}`,
       selector: "supplier_name",
       sortable: true
     },
     {
-      name: "Address",
+      name: `${t("address")}`,
       selector: "address",
       sortable: true
     },
     {
-      name: "Phone Number",
+      name: `${t("phoneNumber")}`,
       selector: "phone_number",
       sortable: true
     },
     {
-      name: "Email",
+      name: `${t("email")}`,
       selector: "email",
       sortable: true
     },
     {
-      name: "Actions",
+      name: `${t("productModule.actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
             <Dropdown.Toggle variant="secondary">
               <MoreHoriz color="action" />
             </Dropdown.Toggle>
-
             <Dropdown.Menu>
               <Dropdown.Item as="button" onClick={() => showEditModal(rows)}>
-                Edit
+              {t("edit")}
               </Dropdown.Item>
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                Delete
+              {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -304,9 +303,10 @@ const SupplierTab = ({ refresh, handleRefresh }) => {
   return (
     <>
       <SupplierModal
+        t={t}
         stateModal={stateAddModal}
         cancelModal={closeAddModal}
-        title="Add New Supplier"
+        title={t("addNewSupplier")}
         loading={loading}
         alert={alert}
         formikSupplier={formikSupplier}
@@ -314,9 +314,10 @@ const SupplierTab = ({ refresh, handleRefresh }) => {
       />
 
       <SupplierModal
+        t={t}
         stateModal={stateEditModal}
         cancelModal={closeEditModal}
-        title={`Edit Supplier - ${formikEditSupplier.values.supplier_name}`}
+        title={`${t("editSupplier")} - ${formikEditSupplier.values.supplier_name}`}
         loading={loading}
         alert={alert}
         formikSupplier={formikEditSupplier}
@@ -324,10 +325,11 @@ const SupplierTab = ({ refresh, handleRefresh }) => {
       />
 
       <ConfirmModal
+        t={t}
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
-        title={`Delete Supplier - ${currSupplier.supplier_name}`}
-        body={"Are you sure want to delete?"}
+        title={`${t("deleteSupplier")} - ${currSupplier.supplier_name}`}
+        body={t("areYouSureWantToDelete?")}
         loading={loading}
         buttonColor="danger"
         handleClick={() => handleDeleteSupplier(currSupplier.id)}
@@ -338,11 +340,11 @@ const SupplierTab = ({ refresh, handleRefresh }) => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Supplier List</h3>
+                <h3>{t("supplierList")}</h3>
               </div>
               <div className="headerEnd">
                 <Button variant="primary" onClick={showAddModal}>
-                  Add New Supplier
+                  {t("addNewSupplier")}
                 </Button>
               </div>
             </div>
@@ -357,7 +359,7 @@ const SupplierTab = ({ refresh, handleRefresh }) => {
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control
-                      placeholder="Search..."
+                      placeholder={t("productModule.search")}
                       value={search}
                       onChange={handleSearch}
                     />

@@ -20,7 +20,7 @@ import useDebounce from "../../../hooks/useDebounce";
 
 import ConfirmModal from "../../../components/ConfirmModal";
 
-const PurchaseOrderPage = ({ refresh, handleRefresh }) => {
+const PurchaseOrderPage = ({ refresh, handleRefresh, t }) => {
   const [loading, setLoading] = React.useState(false);
   const [search, setSearch] = React.useState("");
   const [alert, setAlert] = React.useState(0);
@@ -169,22 +169,22 @@ const PurchaseOrderPage = ({ refresh, handleRefresh }) => {
       sortable: true
     },
     {
-      name: "Supplier Name",
+      name: `${t("supplierName")}`,
       selector: "supplier_name",
       sortable: true
     },
     {
-      name: "P.O Number",
+      name: `${t("poNumber")}`,
       selector: "po_number",
       sortable: true
     },
     {
-      name: "Date",
+      name: `${t("date")}`,
       selector: "date",
       sortable: true
     },
     {
-      name: "Actions",
+      name: `${t("productModule.actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -232,8 +232,8 @@ const PurchaseOrderPage = ({ refresh, handleRefresh }) => {
   return (
     <>
       <ConfirmModal
-        title={`Delete Purchase Order - ${currOrder.code}`}
-        body="Are you sure want to delete?"
+        title={`${t("deletePurchaseOrder")} - ${currOrder.code}`}
+        body={t("areYouSureWantToDelete?")}
         buttonColor="danger"
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
@@ -243,7 +243,7 @@ const PurchaseOrderPage = ({ refresh, handleRefresh }) => {
       />
 
       <ConfirmModal
-        title="Save PDF"
+        title={t("savePdf")}
         buttonColor="danger"
         state={statePdfModal}
         closeModal={closePdfModal}
@@ -254,7 +254,7 @@ const PurchaseOrderPage = ({ refresh, handleRefresh }) => {
             <Spinner animation="border" variant="primary" />
           ) : (
             <a href={urlPdf} target="_blank" rel="noopener noreferrer">
-              Click Here
+              {t("clickhere")}
             </a>
           )}
         </div>
@@ -265,7 +265,7 @@ const PurchaseOrderPage = ({ refresh, handleRefresh }) => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Purchase Order</h3>
+                <h3>{t("purhcaseOrder")}</h3>
               </div>
               <div className="headerEnd">
                 <Link
@@ -275,7 +275,7 @@ const PurchaseOrderPage = ({ refresh, handleRefresh }) => {
                   }}
                 >
                   <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
-                    Add New Purchase Order
+                    {t("addNewPurchaseOrder")}
                   </Button>
                 </Link>
               </div>
@@ -291,7 +291,7 @@ const PurchaseOrderPage = ({ refresh, handleRefresh }) => {
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control
-                      placeholder="Search..."
+                      placeholder={t("productModule.search")}
                       value={search}
                       onChange={handleSearch}
                     />

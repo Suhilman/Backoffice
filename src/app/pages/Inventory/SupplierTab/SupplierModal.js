@@ -11,7 +11,8 @@ const SupplierModal = ({
   loading,
   alert,
   formikSupplier,
-  validationSupplier
+  validationSupplier,
+  t
 }) => {
   return (
     <Modal show={stateModal} onHide={cancelModal} size="lg">
@@ -24,7 +25,7 @@ const SupplierModal = ({
           {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
           <Form.Group>
-            <Form.Label>Supplier Name:</Form.Label>
+            <Form.Label>{t("supplierName")}:</Form.Label>
             <Form.Control
               type="text"
               name="supplier_name"
@@ -43,7 +44,7 @@ const SupplierModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Address:</Form.Label>
+            <Form.Label>{t("address")}:</Form.Label>
             <Form.Control
               as="textarea"
               name="address"
@@ -61,7 +62,7 @@ const SupplierModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Phone Number:</Form.Label>
+            <Form.Label>{t("phoneNumber")}:</Form.Label>
             <Form.Control
               type="text"
               name="phone_number"
@@ -80,7 +81,7 @@ const SupplierModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Email:</Form.Label>
+            <Form.Label>{t("email")}:</Form.Label>
             <Form.Control
               type="email"
               name="email"
@@ -100,13 +101,13 @@ const SupplierModal = ({
 
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>
-            Cancel
+          {t("cancel")}
           </Button>
           <Button variant="primary" type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save Changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         </Modal.Footer>

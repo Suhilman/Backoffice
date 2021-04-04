@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { jsPDF } from "jspdf"
 import Pdf from "react-to-pdf";
 import beetposLogo from '../../../../images/396 PPI-06 1.png'
+import { useTranslation } from "react-i18next";
 
 import { Paper } from "@material-ui/core";
 import { Row, Col, Form, Button } from "react-bootstrap";
@@ -12,6 +13,7 @@ import DataTable from "react-data-table-component";
 
 export const DetailPurchaseOrderPage = ({ match }) => {
   const { orderId } = match.params;
+  const { t } = useTranslation();
 
   const ref = React.createRef()
 
@@ -74,22 +76,22 @@ export const DetailPurchaseOrderPage = ({ match }) => {
 
   const columns = [
     {
-      name: "Product Name",
+      name: `${t("productModule.productName")}`,
       selector: "product_name",
       sortable: true
     },
     {
-      name: "Quantity",
+      name: `${t("quantity")}`,
       selector: "quantity",
       sortable: true
     },
     {
-      name: "Price",
+      name: `${t("productModule.price")}`,
       selector: "price",
       sortable: true
     },
     {
-      name: "Total Price",
+      name: `${t("totalPrice")}`,
       selector: "total_price",
       sortable: true
     }
@@ -128,12 +130,12 @@ export const DetailPurchaseOrderPage = ({ match }) => {
           <div className="container">
             <div className="row justify-content-between mb-5">
               <div className="col-md-6">
-                <h1>Purchase Order</h1>
+                <h1>{t("purchaseOrder")}</h1>
                 <div className="d-flex justify-content-between">
-                  <h4>Tanggal Pembelian</h4>
+                  <h4>{t("purchaseDate")}</h4>
                   <p className="text-mute">{dataToPdf.dataPembelian}</p>
                 </div>
-                <h4>Nominal Total</h4>
+                <h4>{t("priceTotal")}</h4>
                 <h2>Rp. {dataToPdf.tagihan}</h2>
               </div>
               <div className="col-md-6 d-flex flex-column align-items-end">
@@ -145,14 +147,14 @@ export const DetailPurchaseOrderPage = ({ match }) => {
             </div>
             <div className="row mt-5">
               <div className="col-md-4">
-                <h4 className="font-weight-bold">Kepada</h4>
+                <h4 className="font-weight-bold">{t("to")}</h4>
                 <h6>{dataToPdf.namaSupplier}</h6>
                 <h6>{dataToPdf.alamatSupplier}</h6>
                 <h6>{dataToPdf.nomorTelephoneSupplier}</h6>
                 <h6>{dataToPdf.emailSupplier}</h6>
               </div>
               <div className="col-md-8">
-                <h4 className="font-weight-bold">Pembeli</h4>
+                <h4 className="font-weight-bold">{t("buyer")}</h4>
                 <h6>{dataToPdf.namaBusiness}</h6>
                 <h6>{dataToPdf.alamatBusiness}</h6>
                 <h6>{dataToPdf.emailBusiness}</h6>
@@ -163,10 +165,10 @@ export const DetailPurchaseOrderPage = ({ match }) => {
                 <table class="table">
                   <thead>
                     <tr>
-                      <th scope="col">Produk</th>
-                      <th scope="col">Kuantitas</th>
-                      <th scope="col">Harga Unit (Rp)</th>
-                      <th scope="col">Harga Total (Rp)</th>
+                      <th scope="col">{t("products")}</th>
+                      <th scope="col">{t("quantity")}</th>
+                      <th scope="col">{t("price")} (Rp)</th>
+                      <th scope="col">{t("priceTotal")} (Rp)</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -186,11 +188,11 @@ export const DetailPurchaseOrderPage = ({ match }) => {
             </div>
             <div className="row align-items-end flex-column mr-3">
               <div className="d-flex">
-                <p className="text-mute mr-5">Subtotal Harga</p>
+                <p className="text-mute mr-5">{t("priceSubtotal")}</p>
                 <p className="text-mute ml-5">{dataToPdf.tagihan}</p>
               </div>
               <div className="d-flex">
-                <h4 className="mr-5">Total Tagihan</h4>
+                <h4 className="mr-5">{t("totalBill")}</h4>
                 <h4 className="text-mute ml-5">{dataToPdf.tagihan}</h4>
               </div>
             </div>
@@ -201,7 +203,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Purchase Order Detail Summary</h3>
+                <h3>{t("purchaseOrderDetailSummary")}</h3>
               </div>
               <div className="headerEnd">
                 <Link
@@ -237,7 +239,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
                 </Form.Group>
 
                 <Form.Group>
-                  <Form.Label>P.O Number:</Form.Label>
+                  <Form.Label>{t("poNumber")}:</Form.Label>
                   <Form.Control
                     type="text"
                     value={purchaseOrder ? purchaseOrder.po_number : "-"}
@@ -246,7 +248,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
                 </Form.Group>
 
                 <Form.Group>
-                  <Form.Label>Location:</Form.Label>
+                  <Form.Label>{t("location")}:</Form.Label>
                   <Form.Control
                     type="text"
                     value={purchaseOrder ? purchaseOrder.Outlet?.name : "-"}
@@ -255,7 +257,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
                 </Form.Group>
 
                 <Form.Group>
-                  <Form.Label>Date:</Form.Label>
+                  <Form.Label>{t("date")}:</Form.Label>
                   <Form.Control
                     type="text"
                     value={
@@ -270,7 +272,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
 
               <Col>
                 <Form.Group>
-                  <Form.Label>Supplier:</Form.Label>
+                  <Form.Label>{t("supplier")}:</Form.Label>
                   <Form.Control
                     type="text"
                     value={purchaseOrder ? purchaseOrder.Supplier.name : "-"}
@@ -279,7 +281,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
                 </Form.Group>
 
                 <Form.Group>
-                  <Form.Label>Notes:</Form.Label>
+                  <Form.Label>{t("notes")}:</Form.Label>
                   <Form.Control
                     as="textarea"
                     name="notes"

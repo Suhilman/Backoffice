@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import { Search } from "@material-ui/icons";
 import useDebounce from "../../../hooks/useDebounce";
 
-const InventoryTab = ({ refresh }) => {
+const InventoryTab = ({ refresh, t }) => {
   // const [alert, setAlert] = React.useState("");
   // const [loading, setLoading] = React.useState(false);
 
@@ -55,37 +55,37 @@ const InventoryTab = ({ refresh }) => {
       width: "50px"
     },
     {
-      name: "Outlet Name",
+      name: `${t("outletName")}`,
       selector: "outlet_name",
       sortable: true
     },
     {
-      name: "Name",
+      name: `${t("name")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: "Starting Stock",
+      name: `${t("productModule.startingStock")}`,
       selector: "stock_starting",
       sortable: true
     },
     {
-      name: "Current Stock",
+      name: `${t("currentStock")}`,
       selector: "stock",
       sortable: true
     },
     {
-      name: "Incoming Stock",
+      name: `${t("incomingStock")}`,
       selector: "incoming_stock",
       sortable: true
     },
     {
-      name: "Outcoming Stock",
+      name: `${t("outcomingStock")}`,
       selector: "outcoming_stock",
       sortable: true
     },
     {
-      name: "Adjusment",
+      name: `${t("adjusment")}`,
       selector: "adjusment",
       sortable: true
     }
@@ -194,28 +194,28 @@ const InventoryTab = ({ refresh }) => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Inventory Management</h3>
+                <h3>{t("inventoryManagement")}</h3>
               </div>
               <div className="headerEnd">
                 <Link to={{ pathname: "/inventory/incoming-stock" }}>
-                  <Button variant="primary">Incoming Stock</Button>
+                  <Button variant="primary">{t("incomingStock")}</Button>
                 </Link>
 
                 <Link to={{ pathname: "/inventory/outcoming-stock" }}>
                   <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
-                    Outcoming Stock
+                    {t("outcomingStock")}
                   </Button>
                 </Link>
 
                 <Link to={{ pathname: "/inventory/transfer-stock" }}>
                   <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
-                    Transfer Stock
+                    {t("transferStock")}
                   </Button>
                 </Link>
 
                 <Link to={{ pathname: "/inventory/stock-opname" }}>
                   <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
-                    Stock Opname
+                    {t("stockOpname")}
                   </Button>
                 </Link>
               </div>
@@ -231,7 +231,7 @@ const InventoryTab = ({ refresh }) => {
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control
-                      placeholder="Search..."
+                      placeholder={t("productModule.search")}
                       value={search}
                       onChange={handleSearch}
                     />
@@ -243,7 +243,7 @@ const InventoryTab = ({ refresh }) => {
                     <Form.Label
                       style={{ alignSelf: "center", marginBottom: "0" }}
                     >
-                      Time:
+                      {t("time")}:
                     </Form.Label>
                     <Col>
                       <Form.Control
@@ -252,8 +252,8 @@ const InventoryTab = ({ refresh }) => {
                         value={filter.time}
                         onChange={handleFilter}
                       >
-                        <option value="newest">Newest</option>
-                        <option value="oldest">Oldest</option>
+                        <option value="newest">{t("newest")}</option>
+                        <option value="oldest">{t("oldest")}</option>
                       </Form.Control>
                     </Col>
                   </Form.Group>

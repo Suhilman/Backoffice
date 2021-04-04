@@ -5,6 +5,7 @@ import { NavLink } from "react-router-dom";
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl, checkIsActive } from "../../../../_helpers";
 import { connect } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 // TODO: ambil privileges dari store
 const select = (appState) => {
@@ -118,6 +119,8 @@ function AsideMenuList(props) {
     processPrivileges();
   }, [currPrivileges]);
 
+  const { t } = useTranslation();
+
   return (
     <>
       <ul
@@ -144,7 +147,7 @@ function AsideMenuList(props) {
                           )}
                         />
                       </span>
-                      <span className="menu-text">Dashboard</span>
+                      <span className="menu-text">{t("dashboard")}</span>
                     </NavLink>
                   </li>
                 );
@@ -168,7 +171,7 @@ function AsideMenuList(props) {
                           )}
                         />
                       </span>
-                      <span className="menu-text">Report</span>
+                      <span className="menu-text">{t("report")}</span>
                     </NavLink>
                   </li>
                 );
@@ -178,7 +181,7 @@ function AsideMenuList(props) {
 
         {productSections.length ? (
           <li className="menu-section" style={{ margin: "0" }}>
-            <h4 className="menu-text">Products</h4>
+            <h4 className="menu-text">{t("products")}</h4>
           </li>
         ) : (
           ""
@@ -203,7 +206,7 @@ function AsideMenuList(props) {
                           )}
                         />
                       </span>
-                      <span className="menu-text">Product</span>
+                      <span className="menu-text">{t("product")}</span>
                     </NavLink>
                   </li>
                 );
@@ -226,7 +229,7 @@ function AsideMenuList(props) {
                           )}
                         />
                       </span>
-                      <span className="menu-text">Inventory</span>
+                      <span className="menu-text">{t("inventory")}</span>
                     </NavLink>
                   </li>
                 );
@@ -249,7 +252,7 @@ function AsideMenuList(props) {
                           )}
                         />
                       </span>
-                      <span className="menu-text">Kitchen</span>
+                      <span className="menu-text">{t("kitchen")}</span>
                     </NavLink>
                   </li>
                 );
@@ -259,7 +262,7 @@ function AsideMenuList(props) {
 
         {managementSections.length ? (
           <li className="menu-section" style={{ margin: "0" }}>
-            <h4 className="menu-text">Management Settings</h4>
+            <h4 className="menu-text">{t("managementSettings")}</h4>
           </li>
         ) : (
           ""
@@ -284,7 +287,7 @@ function AsideMenuList(props) {
                           )}
                         />
                       </span>
-                      <span className="menu-text">Outlet</span>
+                      <span className="menu-text">{t("productModule.outlet")}</span>
                     </NavLink>
                   </li>
                 );
@@ -307,7 +310,7 @@ function AsideMenuList(props) {
                           )}
                         />
                       </span>
-                      <span className="menu-text">Promo</span>
+                      <span className="menu-text">{t("promo")}</span>
                     </NavLink>
                   </li>
                 );
@@ -330,7 +333,7 @@ function AsideMenuList(props) {
                           )}
                         />
                       </span>
-                      <span className="menu-text">Staff</span>
+                      <span className="menu-text">{t("staff")}</span>
                     </NavLink>
                   </li>
                 );
@@ -349,7 +352,7 @@ function AsideMenuList(props) {
                           )}
                         />
                       </span>
-                      <span className="menu-text">Role</span>
+                      <span className="menu-text">{t("role")}</span>
                     </NavLink>
                   </li>
                 );
@@ -371,7 +374,7 @@ function AsideMenuList(props) {
                           )}
                         />
                       </span>
-                      <span className="menu-text">Customer</span>
+                      <span className="menu-text">{t("customer")}</span>
                     </NavLink>
                   </li>
                 );
@@ -380,7 +383,7 @@ function AsideMenuList(props) {
           : ""}
 
         <li className="menu-section" style={{ margin: "0" }}>
-          <h4 className="menu-text">Account Settings</h4>
+          <h4 className="menu-text">{t("accountSetting")}</h4>
         </li>
 
         <li className={`menu-item ${getMenuItemActive("/account", false)}`}>
@@ -388,7 +391,7 @@ function AsideMenuList(props) {
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Shopping/Bag2.svg")} />
             </span>
-            <span className="menu-text">Account</span>
+            <span className="menu-text">{t("account")}</span>
           </NavLink>
         </li>
       </ul>

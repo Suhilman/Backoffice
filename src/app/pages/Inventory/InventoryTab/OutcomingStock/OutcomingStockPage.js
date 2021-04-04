@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 
 import { Paper } from "@material-ui/core";
 import { Button, InputGroup, Form, Row, Col, Dropdown } from "react-bootstrap";
@@ -23,6 +24,7 @@ export const OutcomingStockPage = () => {
   // const [filter, setFilter] = React.useState({
   //   time: "newest"
   // });
+  const { t } = useTranslation();
 
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
 
@@ -181,10 +183,10 @@ export const OutcomingStockPage = () => {
                   }
                 }}
               >
-                <Dropdown.Item as="button">Detail</Dropdown.Item>
+                <Dropdown.Item as="button">{t("detail")}</Dropdown.Item>
               </Link>
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                Delete
+                {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -221,7 +223,7 @@ export const OutcomingStockPage = () => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Outcoming Stock</h3>
+                <h3>{t("outcomingStock")}</h3>
               </div>
               <div className="headerEnd">
                 <Link
@@ -229,7 +231,7 @@ export const OutcomingStockPage = () => {
                     pathname: "/inventory"
                   }}
                 >
-                  <Button variant="outline-secondary">Back to Main View</Button>
+                  <Button variant="outline-secondary">{t("backToMainMenu")}</Button>
                 </Link>
 
                 <Link
@@ -239,7 +241,7 @@ export const OutcomingStockPage = () => {
                   }}
                 >
                   <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
-                    Add New Outcoming Stock
+                    {t("addNewOutcomingStock")}
                   </Button>
                 </Link>
               </div>
@@ -255,7 +257,7 @@ export const OutcomingStockPage = () => {
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control
-                      placeholder="Search..."
+                      placeholder={t("search")}
                       value={search}
                       onChange={handleSearch}
                     />

@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import { useFormik, FormikProvider, FieldArray } from "formik";
+import { useTranslation } from "react-i18next";
 
 import {
   Button,
@@ -42,6 +43,7 @@ export const AddPurchaseOrderPage = ({ location }) => {
     ],
     generated: true
   };
+  const { t } = useTranslation();
 
   const OrderSchema = Yup.object().shape({
     outlet_id: Yup.number()
@@ -158,7 +160,7 @@ export const AddPurchaseOrderPage = ({ location }) => {
           <Form noValidate onSubmit={formikOrder.handleSubmit}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Add Purchase Order</h3>
+                <h3>{t("addPurchaseOrder")}</h3>
               </div>
               <div className="headerEnd">
                 <Link to="/inventory">
@@ -183,7 +185,7 @@ export const AddPurchaseOrderPage = ({ location }) => {
             <Row style={{ padding: "1rem" }} className="lineBottom">
               <Col sm={3}>
                 <Form.Group>
-                  <Form.Label>P.O Number:</Form.Label>
+                  <Form.Label>{t("poNumber")}</Form.Label>
                   <Form.Control
                     type="text"
                     name="po_number"
@@ -227,7 +229,7 @@ export const AddPurchaseOrderPage = ({ location }) => {
                 </Form.Group>
 
                 <Form.Group>
-                  <Form.Label>Location:</Form.Label>
+                  <Form.Label>{t("location")}</Form.Label>
                   <Form.Control
                     as="select"
                     name="outlet_id"
@@ -236,7 +238,7 @@ export const AddPurchaseOrderPage = ({ location }) => {
                     required
                   >
                     <option value={""} disabled hidden>
-                      Choose Outlet
+                      {t("productModule.chooseOutlet")}
                     </option>
                     {allOutlets.map((item) => {
                       return (
@@ -257,7 +259,7 @@ export const AddPurchaseOrderPage = ({ location }) => {
                 </Form.Group>
 
                 <Form.Group>
-                  <Form.Label>Date:</Form.Label>
+                  <Form.Label>{t("date")}:</Form.Label>
                   <InputGroup>
                     <DatePicker
                       name="date"
@@ -285,7 +287,7 @@ export const AddPurchaseOrderPage = ({ location }) => {
 
               <Col>
                 <Form.Group>
-                  <Form.Label>Supplier:</Form.Label>
+                  <Form.Label>{t("supplier")}:</Form.Label>
                   <Form.Control
                     as="select"
                     name="outlet_to_id"
@@ -294,7 +296,7 @@ export const AddPurchaseOrderPage = ({ location }) => {
                     required
                   >
                     <option value={""} disabled hidden>
-                      Choose Supplier
+                      {t("chooseSupplier")}
                     </option>
                     {allSuppliers.map((item) => {
                       return (
@@ -315,7 +317,7 @@ export const AddPurchaseOrderPage = ({ location }) => {
                 </Form.Group>
 
                 <Form.Group>
-                  <Form.Label>Notes:</Form.Label>
+                  <Form.Label>{t("notes")}:</Form.Label>
                   <Form.Control
                     as="textarea"
                     name="notes"
@@ -337,16 +339,16 @@ export const AddPurchaseOrderPage = ({ location }) => {
               <Col>
                 <Row>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Product Name</h6>
+                    <h6>{t("productModule.productName")}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Quantity</h6>
+                    <h6>{t("quantity")}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Price</h6>
+                    <h6>{t("productModule.price")}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Price Total</h6>
+                    <h6>{t("priceTotal")}</h6>
                   </Col>
                   <Col sm={1}></Col>
                 </Row>
@@ -371,7 +373,7 @@ export const AddPurchaseOrderPage = ({ location }) => {
                                       required
                                     >
                                       <option value="" disabled hidden>
-                                        Choose Product
+                                        {t("chooseProduct")}
                                       </option>
                                       {allProducts.map((item) => {
                                         return (
@@ -494,7 +496,7 @@ export const AddPurchaseOrderPage = ({ location }) => {
                               }
                               variant="primary"
                             >
-                              + Add Another Product
+                              + {t("addAnotherProduct")}
                             </Button>
                           </Row>
                         </div>

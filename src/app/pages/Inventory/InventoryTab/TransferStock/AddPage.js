@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { useFormik, FormikProvider, FieldArray } from "formik";
 import dayjs from "dayjs";
 import Select from "react-select";
+import { useTranslation } from "react-i18next";
 
 import {
   Button,
@@ -22,6 +23,7 @@ import { CalendarToday, Delete } from "@material-ui/icons";
 export const AddTransferStockPage = ({ location }) => {
   const history = useHistory();
   const { allOutlets, allProducts, allUnits } = location.state;
+  const { t } = useTranslation();
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
@@ -194,11 +196,11 @@ export const AddTransferStockPage = ({ location }) => {
           <Form noValidate onSubmit={formikStock.handleSubmit}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Add Transfer Stock</h3>
+                <h3>{t("addTransferStock")}</h3>
               </div>
               <div className="headerEnd">
                 <Link to="/inventory/transfer-stock">
-                  <Button variant="secondary">Cancel</Button>
+                  <Button variant="secondary">{t("cancel")}</Button>
                 </Link>
                 <Button
                   variant="primary"
@@ -219,7 +221,7 @@ export const AddTransferStockPage = ({ location }) => {
             <Row style={{ padding: "1rem" }} className="lineBottom">
               <Col sm={3}>
                 <Form.Group>
-                  <Form.Label>Origin:</Form.Label>
+                  <Form.Label>{t("origin")}:</Form.Label>
                   <Select
                     options={optionsOutlet}
                     name="outlet_from_id"
@@ -247,7 +249,7 @@ export const AddTransferStockPage = ({ location }) => {
                 </Form.Group>
 
                 <Form.Group>
-                  <Form.Label>Destination:</Form.Label>
+                  <Form.Label>{t("destination")}:</Form.Label>
                   <Select
                     options={optionsOutlet}
                     name="outlet_to_id"
@@ -268,7 +270,7 @@ export const AddTransferStockPage = ({ location }) => {
                 </Form.Group>
 
                 <Form.Group>
-                  <Form.Label>Date:</Form.Label>
+                  <Form.Label>{t("date")}:</Form.Label>
                   <InputGroup>
                     <DatePicker
                       name="date"
@@ -296,7 +298,7 @@ export const AddTransferStockPage = ({ location }) => {
 
               <Col>
                 <Form.Group>
-                  <Form.Label>Notes:</Form.Label>
+                  <Form.Label>{t("notes")}:</Form.Label>
                   <Form.Control
                     as="textarea"
                     name="notes"
@@ -318,15 +320,15 @@ export const AddTransferStockPage = ({ location }) => {
               <Col>
                 <Row>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Product Name</h6>
+                    <h6>{t("productModule.productName")}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Quantity</h6>
+                    <h6>{t("quantity")}</h6>
                   </Col>
 
                   {hasUnit ? (
                     <Col style={{ padding: "1rem", textAlign: "center" }}>
-                      <h6>Unit</h6>
+                      <h6>{t("unit")}</h6>
                     </Col>
                   ) : (
                     ""
@@ -452,7 +454,7 @@ export const AddTransferStockPage = ({ location }) => {
                               }
                               variant="primary"
                             >
-                              + Add Another Product
+                              + {t("addAnotherProduct")}
                             </Button>
                           </Row>
                         </div>
