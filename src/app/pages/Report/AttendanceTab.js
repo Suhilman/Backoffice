@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import dayjs from "dayjs";
-
+import { useTranslation } from "react-i18next";
 import { Row, Col, ListGroup } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 
@@ -21,7 +21,7 @@ export const AttendanceTab = ({ selectedOutlet, startDate, endDate }) => {
       check_out: ""
     }
   ]);
-
+  const { t } = useTranslation();
   const getAttendances = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
     const outlet_id = id ? `outlet_id=${id}` : "";
@@ -80,22 +80,22 @@ export const AttendanceTab = ({ selectedOutlet, startDate, endDate }) => {
       width: "50px"
     },
     {
-      name: "Staff Name",
+      name: `${t("staffName")}`,
       selector: "staff_name",
       sortable: true
     },
     {
-      name: "Outlet",
+      name: `${t("outlet")}`,
       selector: "outlet_name",
       sortable: true
     },
     {
-      name: "Check In Time",
+      name: `${t("checkInTime")}`,
       selector: "check_in",
       sortable: true
     },
     {
-      name: "Check Out Time",
+      name: `${t("checkOutTime")}`,
       selector: "check_out",
       sortable: true
     }
@@ -177,7 +177,7 @@ export const AttendanceTab = ({ selectedOutlet, startDate, endDate }) => {
         <table id="table-attendance-report">
           <thead>
             <tr>
-              <th>Laporan Absensi</th>
+              <th>{t("attendanceReport")}</th>
             </tr>
           </thead>
           <tbody>
@@ -185,7 +185,7 @@ export const AttendanceTab = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Tanggal</th>
+              <th>{t("date")}</th>
               <td>
                 {startDate} - {endDate}
               </td>
@@ -196,11 +196,11 @@ export const AttendanceTab = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Tanggal & Waktu</th>
-              <th>Nama Staff</th>
-              <th>Outlet</th>
-              <th>Check In Time</th>
-              <th>Check Out Time</th>
+              <th>{t("date&time")}</th>
+              <th>{t("staffName")}</th>
+              <th>{t("outlet")}</th>
+              <th>{t("checkInTime")}</th>
+              <th>{t("checkOutTime")}</th>
             </tr>
           </thead>
           <tbody>

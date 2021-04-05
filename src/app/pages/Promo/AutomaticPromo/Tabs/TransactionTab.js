@@ -29,7 +29,8 @@ const TransactionTab = ({
   handlePromoDays,
   handlePromoHour,
   handleSelectOutlet,
-  mode
+  mode,
+  t
 }) => {
   return (
     <Row>
@@ -43,7 +44,7 @@ const TransactionTab = ({
 
               <div className="headerEnd">
                 <Link to="/promo/automatic-promo">
-                  <Button variant="outline-secondary">Cancel</Button>
+                  <Button variant="outline-secondary">{t("cancel")}</Button>
                 </Link>
                 <Button
                   variant="primary"
@@ -53,7 +54,7 @@ const TransactionTab = ({
                   {loading ? (
                     <Spinner animation="border" variant="light" size="sm" />
                   ) : (
-                    "Save"
+                    `${t("save")}`
                   )}
                 </Button>
               </div>
@@ -64,7 +65,7 @@ const TransactionTab = ({
             <Row className="lineBottom" style={{ padding: "2rem" }}>
               <Col>
                 <Form.Group>
-                  <Form.Label>Promo Name:</Form.Label>
+                  <Form.Label>{t("promoName")}:</Form.Label>
                   <Form.Control
                     type="text"
                     name="name"
@@ -86,13 +87,13 @@ const TransactionTab = ({
             <Row className="lineBottom" style={{ padding: "2rem" }}>
               <Col>
                 <Row style={{ marginBottom: "1rem" }}>
-                  <h5>Promo Rules</h5>
+                  <h5>{t("promoRules")}</h5>
                 </Row>
 
                 <Row>
                   <Col sm={6}>
                     <Form.Group>
-                      <Form.Label>Minimum Transaction: (in Rupiah)</Form.Label>
+                      <Form.Label>{t("minimumTransaction:(inRupiah)")}</Form.Label>
                       <Form.Control
                         type="number"
                         name="transaction_amount"
@@ -113,7 +114,7 @@ const TransactionTab = ({
 
                   <Col sm={3}>
                     <Form.Group>
-                      <Form.Label>Discount Type:</Form.Label>
+                      <Form.Label>{t("discountType")}:</Form.Label>
                       <Form.Control
                         as="select"
                         name="transaction_type"
@@ -121,8 +122,8 @@ const TransactionTab = ({
                         className={validationPromo("transaction_type")}
                         required
                       >
-                        <option value="percentage">Percentage</option>
-                        <option value="currency">Rupiah</option>
+                        <option value="percentage">{t("percentage")}</option>
+                        <option value="currency">{t("rupiah")}</option>
                       </Form.Control>
                       {formikPromo.touched.transaction_type &&
                       formikPromo.errors.transaction_type ? (
@@ -137,7 +138,7 @@ const TransactionTab = ({
 
                   <Col sm={3}>
                     <Form.Group>
-                      <Form.Label>Discount Rate:</Form.Label>
+                      <Form.Label>{t("discountRate")}:</Form.Label>
                       <Form.Control
                         type="number"
                         name="transaction_value"

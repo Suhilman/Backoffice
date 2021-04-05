@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core";
 import DataTable from "react-data-table-component";
 import { MoreHoriz } from "@material-ui/icons";
-
+import { useTranslation } from "react-i18next";
 import ShowConfirmModal from "../../../components/ConfirmModal";
 import { weekdays } from "../const/weekdays";
 
@@ -23,7 +23,7 @@ export const AutomaticPromoPage = () => {
   const [loading, setLoading] = React.useState(false);
   const [refresh, setRefresh] = React.useState(0);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
-
+  const { t } = useTranslation();
   const [allProducts, setAllProducts] = React.useState([]);
   const [allOutlets, setAllOutlets] = React.useState([]);
   const [automaticPromos, setAutomaticPromos] = React.useState([]);
@@ -166,19 +166,19 @@ export const AutomaticPromoPage = () => {
       width: "50px"
     },
     {
-      name: "Outlet Name",
+      name: `${t("outletName")}`,
       selector: "outlet_name",
       sortable: true
     },
     {
-      name: "Name",
+      name: `${t("name")}`,
       sortable: true,
       cell: (rows) => {
         return <div>{rows.name}</div>;
       }
     },
     {
-      name: "Active Date",
+      name: `${t("activeDate")}`,
       cell: (rows) => {
         return (
           <div style={{ padding: "5px 0" }}>
@@ -190,13 +190,13 @@ export const AutomaticPromoPage = () => {
       }
     },
     {
-      name: "Active Days",
+      name: `${t("activeDays")}`,
       cell: (rows) => {
         return <div>{rows.days}</div>;
       }
     },
     {
-      name: "Active Hours",
+      name: `${t("activeHour")}`,
       sortable: true,
       cell: (rows) => {
         return (
@@ -209,7 +209,7 @@ export const AutomaticPromoPage = () => {
       }
     },
     {
-      name: "Promo Status",
+      name: `${t("promoStatus")}`,
       cell: (rows) => {
         return (
           <FormControl component="fieldset">
@@ -231,7 +231,7 @@ export const AutomaticPromoPage = () => {
       }
     },
     {
-      name: "Actions",
+      name: `${t("actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -266,10 +266,10 @@ export const AutomaticPromoPage = () => {
                   }
                 }}
               >
-                <Dropdown.Item as="button">Edit</Dropdown.Item>
+                <Dropdown.Item as="button">{t("edit")}</Dropdown.Item>
               </Link>
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                Delete
+                {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -283,8 +283,8 @@ export const AutomaticPromoPage = () => {
       <ShowConfirmModal
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
-        title={`Delete Promo - ${currPromo.name}`}
-        body={"Are you sure want to delete?"}
+        title={`${t("deleteAutomaticPromo")} - ${currPromo.name}`}
+        body={t("areYouSureWantToDelete?")}
         loading={loading}
         buttonColor="danger"
         handleClick={handleDeletePromo}
@@ -296,11 +296,11 @@ export const AutomaticPromoPage = () => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Automatic Promo</h3>
+                <h3>{t("automaticPromo")}</h3>
               </div>
               <div className="headerEnd">
               <Link to={{ pathname: "/promo"}}>
-                  <Button variant="outline-secondary">Back to Main View</Button>
+                  <Button variant="outline-secondary">{t("backToMainView")}</Button>
                 </Link>
                 <Link
                   to={{
@@ -309,7 +309,7 @@ export const AutomaticPromoPage = () => {
                   }}
                 >
                   <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
-                    Add New Automatic Promo
+                  {t("addNewAutomaticPromo")}
                   </Button>
                 </Link>
               </div>

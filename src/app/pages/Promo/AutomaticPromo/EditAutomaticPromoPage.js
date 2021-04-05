@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import dayjs from "dayjs";
 import imageCompression from 'browser-image-compression';
-
+import { useTranslation } from "react-i18next";
 import QuantityTab from "./Tabs/QuantityTab";
 import TransactionTab from "./Tabs/TransactionTab";
 import XyTab from "./Tabs/XyTab";
@@ -14,7 +14,7 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
   const { promoId } = match.params;
   const { promoData, allOutlets, allProducts } = location.state;
   const history = useHistory();
-
+  const { t } = useTranslation();
   const [photo, setPhoto] = React.useState(promoData.image || "");
   const [photoPreview, setPhotoPreview] = React.useState(promoData.image || "");
   const [alert, setAlert] = React.useState("");
@@ -542,7 +542,8 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
     <>
       {promoData.type === "quantity" ? (
         <QuantityTab
-          title={`Edit Automatic Promo - ${promoData.name}`}
+          t={t}
+          title={`${t("editAutomaticPromo")} - ${promoData.name}`}
           formikPromo={formikPromoQuantity}
           validationPromo={validationPromoQuantity}
           allProducts={allProducts}
@@ -570,7 +571,8 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
 
       {promoData.type === "transaction" ? (
         <TransactionTab
-          title={`Edit Automatic Promo - ${promoData.name}`}
+          t={t}
+          title={`${t("editAutomaticPromo")} - ${promoData.name}`}
           formikPromo={formikPromoTransaction}
           validationPromo={validationPromoTransaction}
           allProducts={allProducts}
@@ -598,7 +600,7 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
 
       {promoData.type === "xy" ? (
         <XyTab
-          title={`Edit Automatic Promo - ${promoData.name}`}
+          title={`${t("editAutomaticPromo")} - ${promoData.name}`}
           formikPromo={formikPromoXY}
           validationPromo={validationPromoXY}
           allProducts={allProducts}

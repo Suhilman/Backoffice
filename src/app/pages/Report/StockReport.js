@@ -3,14 +3,14 @@ import axios from "axios";
 import { Row, Col, ListGroup } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import dayjs from "dayjs";
-
+import { useTranslation } from "react-i18next";
 // import { Search } from "@material-ui/icons";
 // import useDebounce from "../../hooks/useDebounce";
 
 const StockReport = ({ selectedOutlet, startDate, endDate }) => {
   // const [alert, setAlert] = React.useState("");
   // const [loading, setLoading] = React.useState(false);
-
+  const { t } = useTranslation();
   const [inventory, setInventory] = React.useState([]);
 
   const getInventory = async (id, start_range, end_range) => {
@@ -63,37 +63,37 @@ const StockReport = ({ selectedOutlet, startDate, endDate }) => {
       width: "50px"
     },
     {
-      name: "Outlet Name",
+      name: `${t("outletName")}`,
       selector: "outlet_name",
       sortable: true
     },
     {
-      name: "Name",
+      name: `${t("name")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: "Starting Stock",
+      name: `${t("startingStock")}`,
       selector: "stock_starting",
       sortable: true
     },
     {
-      name: "Current Stock",
+      name: `${t("currentStock")}`,
       selector: "stock",
       sortable: true
     },
     {
-      name: "Incoming Stock",
+      name: `${t("incomingStock")}`,
       selector: "incoming_stock",
       sortable: true
     },
     {
-      name: "Outcoming Stock",
+      name: `${t("outcomingStock")}`,
       selector: "outcoming_stock",
       sortable: true
     },
     {
-      name: "Adjusment",
+      name: `${t("adjusment")}`,
       selector: "adjusment",
       sortable: true
     }
@@ -162,10 +162,10 @@ const StockReport = ({ selectedOutlet, startDate, endDate }) => {
         <ListGroup style={{ padding: "1rem", marginLeft: "1rem" }}>
           <ListGroup.Item>
             <Row>
-              <Col style={{ fontWeight: "700" }}>Batch</Col>
-              <Col style={{ fontWeight: "700" }}>Stock</Col>
-              <Col style={{ fontWeight: "700" }}>Unit</Col>
-              <Col style={{ fontWeight: "700" }}>Expired Date</Col>
+              <Col style={{ fontWeight: "700" }}>{t("batch")}</Col>
+              <Col style={{ fontWeight: "700" }}>{t("stock")}</Col>
+              <Col style={{ fontWeight: "700" }}>{t("unit")}</Col>
+              <Col style={{ fontWeight: "700" }}>{t("expiredDate")}</Col>
             </Row>
           </ListGroup.Item>
           {stockData.length ? (
@@ -200,7 +200,7 @@ const StockReport = ({ selectedOutlet, startDate, endDate }) => {
         <table id="table-stock">
           <thead>
             <tr>
-              <th>Laporan Stok Barang</th>
+              <th>{t("goodsStockReport")}</th>
             </tr>
           </thead>
           <tbody>
@@ -208,7 +208,7 @@ const StockReport = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Outlet</th>
+              <th>{t("outlet")}</th>
               <td>
                 {selectedOutlet.id === " " ||
                 selectedOutlet.id === null ||
@@ -223,7 +223,7 @@ const StockReport = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Tanggal</th>
+              <th>{t("date")}</th>
               <td>{`${startDate} - ${endDate}`}</td>
             </tr>
           </thead>
@@ -255,7 +255,7 @@ const StockReport = ({ selectedOutlet, startDate, endDate }) => {
               })
             ) : (
               <tr>
-                <td>Data Not Found</td>
+                <td>{t("dataNotFound")}</td>
               </tr>
             )}
           </tbody>

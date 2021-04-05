@@ -14,7 +14,8 @@ const SpecialPromoModal = ({
   validationPromo,
   allOutlets,
   allProducts,
-  selectedProducts
+  selectedProducts,
+  t
 }) => {
   const listSelected = selectedProducts.map((item) => item.id);
   listSelected.push(formikPromo.values.product_id);
@@ -34,7 +35,7 @@ const SpecialPromoModal = ({
           {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
           <Form.Group>
-            <Form.Label>Outlet:</Form.Label>
+            <Form.Label>{t("outlet")}:</Form.Label>
             <Form.Control
               as="select"
               name="outlet_id"
@@ -43,7 +44,7 @@ const SpecialPromoModal = ({
               required
             >
               <option value="" disabled hidden>
-                Choose Outlet
+              {t("chooseOutlet")}
               </option>
               {allOutlets.map((item) => {
                 return (
@@ -63,7 +64,7 @@ const SpecialPromoModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Product:</Form.Label>
+            <Form.Label>{t("product")}:</Form.Label>
             <Form.Control
               as="select"
               name="product_id"
@@ -89,7 +90,7 @@ const SpecialPromoModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Point:</Form.Label>
+            <Form.Label>{t("point")}:</Form.Label>
             <Form.Control
               type="number"
               name="point"
@@ -107,13 +108,13 @@ const SpecialPromoModal = ({
 
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>
-            Cancel
+          {t("cancel")}
           </Button>
           <Button variant="primary" type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save Changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         </Modal.Footer>

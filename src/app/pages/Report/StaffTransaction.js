@@ -4,8 +4,9 @@ import axios from "axios";
 import rupiahFormat from "rupiah-format";
 import "../style.css";
 import { Table } from "react-bootstrap";
-
+import { useTranslation } from "react-i18next";
 const StaffTransaction = ({ selectedOutlet, startDate, endDate }) => {
+  const { t } = useTranslation();
   const [StaffTransaction, setStaffTransaction] = useState([]);
   const getStaffTransaction = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -96,7 +97,7 @@ const StaffTransaction = ({ selectedOutlet, startDate, endDate }) => {
         <table id="table-staff-transaction">
           <thead>
             <tr>
-              <th>Laporan Penjualan Staff</th>
+              <th>{t("staffSalesReports")}</th>
             </tr>
           </thead>
           <tbody>
@@ -104,7 +105,7 @@ const StaffTransaction = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Outlet</th>
+              <th>{t("outlet")}</th>
               <td>
                 {selectedOutlet.id === " " ||
                 selectedOutlet.id === null ||
@@ -119,7 +120,7 @@ const StaffTransaction = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Tanggal</th>
+              <th>{t("date")}</th>
               <td>{`${startDate} - ${endDate}`}</td>
             </tr>
           </thead>
@@ -128,10 +129,10 @@ const StaffTransaction = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Nama Staff</th>
-              <th>Jumlah Rekap Kas</th>
-              <th>Jumlah Transaksi</th>
-              <th>Total Penjualan</th>
+              <th>{t("staffName")}</th>
+              <th>{t("totalCashRecap")}</th>
+              <th>{t("numberOfTransaction")}</th>
+              <th>{t("totalSales")}</th>
             </tr>
           </thead>
           <tbody>
@@ -148,11 +149,11 @@ const StaffTransaction = ({ selectedOutlet, startDate, endDate }) => {
               })
             ) : (
               <tr>
-                <td>Data Not Found</td>
+                <td>{t("dataNotFound")}</td>
               </tr>
             )}
             <tr>
-              <th>Grand Total</th>
+              <th>{t("grandTotal")}</th>
               <th></th>
               <th></th>
               <th>{sumReports(StaffTransaction, "total_transaksi")} </th>
@@ -163,10 +164,10 @@ const StaffTransaction = ({ selectedOutlet, startDate, endDate }) => {
       <Table>
         <thead>
           <tr>
-            <th>Staff Name</th>
-            <th>Total Cash Recap</th>
-            <th>Total Transaction</th>
-            <th>Total Sales</th>
+            <th>{t("staffName")}</th>
+            <th>{t("totalCashRecap")}</th>
+            <th>{t("totalTransaction")}</th>
+            <th>{t("totalSales")}</th>
           </tr>
         </thead>
         <tbody>
@@ -183,11 +184,11 @@ const StaffTransaction = ({ selectedOutlet, startDate, endDate }) => {
             })
           ) : (
             <tr>
-              <td>Data Not Found</td>
+              <td>{t("dataNotFound")}</td>
             </tr>
           )}
           <tr>
-            <th>Grand Total</th>
+            <th>{t("grandTotal")}</th>
             <th></th>
             <th></th>
             <th>

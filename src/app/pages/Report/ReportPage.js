@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 import {
   Dropdown,
   Row,
@@ -52,109 +53,109 @@ export const ReportPage = () => {
   const [endDate, setEndDate] = React.useState(dayjs().format("YYYY-MM-DD"));
   const [stateCustom, setStateCustom] = React.useState(false);
   const [status, setStatus] = React.useState("");
-
+  const { t } = useTranslation();
   const tabData = [
     {
       no: 1,
-      title: "Sales Summary",
+      title: `${t("salesSummary")}`,
       table: "table-summary",
       filename: `transaksi-penjualan-produk_${startDate}-${endDate}`,
       Component: SalesSummaryTab
     },
     {
       no: 2,
-      title: "Payment Method",
+      title: `${t("paymentMethod")}`,
       table: "table-payment",
       filename: `payment-method_${startDate}-${endDate}`,
       Component: PaymentMethodTab
     },
     {
       no: 3,
-      title: "Sales Type",
+      title: `${t("salesType")}`,
       table: "table-sales",
       filename: `sales-type_${startDate}-${endDate}`,
       Component: SalesTypeTab
     },
     {
       no: 4,
-      title: "Category Sales",
+      title: `${t("categorySales")}`,
       table: "table-category",
       filename: `table-category_${startDate}-${endDate}`,
       Component: CategorySalesTab
     },
     {
       no: 5,
-      title: "Transaction History",
+      title: `${t("transactionHistory")}`,
       table: "table-history-transaction",
       filename: `riwayat-transaksi_${startDate}-${endDate}`,
       Component: TransactionHistoryTab
     },
     {
       no: 6,
-      title: "Attendance",
+      title: `${t("attendance")}`,
       table: "table-attendance-report",
       filename: `laporan-absensi_${startDate}-${endDate}`,
       Component: AttendanceTab
     },
     {
       no: 7,
-      title: "Discount Sales",
+      title: `${t("discountSales")}`,
       table: "table-discount",
       filename: `laporan-diskon_${startDate}-${endDate}`,
       Component: DiscountSalesTab
     },
     {
       no: 8,
-      title: "Recap",
+      title: `${t("recap")}`,
       table: "table-recap",
       filename: `laporan-rekap_${startDate}-${endDate}`,
       Component: RecapTab
     },
     {
       no: 9,
-      title: "Sales Per Product",
+      title: `${t("salesPerProduct")}`,
       table: "table-sales-per-product",
       filename: `laporan-penjualan-per-produk_${startDate}-${endDate}`,
       Component: SalesPerProductTab
     },
     {
       no: 10,
-      title: "Cost of Good Sold",
+      title: `${t("costOfGoldSold")}`,
       table: "table-cogs",
       filename: `laporan-COGS_${startDate}-${endDate}`,
       Component: COGSReport
     },
     {
       no: 11,
-      title: "Profit Calculation",
+      title: `${t("profitCalculation")}`,
       table: "table-profit",
       filename: `laporan-perhitunga-laba_${startDate}-${endDate}`,
       Component: ProfitReport
     },
     {
       no: 12,
-      title: "Staff Transaction",
+      title: `${t("staffTransaction")}`,
       table: "table-staff-transaction",
       filename: `laporan-penjualan-staff_${startDate}-${endDate}`,
       Component: StaffTransaction
     },
     {
       no: 13,
-      title: "Void Transaction",
+      title: `${t("voidTransaction")}`,
       table: "table-void",
       filename: `laporan-transaksi-void/refund_${startDate}-${endDate}`,
       Component: VoidTransaction
     },
     {
       no: 14,
-      title: "Sales Per Hour",
+      title: `${t("salesPerHour")}`,
       table: "table-sales-per-hour",
       filename: `laporan-transaksi-penjualan-per-jam_${startDate}-${endDate}`,
       Component: SalesPerHour
     },
     {
       no: 15,
-      title: "Stock Report",
+      title: `${t("stockReport")}`,
       table: "table-stock",
       filename: `laporan-stock-barang_${startDate}-${endDate}`,
       Component: StockReport
@@ -282,7 +283,7 @@ export const ReportPage = () => {
               style={{ marginBottom: "1rem" }}
             >
               <div className="headerStart">
-                <h3 style={{ margin: "0" }}>Report</h3>
+                <h3 style={{ margin: "0" }}>{t("report")}</h3>
               </div>
 
               <div className="headerEnd">
@@ -334,7 +335,7 @@ export const ReportPage = () => {
                           .filename || `laporan_${startDate}-${endDate}`
                       }
                       sheet="transaction-report"
-                      buttonText="Export"
+                      buttonText={t("export")}
                     />
                   ) : (
                     ""
@@ -350,7 +351,7 @@ export const ReportPage = () => {
                     <Form.Label
                       style={{ alignSelf: "center", marginBottom: "0" }}
                     >
-                      Location:
+                      {t("location")}:
                     </Form.Label>
                     <Col>
                       <Form.Control
@@ -359,7 +360,7 @@ export const ReportPage = () => {
                         value={selectedOutlet.id}
                         onChange={handleSelectOutlet}
                       >
-                        <option value="">All</option>
+                        <option value="">{t("all")}</option>
                         {allOutlets.map((item) => {
                           return (
                             <option key={item.id} value={item.id}>
@@ -377,7 +378,7 @@ export const ReportPage = () => {
                     <Form.Label
                       style={{ alignSelf: "center", marginBottom: "0" }}
                     >
-                      Date:
+                      {t("date")}:
                     </Form.Label>
                     <Col>
                       <InputGroup>
@@ -410,7 +411,7 @@ export const ReportPage = () => {
                           <Form.Label
                             style={{ alignSelf: "center", marginBottom: "0" }}
                           >
-                            Status:
+                            {t("status")}:
                           </Form.Label>
                           <Col>
                             <Form.Control
@@ -420,8 +421,8 @@ export const ReportPage = () => {
                               onChange={handleSelectStatus}
                               onBlur={handleSelectStatus}
                             >
-                              <option value={""}>All Status</option>
-                              {["New", "Done", "Refund", "Closed"].map(
+                              <option value={""}>{t("dashboard")}</option>
+                              {[`${t("new")}`, `${t("done")}`, `${t("refund")}`, `${t("closed")}`].map(
                                 (item, index) => {
                                   return (
                                     <option
@@ -447,7 +448,7 @@ export const ReportPage = () => {
                           <Form.Label
                             style={{ alignSelf: "center", marginBottom: "0" }}
                           >
-                            Time :
+                            {t("time")} :
                           </Form.Label>
                           <Col>
                             <InputGroup>

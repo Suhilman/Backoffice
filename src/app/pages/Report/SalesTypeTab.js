@@ -3,13 +3,13 @@ import axios from "axios";
 import dayjs from "dayjs";
 import rupiahFormat from "rupiah-format";
 import { Table } from "react-bootstrap";
-
+import { useTranslation } from "react-i18next";
 import "../style.css";
 
 export const SalesTypeTab = ({ selectedOutlet, startDate, endDate }) => {
   const [allSalesTypes, setAllSalesTypes] = React.useState([]);
   const [allTypes, setAllTypes] = React.useState([]);
-
+  const { t } = useTranslation();
   const getTypes = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
@@ -139,9 +139,9 @@ export const SalesTypeTab = ({ selectedOutlet, startDate, endDate }) => {
         <thead>
           <tr>
             <th></th>
-            <th>Type</th>
-            <th>Number of Transaction</th>
-            <th>Total Collected</th>
+            <th>{t("type")}</th>
+            <th>{t("numberOfTransaction")}</th>
+            <th>{t("totalCollected")}</th>
           </tr>
         </thead>
         <tbody>

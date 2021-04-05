@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import dayjs from "dayjs";
 import imageCompression from 'browser-image-compression';
 import { Link } from "react-router-dom";
-
+import { useTranslation } from "react-i18next";
 import { Row, Col, Button, Dropdown } from "react-bootstrap";
 import {
   Switch,
@@ -40,7 +40,7 @@ export const VoucherPromoPage = () => {
 
   const [voucherPromos, setVoucherPromos] = React.useState([]);
   const [allOutlets, setAllOutlets] = React.useState([]);
-
+  const { t } = useTranslation();
   const initialValuePromo = {
     id: "",
     outlet_id: "",
@@ -372,17 +372,17 @@ export const VoucherPromoPage = () => {
       width: "50px"
     },
     {
-      name: "Outlet Name",
+      name: `${t("outletName")}`,
       selector: "outlet_name",
       sortable: true
     },
     {
-      name: "Name",
+      name: `${t("name")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: "Voucher Date",
+      name: `${t("voucherDate")}`,
       cell: (rows) => {
         return (
           <div style={{ padding: "5px 0" }}>
@@ -394,17 +394,17 @@ export const VoucherPromoPage = () => {
       }
     },
     {
-      name: "Voucher Code",
+      name: `${t("voucherCode")}`,
       selector: "code",
       sortable: true
     },
     {
-      name: "Voucher Quota",
+      name: `${t("voucherQuota")}`,
       selector: "quota",
       sortable: true
     },
     {
-      name: "Promo Status",
+      name: `${t("promoStatus")}`,
       cell: (rows) => {
         return (
           <FormControl component="fieldset">
@@ -426,7 +426,7 @@ export const VoucherPromoPage = () => {
       }
     },
     {
-      name: "Actions",
+      name: `${t("actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -436,10 +436,10 @@ export const VoucherPromoPage = () => {
 
             <Dropdown.Menu>
               <Dropdown.Item as="button" onClick={() => showEditModal(rows)}>
-                Edit
+              {t("edit")}
               </Dropdown.Item>
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                Delete
+              {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -451,9 +451,10 @@ export const VoucherPromoPage = () => {
   return (
     <>
       <VoucherPromoModal
+        t={t}
         stateModal={stateAddModal}
         cancelModal={closeAddModal}
-        title="Add New Voucher Promo"
+        title={t("addNewVoucherPromo")}
         loading={loading}
         alert={alert}
         formikPromo={formikPromo}
@@ -470,9 +471,10 @@ export const VoucherPromoPage = () => {
       />
 
       <VoucherPromoModal
+        t={t}
         stateModal={stateEditModal}
         cancelModal={closeEditModal}
-        title={`Edit Promo - ${formikEditPromo.getFieldProps("name").value}`}
+        title={`${t("editPromo")} - ${formikEditPromo.getFieldProps("name").value}`}
         loading={loading}
         alert={alert}
         formikPromo={formikEditPromo}
@@ -491,8 +493,8 @@ export const VoucherPromoPage = () => {
       <ShowConfirmModal
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
-        title={`Delete Promo - ${formikPromo.getFieldProps("name").value}`}
-        body={"Are you sure want to delete?"}
+        title={`${t("deletePromo")} - ${formikPromo.getFieldProps("name").value}`}
+        body={t("areYouSureWantToDelete?")}
         loading={loading}
         buttonColor="danger"
         handleClick={handleDeletePromo}
@@ -503,18 +505,18 @@ export const VoucherPromoPage = () => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Voucher Promo</h3>
+                <h3>{t("voucherPromo")}</h3>
               </div>
               <div className="headerEnd">
                 <Link to={{ pathname: "/promo"}}>
-                  <Button variant="outline-secondary">Back to Main View</Button>
+                  <Button variant="outline-secondary">{t("backToMainView")}</Button>
                 </Link>
                 <Button
                   variant="primary"
                   style={{ marginLeft: "0.5rem" }}
                   onClick={showAddModal}
                 >
-                  Add New Voucher Promo
+                  {t("addNewVoucherPromo")}
                 </Button>
               </div>
             </div>

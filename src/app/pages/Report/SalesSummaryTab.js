@@ -3,7 +3,7 @@ import axios from "axios";
 import { Table } from "react-bootstrap";
 import rupiahFormat from "rupiah-format";
 import dayjs from "dayjs";
-
+import { useTranslation } from "react-i18next";
 import "../style.css";
 
 export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
@@ -20,6 +20,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
       totalSales: 0
     }
   ]);
+  const { t } = useTranslation();
 
   const getTransactions = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -58,7 +59,6 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
     const completedTransactions = allSales.filter(
       (item) => item.Payment?.status === "done"
     );
-
     const transItems = [];
     const prodIdList = [];
     for (const item of completedTransactions) {
@@ -217,39 +217,39 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
   const summaryData = () => {
     const data = [
       {
-        key: "(Income)",
+        key: `(${t("income")})`,
         value: 0
       },
       {
-        key: "Gross Sales",
+        key: `${t("grossSales")}`,
         value: 0
       },
       {
-        key: "(Discount)",
+        key: `(${t("discount")})`,
         value: 0
       },
       {
-        key: "(Void)",
+        key: `(${t("void")})`,
         value: 0
       },
       {
-        key: "Nett Sales",
+        key: `${t("nettSales")}`,
         value: 0
       },
       {
-        key: "(Services)",
+        key: `(${t("services")})`,
         value: 0
       },
       {
-        key: "(Tax)",
+        key: `(${t("tax")})`,
         value: 0
       },
       {
-        key: "(Rounding)",
+        key: `(${t("rounding")})`,
         value: 0
       },
       {
-        key: "Total Collected",
+        key: `${t("totalCollected")}`,
         value: 0
       }
     ];
@@ -358,7 +358,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
         <table id="table-summary">
           <thead>
             <tr>
-              <th>Laporan Penjualan Produk</th>
+              <th>{t("productSalesReport")}</th>
             </tr>
           </thead>
           <tbody>
@@ -366,13 +366,13 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Outlet</th>
+              <th>{t("outlet")}</th>
               <td>{selectedOutlet?.name}</td>
             </tr>
           </thead>
           <thead>
             <tr>
-              <th>Tanggal</th>
+              <th>{t("date")}</th>
               <td>{`${startDate} - ${endDate}`}</td>
             </tr>
           </thead>
@@ -381,13 +381,13 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Nama Produk</th>
-              <th>Nama Opsi Tambahan</th>
-              <th>Kategori</th>
-              <th>SKU</th>
-              <th>Terjual</th>
+              <th>{t("productName")}</th>
+              <th>{t("additionalOptionNames")}</th>
+              <th>{t("category")}</th>
+              <th>{t("sku")}</th>
+              <th>{t("sold")}</th>
               {/* <th>Penjualan Kotor</th> */}
-              <th>Total</th>
+              <th>{t("total")}</th>
             </tr>
           </thead>
           <tbody>
@@ -405,7 +405,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
               );
             })}
             <tr>
-              <th>Subtotal</th>
+              <th>{t("subtotal")}</th>
               <th></th>
               <th></th>
               <th></th>
@@ -414,7 +414,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
               <th>{sumReports(reports, "totalSales")} </th>
             </tr>
             <tr>
-              <th>Discount Given</th>
+              <th>{t("discountGiven")}</th>
               <th></th>
               <th></th>
               <th></th>
@@ -423,7 +423,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
               <th>{totalDiscount}</th>
             </tr>
             <tr>
-              <th>Service</th>
+              <th>{t("service")}</th>
               <th></th>
               <th></th>
               <th></th>
@@ -432,7 +432,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
               <th>{totalService}</th>
             </tr>
             <tr>
-              <th>Grand Total</th>
+              <th>{t("grandTotal")}</th>
               <th></th>
               <th></th>
               <th></th>

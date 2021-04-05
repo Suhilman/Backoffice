@@ -3,12 +3,12 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { Table } from "react-bootstrap";
 import rupiahFormat from "rupiah-format";
-
+import { useTranslation } from "react-i18next";
 import "../style.css";
 
 export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate }) => {
   const [allPromoSales, setAllPromoSales] = React.useState([]);
-
+  const { t } = useTranslation();
   const getDiscountSales = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
     const outlet_id = id ? `?outlet_id=${id}&` : "?";
@@ -207,7 +207,7 @@ export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate }) => {
         <table id="table-discount">
           <thead>
             <tr>
-              <th>Laporan Diskon</th>
+              <th>{t("discountReport")}</th>
             </tr>
           </thead>
           <tbody>
@@ -215,7 +215,7 @@ export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Outlet</th>
+              <th>{t("outlet")}</th>
               <td>
                 {selectedOutlet.id === " " ||
                 selectedOutlet.id === null ||
@@ -230,7 +230,7 @@ export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Tanggal</th>
+              <th>{t("date")}</th>
               <td>{`${startDate} - ${endDate}`}</td>
             </tr>
           </thead>
@@ -239,9 +239,9 @@ export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Nama Diskon</th>
-              <th>Penggunaan</th>
-              <th>Total Penggunaan</th>
+              <th>{t("discountName")}</th>
+              <th>{t("usage")}</th>
+              <th>{t("totalUsage")}</th>
             </tr>
           </thead>
           <tbody>
@@ -259,7 +259,7 @@ export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate }) => {
               })
             ) : (
               <tr>
-                <td>Data Not Found</td>
+                <td>{t("dataNotFound")}</td>
               </tr>
             )}
             <tr>
@@ -274,9 +274,9 @@ export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate }) => {
         <thead>
           <tr>
             <th></th>
-            <th>Discount Name</th>
-            <th>Total Usage</th>
-            <th>Total Collected</th>
+            <th>{t("discountName")}</th>
+            <th>{t("totalUsage")}</th>
+            <th>{t("totalCollected")}</th>
           </tr>
         </thead>
         <tbody>
@@ -295,12 +295,12 @@ export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate }) => {
             })
           ) : (
             <tr>
-              <td>Data Not Found</td>
+              <td>{t("dataNotFound")}</td>
             </tr>
           )}
           <tr>
             <td></td>
-            <td>Grand Total</td>
+            <td>{t("grandTotal")}</td>
             <td>{sumReports(promoSalesData(), "usage")}</td>
             <td>
               {rupiahFormat.convert(sumReports(promoSalesData(), "total"))}{" "}

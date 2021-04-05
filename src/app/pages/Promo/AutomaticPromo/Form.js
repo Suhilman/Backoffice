@@ -6,7 +6,7 @@ import { OutlinedInput } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core";
 import { CalendarToday } from "@material-ui/icons";
 import Select from "react-select";
-
+import { useTranslation } from "react-i18next";
 import "../../style.css";
 
 const useStyles = makeStyles({
@@ -36,7 +36,7 @@ const FormTemplate = ({
   mode
 }) => {
   const classes = useStyles();
-
+  const { t } = useTranslation();
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
     maxSize: 3 * 1000 * 1000,
@@ -65,13 +65,13 @@ const FormTemplate = ({
       <Row className="lineBottom" style={{ padding: "2rem" }}>
         <Col>
           <Row style={{ marginBottom: "1rem" }}>
-            <h5>Promo Time</h5>
+            <h5>{t("promoTime")}</h5>
           </Row>
 
           <Row>
             <Col sm={4}>
               <Form.Group>
-                <Form.Label>Promo Date - Start:</Form.Label>
+                <Form.Label>{t("promoDate-Start")}:</Form.Label>
                 <InputGroup>
                   <DatePicker
                     name="promo_date_start"
@@ -98,7 +98,7 @@ const FormTemplate = ({
               </Form.Group>
 
               <Form.Group>
-                <Form.Label>Promo Date - End:</Form.Label>
+                <Form.Label>{t("promoDate-End")}:</Form.Label>
                 <InputGroup>
                   <DatePicker
                     name="promo_date_end"
@@ -129,7 +129,7 @@ const FormTemplate = ({
               <Form.Group>
                 <Row>
                   <Col>
-                    <Form.Label>Promo Days:</Form.Label>
+                    <Form.Label>{t("promoDays")}:</Form.Label>
                   </Col>
                 </Row>
 
@@ -138,7 +138,7 @@ const FormTemplate = ({
                     <Form.Check
                       type="checkbox"
                       name="monday"
-                      label="Monday"
+                      label={t("monday")}
                       disabled={weekdays.everyday.checked}
                       checked={weekdays.monday.checked}
                       onChange={handlePromoDays}
@@ -146,7 +146,7 @@ const FormTemplate = ({
                     <Form.Check
                       type="checkbox"
                       name="tuesday"
-                      label="Tuesday"
+                      label={t("tuesday")}
                       disabled={weekdays.everyday.checked}
                       checked={weekdays.tuesday.checked}
                       onChange={handlePromoDays}
@@ -154,7 +154,7 @@ const FormTemplate = ({
                     <Form.Check
                       type="checkbox"
                       name="wednesday"
-                      label="Wednesday"
+                      label={t("wednesday")}
                       disabled={weekdays.everyday.checked}
                       checked={weekdays.wednesday.checked}
                       onChange={handlePromoDays}
@@ -165,7 +165,7 @@ const FormTemplate = ({
                     <Form.Check
                       type="checkbox"
                       name="thursday"
-                      label="Thursday"
+                      label={t("thuesday")}
                       disabled={weekdays.everyday.checked}
                       checked={weekdays.thursday.checked}
                       onChange={handlePromoDays}
@@ -173,7 +173,7 @@ const FormTemplate = ({
                     <Form.Check
                       type="checkbox"
                       name="friday"
-                      label="Friday"
+                      label={t("friday")}
                       disabled={weekdays.everyday.checked}
                       checked={weekdays.friday.checked}
                       onChange={handlePromoDays}
@@ -181,7 +181,7 @@ const FormTemplate = ({
                     <Form.Check
                       type="checkbox"
                       name="saturday"
-                      label="Saturday"
+                      label={t("saturday")}
                       disabled={weekdays.everyday.checked}
                       checked={weekdays.saturday.checked}
                       onChange={handlePromoDays}
@@ -192,7 +192,7 @@ const FormTemplate = ({
                     <Form.Check
                       type="checkbox"
                       name="sunday"
-                      label="Sunday"
+                      label={t("sunday")}
                       disabled={weekdays.everyday.checked}
                       checked={weekdays.sunday.checked}
                       onChange={handlePromoDays}
@@ -200,7 +200,7 @@ const FormTemplate = ({
                     <Form.Check
                       type="checkbox"
                       name="everyday"
-                      label="Everyday"
+                      label={t("everyday")}
                       checked={weekdays.everyday.checked}
                       onChange={handlePromoDays}
                     />
@@ -219,7 +219,7 @@ const FormTemplate = ({
 
             <Col sm={4}>
               <Form.Group>
-                <Form.Label>Promo Hour - Start:</Form.Label>
+                <Form.Label>{t("promoHour-Start")}:</Form.Label>
                 <div>
                   <OutlinedInput
                     type="time"
@@ -242,7 +242,7 @@ const FormTemplate = ({
               </Form.Group>
 
               <Form.Group>
-                <Form.Label>Promo Hour - End</Form.Label>
+                <Form.Label>{t("promoHour-End")}</Form.Label>
                 <div>
                   <OutlinedInput
                     type="time"
@@ -271,14 +271,14 @@ const FormTemplate = ({
       <Row style={{ padding: "2rem" }}>
         <Col>
           <Row style={{ marginBottom: "1rem" }}>
-            <h5>Promo Location & Banner</h5>
+            <h5>{t("promoLocation&Banner")}</h5>
           </Row>
 
           <Row>
             <Col sm={4}>
               {mode === "edit" ? (
                 <Form.Group>
-                  <Form.Label>Location:</Form.Label>
+                  <Form.Label>{t("location")}:</Form.Label>
                   <Form.Control
                     as="select"
                     name="outlet_id"
@@ -287,7 +287,7 @@ const FormTemplate = ({
                     required
                   >
                     <option value="" disabled hidden>
-                      Choose an Outlet
+                    {t("chooseAnOutlet")}
                     </option>
                     {allOutlets.map((item, index) => {
                       return (
@@ -308,7 +308,7 @@ const FormTemplate = ({
                 </Form.Group>
               ) : (
                 <Form.Group>
-                  <Form.Label>Location:</Form.Label>
+                  <Form.Label>{t("location")}:</Form.Label>
                   <Select
                     options={optionsOutlet}
                     isMulti
@@ -331,7 +331,7 @@ const FormTemplate = ({
 
             <Col sm={4}>
               <Form.Group>
-                <Form.Label>Promo Banner:</Form.Label>
+                <Form.Label>{t("promoBanner")}:</Form.Label>
                 {alertPhoto ? <Alert variant="danger">{alertPhoto}</Alert> : ""}
                 <div
                   {...getRootProps({
@@ -342,9 +342,9 @@ const FormTemplate = ({
                   {!photoPreview ? (
                     <>
                       <p>
-                        Drag 'n' drop some files here, or click to select files
+                      {t("dragAndDrop")}
                       </p>
-                      <p style={{ color: "gray" }}>File Size Limit: 2 MB</p>
+                      <p style={{ color: "gray" }}>{t("fileSizeLimit")}</p>
                     </>
                   ) : (
                     <>
@@ -372,7 +372,7 @@ const FormTemplate = ({
 
             <Col sm={4}>
               <Form.Group>
-                <Form.Label>Description Type:</Form.Label>
+                <Form.Label>{t("descriptionType")}:</Form.Label>
                 <Form.Control
                   as="select"
                   name="description_type"
@@ -380,8 +380,8 @@ const FormTemplate = ({
                   className={validationPromo("description_type")}
                   required
                 >
-                  <option value="regulation">Regulation</option>
-                  <option value="how_to_use">How to Use</option>
+                  <option value="regulation">{t("regulation")}</option>
+                  <option value="how_to_use">{t("howToUse")}</option>
                 </Form.Control>
                 {formikPromo.touched.description_type &&
                 formikPromo.errors.description_type ? (
@@ -394,7 +394,7 @@ const FormTemplate = ({
               </Form.Group>
 
               <Form.Group>
-                <Form.Label>Description:</Form.Label>
+                <Form.Label>{t("description")}:</Form.Label>
                 <Form.Control
                   as="textarea"
                   name="description"

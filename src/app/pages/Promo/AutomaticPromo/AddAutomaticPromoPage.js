@@ -5,6 +5,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import dayjs from "dayjs";
 import imageCompression from 'browser-image-compression';
+import { useTranslation } from "react-i18next";
 
 import { Tabs, Tab } from "react-bootstrap";
 
@@ -16,7 +17,7 @@ export const AddAutomaticPromoPage = ({ location }) => {
   const [tabs, setTabs] = React.useState("quantity");
   const history = useHistory();
   const { allOutlets, allProducts } = location.state;
-
+  const { t } = useTranslation()
   const [photo, setPhoto] = React.useState("");
   const [photoPreview, setPhotoPreview] = React.useState("");
   const [alert, setAlert] = React.useState("");
@@ -553,9 +554,10 @@ export const AddAutomaticPromoPage = ({ location }) => {
 
   return (
     <Tabs activeKey={tabs} onSelect={handleTabs}>
-      <Tab eventKey="quantity" title="Promo with Minimum Quantity">
+      <Tab eventKey="quantity" title={t("promoWithMinimumQuality")}>
         <QuantityTab
-          title="Add New Automatic Promo"
+          t={t}
+          title={t("addNewAutomaticPromo")}
           formikPromo={formikPromoQuantity}
           validationPromo={validationPromoQuantity}
           allProducts={allProducts}
@@ -580,9 +582,10 @@ export const AddAutomaticPromoPage = ({ location }) => {
         />
       </Tab>
 
-      <Tab eventKey="transaction" title="Promo with Minimum Transaction">
+      <Tab eventKey="transaction" title={t("promoWithMinimumTranasction")}>
         <TransactionTab
-          title="Add New Automatic Promo"
+          t={t}
+          title={t("addNewAutomaticPromo")}
           formikPromo={formikPromoTransaction}
           validationPromo={validationPromoTransaction}
           allProducts={allProducts}
@@ -607,9 +610,10 @@ export const AddAutomaticPromoPage = ({ location }) => {
         />
       </Tab>
 
-      <Tab eventKey="xy" title="Buy X Get Y Promo">
+      <Tab eventKey="xy" title={t("buyXGetYPromo")}>
         <XyTab
-          title="Add New Automatic Promo"
+          t={t}
+          title={t("addNewAutomaticPromo")}
           formikPromo={formikPromoXY}
           validationPromo={validationPromoXY}
           allProducts={allProducts}

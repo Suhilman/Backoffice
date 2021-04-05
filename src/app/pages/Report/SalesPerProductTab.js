@@ -4,8 +4,9 @@ import axios from "axios";
 import rupiahFormat from "rupiah-format";
 import "../style.css";
 import { Table } from "react-bootstrap";
-
+import { useTranslation } from "react-i18next";
 export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
+  const { t } = useTranslation();
   const [salesPerProduct, setSalesPerProduct] = useState([]);
   const getDataSalesPerProduct = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -92,7 +93,7 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
         <table id="table-sales-per-product">
           <thead>
             <tr>
-              <th>Laporan Penjualan Product</th>
+              <th>{t("productSalesReport")}</th>
             </tr>
           </thead>
           <tbody>
@@ -100,7 +101,7 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Outlet</th>
+              <th>{t("outlet")}</th>
               <td>
                 {selectedOutlet.id === " " ||
                 selectedOutlet.id === null ||
@@ -115,7 +116,7 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Tanggal</th>
+              <th>{t("date")}</th>
               <td>{`${startDate} - ${endDate}`}</td>
             </tr>
           </thead>
@@ -124,10 +125,10 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Nama Produk</th>
-              <th>Kategori</th>
-              <th>Jumlah Terjual</th>
-              <th>Total Penjualan</th>
+              <th>{t("productName")}</th>
+              <th>{t("category")}</th>
+              <th>{t("amountSold")}</th>
+              <th>{t("totalSales")}</th>
             </tr>
           </thead>
           <tbody>
@@ -144,11 +145,11 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
               })
             ) : (
               <tr>
-                <td>Data Not Found</td>
+                <td>{t("dataNotFound")}</td>
               </tr>
             )}
             <tr>
-              <th>Grand Total</th>
+              <th>{t("grandTotal")}</th>
               <th></th>
               <th>{sumReports(salesPerProduct, "kuantitas")} </th>
               <th>{sumReports(salesPerProduct, "total_sales")} </th>
@@ -159,10 +160,10 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
       <Table>
         <thead>
           <tr>
-            <th>Product Name</th>
-            <th>Category</th>
-            <th>Sold Quantity</th>
-            <th>Total Sales</th>
+            <th>{t("productName")}</th>
+            <th>{t("category")}</th>
+            <th>{t("soldQuantity")}</th>
+            <th>{t("totalSales")}</th>
           </tr>
         </thead>
         <tbody>
@@ -179,11 +180,11 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
             })
           ) : (
             <tr>
-              <td>Data Not Found</td>
+              <td>{t("dataNotFound")}</td>
             </tr>
           )}
           <tr>
-            <th>Grand Total</th>
+            <th>{t("grandTotal")}</th>
             <th></th>
             <th>{sumReports(salesPerProduct, "kuantitas")} </th>
             <th>

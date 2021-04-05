@@ -25,7 +25,8 @@ const ModalRole = ({
   title,
   formikRole,
   validationRole,
-  accessLists
+  accessLists,
+  t
 }) => {
   return (
     <Modal show={state} onHide={closeModal}>
@@ -37,7 +38,7 @@ const ModalRole = ({
           {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
           <Form.Group>
-            <Form.Label>Role Name:</Form.Label>
+            <Form.Label>{t("roleName")}:</Form.Label>
             <Form.Control
               type="text"
               placeholder="Ex. : Staff"
@@ -53,7 +54,7 @@ const ModalRole = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Privilege:</Form.Label>
+            <Form.Label>{t("privilege")}:</Form.Label>
             {
               console.log(formikRole.getFieldProps("privileges").value)
             }
@@ -144,13 +145,13 @@ const ModalRole = ({
 
         <Modal.Footer>
           <Button variant="secondary" onClick={closeModal}>
-            Close
+          {t("close")}
           </Button>
           <Button type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         </Modal.Footer>

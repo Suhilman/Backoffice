@@ -4,8 +4,9 @@ import axios from "axios";
 import rupiahFormat from "rupiah-format";
 import "../style.css";
 import { Table } from "react-bootstrap";
-
+import { useTranslation } from "react-i18next";
 const ProfitReport = ({ selectedOutlet, startDate, endDate }) => {
+  const { t } = useTranslation();
   const [profitReport, setProfitReport] = useState([]);
   const getProfitReport = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -105,7 +106,7 @@ const ProfitReport = ({ selectedOutlet, startDate, endDate }) => {
         <table id="table-profit">
           <thead>
             <tr>
-              <th>Laporan Perhitungan Laba</th>
+              <th>{t("profitCalculationReport")}</th>
             </tr>
           </thead>
           <tbody>
@@ -113,7 +114,7 @@ const ProfitReport = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Outlet</th>
+              <th>{t("outlet")}</th>
               <td>
                 {selectedOutlet.id === " " ||
                 selectedOutlet.id === null ||
@@ -128,7 +129,7 @@ const ProfitReport = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Tanggal</th>
+              <th>{t("date")}</th>
               <td>{`${startDate} - ${endDate}`}</td>
             </tr>
           </thead>
@@ -137,12 +138,12 @@ const ProfitReport = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Tanggal</th>
-              <th>Penjualan Kotor</th>
-              <th>Total Diskon</th>
-              <th>Pembulatan</th>
-              <th>Laba Kotor</th>
-              <th>% Laba Kotor</th>
+              <th>{t("date")}</th>
+              <th>{t("grossSales")}</th>
+              <th>{t("totalDiscount")}</th>
+              <th>{t("rounding")}</th>
+              <th>{t("grossProfit")}</th>
+              <th>{t("%grossProfit")}</th>
             </tr>
           </thead>
           <tbody>
@@ -163,11 +164,11 @@ const ProfitReport = ({ selectedOutlet, startDate, endDate }) => {
               })
             ) : (
               <tr>
-                <td>Data Not Found</td>
+                <td>{t("dataNotFound")}</td>
               </tr>
             )}
             <tr>
-              <th>Grand Total</th>
+              <th>{t("grandTotal")}</th>
               <th>{sumReports(profitReport, "penjualan_kotor")} </th>
               <th>{sumReports(profitReport, "diskon")} </th>
               <th>{sumReports(profitReport, "pembulatan")} </th>
@@ -180,12 +181,12 @@ const ProfitReport = ({ selectedOutlet, startDate, endDate }) => {
       <Table>
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Gross Sales</th>
-            <th>Discount Total</th>
-            <th>Rounding</th>
-            <th>Gross Profit</th>
-            <th>% Gross Profit</th>
+            <th>{t("date")}</th>
+            <th>{t("grossSales")}</th>
+            <th>{t("discountTotal")}</th>
+            <th>{t("rounding")}</th>
+            <th>{t("grossProfit")}</th>
+            <th>{t("%grossProfit")}</th>
           </tr>
         </thead>
         <tbody>
@@ -206,11 +207,11 @@ const ProfitReport = ({ selectedOutlet, startDate, endDate }) => {
             })
           ) : (
             <tr>
-              <td>Data Not Found</td>
+              <td>{t("dataNotFound")}</td>
             </tr>
           )}
           <tr>
-            <th>Grand Total</th>
+            <th>{t("grandTotal")}</th>
             <th>
               {rupiahFormat.convert(
                 sumReports(profitReport, "penjualan_kotor")

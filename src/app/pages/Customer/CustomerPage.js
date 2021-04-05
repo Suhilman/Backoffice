@@ -4,7 +4,7 @@ import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import imageCompression from 'browser-image-compression';
-
+import { useTranslation } from "react-i18next";
 import { Paper } from "@material-ui/core";
 import { Button, InputGroup, Form, Row, Col, Dropdown } from "react-bootstrap";
 import DataTable from "react-data-table-component";
@@ -31,7 +31,7 @@ export const CustomerPage = () => {
   const [filter, setFilter] = React.useState({
     time: "newest"
   });
-
+  const { t } = useTranslation();
   const [customers, setCustomers] = React.useState([]);
   const [currCustomer, setCurrCustomer] = React.useState({
     id: "",
@@ -207,27 +207,27 @@ export const CustomerPage = () => {
       width: "50px"
     },
     {
-      name: "Name",
+      name: `${t("name")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: "Email",
+      name: `${t("email")}`,
       selector: "email",
       sortable: true
     },
     {
-      name: "Phone Number",
+      name: `${t("phoneNumber")}`,
       selector: "phone_number",
       sortable: true
     },
     {
-      name: "Total Points",
+      name: `${t("totalPoints")}`,
       selector: "points",
       sortable: true
     },
     {
-      name: "Actions",
+      name: `${t("actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -237,10 +237,10 @@ export const CustomerPage = () => {
 
             <Dropdown.Menu>
               <Link to={`/customer/${rows.id}`}>
-                <Dropdown.Item as="button">Customer Detail</Dropdown.Item>
+                <Dropdown.Item as="button">{t("customerDetail")}</Dropdown.Item>
               </Link>
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                Delete Customer
+              {t("deleteCustomer")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -263,9 +263,10 @@ export const CustomerPage = () => {
   return (
     <>
       <CustomerModal
+        t={t}
         stateModal={stateAddModal}
         cancelModal={closeAddModal}
-        title={"Add New Customer"}
+        title={t("addNewCustomer")}
         alert={alert}
         loading={loading}
         formikCustomer={formikCustomer}
@@ -277,8 +278,9 @@ export const CustomerPage = () => {
       />
 
       <ConfirmModal
-        title={`Delete Customer - ${currCustomer.name}`}
-        body="Are you sure want to delete?"
+        t={t}
+        title={`${t("deleteCustomer")} - ${currCustomer.name}`}
+        body={t("areYouSureWantToDelete?")}
         buttonColor="danger"
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
@@ -292,7 +294,7 @@ export const CustomerPage = () => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Customer Management</h3>
+                <h3>{t("customerManagement")}</h3>
               </div>
               <div className="headerEnd">
                 <Button
@@ -300,7 +302,7 @@ export const CustomerPage = () => {
                   style={{ marginLeft: "0.5rem" }}
                   onClick={showAddModal}
                 >
-                  Add Customer
+                  {t("addCustomer")}
                 </Button>
               </div>
             </div>
@@ -315,7 +317,7 @@ export const CustomerPage = () => {
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control
-                      placeholder="Search..."
+                      placeholder={t("search")}
                       value={search}
                       onChange={handleSearch}
                     />
@@ -327,7 +329,7 @@ export const CustomerPage = () => {
                     <Form.Label
                       style={{ alignSelf: "center", marginBottom: "0" }}
                     >
-                      Time:
+                      {t("time")}:
                     </Form.Label>
                     <Col>
                       <Form.Control
@@ -336,8 +338,8 @@ export const CustomerPage = () => {
                         value={filter.time}
                         onChange={handleFilter}
                       >
-                        <option value="newest">Newest</option>
-                        <option value="oldest">Oldest</option>
+                        <option value="newest">{t("newest")}</option>
+                        <option value="oldest">{t("oldest")}</option>
                       </Form.Control>
                     </Col>
                   </Form.Group>

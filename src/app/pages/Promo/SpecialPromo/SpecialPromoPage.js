@@ -3,7 +3,7 @@ import axios from "axios";
 import { useFormik } from "formik";
 import { Link } from "react-router-dom";
 import imageCompression from 'browser-image-compression';
-
+import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import rupiahFormat from "rupiah-format";
 
@@ -38,7 +38,7 @@ export const SpecialPromoPage = () => {
 
   const [specialPromos, setSpecialPromos] = React.useState([]);
   const [allOutlets, setAllOutlets] = React.useState([]);
-
+  const { t } = useTranslation();
   const initialValuePromo = {
     id: "",
     outlet_id: "",
@@ -351,22 +351,22 @@ export const SpecialPromoPage = () => {
       width: "50px"
     },
     {
-      name: "Outlet Name",
+      name: `${t("outletName")}`,
       selector: "outlet_name",
       sortable: true
     },
     {
-      name: "Name",
+      name: `${t("name")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: "Discount Rate",
+      name: `${t("discountRate")}`,
       selector: "value",
       sortable: true
     },
     {
-      name: "Promo Banner",
+      name: `${t("promoBanner")}`,
       cell: (rows) => {
         const API_URL = process.env.REACT_APP_API_URL;
         const linkImage = `${API_URL}${rows.image}`;
@@ -379,14 +379,14 @@ export const SpecialPromoPage = () => {
                 style={{ width: "100px", height: "auto", padding: "0.5rem 0" }}
               />
             ) : (
-              "[No Promo Banner]"
+              `[${t("noPromoBanner")}]`
             )}
           </>
         );
       }
     },
     {
-      name: "Promo Status",
+      name: `${t("promoStatus")}`,
       cell: (rows) => {
         return (
           <FormControl component="fieldset">
@@ -408,7 +408,7 @@ export const SpecialPromoPage = () => {
       }
     },
     {
-      name: "Actions",
+      name: `${t("actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -418,10 +418,10 @@ export const SpecialPromoPage = () => {
 
             <Dropdown.Menu>
               <Dropdown.Item as="button" onClick={() => showEditModal(rows)}>
-                Edit
+              {t("edit")}
               </Dropdown.Item>
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                Delete
+              {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -433,9 +433,10 @@ export const SpecialPromoPage = () => {
   return (
     <>
       <SpecialPromoModal
+        t={t}
         stateModal={stateAddModal}
         cancelModal={closeAddModal}
-        title="Add New Special Promo"
+        title={t("addNewSpecialPromo")}
         loading={loading}
         alert={alert}
         formikPromo={formikPromo}
@@ -448,9 +449,10 @@ export const SpecialPromoPage = () => {
       />
 
       <SpecialPromoModal
+        t={t}
         stateModal={stateEditModal}
         cancelModal={closeEditModal}
-        title={`Edit Promo - ${formikEditPromo.getFieldProps("name").value}`}
+        title={`${t("editPromo")} - ${formikEditPromo.getFieldProps("name").value}`}
         loading={loading}
         alert={alert}
         formikPromo={formikEditPromo}
@@ -465,8 +467,8 @@ export const SpecialPromoPage = () => {
       <ShowConfirmModal
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
-        title={`Delete Promo - ${formikPromo.getFieldProps("name").value}`}
-        body={"Are you sure want to delete?"}
+        title={`${t("deletePromo")} - ${formikPromo.getFieldProps("name").value}`}
+        body={t("areYouSureWantToDelete?")}
         loading={loading}
         buttonColor="danger"
         handleClick={handleDeletePromo}
@@ -477,18 +479,18 @@ export const SpecialPromoPage = () => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Special Promo</h3>
+                <h3>{t("specialPromo")}</h3>
               </div>
               <div className="headerEnd">
                 <Link to={{ pathname: "/promo"}}>
-                  <Button variant="outline-secondary">Back to Main View</Button>
+                  <Button variant="outline-secondary">{t("backToMainView")}</Button>
                 </Link>
                 <Button
                   variant="primary"
                   style={{ marginLeft: "0.5rem" }}
                   onClick={showAddModal}
                 >
-                  Add New Special Promo
+                  {t("addNewSpecialPromo")}
                 </Button>
               </div>
             </div>

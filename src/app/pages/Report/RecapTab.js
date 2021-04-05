@@ -3,11 +3,12 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { Table } from "react-bootstrap";
 import rupiahFormat from "rupiah-format";
-
+import { useTranslation } from "react-i18next";
 import "../style.css";
 
 export const RecapTab = ({ selectedOutlet, startDate, endDate }) => {
   const [allRecaps, setAllRecaps] = React.useState([]);
+  const { t } = useTranslation();
   const [reports, setReports] = React.useState([
     {
       date: "",
@@ -126,7 +127,7 @@ export const RecapTab = ({ selectedOutlet, startDate, endDate }) => {
         <table id="table-recap">
           <thead>
             <tr>
-              <th>Laporan Rekap Kas</th>
+              <th>{t("cashRekapReport")}</th>
             </tr>
           </thead>
           <tbody>
@@ -134,7 +135,7 @@ export const RecapTab = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Tanggal</th>
+              <th>{t("date")}</th>
               <td>{`${startDate} - ${endDate}`}</td>
             </tr>
           </thead>
@@ -143,16 +144,16 @@ export const RecapTab = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Tanggal</th>
-              <th>Outlet</th>
-              <th>Uang Tunai</th>
-              <th>Kas Masuk</th>
-              <th>Kas Keluar</th>
-              <th>Debit/Credit</th>
-              <th>E-Wallet</th>
-              <th>Total</th>
-              <th>Staff Name</th>
-              <th>Device</th>
+              <th>{t("date")}</th>
+              <th>{t("outlet")}</th>
+              <th>{t("cash")}</th>
+              <th>{t("cashOut")}</th>
+              <th>{t("cashIn")}</th>
+              <th>{t("debit/Credit")}</th>
+              <th>{t("e-wallet")}</th>
+              <th>{t("total")}</th>
+              <th>{t("staffName")}</th>
+              <th>{t("device")}</th>
             </tr>
           </thead>
           <tbody>
@@ -192,13 +193,13 @@ export const RecapTab = ({ selectedOutlet, startDate, endDate }) => {
         <thead>
           <tr>
             <th></th>
-            <th>Recap Date</th>
-            <th>User</th>
-            <th>Recap Time Open</th>
-            <th>Recap Time Close</th>
-            <th>Total Actual</th>
-            <th>Total System</th>
-            <th>Difference</th>
+            <th>{t("recapDate")}</th>
+            <th>{t("user")}</th>
+            <th>{t("recapTimeOpen")}</th>
+            <th>{t("recapTimeClose")}</th>
+            <th>{t("totalActual")}</th>
+            <th>{t("totalSystem")}</th>
+            <th>{t("difference")}</th>
           </tr>
         </thead>
         <tbody>

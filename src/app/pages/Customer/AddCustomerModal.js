@@ -17,7 +17,8 @@ const CustomerModal = ({
   alertPhoto,
   photoPreview,
   photo,
-  handlePreviewPhoto
+  handlePreviewPhoto,
+  t
 }) => {
   return (
     <Modal show={stateModal} onHide={cancelModal} size="lg">
@@ -64,12 +65,12 @@ const CustomerModal = ({
               </Paper>
 
               <p className="text-muted mt-1">
-                Allowed file types: .png, .jpg, .jpeg | File size limit: 2 MB
+              {t("allowedFileTypes")}: .png, .jpg, .jpeg | {t("fileSizeLimit")}: 2MB
               </p>
             </Col>
 
             <Col md={4}>
-              <div className="title">Customer Name</div>
+              <div className="title">{t("customerName")}</div>
               <Form.Control
                 type="text"
                 name="name"
@@ -85,7 +86,7 @@ const CustomerModal = ({
                 </div>
               ) : null}
 
-              <div className="title">Customer Email</div>
+              <div className="title">{t("customerEmail")}</div>
               <Form.Control
                 type="email"
                 name="email"
@@ -103,7 +104,7 @@ const CustomerModal = ({
             </Col>
 
             <Col md={4}>
-              <div className="title">Customer Phone Number</div>
+              <div className="title">{t("customerPhoneNumber")}</div>
               <Form.Control
                 type="text"
                 name="phone_number"
@@ -120,7 +121,7 @@ const CustomerModal = ({
                 </div>
               ) : null}
 
-              <div className="title">Customer Address</div>
+              <div className="title">{t("customerAddress")}</div>
               <Form.Control
                 type="text"
                 name="address"
@@ -142,7 +143,7 @@ const CustomerModal = ({
           <Row style={{ padding: "1rem" }}>
             <Col>
               <Form.Group>
-                <Form.Label>Notes</Form.Label>
+                <Form.Label>{t("notes")}</Form.Label>
                 <Form.Control
                   as="textarea"
                   name="notes"
@@ -163,13 +164,13 @@ const CustomerModal = ({
 
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>
-            Cancel
+          {t("cancel")}
           </Button>
           <Button variant="primary" type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save Changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         </Modal.Footer>

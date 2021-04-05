@@ -32,7 +32,8 @@ const VoucherPromoModal = ({
   startDate,
   setStartDate,
   endDate,
-  setEndDate
+  setEndDate,
+  t
 }) => {
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
@@ -55,7 +56,7 @@ const VoucherPromoModal = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Outlet:</Form.Label>
+                <Form.Label>{t("outlet")}:</Form.Label>
                 <Form.Control
                   as="select"
                   name="outlet_id"
@@ -64,7 +65,7 @@ const VoucherPromoModal = ({
                   required
                 >
                   <option value="" disabled hidden>
-                    Choose Outlet
+                  {t("chooseOutlet")}
                   </option>
                   {allOutlets.map((item) => {
                     return (
@@ -86,7 +87,7 @@ const VoucherPromoModal = ({
             </Col>
             <Col>
               <Form.Group>
-                <Form.Label>Promo Name:</Form.Label>
+                <Form.Label>{t("promoName")}:</Form.Label>
                 <Form.Control
                   type="text"
                   name="name"
@@ -109,7 +110,7 @@ const VoucherPromoModal = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Promo Code:</Form.Label>
+                <Form.Label>{t("promoCode")}:</Form.Label>
                 <Form.Control
                   type="text"
                   name="code"
@@ -129,7 +130,7 @@ const VoucherPromoModal = ({
             </Col>
             <Col>
               <Form.Group>
-                <Form.Label>Promo Quota:</Form.Label>
+                <Form.Label>{t("promoQuota")}:</Form.Label>
                 <Form.Control
                   type="number"
                   name="quota"
@@ -152,7 +153,7 @@ const VoucherPromoModal = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Promo Start Date:</Form.Label>
+                <Form.Label>{t("promoStartDate")}:</Form.Label>
 
                 <InputGroup>
                   <DateTimePicker
@@ -170,7 +171,7 @@ const VoucherPromoModal = ({
             </Col>
             <Col>
               <Form.Group>
-                <Form.Label>Promo End Date:</Form.Label>
+                <Form.Label>{t("promoEndDate")}:</Form.Label>
 
                 <InputGroup>
                   <DateTimePicker
@@ -189,7 +190,7 @@ const VoucherPromoModal = ({
           </Row>
 
           <Form.Group>
-            <Form.Label>Promo Description Type:</Form.Label>
+            <Form.Label>{t("promoDescriptionType")}:</Form.Label>
             <Form.Control
               as="select"
               name="description_type"
@@ -199,10 +200,10 @@ const VoucherPromoModal = ({
               required
             >
               <option value="" disabled hidden>
-                Choose Type
+              {t("chooseType")}
               </option>
-              <option value="regulation">Regulation</option>
-              <option value="how_to_use">How To Use</option>
+              <option value="regulation">{t("regulation")}</option>
+              <option value="how_to_use">{t("howToUse")}</option>
             </Form.Control>
             {formikPromo.touched.description_type &&
             formikPromo.errors.description_type ? (
@@ -215,7 +216,7 @@ const VoucherPromoModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Promo Description:</Form.Label>
+            <Form.Label>{t("promoDescription")}:</Form.Label>
             <Form.Control
               as="textarea"
               name="description"
@@ -233,7 +234,7 @@ const VoucherPromoModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Promo Rate Type:</Form.Label>
+            <Form.Label>{t("promoRateType")}:</Form.Label>
             <Form.Control
               as="select"
               name="type"
@@ -242,10 +243,10 @@ const VoucherPromoModal = ({
               required
             >
               <option value="" disabled hidden>
-                Choose Type
+              {t("chooseType")}
               </option>
-              <option value="percentage">Percentage</option>
-              <option value="currency">Rupiah</option>
+              <option value="percentage">{t("percentage")}</option>
+              <option value="currency">{t("rupiah")}</option>
             </Form.Control>
             {formikPromo.touched.type && formikPromo.errors.type ? (
               <div className="fv-plugins-message-container">
@@ -256,7 +257,7 @@ const VoucherPromoModal = ({
 
           <Form.Group as={Row}>
             <Form.Label column md={2}>
-              Promo Rate:
+            {t("promoRate")}:
             </Form.Label>
             <Col>
               <Form.Control
@@ -277,7 +278,7 @@ const VoucherPromoModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Promo Banner</Form.Label>
+            <Form.Label>{t("promoBanner")}</Form.Label>
             {alertPhoto ? <Alert variant="danger">{alertPhoto}</Alert> : ""}
             <div
               {...getRootProps({
@@ -287,8 +288,8 @@ const VoucherPromoModal = ({
               <input {...getInputProps()} />
               {!photoPreview ? (
                 <>
-                  <p>Drag 'n' drop some files here, or click to select files</p>
-                  <p style={{ color: "gray" }}>File Size Limit: 2 MB</p>
+                  <p>{t("dragAndDrop")}</p>
+                  <p style={{ color: "gray" }}>{t("fileSizeLimit")}</p>
                 </>
               ) : (
                 <>
@@ -314,13 +315,13 @@ const VoucherPromoModal = ({
 
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>
-            Cancel
+          {t("cancel")}
           </Button>
           <Button variant="primary" type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save Changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         </Modal.Footer>

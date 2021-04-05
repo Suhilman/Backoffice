@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
+import { useTranslation } from "react-i18next";
 import {
   Row,
   Col,
@@ -76,7 +76,7 @@ export const RolePage = () => {
       })
     )
   });
-
+  const { t } = useTranslation();
   const formikAddRole = useFormik({
     initialValues: initialRole,
     validationSchema: RoleSchema,
@@ -302,22 +302,22 @@ export const RolePage = () => {
       width: "50px"
     },
     {
-      name: "Name",
+      name: `${t("name")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: "Access",
+      name: `${t("access")}`,
       selector: "access",
       sortable: true
     },
     {
-      name: "Default",
+      name: `${t("default")}`,
       selector: "default",
       sortable: true
     },
     {
-      name: "Actions",
+      name: `${t("actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -327,10 +327,10 @@ export const RolePage = () => {
 
             <Dropdown.Menu>
               <Dropdown.Item as="button" onClick={() => showEditModal(rows)}>
-                Edit
+              {t("edit")}
               </Dropdown.Item>
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                Delete
+              {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -413,30 +413,32 @@ export const RolePage = () => {
   return (
     <>
       <ModalRole
+        t={t}
         state={stateAddModal}
         closeModal={closeAddModal}
         loading={loading}
         alert={alert}
-        title="Add New Role"
+        title={t("addNewRole")}
         formikRole={formikAddRole}
         validationRole={validationAddRole}
         accessLists={allAccessLists}
       />
 
       <ModalRole
+        t={t}
         state={stateEditModal}
         closeModal={closeEditModal}
         loading={loading}
         alert={alert}
-        title={`Edit Role - ${formikEditRole.getFieldProps("name").value}`}
+        title={`${t("editRole")} - ${formikEditRole.getFieldProps("name").value}`}
         formikRole={formikEditRole}
         validationRole={validationEditRole}
         accessLists={allAccessLists}
       />
 
       <ConfirmModal
-        title={`Delete Role - ${selectedRole.name}`}
-        body="Are you sure want to delete?"
+        title={`${t("deleteRole")} - ${selectedRole.name}`}
+        body={t("areYouSureWantToDelete?")}
         buttonColor="danger"
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
@@ -450,7 +452,7 @@ export const RolePage = () => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Role Management</h3>
+                <h3>{t("roleManagement")}</h3>
               </div>
               <div className="headerEnd">
                 <Button
@@ -458,7 +460,7 @@ export const RolePage = () => {
                   style={{ marginLeft: "0.5rem" }}
                   onClick={showAddModal}
                 >
-                  Add New Role
+                  {t("addNewRole")}
                 </Button>
               </div>
             </div>
@@ -473,7 +475,7 @@ export const RolePage = () => {
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control
-                      placeholder="Search..."
+                      placeholder={t("search")}
                       value={search}
                       onChange={handleSearch}
                     />

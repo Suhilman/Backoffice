@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-
+import { useTranslation } from "react-i18next";
 import { Paper } from "@material-ui/core";
 import { Button, InputGroup, Form, Row, Col, Dropdown } from "react-bootstrap";
 import DataTable from "react-data-table-component";
@@ -38,7 +38,7 @@ export const StaffPage = () => {
   const disableLoading = () => setLoading(false);
 
   const debouncedSearch = useDebounce(search, 1000);
-
+  const { t } = useTranslation();
   const handleSearch = (e) => setSearch(e.target.value);
   const handleFilter = (e) => {
     const { name, value } = e.target;
@@ -133,17 +133,17 @@ export const StaffPage = () => {
       width: "50px"
     },
     {
-      name: "Name",
+      name: `${t("name")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: "Location",
+      name: `${t("location")}`,
       selector: "location",
       sortable: true
     },
     {
-      name: "Role",
+      name: `${t("role")}`,
       selector: "role",
       sortable: true
     },
@@ -153,7 +153,7 @@ export const StaffPage = () => {
     //   sortable: true
     // },
     {
-      name: "Actions",
+      name: `${t("actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -172,10 +172,10 @@ export const StaffPage = () => {
                   }
                 }}
               >
-                <Dropdown.Item as="button">Staff Detail</Dropdown.Item>
+                <Dropdown.Item as="button">{t("staffDetail")}</Dropdown.Item>
               </Link>
               <Dropdown.Item as="button" onClick={() => openConfirmModal(rows)}>
-                Delete Staff
+              {t("deleteStaff")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -198,8 +198,8 @@ export const StaffPage = () => {
   return (
     <>
       <ConfirmModal
-        title={`Delete Staff - ${staffInfo.name}`}
-        body="Are you sure want to delete?"
+        title={`${t("deleteStaff")} - ${staffInfo.name}`}
+        body={t("areYouSureWantToDelete?")}
         buttonColor="danger"
         state={confirmModal}
         closeModal={closeConfirmModal}
@@ -212,7 +212,7 @@ export const StaffPage = () => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Staff - Main View</h3>
+                <h3>{t("staff-MainView")}</h3>
               </div>
               <div className="headerEnd">
                 <Link
@@ -227,7 +227,7 @@ export const StaffPage = () => {
                   }}
                 >
                   <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
-                    Add Staff
+                  {t("addStaff")}
                   </Button>
                 </Link>
               </div>
@@ -242,7 +242,7 @@ export const StaffPage = () => {
                     </InputGroup.Text>
                   </InputGroup.Prepend>
                   <Form.Control
-                    placeholder="Search..."
+                    placeholder={t("search")}
                     value={search}
                     onChange={handleSearch}
                   />
@@ -255,7 +255,7 @@ export const StaffPage = () => {
                     <Form.Label
                       style={{ alignSelf: "center", marginBottom: "0" }}
                     >
-                      Time:
+                      {t("time")}:
                     </Form.Label>
                     <Col>
                       <Form.Control
@@ -264,8 +264,8 @@ export const StaffPage = () => {
                         value={filter.time}
                         onChange={handleFilter}
                       >
-                        <option value="newest">Newest</option>
-                        <option value="oldest">Oldest</option>
+                        <option value="newest">{t("newest")}</option>
+                        <option value="oldest">{t("oldest")}</option>
                       </Form.Control>
                     </Col>
                   </Form.Group>
@@ -276,7 +276,7 @@ export const StaffPage = () => {
                     <Form.Label
                       style={{ alignSelf: "center", marginBottom: "0" }}
                     >
-                      Location:
+                      {t("location")}:
                     </Form.Label>
                     <Col>
                       <Form.Control
@@ -285,7 +285,7 @@ export const StaffPage = () => {
                         value={filter.outlet_id}
                         onChange={handleFilter}
                       >
-                        <option value="">All</option>
+                        <option value="">{t("all")}</option>
                         {allOutlets.map((item) => {
                           return (
                             <option key={item.id} value={item.id}>
@@ -302,7 +302,7 @@ export const StaffPage = () => {
                     <Form.Label
                       style={{ alignSelf: "center", marginBottom: "0" }}
                     >
-                      Role:
+                      {t("role")}:
                     </Form.Label>
                     <Col>
                       <Form.Control
@@ -311,7 +311,7 @@ export const StaffPage = () => {
                         value={filter.role_id}
                         onChange={handleFilter}
                       >
-                        <option value="">All</option>
+                        <option value="">{t("all")}</option>
                         {allRoles.map((item, index) => {
                           return (
                             <option key={index} value={item.id}>

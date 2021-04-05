@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import dayjs from "dayjs";
 import rupiahFormat from "rupiah-format";
 import imageCompression from 'browser-image-compression';
-
+import { useTranslation } from "react-i18next";
 import {
   Button,
   Row,
@@ -24,7 +24,7 @@ import "../style.css";
 
 export const DetailCustomerPage = ({ match }) => {
   const { customerId } = match.params;
-
+  const { t } = useTranslation();
   const [refresh, setRefresh] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
@@ -357,7 +357,7 @@ export const DetailCustomerPage = ({ match }) => {
             <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
               <div className="headerPage">
                 <div className="headerStart">
-                  <h3>Customer Information</h3>
+                  <h3>{t("customerInformation")}</h3>
                 </div>
 
                 <div className="headerEnd">
@@ -367,7 +367,7 @@ export const DetailCustomerPage = ({ match }) => {
                         variant="secondary"
                         style={{ marginRight: "1rem" }}
                       >
-                        Back to Customer List
+                        {t("backToCustomerList")}
                       </Button>
                     </Link>
                   ) : (
@@ -378,7 +378,7 @@ export const DetailCustomerPage = ({ match }) => {
                     variant={statePage === "show" ? "primary" : "secondary"}
                     onClick={handleStatePage}
                   >
-                    {statePage === "show" ? "Edit Customer Data" : "Cancel"}
+                    {statePage === "show" ? `${t("editCustomerData")}` : `${t("cancel")}`}
                   </Button>
 
                   {statePage === "show" ? (
@@ -445,8 +445,7 @@ export const DetailCustomerPage = ({ match }) => {
 
                   {statePage === "edit" ? (
                     <p className="text-muted mt-1">
-                      Allowed file types: .png, .jpg, .jpeg | File size limit: 2
-                      MB
+                      {t("allowdFileTypes")}
                     </p>
                   ) : (
                     ""
@@ -454,7 +453,7 @@ export const DetailCustomerPage = ({ match }) => {
                 </Col>
 
                 <Col md={3}>
-                  <div className="title">Customer Name</div>
+                  <div className="title">{t("customerName")}</div>
                   {statePage === "show" ? (
                     <h5 className="mb-5">{formikCustomer.values.name}</h5>
                   ) : (
@@ -477,7 +476,7 @@ export const DetailCustomerPage = ({ match }) => {
                     </>
                   )}
 
-                  <div className="title">Customer Email</div>
+                  <div className="title">{t("customerEmail")}</div>
                   {statePage === "show" ? (
                     <h5>{formikCustomer.values.email}</h5>
                   ) : (
@@ -502,7 +501,7 @@ export const DetailCustomerPage = ({ match }) => {
                 </Col>
 
                 <Col md={3}>
-                  <div className="title">Customer Phone Number</div>
+                  <div className="title">{t("customerPhoneNumber")}</div>
                   {statePage === "show" ? (
                     <h5>{formikCustomer.values.phone_number}</h5>
                   ) : (
@@ -525,7 +524,7 @@ export const DetailCustomerPage = ({ match }) => {
                     </>
                   )}
 
-                  <div className="title">Customer Address</div>
+                  <div className="title">{t("customerAddress")}</div>
                   {statePage === "show" ? (
                     <h5>{formikCustomer.values.address}</h5>
                   ) : (
@@ -552,7 +551,7 @@ export const DetailCustomerPage = ({ match }) => {
               <Row style={{ padding: "1rem" }}>
                 <Col>
                   <Form.Group>
-                    <Form.Label>Notes</Form.Label>
+                    <Form.Label>{t("notes")}</Form.Label>
                     <Form.Control
                       as="textarea"
                       disabled={statePage === "show" ? true : false}
@@ -572,7 +571,7 @@ export const DetailCustomerPage = ({ match }) => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Customer Statistics</h3>
+                <h3>{t("customerStatistic")}</h3>
               </div>
 
               {/* <div className="headerEnd"></div> */}
@@ -580,14 +579,14 @@ export const DetailCustomerPage = ({ match }) => {
 
             <Row style={{ padding: "1rem" }}>
               <Col md={3}>
-                <div className="title">Transaction Number</div>
+                <div className="title">{t("transactionNumber")}</div>
                 <h5 style={{ marginBottom: "2rem" }}>
                   {customerStats.total_transaction_count
                     ? customerStats.total_transaction_count
                     : "-"}
                 </h5>
 
-                <div className="title">Last Visit</div>
+                <div className="title">{t("lastVisit")}</div>
                 <h5>
                   {customerStats.last_visit
                     ? formatDate(customerStats.last_visit)
@@ -596,14 +595,14 @@ export const DetailCustomerPage = ({ match }) => {
               </Col>
 
               <Col md={3}>
-                <div className="title">Total Transaction</div>
+                <div className="title">{t("totalTransaction")}</div>
                 <h5 style={{ marginBottom: "2rem" }}>
                   {customerStats.total_transaction
                     ? rupiahFormat.convert(customerStats.total_transaction)
                     : "-"}
                 </h5>
 
-                <div className="title">Favorite Product</div>
+                <div className="title">{t("favoriteProduct")}</div>
                 <h5>
                   {customerStats.favorite_product
                     ? customerStats.favorite_product
@@ -612,14 +611,14 @@ export const DetailCustomerPage = ({ match }) => {
               </Col>
 
               <Col md={3}>
-                <div className="title">Average Transaction</div>
+                <div className="title">{t("averageTransaction")}</div>
                 <h5 style={{ marginBottom: "2rem" }}>
                   {customerStats.average_transaction
                     ? rupiahFormat.convert(customerStats.average_transaction)
                     : "-"}
                 </h5>
 
-                <div className="title">Registration Date</div>
+                <div className="title">{t("registrationDate")}</div>
                 <h5>
                   {customerStats.registration_date
                     ? formatDate(customerStats.registration_date)
@@ -628,12 +627,12 @@ export const DetailCustomerPage = ({ match }) => {
               </Col>
 
               <Col md={3}>
-                <div className="title">Remaining Point</div>
+                <div className="title">{t("remainingPoint")}</div>
                 <h5 style={{ marginBottom: "2rem" }}>
                   {customerStats.points ? customerStats.points : "-"}
                 </h5>
 
-                <div className="title">Total Point Spent</div>
+                <div className="title">{t("totalPointSpent")}</div>
                 <h5>
                   {customerStats.points_spent
                     ? customerStats.points_spent
@@ -650,7 +649,7 @@ export const DetailCustomerPage = ({ match }) => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Transaction History</h3>
+                <h3>{t("transactionHistory")}</h3>
               </div>
 
               {/* <div className="headerEnd"></div> */}

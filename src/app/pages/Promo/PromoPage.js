@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 
 import { Row, Col, Button } from "react-bootstrap";
 import { Paper } from "@material-ui/core";
-
+import { useTranslation } from "react-i18next";
 import "../style.css";
 
 export const PromoPage = () => {
   const [promoCategories, setPromoCategories] = React.useState([]);
-
+  const { t } = useTranslation();
   const getPromoCategories = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
@@ -65,8 +65,7 @@ export const PromoPage = () => {
                   </div>
                   <div className="headerEnd" style={{ display: "inline-flex" }}>
                     <p style={{ margin: 0, alignSelf: "center" }}>
-                      {activePromos.length ? activePromos.length : "No"} Active
-                      Promo
+                      {activePromos.length ? activePromos.length : "No"} {t("activePromo")}
                     </p>
 
                     <Link to={`promo/${link}`}>
@@ -74,7 +73,7 @@ export const PromoPage = () => {
                         variant="primary"
                         style={{ marginLeft: "1rem", borderRadius: "2rem" }}
                       >
-                        View Promo
+                        {t("viewPromo")}
                       </Button>
                     </Link>
                   </div>

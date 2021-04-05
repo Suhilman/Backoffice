@@ -17,7 +17,8 @@ const SpecialPromoModal = ({
   allOutlets,
   allProducts,
   selectedProducts,
-  handleSelectedProducts
+  handleSelectedProducts,
+  t
 }) => {
   const [listProducts, setListProducts] = React.useState([]);
   const [filter, setFilter] = React.useState([]);
@@ -58,7 +59,7 @@ const SpecialPromoModal = ({
           {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
           <Form.Group>
-            <Form.Label>Outlet:</Form.Label>
+            <Form.Label>{t("outlet")}:</Form.Label>
             <Form.Control
               as="select"
               name="outlet_id"
@@ -69,7 +70,7 @@ const SpecialPromoModal = ({
               required
             >
               <option value="" disabled hidden>
-                Choose Outlet
+              {t("chooseOutlet")}
               </option>
               {allOutlets.map((item) => {
                 return (
@@ -89,14 +90,14 @@ const SpecialPromoModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Product:</Form.Label>
+            <Form.Label>{t("product")}:</Form.Label>
             <Form.Control
               as="select"
               value={""}
               onChange={handleSelectedProducts}
             >
               <option value="" disabled hidden>
-                Choose Product
+              {t("chooseProduct")}
               </option>
               {listProducts.map((item) => {
                 return (
@@ -115,9 +116,9 @@ const SpecialPromoModal = ({
                 return (
                   <div>
                     <Row style={{ padding: "1rem" }}>
-                      <Col>Product Name</Col>
-                      <Col>Product Price</Col>
-                      <Col>Point</Col>
+                      <Col>{t("productName")}</Col>
+                      <Col>{t("productPrice")}</Col>
+                      <Col>{t("point")}</Col>
                     </Row>
                     {selectedProducts.map((item, index) => {
                       return (
@@ -176,13 +177,13 @@ const SpecialPromoModal = ({
 
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>
-            Cancel
+          {t("canel")}
           </Button>
           <Button variant="primary" type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save Changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         </Modal.Footer>

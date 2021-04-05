@@ -32,7 +32,8 @@ const XyTab = ({
   handleSelectX,
   handleSelectY,
   handleSelectOutlet,
-  mode
+  mode,
+  t
 }) => {
   const defaultValueX = formikPromo.values["xy_product_x_id"].map((item) => {
     const product = allProducts.find((val) => val.id === item);
@@ -60,7 +61,7 @@ const XyTab = ({
 
               <div className="headerEnd">
                 <Link to="/promo/automatic-promo">
-                  <Button variant="outline-secondary">Cancel</Button>
+                  <Button variant="outline-secondary">{t("cancel")}</Button>
                 </Link>
                 <Button
                   variant="primary"
@@ -70,7 +71,7 @@ const XyTab = ({
                   {loading ? (
                     <Spinner animation="border" variant="light" size="sm" />
                   ) : (
-                    "Save"
+                    `${t("save")}`
                   )}
                 </Button>
               </div>
@@ -81,7 +82,7 @@ const XyTab = ({
             <Row className="lineBottom" style={{ padding: "2rem" }}>
               <Col>
                 <Form.Group>
-                  <Form.Label>Promo Name:</Form.Label>
+                  <Form.Label>{t("promoName")}:</Form.Label>
                   <Form.Control
                     type="text"
                     name="name"
@@ -103,13 +104,13 @@ const XyTab = ({
             <Row className="lineBottom" style={{ padding: "2rem" }}>
               <Col>
                 <Row style={{ marginBottom: "1rem" }}>
-                  <h5>Promo Rules</h5>
+                  <h5>{t("promoRules")}</h5>
                 </Row>
 
                 <Row>
                   <Col sm={5}>
                     <Form.Group>
-                      <Form.Label>Products to Buy:</Form.Label>
+                      <Form.Label>{t("productToBuy")}:</Form.Label>
                       <Select
                         defaultValue={defaultValueX}
                         options={options}
@@ -132,7 +133,7 @@ const XyTab = ({
 
                   <Col sm={4}>
                     <Form.Group>
-                      <Form.Label>Product Amount:</Form.Label>
+                      <Form.Label>{t("productAmount")}:</Form.Label>
                       <Form.Control
                         type="number"
                         name="xy_amount_x"
@@ -153,7 +154,7 @@ const XyTab = ({
 
                   <Col sm={2}>
                     <Form.Group>
-                      <Form.Label>Apply Multiply:</Form.Label>
+                      <Form.Label>{t("applyMultiply")}:</Form.Label>
                       <Form.Check
                         type="checkbox"
                         name="xy_apply_multiply"
@@ -169,7 +170,7 @@ const XyTab = ({
                 <Row>
                   <Col sm={5}>
                     <Form.Group>
-                      <Form.Label>Free Products:</Form.Label>
+                      <Form.Label>{t("freeProduct")}:</Form.Label>
                       <Select
                         defaultValue={defaultValueY}
                         options={options}
@@ -192,7 +193,7 @@ const XyTab = ({
 
                   <Col sm={4}>
                     <Form.Group>
-                      <Form.Label>Product Amount:</Form.Label>
+                      <Form.Label>{t("productAmount")}:</Form.Label>
                       <Form.Control
                         type="number"
                         name="xy_amount_y"

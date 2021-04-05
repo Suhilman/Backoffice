@@ -4,8 +4,10 @@ import axios from "axios";
 import rupiahFormat from "rupiah-format";
 import "../style.css";
 import { Table } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
 const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
+  const { t } = useTranslation();
   const [voidTransaction, setVoidTransaction] = useState([]);
   const getVoidTransaction = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -95,7 +97,7 @@ const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
         <table id="table-void">
           <thead>
             <tr>
-              <th>Laporan Transaksi Void / Refund</th>
+              <th>{t("transaksiVoid/RefundReport")}</th>
             </tr>
           </thead>
           <tbody>
@@ -103,7 +105,7 @@ const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Outlet</th>
+              <th>{t("outlet")}</th>
               <td>
                 {selectedOutlet.id === " " ||
                 selectedOutlet.id === null ||
@@ -118,7 +120,7 @@ const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Tanggal</th>
+              <th>{t("date")}</th>
               <td>{`${startDate} - ${endDate}`}</td>
             </tr>
           </thead>
@@ -127,12 +129,12 @@ const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Tanggal</th>
-              <th>ID Transaksi</th>
-              <th>Staff</th>
-              <th>Tipe Void</th>
-              <th>Total Transaksi Void</th>
-              <th>Alasan</th>
+              <th>{t("date")}</th>
+              <th>{t("transactionID")}</th>
+              <th>{t("staff")}</th>
+              <th>{t("voidType")}</th>
+              <th>{t("totalVoidTransactions")}</th>
+              <th>{t("reason")}</th>
             </tr>
           </thead>
           <tbody>
@@ -151,11 +153,11 @@ const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
               })
             ) : (
               <tr>
-                <td>Data Not Found</td>
+                <td>{t("dataNotFound")}</td>
               </tr>
             )}
             <tr>
-              <th>Grand Total</th>
+              <th>{t("grandTotal")}</th>
               <th></th>
               <th></th>
               <th></th>
@@ -168,12 +170,12 @@ const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
       <Table>
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Transaction ID</th>
-            <th>Staff</th>
-            <th>Void Type</th>
-            <th>Total Void Transaction</th>
-            <th>Note</th>
+            <th>{t("date")}</th>
+            <th>{t("transactionID")}</th>
+            <th>{t("staff")}</th>
+            <th>{t("voidType")}</th>
+            <th>{t("totalVoidTransactions")}</th>
+            <th>{t("note")}</th>
           </tr>
         </thead>
         <tbody>
@@ -192,11 +194,11 @@ const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
             })
           ) : (
             <tr>
-              <td>Data Not Found</td>
+              <td>{t("dataNotFound")}</td>
             </tr>
           )}
           <tr>
-            <th>Grand Total</th>
+            <th>{t("grandTotal")}</th>
             <th></th>
             <th></th>
             <th></th>

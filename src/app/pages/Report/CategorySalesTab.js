@@ -3,13 +3,13 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { Table } from "react-bootstrap";
 import rupiahFormat from "rupiah-format";
-
+import { useTranslation } from "react-i18next";
 import "../style.css";
 
 export const CategorySalesTab = ({ selectedOutlet, startDate, endDate }) => {
   const [allCategorySales, setAllCategorySales] = React.useState([]);
   const [allCategories, setAllCategories] = React.useState([]);
-
+  const { t } = useTranslation();
   const getCategorySales = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
     const outlet_id = id ? `?outlet_id=${id}&` : "?";
@@ -183,10 +183,10 @@ export const CategorySalesTab = ({ selectedOutlet, startDate, endDate }) => {
         <thead>
           <tr>
             <th></th>
-            <th>Category</th>
-            <th>Items Sold</th>
-            <th>Items Refunded</th>
-            <th>Total Collected</th>
+            <th>{t("category")}</th>
+            <th>{t("itemsSold")}</th>
+            <th>{t("itemsRefunded")}</th>
+            <th>{t("totalCollected")}</th>
           </tr>
         </thead>
         <tbody>

@@ -18,7 +18,7 @@ import {
 } from "@material-ui/core";
 import DatePicker from "react-datepicker";
 import { CalendarToday } from "@material-ui/icons";
-
+import { useTranslation } from "react-i18next";
 import "../../style.css";
 
 const SpecialPromoModal = ({
@@ -44,11 +44,11 @@ const SpecialPromoModal = ({
       />
     );
   };
-
+  const { t } = useTranslation();
   return (
     <Modal show={stateModal} onHide={cancelModal} size="lg">
       <Modal.Header closeButton>
-        <Modal.Title>Point Settings</Modal.Title>
+        <Modal.Title>{t("pointSettings")}</Modal.Title>
       </Modal.Header>
 
       <Form noValidate onSubmit={formikSettings.handleSubmit}>
@@ -60,9 +60,9 @@ const SpecialPromoModal = ({
             style={{ marginBottom: "1rem", padding: "1rem" }}
           >
             <Col>
-              <h5>Loyalty / Points System Module</h5>
+              <h5>{t("loyality/PointsSystemModule")}</h5>
               <Row style={{ alignItems: "center" }}>
-                <Col>Turn Loyalty / Points System On/Off</Col>
+                <Col>{t("turnLoyality/PointsSystemOn/Off")}</Col>
 
                 <Col>
                   <FormControl component="fieldset">
@@ -111,11 +111,10 @@ const SpecialPromoModal = ({
             style={{ marginBottom: "1rem", padding: "1rem" }}
           >
             <Col>
-              <h5>Registration Bonus</h5>
+              <h5>{t("registrationBonus")}</h5>
               <Row style={{ alignItems: "center", marginBottom: "1rem" }}>
                 <Col>
-                  Turn Registration Bonus On/Off <br /> Give initial points to
-                  customer as a registration bonus.
+                {t("turnRegistrationBonusOn/Off")} <br /> {t("giveInitialPointsToCustomerAsARegistrationBonus")}.
                 </Col>
 
                 <Col>
@@ -166,7 +165,7 @@ const SpecialPromoModal = ({
               <Row>
                 <Col>
                   <Form.Group>
-                    <Form.Label>Initial Point Given:</Form.Label>
+                    <Form.Label>{t("initialPointGiven")}:</Form.Label>
                     <Form.Control
                       type="number"
                       name="registration_bonus"
@@ -192,25 +191,25 @@ const SpecialPromoModal = ({
             style={{ marginBottom: "1rem", padding: "1rem" }}
           >
             <Col>
-              <h5>Point Exchange Rate</h5>
+              <h5>{t("pointExchangeRate")}</h5>
               <Row style={{ alignItems: "center", marginBottom: "1rem" }}>
-                <Col>Set the exchange rate for points</Col>
+                <Col>{t("setExchangeRateForPoints")}s</Col>
               </Row>
 
               <Row>
-                <Col>Every 1 point eligible for</Col>
+                <Col>{t("every1PointEligableFor")}</Col>
               </Row>
               <Row>
                 <Col>
                   <Form.Group>
-                    <Form.Label>Exchange Type:</Form.Label>
+                    <Form.Label>{t("exchangeType")}:</Form.Label>
                     <Form.Control
                       as="select"
                       {...formikSettings.getFieldProps("type")}
                       className={validationPromoSettings("type")}
                     >
-                      <option value="percentage">Percentage</option>
-                      <option value="currency">Rupiah</option>
+                      <option value="percentage">{t("percentage")}</option>
+                      <option value="currency">{t("rupiah")}</option>
                     </Form.Control>
                     {formikSettings.touched.type &&
                     formikSettings.errors.type ? (
@@ -224,7 +223,7 @@ const SpecialPromoModal = ({
                 </Col>
                 <Col>
                   <Form.Group>
-                    <Form.Label>Exchange Value:</Form.Label>
+                    <Form.Label>{t("exchangeValue")}:</Form.Label>
                     <Form.Control
                       type="number"
                       name="value"
@@ -250,9 +249,9 @@ const SpecialPromoModal = ({
             style={{ marginBottom: "1rem", padding: "1rem" }}
           >
             <Col>
-              <h5>Point Expiration Date</h5>
+              <h5>{t("pointExpirationDate")}</h5>
               <Row style={{ alignItems: "center", marginBottom: "1rem" }}>
-                <Col>Set the expiration date for the points</Col>
+                <Col>{t("setTheExpirationDateForThePoints")}</Col>
               </Row>
 
               <Row>
@@ -269,10 +268,9 @@ const SpecialPromoModal = ({
                       </Form.Group>
                     </Col>
                     <Col>
-                      <h6>With an expiry date</h6>
+                      <h6>{t("withAnExpiryDate")}</h6>
                       <p>
-                        Select an expiry date for points (You will be notified
-                        when the expiry date has passed)
+                        {t("selectAnExpiryDateForPoints(WhenTheExpirydateHasPassed)")}
                       </p>
                       <InputGroup>
                         <DatePicker
@@ -314,9 +312,9 @@ const SpecialPromoModal = ({
                       </Form.Group>
                     </Col>
                     <Col>
-                      <h6>No Expiry Date</h6>
+                      <h6>{t("noExpiryDate")}</h6>
                       <p>
-                        The points that has been given will always be available
+                      {t("thePointsThatHasBeenGivenWillAlwaysBeAvailable")}
                       </p>
                     </Col>
                   </Row>
@@ -328,13 +326,13 @@ const SpecialPromoModal = ({
 
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>
-            Cancel
+          {t("cancel")}
           </Button>
           <Button variant="primary" type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save Changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         </Modal.Footer>

@@ -4,13 +4,13 @@ import axios from "axios";
 import rupiahFormat from "rupiah-format";
 import "../style.css";
 import { Table } from "react-bootstrap";
-
+import { useTranslation } from "react-i18next";
 const COGSReport = ({ selectedOutlet, startDate, endDate }) => {
+  const { t } = useTranslation();
   const [COGSTransaction, setCOGSTransaction] = useState([]);
   const getDataCOGS = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
     const outlet_id = id ? `?outlet_id=${id}&` : "?";
-
     if (start_range === end_range) {
       end_range = dayjs(end_range)
         .add(1, "day")
@@ -95,7 +95,7 @@ const COGSReport = ({ selectedOutlet, startDate, endDate }) => {
         <table id="table-cogs">
           <thead>
             <tr>
-              <th>Laporan COGS ( Cost Of Good Sold )</th>
+              <th>{t("cogsReport")}</th>
             </tr>
           </thead>
           <tbody>
@@ -103,7 +103,7 @@ const COGSReport = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Outlet</th>
+              <th>{t("outlet")}</th>
               <td>
                 {selectedOutlet.id === " " ||
                 selectedOutlet.id === null ||
@@ -118,7 +118,7 @@ const COGSReport = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Tanggal</th>
+              <th>{t("date")}</th>
               <td>{`${startDate} - ${endDate}`}</td>
             </tr>
           </thead>
@@ -127,12 +127,12 @@ const COGSReport = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>Nama Produk</th>
-              <th>Kategori</th>
-              <th>Jumlah Terjual</th>
-              <th>Harga Pokok Penjualan</th>
-              <th>Harga Jual</th>
-              <th>Profit</th>
+              <th>{t("productName")}</th>
+              <th>{t("category")}</th>
+              <th>{t("amountSold")}</th>
+              <th>{t("costOfGoodsSold")}</th>
+              <th>{t("sellingPrice")}</th>
+              <th>{t("profit")}</th>
             </tr>
           </thead>
           <tbody>
@@ -151,11 +151,11 @@ const COGSReport = ({ selectedOutlet, startDate, endDate }) => {
               })
             ) : (
               <tr>
-                <td>Data Not Found</td>
+                <td>{t("dataNotFound")}</td>
               </tr>
             )}
             <tr>
-              <th>Grand Total</th>
+              <th>{t("grandTotal")}</th>
               <th></th>
               <th>{sumReports(COGSTransaction, "kuantitas")} </th>
               <th>{sumReports(COGSTransaction, "product_hpp")} </th>
@@ -168,12 +168,12 @@ const COGSReport = ({ selectedOutlet, startDate, endDate }) => {
       <Table>
         <thead>
           <tr>
-            <th>Product Name</th>
-            <th>Category</th>
-            <th>Sold Quantity</th>
-            <th>Buying Price</th>
-            <th>Selling Price</th>
-            <th>Profit</th>
+            <th>{t("productname")}</th>
+            <th>{t("category")}</th>
+            <th>{t("soldQuantity")}</th>
+            <th>{t("purchasePrice")}</th>
+            <th>{t("sellingPrice")}</th>
+            <th>{t("profit")}</th>
           </tr>
         </thead>
         <tbody>
@@ -192,11 +192,11 @@ const COGSReport = ({ selectedOutlet, startDate, endDate }) => {
             })
           ) : (
             <tr>
-              <td>Data Not Found</td>
+              <td>{t("dataNotFound")}</td>
             </tr>
           )}
           <tr>
-            <th>Grand Total</th>
+            <th>{t("grandTotal")}</th>
             <th></th>
             <th>{sumReports(COGSTransaction, "kuantitas")} </th>
             <th>

@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
+import { useTranslation } from "react-i18next";
 import {
   Button,
   Form,
@@ -44,7 +44,7 @@ export const AddStaffPage = ({ location }) => {
     password_confirmation: "",
     pin: ""
   };
-
+  const { t } = useTranslation();
   const StaffSchema = Yup.object().shape({
     outlet_id: Yup.number()
       .integer()
@@ -158,18 +158,18 @@ export const AddStaffPage = ({ location }) => {
             <Form onSubmit={formikStaff.handleSubmit}>
               <div className="headerPage">
                 <div className="headerStart">
-                  <h3>Add Staff</h3>
+                  <h3>{t("addStaff")}</h3>
                 </div>
                 <div className="headerEnd">
                   <Link to="/staff">
-                    <Button variant="secondary">Cancel</Button>
+                    <Button variant="secondary">{t("cancel")}</Button>
                   </Link>
                   <Button
                     variant="primary"
                     style={{ marginLeft: "0.5rem" }}
                     type="submit"
                   >
-                    Save
+                    {t("save")}
                     {loading && (
                       <Spinner animation="border" variant="light" size="sm" />
                     )}
@@ -182,7 +182,7 @@ export const AddStaffPage = ({ location }) => {
 
                 <Col>
                   <Form.Group>
-                    <Form.Label>Outlet*</Form.Label>
+                    <Form.Label>{t("outlet")}*</Form.Label>
                     <Form.Control
                       as="select"
                       name="outlet_id"
@@ -191,7 +191,7 @@ export const AddStaffPage = ({ location }) => {
                       required
                     >
                       <option value={""} disabled hidden>
-                        Choose Outlet
+                      {t("chooseOutlet")}
                       </option>
                       {allOutlets.map((item) => {
                         return (
@@ -243,7 +243,7 @@ export const AddStaffPage = ({ location }) => {
                   </Form.Group> */}
 
                   <Form.Group>
-                    <Form.Label>Role*</Form.Label>
+                    <Form.Label>{t("role")}*</Form.Label>
                     <Form.Control
                       as="select"
                       name="role_id"
@@ -254,7 +254,7 @@ export const AddStaffPage = ({ location }) => {
                       required
                     >
                       <option value={""} disabled hidden>
-                        Choose Role
+                      {t("chooseRole")}
                       </option>
                       {allRoles.map((item) => {
                         return (
@@ -275,7 +275,7 @@ export const AddStaffPage = ({ location }) => {
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>Name*</Form.Label>
+                    <Form.Label>{t("name")}*</Form.Label>
                     <Form.Control
                       type="text"
                       name="name"
@@ -293,7 +293,7 @@ export const AddStaffPage = ({ location }) => {
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>Staff ID*</Form.Label>
+                    <Form.Label>{t("staffID")}*</Form.Label>
                     <Form.Control
                       type="text"
                       name="staff_id"
@@ -312,7 +312,7 @@ export const AddStaffPage = ({ location }) => {
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>Email*</Form.Label>
+                    <Form.Label>{t("email")}*</Form.Label>
                     <Form.Control
                       type="email"
                       name="email"
@@ -330,7 +330,7 @@ export const AddStaffPage = ({ location }) => {
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>Phone Number*</Form.Label>
+                    <Form.Label>{t("phoneNumber")}*</Form.Label>
                     <Form.Control
                       type="text"
                       name="phone_number"
@@ -349,7 +349,7 @@ export const AddStaffPage = ({ location }) => {
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>Password*</Form.Label>
+                    <Form.Label>{t("password")}*</Form.Label>
                     <Form.Control
                       type="password"
                       name="password"
@@ -368,7 +368,7 @@ export const AddStaffPage = ({ location }) => {
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>Password Confirmation*</Form.Label>
+                    <Form.Label>{t("passwordConfirmation")}*</Form.Label>
                     <Form.Control
                       type="password"
                       name="password_confirmation"
@@ -387,7 +387,7 @@ export const AddStaffPage = ({ location }) => {
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>PIN*</Form.Label>
+                    <Form.Label>{t("pin")}*</Form.Label>
                     <Form.Control
                       type="password"
                       name="pin"
@@ -419,7 +419,7 @@ export const AddStaffPage = ({ location }) => {
                         elevation={2}
                         style={{ padding: "1rem", height: "100%" }}
                       >
-                        <h5>{access.name} Access List</h5>
+                        <h5>{access.name}{t("accessList")}</h5>
 
                         <FormControl
                           component="fieldset"

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import imageCompression from 'browser-image-compression';
-
+import { useTranslation } from "react-i18next";
 import {
   Button,
   Row,
@@ -39,7 +39,7 @@ export const DetailStaffPage = ({ match, location }) => {
   const [preview, setPreview] = React.useState("");
 
   const [selectedRole, setSelectedRole] = React.useState("");
-
+  const { t } = useTranslation();
   const [image, setImage] = React.useState("");
   const [staff, setStaff] = React.useState({
     outlet_id: "",
@@ -245,17 +245,17 @@ export const DetailStaffPage = ({ match, location }) => {
 
   const columns = [
     {
-      name: "Date",
+      name: `${t("date")}`,
       selector: "date",
       sortable: true
     },
     {
-      name: "Check In",
+      name: `${t("checkIn")}`,
       selector: "check_in",
       sortable: true
     },
     {
-      name: "Check Out",
+      name: `${t("checkOut")}`,
       selector: "check_out",
       sortable: true
     }
@@ -289,8 +289,8 @@ export const DetailStaffPage = ({ match, location }) => {
           <ListGroup.Item>
             <Row>
               <Col sm={4}></Col>
-              <Col style={{ fontWeight: "700" }}>Check In Image</Col>
-              <Col style={{ fontWeight: "700" }}>Check Out Image</Col>
+              <Col style={{ fontWeight: "700" }}>{t("checkInImage")}</Col>
+              <Col style={{ fontWeight: "700" }}>{t("checkOutImage")}</Col>
             </Row>
           </ListGroup.Item>
 
@@ -334,7 +334,7 @@ export const DetailStaffPage = ({ match, location }) => {
             <Form onSubmit={formikStaff.handleSubmit}>
               <div className="headerPage">
                 <div className="headerStart">
-                  <h3>Staff Information</h3>
+                  <h3>{t("staffInformation")}</h3>
                 </div>
 
                 <div className="headerEnd">
@@ -344,7 +344,7 @@ export const DetailStaffPage = ({ match, location }) => {
                         variant="secondary"
                         style={{ marginRight: "1rem" }}
                       >
-                        Back to Staff List
+                        {t("backToStaffList")}
                       </Button>
                     </Link>
                   ) : (
@@ -355,7 +355,7 @@ export const DetailStaffPage = ({ match, location }) => {
                     variant={statePage === "show" ? "primary" : "secondary"}
                     onClick={handleStatePage}
                   >
-                    {statePage === "show" ? "Edit Staff Data" : "Cancel"}
+                    {statePage === "show" ? `${t("editStaffData")}` : `${t("cancel")}`}
                   </Button>
 
                   {statePage === "show" ? (
@@ -369,7 +369,7 @@ export const DetailStaffPage = ({ match, location }) => {
                       {loading ? (
                         <Spinner animation="border" variant="light" size="sm" />
                       ) : (
-                        "Save"
+                        `${t("save")}`
                       )}
                     </Button>
                   )}
@@ -419,13 +419,12 @@ export const DetailStaffPage = ({ match, location }) => {
                   </Paper>
 
                   <p className="text-muted mt-1">
-                    Allowed file types: .png, .jpg, .jpeg | File size limit: 2
-                    MB
+                    {t("allowedFileTypes")}
                   </p>
                 </Col>
 
                 <Col md={3}>
-                  <div className="title">Staff Name</div>
+                  <div className="title">{t("staffName")}</div>
                   {statePage === "show" ? (
                     <h5 className="mb-5">{formikStaff.values.name}</h5>
                   ) : (
@@ -447,7 +446,7 @@ export const DetailStaffPage = ({ match, location }) => {
                     </>
                   )}
 
-                  <div className="title">Staff Email</div>
+                  <div className="title">{t("staffEmail")}</div>
                   {statePage === "show" ? (
                     <h5>{formikStaff.values.email}</h5>
                   ) : (
@@ -494,7 +493,7 @@ export const DetailStaffPage = ({ match, location }) => {
                 </Col>
 
                 <Col md={3}>
-                  <div className="title">Staff Role</div>
+                  <div className="title">{t("staffRole")}</div>
                   {statePage === "show" ? (
                     allRoles.map((item) => {
                       if (item.id === parseInt(formikStaff.values.role_id)) {
@@ -545,7 +544,7 @@ export const DetailStaffPage = ({ match, location }) => {
                     </>
                   )}
 
-                  <div className="title">Staff ID</div>
+                  <div className="title">{t("staffID")}</div>
                   {statePage === "show" ? (
                     <h5>{formikStaff.values.staff_id}</h5>
                   ) : (
@@ -600,7 +599,7 @@ export const DetailStaffPage = ({ match, location }) => {
                 </Col>
 
                 <Col md={3}>
-                  <div className="title">Staff Location</div>
+                  <div className="title">{t("staffLocation")}</div>
                   {statePage === "show" ? (
                     <h5 className="mb-5">{formikStaff.values.location_name}</h5>
                   ) : (
@@ -631,7 +630,7 @@ export const DetailStaffPage = ({ match, location }) => {
                     </>
                   )}
 
-                  <div className="title">Staff Phone Number</div>
+                  <div className="title">{t("staffPhoneNumber")}</div>
                   {statePage === "show" ? (
                     <h5>{formikStaff.values.phone_number}</h5>
                   ) : (
@@ -660,7 +659,7 @@ export const DetailStaffPage = ({ match, location }) => {
                 <Col>
                   <div className="headerPage">
                     <div className="headerStart">
-                      <h3>Attendance</h3>
+                      <h3>{t("attendance")}</h3>
                     </div>
                   </div>
 
@@ -679,7 +678,7 @@ export const DetailStaffPage = ({ match, location }) => {
                 <Col>
                   <div className="headerPage">
                     <div className="headerStart">
-                      <h3>Access List</h3>
+                      <h3>{t("accessList")}</h3>
                     </div>
                   </div>
 

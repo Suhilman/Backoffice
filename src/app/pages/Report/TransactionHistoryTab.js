@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import rupiahFormat from "rupiah-format";
 import { Row, Col, ListGroup } from "react-bootstrap";
 import DataTable from "react-data-table-component";
-
+import { useTranslation } from "react-i18next";
 import "../style.css";
 
 export const TransactionHistoryTab = ({
@@ -14,6 +14,7 @@ export const TransactionHistoryTab = ({
   status
 }) => {
   const [allTransactions, setAllTransactions] = React.useState([]);
+  const { t } = useTranslation();
   const [reports, setReports] = React.useState([
     {
       date: "",
@@ -99,32 +100,32 @@ export const TransactionHistoryTab = ({
       width: "50px"
     },
     {
-      name: "Receipt ID",
+      name: `${t("receiptID")}`,
       selector: "receipt_id",
       sortable: true
     },
     {
-      name: "Staff On Charge",
+      name: `${t("staffOnCharge")}`,
       selector: "staff_charge",
       sortable: true
     },
     {
-      name: "Outlet Name",
+      name: `${t("outletName")}`,
       selector: "outlet_name",
       sortable: true
     },
     {
-      name: "Payment Total",
+      name: `${t("paymentTotal")}`,
       selector: "payment_total",
       sortable: true
     },
     {
-      name: "Total Discount",
+      name: `${t("totalDiscount")}`,
       selector: "total_discount",
       sortable: true
     },
     {
-      name: "Status",
+      name: `${t("status")}`,
       selector: "status",
       sortable: true
     }
@@ -198,7 +199,7 @@ export const TransactionHistoryTab = ({
         <table id="table-history-transaction">
           <thead>
             <tr>
-              <th>Laporan Transaksi Penjualan</th>
+              <th>{t("salesTransactionReport")}</th>
             </tr>
           </thead>
           <tbody>
@@ -206,18 +207,18 @@ export const TransactionHistoryTab = ({
           </tbody>
           <thead>
             <tr>
-              <th>Tanggal</th>
+              <th>{t("date")}</th>
               <td>
                 {startDate} - {endDate}
               </td>
             </tr>
             <tr>
-              <th>Status Transaksi</th>
+              <th>{t("statusTransaksi")}</th>
               <td>{status ? status : "Semua Transaksi"}</td>
             </tr>
             <tr>
-              <th>Produk/Pelanggan</th>
-              <td>Semua Pelanggan</td>
+              <th>{t("products/Customers")}</th>
+              <td>{t("allCustomers")}</td>
             </tr>
           </thead>
           <tbody>
@@ -225,19 +226,19 @@ export const TransactionHistoryTab = ({
           </tbody>
           <thead>
             <tr>
-              <th>Tanggal & Waktu</th>
-              <th>ID Struk</th>
-              <th>Status Pembayaran</th>
-              <th>Outlet</th>
-              <th>Tipe Penjualan</th>
-              <th>User</th>
-              <th>No. HP Pelanggan</th>
-              <th>Nama Pelanggan</th>
-              <th>SKU</th>
-              <th>Nama Produk</th>
-              <th>Kategori</th>
-              <th>Jumlah Produk</th>
-              <th>Harga Produk</th>
+              <th>{t("date&Time")}</th>
+              <th>{t("struckID")}</th>
+              <th>{t("paymentStatus")}</th>
+              <th>{t("outlet")}</th>
+              <th>{t("salesType")}</th>
+              <th>{t("user")}</th>
+              <th>{t("customerPhoneNumber")}</th>
+              <th>{t("customerName")}</th>
+              <th>{t("sku")}</th>
+              <th>{t("productName")}</th>
+              <th>{t("category")}</th>
+              <th>{t("productsAmount")}</th>
+              <th>{t("productPrice")}</th>
             </tr>
           </thead>
           <tbody>

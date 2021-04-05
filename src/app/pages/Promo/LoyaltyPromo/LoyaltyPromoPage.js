@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import rupiahFormat from "rupiah-format";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
-
+import { useTranslation } from "react-i18next";
 import { Row, Col, Button, Dropdown } from "react-bootstrap";
 import {
   Switch,
@@ -28,7 +28,7 @@ export const LoyaltyPromoPage = () => {
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [refresh, setRefresh] = React.useState(0);
-
+  const { t } = useTranslation();
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
@@ -520,31 +520,31 @@ export const LoyaltyPromoPage = () => {
       width: "50px"
     },
     {
-      name: "Outlet Name",
+      name: `${t("outletName")}`,
       selector: "outlet_name",
       sortable: true
     },
     {
-      name: "Product",
+      name: `${t("productName")}`,
       selector: "product_name",
       sortable: true
     },
     {
-      name: "Product Category",
+      name: `${t("productCategory")}`,
       selector: "product_category",
       sortable: true
     },
     {
-      name: "Product Price",
+      name: `${t("productPrice")}`,
       selector: "product_price",
       sortable: true
     },
     {
-      name: "Point",
+      name: `${t("point")}`,
       selector: "point"
     },
     {
-      name: "Point Status",
+      name: `${t("pointStatus")}`,
       cell: (rows) => {
         return (
           <FormControl component="fieldset">
@@ -566,7 +566,7 @@ export const LoyaltyPromoPage = () => {
       }
     },
     {
-      name: "Actions",
+      name: `${t("actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -576,10 +576,10 @@ export const LoyaltyPromoPage = () => {
 
             <Dropdown.Menu>
               <Dropdown.Item as="button" onClick={() => showEditModal(rows)}>
-                Edit
+              {t("edit")}
               </Dropdown.Item>
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                Delete
+              {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -591,9 +591,10 @@ export const LoyaltyPromoPage = () => {
   return (
     <>
       <LoyaltyPromoModal
+        t={t}
         stateModal={stateAddModal}
         cancelModal={closeAddModal}
-        title="Add New Product Point"
+        title={t("addNewProductPoint")}
         loading={loading}
         alert={alert}
         formikPromo={formikPromo}
@@ -606,9 +607,10 @@ export const LoyaltyPromoPage = () => {
       />
 
       <LoyaltyPromoEditModal
+        t={t}
         stateModal={stateEditModal}
         cancelModal={closeEditModal}
-        title={`Edit Promo`}
+        title={t("editPromo")}
         loading={loading}
         alert={alert}
         formikPromo={formikEditPromo}
@@ -620,6 +622,7 @@ export const LoyaltyPromoPage = () => {
       />
 
       <SettingsModal
+        t={t}
         stateModal={stateSettings}
         cancelModal={closeSettingsModal}
         loading={loading}
@@ -635,8 +638,8 @@ export const LoyaltyPromoPage = () => {
       <ShowConfirmModal
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
-        title={`Delete Promo`}
-        body={"Are you sure want to delete?"}
+        title={t("deletePromo")}
+        body={t("areYouSureWantToDelete?")}
         loading={loading}
         buttonColor="danger"
         handleClick={handleDeletePromo}
@@ -647,21 +650,21 @@ export const LoyaltyPromoPage = () => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Loyalty Promo</h3>
+                <h3>{t("loyalityPromo")}</h3>
               </div>
               <div className="headerEnd">
                 <Link to={{ pathname: "/promo"}} style={{ marginRight: "0.5rem" }}>
-                  <Button variant="outline-secondary">Back to Main View</Button>
+                  <Button variant="outline-secondary">{t("backToMainView")}</Button>
                 </Link>
                 <Button variant="primary" onClick={showAddModal}>
-                  Add New Product Point
+                {t("addNewProductPoint")}
                 </Button>
                 <Button
                   variant="outline-secondary"
                   style={{ marginLeft: "0.5rem" }}
                   onClick={showSettingsModal}
                 >
-                  Settings
+                  {t("settings")}
                 </Button>
               </div>
             </div>
