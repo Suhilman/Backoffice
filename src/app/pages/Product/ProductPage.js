@@ -95,7 +95,7 @@ export const ProductPage = () => {
     <>
       <hr/>
       <Tabs activeKey={tabs} onSelect={(v) => setTabs(v)}>
-        <Tab eventKey="product" title={t("productModule.titleTabProduct")}>
+        <Tab eventKey="product" title={t("titleTabProduct")}>
           <ProductTab
             t={t}
             allOutlets={allOutlets}
@@ -108,11 +108,11 @@ export const ProductPage = () => {
           />
         </Tab>
 
-        <Tab eventKey="unit" title={t("productModule.titleTabUnit")}>
+        <Tab eventKey="unit" title={t("titleTabUnit")}>
           <UnitTab refresh={refresh} t={t} handleRefresh={handleRefresh} />
         </Tab>
 
-        <Tab eventKey="product-category" title={t("productModule.titleTabCategory")}>
+        <Tab eventKey="product-category" title={t("titleTabCategory")}>
           <ProductCategoryTab
             t={t}
             allOutlets={allOutlets}

@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 
 import { Tabs, Tab } from "react-bootstrap";
-
+import { useTranslation } from "react-i18next";
 import { OutletTab } from "./OutletTab/OutletTab";
 import { TaxTab } from "./TaxTab/TaxTab";
 import { PaymentTab } from "./PaymentTab/PaymentTab";
@@ -14,7 +14,7 @@ export const OutletPage = () => {
   const [allProvinces, setAllProvinces] = React.useState([]);
   const [allTaxes, setAllTaxes] = React.useState([]);
   const [refresh, setRefresh] = React.useState(0);
-
+  const { t } = useTranslation();
   const handleRefresh = () => setRefresh((state) => state + 1);
 
   const getProvinces = async () => {
@@ -46,7 +46,7 @@ export const OutletPage = () => {
 
   return (
     <Tabs activeKey={tabs} onSelect={(v) => setTabs(v)}>
-      <Tab eventKey="outlet" title="Outlet">
+      <Tab eventKey="outlet" title={t("outlet")}>
         <OutletTab
           allProvinces={allProvinces}
           allTaxes={allTaxes}
@@ -55,20 +55,20 @@ export const OutletPage = () => {
         />
       </Tab>
 
-      <Tab eventKey="tax" title="Tax & Charges">
-        <TaxTab handleRefresh={handleRefresh} refresh={refresh} />
+      <Tab eventKey="tax" title={t("tax&Charges")}>
+        <TaxTab handleRefresh={handleRefresh} refresh={refresh}/>
       </Tab>
 
-      <Tab eventKey="payment" title="Payment">
-        <PaymentTab handleRefresh={handleRefresh} refresh={refresh} />
+      <Tab eventKey="payment" title={t("payment")}>
+        <PaymentTab handleRefresh={handleRefresh} refresh={refresh}/>
       </Tab>
 
-      <Tab eventKey="sales-type" title="Sales Type">
-        <SalesTypeTab handleRefresh={handleRefresh} refresh={refresh} />
+      <Tab eventKey="sales-type" title={t("salesType")}>
+        <SalesTypeTab handleRefresh={handleRefresh} refresh={refresh} t={t}/>
       </Tab>
 
-      <Tab eventKey="table-management" title="Table Management">
-        <TableManagementTab handleRefresh={handleRefresh} refresh={refresh} />
+      <Tab eventKey="table-management" title={t("tableManagement")}>
+        <TableManagementTab handleRefresh={handleRefresh} refresh={refresh} t={t}/>
       </Tab>
     </Tabs>
   );

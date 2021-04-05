@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
-
+import { useTranslation } from "react-i18next";
 import { Paper } from "@material-ui/core";
 import { Button, InputGroup, Form, Row, Col, Dropdown } from "react-bootstrap";
 import DataTable from "react-data-table-component";
@@ -71,7 +71,7 @@ export const IncomingMaterialPage = () => {
       setAllOutlets([]);
     }
   };
-
+  const { t } = useTranslation();
   const getMaterials = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
@@ -148,22 +148,22 @@ export const IncomingMaterialPage = () => {
       width: "50px"
     },
     {
-      name: "Incoming Stock ID",
+      name: `${t("incomingStockID")}`,
       selector: "code",
       sortable: true
     },
     {
-      name: "Location",
+      name: `${t("location")}`,
       selector: "outlet_name",
       sortable: true
     },
     {
-      name: "Date",
+      name: `${t("date")}`,
       selector: "date",
       sortable: true
     },
     {
-      name: "Actions",
+      name: `${t("actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -181,10 +181,10 @@ export const IncomingMaterialPage = () => {
                   }
                 }}
               >
-                <Dropdown.Item as="button">Detail</Dropdown.Item>
+                <Dropdown.Item as="button">{t("detail")}</Dropdown.Item>
               </Link>
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                Delete
+                {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -206,8 +206,8 @@ export const IncomingMaterialPage = () => {
   return (
     <>
       <ConfirmModal
-        title={`Delete Stock - ${currStock.code}`}
-        body="Are you sure want to delete?"
+        title={`${t("dashboard")} - ${currStock.code}`}
+        body={t("areYouSureWantToDelete?")}
         buttonColor="danger"
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
@@ -221,7 +221,7 @@ export const IncomingMaterialPage = () => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Incoming Stock</h3>
+                <h3>{t("incomingStock")}</h3>
               </div>
               <div className="headerEnd">
                 <Link
@@ -229,7 +229,7 @@ export const IncomingMaterialPage = () => {
                     pathname: "/ingredient-inventory"
                   }}
                 >
-                  <Button variant="outline-secondary">Back to Main View</Button>
+                  <Button variant="outline-secondary">{t("backToMainView")}</Button>
                 </Link>
 
                 <Link
@@ -239,7 +239,7 @@ export const IncomingMaterialPage = () => {
                   }}
                 >
                   <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
-                    Add New Incoming Stock
+                    {t("addNewIncomingStock")}
                   </Button>
                 </Link>
               </div>
@@ -255,7 +255,7 @@ export const IncomingMaterialPage = () => {
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control
-                      placeholder="Search..."
+                      placeholder={t("search")}
                       value={search}
                       onChange={handleSearch}
                     />

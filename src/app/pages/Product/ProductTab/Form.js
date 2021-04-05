@@ -105,7 +105,7 @@ const FormTemplate = ({
         <Row style={{ padding: "1rem" }}>
           <Col>
             <Form.Group>
-              <Form.Label>{t("productModule.outlet")}*</Form.Label>
+              <Form.Label>{t("outlet")}*</Form.Label>
               <Select
                 options={optionsOutlet}
                 defaultValue={defaultValueOutlet}
@@ -127,7 +127,7 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>{t("productModule.productName")}*</Form.Label>
+              <Form.Label>{t("productName")}*</Form.Label>
               <Form.Control
                 type="text"
                 name="name"
@@ -153,7 +153,7 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>{t("productModule.category")}</Form.Label>
+              <Form.Label>{t("category")}</Form.Label>
               <Select
                 options={optionsCategory}
                 defaultValue={defaultValueCategory}
@@ -178,7 +178,7 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>{t("productModule.price")}*</Form.Label>
+              <Form.Label>{t("price")}*</Form.Label>
               <Form.Control
                 type="number"
                 name="price"
@@ -196,7 +196,7 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>{t("productModule.purchasePrice")}*</Form.Label>
+              <Form.Label>{t("purchasePrice")}*</Form.Label>
               <Form.Control
                 type="number"
                 name="price_purchase"
@@ -246,7 +246,7 @@ const FormTemplate = ({
 
             <Form.Group>
               <div>
-                <Form.Label>{t("productModule.productStatus")}*</Form.Label>
+                <Form.Label>{t("productStatus")}*</Form.Label>
               </div>
               <div>
                 {["Active", "Inactive"].map((item, index) => {
@@ -285,7 +285,7 @@ const FormTemplate = ({
                   <Form.Label
                     style={{ alignSelf: "center", marginRight: "1rem" }}
                   >
-                    {t("productModule.productFavorite")}*
+                    {t("productFavorite")}*
                   </Form.Label>
                   <FormControlLabel
                     value={formikProduct.values.is_favorite}
@@ -310,7 +310,7 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>{t("productModule.productDescription")}</Form.Label>
+              <Form.Label>{t("productDescription")}</Form.Label>
               <Form.Control
                 as="textarea"
                 name="description"
@@ -330,7 +330,7 @@ const FormTemplate = ({
 
           <Col>
             <Form.Group>
-              <Form.Label>{t("productModule.barcode")}</Form.Label>
+              <Form.Label>{t("barcode")}</Form.Label>
               <Form.Control
                 type="text"
                 name="barcode"
@@ -347,7 +347,7 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>{t("productModule.sku")}</Form.Label>
+              <Form.Label>{t("sku")}</Form.Label>
               <Form.Control
                 type="text"
                 name="sku"
@@ -366,7 +366,7 @@ const FormTemplate = ({
 
             <Form.Group style={{ margin: 0 }}>
               <Form.Label style={{ alignSelf: "center", marginRight: "1rem" }}>
-                {t("productModule.stock")}
+                {t("stock")}
               </Form.Label>
               <FormControlLabel
                 value={formikProduct.values.has_stock}
@@ -394,7 +394,7 @@ const FormTemplate = ({
             <div className="box" style={{ marginBottom: "1rem" }}>
               <Form.Group>
                 <Form.Label>
-                  {title === "Add Product" ? `${t("productModule.startingStock")}` : `${t("productModule.stock")}`}
+                  {title === "Add Product" ? `${t("startingStock")}` : `${t("stock")}`}
                 </Form.Label>
                 <Form.Control
                   type="number"
@@ -413,7 +413,7 @@ const FormTemplate = ({
               </Form.Group>
 
               <Form.Group>
-                <Form.Label>{t("productModule.unit")}</Form.Label>
+                <Form.Label>{t("unit")}</Form.Label>
                 <Select
                   options={optionsUnit}
                   defaultValue={defaultValueUnit(formikProduct.values.unit_id)}
@@ -437,7 +437,7 @@ const FormTemplate = ({
 
               <Form.Group>
                 <Form.Label style={{ marginRight: "1rem" }}>
-                  {t("productModule.expiredDate")}
+                  {t("expiredDate")}
                 </Form.Label>
                 <FormControlLabel
                   value={hasExpiredDate}
@@ -478,7 +478,7 @@ const FormTemplate = ({
             </div>
 
             <Form.Group>
-              <Form.Label>{t("productModule.productPhoto")}</Form.Label>
+              <Form.Label>{t("productPhoto")}</Form.Label>
               {alertPhoto ? <Alert variant="danger">{alertPhoto}</Alert> : ""}
               <div
                 {...getRootProps({
@@ -528,7 +528,7 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>{t("productModule.productType")}*</Form.Label>
+              <Form.Label>{t("productType")}*</Form.Label>
               <Row style={{ padding: "1rem" }}>
                 {[
                   {
@@ -537,7 +537,7 @@ const FormTemplate = ({
                     checked: formikProduct.values.has_recipe ? false : true
                   },
                   {
-                    name: `${t("productModule.withRecipe")}`,
+                    name: `${t("withRecipe")}`,
                     value: true,
                     checked: formikProduct.values.has_recipe ? true : false
                   }
@@ -584,9 +584,9 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>{t("productModule.productAddOns")}</Form.Label>
+              <Form.Label>{t("productAddOns")}</Form.Label>
               <div style={{ padding: "0.5rem" }}>
-                <Button onClick={showModalAddons}>{t("productModule.manageAddOns")}</Button>
+                <Button onClick={showModalAddons}>{t("manageAddOns")}</Button>
               </div>
             </Form.Group>
           </Col>

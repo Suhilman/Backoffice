@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useTranslation } from "react-i18next";
 
 import {
   Row,
@@ -70,7 +71,7 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
       setAllTaxTypes([]);
     }
   };
-
+  const { t } = useTranslation();
   React.useEffect(() => {
     getTypes();
     getOutlets();
@@ -251,22 +252,22 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
       width: "50px"
     },
     {
-      name: "Name",
+      name: `${t("name")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: "Type",
+      name: `${t("type")}`,
       selector: "type",
       sortable: true
     },
     {
-      name: "Amount",
+      name: `${t("amount")}`,
       selector: "amount",
       sortable: true
     },
     {
-      name: "Actions",
+      name: `${t("actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -279,13 +280,13 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
                 as="button"
                 onClick={() => showEditModalOutlet(rows)}
               >
-                Edit
+                {t("edit")}
               </Dropdown.Item>
               <Dropdown.Item
                 as="button"
                 onClick={() => showDeleteModalTax(rows)}
               >
-                Delete
+                {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -311,9 +312,10 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
   return (
     <Row>
       <ModalTax
+        t={t}
         stateModal={stateAddModal}
         cancelModal={cancelAddModalTax}
-        title={"Add New Tax/Charges"}
+        title={t("addNewTax/Charges")}
         loading={loading}
         formikTax={formikTax}
         validationTax={validationTax}
@@ -323,9 +325,10 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
       />
 
       <ModalTax
+        t={t}
         stateModal={stateEditModal}
         cancelModal={cancelEditModalTax}
-        title={`Edit Tax - ${formikTaxEdit.getFieldProps("name").value}`}
+        title={`${t("editTax")} - ${formikTaxEdit.getFieldProps("name").value}`}
         loading={loading}
         formikTax={formikTaxEdit}
         validationTax={validationTaxEdit}
@@ -335,10 +338,11 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
       />
 
       <ShowConfirmModal
+        t={t}
         state={stateDeleteModal}
         closeModal={cancelDeleteModalTax}
-        title={`Delete Tax - ${formikTax.getFieldProps("name").value}`}
-        body={"Are you sure want to delete?"}
+        title={`${t("deleteTax")} - ${formikTax.getFieldProps("name").value}`}
+        body={t("areYouSureWantToDelete?")}
         loading={loading}
         buttonColor="danger"
         handleClick={handleDeleteTax}
@@ -348,7 +352,7 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div className="headerPage">
             <div className="headerStart">
-              <h3>Tax & Charges</h3>
+              <h3>{t("tax&Charges")}</h3>
             </div>
             <div className="headerEnd">
               <Button
@@ -356,7 +360,7 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
                 style={{ marginLeft: "0.5rem" }}
                 onClick={showAddModalTax}
               >
-                Add New Tax
+                {t("addNewTax")}
               </Button>
             </div>
           </div>
@@ -371,7 +375,7 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
                     </InputGroup.Text>
                   </InputGroup.Prepend>
                   <FormControl
-                    placeholder="Search..."
+                    placeholder={t("search")}
                     value={search}
                     onChange={handleSearch}
                   />
@@ -384,7 +388,7 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
                       <Form.Label
                         style={{ alignSelf: "center", marginBottom: "0" }}
                       >
-                        Type:
+                        {t("type")}:
                       </Form.Label>
                       <Col>
                         <Form.Control
@@ -393,7 +397,7 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
                           value={filter.type}
                           onChange={handleFilter}
                         >
-                          <option value="">All</option>
+                          <option value="">{t("all")}</option>
                           {allTypes.map((item) => {
                             return (
                               <option key={item.id} value={item.id}>

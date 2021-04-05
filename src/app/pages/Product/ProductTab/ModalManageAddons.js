@@ -215,7 +215,7 @@ const ModalManageVariant = ({
 
                                                   <Col>
                                                     <Form.Label>
-                                                      {t("productModule.unit")}
+                                                      {t("unit")}
                                                     </Form.Label>
                                                     <Select
                                                       options={optionsUnit}
@@ -242,7 +242,7 @@ const ModalManageVariant = ({
                                               )}
 
                                               <Col>
-                                                <Form.Label>{t("productModule.price")}</Form.Label>
+                                                <Form.Label>{t("price")}</Form.Label>
                                                 <Form.Control
                                                   type="number"
                                                   name={`groupAddons[${index}].addons[${valIndex}].price`}

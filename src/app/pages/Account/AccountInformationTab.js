@@ -3,6 +3,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useTranslation } from "react-i18next";
 
 import { Row, Col, Button, Modal, Form, Spinner, Alert } from "react-bootstrap";
 import { Paper } from "@material-ui/core";
@@ -10,6 +11,7 @@ import { Paper } from "@material-ui/core";
 import "../style.css";
 
 export const AccountInformation = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [stateModal, setStateModal] = React.useState(false);
@@ -28,7 +30,6 @@ export const AccountInformation = () => {
     new_pin: "",
     pin_confirmation: ""
   });
-
   const userInfo = JSON.parse(localStorage.getItem("user_info"));
   const isOwner = userInfo.owner_id ? true : false;
 
@@ -203,28 +204,28 @@ export const AccountInformation = () => {
 
   const allFields = [
     {
-      field: isOwner ? "Business Name" : "Name",
+      field: isOwner ? `${t("businessName")}` : `${t("name")}`,
       value: account.name
     },
     {
-      field: "Email",
+      field: `${t("email")}`,
       value: account.email
     },
     {
-      field: "Phone number",
+      field: `${t("phoneNumber")}`,
       value: account.phone_number
     },
     {
-      field: "Registration Date",
+      field: `${t("registrationDate")}`,
       value: account.registration_date
     },
     {
-      field: "Last Login",
+      field: `${t("lastLogin")}`,
       name: "last_login",
       value: account.last_login
     },
     {
-      field: isOwner ? "Store ID" : "Staff ID",
+      field: isOwner ? `${t("storeID")}` : `${t("staffID")}`,
       value: isOwner ? account.store_id : account.staff_id
     }
   ];
@@ -247,11 +248,11 @@ export const AccountInformation = () => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Account Information</h3>
+                <h3>{t("accountInformation")}</h3>
               </div>
               <div className="headerEnd">
                 <Button variant="primary" onClick={openModal}>
-                  Change Account Information
+                  {t("changeAccountInformation")}
                 </Button>
               </div>
             </div>
@@ -280,10 +281,11 @@ const ModalAccountInformation = ({
   validationAccount,
   isOwner
 }) => {
+  const { t } = useTranslation();
   return (
     <Modal show={state} onHide={closeModal}>
       <Modal.Header closeButton>
-        <Modal.Title>Change Account Information</Modal.Title>
+        <Modal.Title>{t("changeAccountInformation")}</Modal.Title>
       </Modal.Header>
 
       <Form onSubmit={formikAccount.handleSubmit}>
@@ -293,7 +295,7 @@ const ModalAccountInformation = ({
           <Row>
             <Col md={6}>
               <Form.Group>
-                <Form.Label>Email</Form.Label>
+                <Form.Label>{t("email")}</Form.Label>
                 <Form.Control
                   type="email"
                   name="email"
@@ -311,7 +313,7 @@ const ModalAccountInformation = ({
               </Form.Group>
 
               <Form.Group>
-                <Form.Label>Old Password</Form.Label>
+                <Form.Label>{t("oldPassword")}</Form.Label>
                 <Form.Control
                   type="password"
                   name="old_password"
@@ -330,7 +332,7 @@ const ModalAccountInformation = ({
               </Form.Group>
 
               <Form.Group>
-                <Form.Label>New Password</Form.Label>
+                <Form.Label>{t("newPassword")}</Form.Label>
                 <Form.Control
                   type="password"
                   name="new_password"
@@ -349,7 +351,7 @@ const ModalAccountInformation = ({
               </Form.Group>
 
               <Form.Group>
-                <Form.Label>Confirm Password</Form.Label>
+                <Form.Label>{t("confirmPassword")}</Form.Label>
                 <Form.Control
                   type="password"
                   name="password_confirmation"
@@ -370,7 +372,7 @@ const ModalAccountInformation = ({
 
             <Col md={6}>
               <Form.Group>
-                <Form.Label>Phone Number</Form.Label>
+                <Form.Label>{t("phoneNumber")}</Form.Label>
                 <Form.Control
                   type="text"
                   name="phone_number"
@@ -391,7 +393,7 @@ const ModalAccountInformation = ({
               {!isOwner ? (
                 <>
                   <Form.Group>
-                    <Form.Label>Old Pin</Form.Label>
+                    <Form.Label>{t("oldPin")}</Form.Label>
                     <Form.Control
                       type="password"
                       name="old_pin"
@@ -410,7 +412,7 @@ const ModalAccountInformation = ({
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>New Pin</Form.Label>
+                    <Form.Label>{t("newPin")}</Form.Label>
                     <Form.Control
                       type="password"
                       name="new_pin"
@@ -429,7 +431,7 @@ const ModalAccountInformation = ({
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>Confirm Pin</Form.Label>
+                    <Form.Label>{t("confirmPin")}</Form.Label>
                     <Form.Control
                       type="password"
                       name="pin_confirmation"
@@ -456,13 +458,13 @@ const ModalAccountInformation = ({
 
         <Modal.Footer>
           <Button variant="secondary" onClick={closeModal}>
-            Close
+            {t("close")}
           </Button>
           <Button variant="primary" type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         </Modal.Footer>

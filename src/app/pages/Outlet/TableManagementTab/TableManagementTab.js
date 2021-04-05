@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
+import { useTranslation } from "react-i18next";
 import { Row, Col, Button, Form, Dropdown, InputGroup } from "react-bootstrap";
 
 import DataTable from "react-data-table-component";
@@ -21,7 +21,7 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
-
+  const { t } = useTranslation();
   const [allTables, setAllTables] = React.useState([]);
   const [allOutlets, setAllOutlets] = React.useState([]);
 
@@ -230,27 +230,27 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
       width: "50px"
     },
     {
-      name: "Outlet Name",
+      name: `${t("outletName")}`,
       selector: "outlet_name",
       sortable: true
     },
     {
-      name: "Name",
+      name: `${t("name")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: "Capacity",
+      name: `${t("capacity")}`,
       selector: "capacity",
       sortable: true
     },
     {
-      name: "Status",
+      name: `${t("status")}`,
       selector: "status",
       sortable: true
     },
     {
-      name: "Actions",
+      name: `${t("actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -263,13 +263,13 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
                 as="button"
                 onClick={() => showEditModalTable(rows)}
               >
-                Edit
+                {t("edit")}
               </Dropdown.Item>
               <Dropdown.Item
                 as="button"
                 onClick={() => showDeleteModalTable(rows)}
               >
-                Delete
+                {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -296,9 +296,10 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
   return (
     <Row>
       <ModalTable
+        t={t}
         stateModal={stateAddModal}
         cancelModal={cancelAddModalTable}
-        title={"Add New Table"}
+        title={t("addNewTable")}
         loading={loading}
         formikTable={formikTable}
         validationTable={validationTable}
@@ -306,9 +307,10 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
       />
 
       <ModalTable
+        t={t}
         stateModal={stateEditModal}
         cancelModal={cancelEditModalTable}
-        title={`Edit Table - ${formikTableEdit.getFieldProps("name").value}`}
+        title={`${t("editTable")} - ${formikTableEdit.getFieldProps("name").value}`}
         loading={loading}
         formikTable={formikTableEdit}
         validationTable={validationTableEdit}
@@ -318,8 +320,8 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
       <ShowConfirmModal
         state={stateDeleteModal}
         closeModal={cancelDeleteModalTable}
-        title={`Delete Table - ${formikTable.getFieldProps("name").value}`}
-        body={"Are you sure want to delete?"}
+        title={`${t("deleteTable")} - ${formikTable.getFieldProps("name").value}`}
+        body={t("areYouSureWantToDelete?")}
         loading={loading}
         buttonColor="danger"
         handleClick={handleDeleteTable}
@@ -329,7 +331,7 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div className="headerPage">
             <div className="headerStart">
-              <h3>Table Management</h3>
+              <h3>{t("tableManagement")}</h3>
             </div>
             <div className="headerEnd">
               <Button
@@ -337,7 +339,7 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
                 style={{ marginLeft: "0.5rem" }}
                 onClick={showAddModalTable}
               >
-                Add New Table
+                {t("addNewTable")}
               </Button>
             </div>
           </div>
@@ -353,7 +355,7 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
                   </InputGroup.Prepend>
                   <Form.Control
                     type="text"
-                    placeholder="Search..."
+                    placeholder={t("search")}
                     value={search}
                     onChange={handleSearch}
                   />

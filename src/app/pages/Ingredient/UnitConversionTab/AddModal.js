@@ -13,7 +13,8 @@ const AddModal = ({
   alert,
   formikUnitConversion,
   validationUnitConverion,
-  allUnits
+  allUnits,
+  t
 }) => {
   const optionsUnitFrom = allUnits.map((item) => {
     return { value: item.id, label: item.name };
@@ -42,7 +43,7 @@ const AddModal = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Name:</Form.Label>
+                <Form.Label>{t("name")}:</Form.Label>
                 <Form.Control
                   type="text"
                   name="name"
@@ -65,7 +66,7 @@ const AddModal = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>1 Unit of:</Form.Label>
+                <Form.Label>{t("1UnitOf")}:</Form.Label>
                 <Select
                   options={optionsUnitFrom}
                   defaultValue={defaultValueUnitFrom}
@@ -91,12 +92,12 @@ const AddModal = ({
             </Col>
 
             <Col sm={1} style={{ padding: 0, alignSelf: "center" }}>
-              <p style={{ margin: 0, textAlign: "center" }}>Equals to</p>
+              <p style={{ margin: 0, textAlign: "center" }}>{t("equalsTo")}</p>
             </Col>
 
             <Col>
               <Form.Group>
-                <Form.Label>Value:</Form.Label>
+                <Form.Label>{t("value")}:</Form.Label>
                 <Form.Control
                   type="number"
                   name="value"
@@ -117,7 +118,7 @@ const AddModal = ({
 
             <Col>
               <Form.Group>
-                <Form.Label>Unit To:</Form.Label>
+                <Form.Label>{t("unitTo")}:</Form.Label>
                 <Select
                   options={optionsUnitTo}
                   defaultValue={defaultValueUnitTo}
@@ -146,13 +147,13 @@ const AddModal = ({
 
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>
-            Cancel
+          {t("cancel")}
           </Button>
           <Button variant="primary" type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save Changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         </Modal.Footer>

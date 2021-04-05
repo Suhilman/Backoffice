@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-
+import { useTranslation } from "react-i18next";
 import { Paper } from "@material-ui/core";
 import {
   Button,
@@ -291,7 +291,7 @@ const InventoryIngredientTab = ({
       disableLoading();
     }
   };
-
+  const { t } = useTranslation();
   const columns = [
     {
       name: "No.",
@@ -300,34 +300,33 @@ const InventoryIngredientTab = ({
       width: "50px"
     },
     {
-      name: "Location",
+      name: `${t("location")}`,
       selector: "location",
       sortable: true
     },
     {
-      name: "Name",
+      name: `${t("name")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: "Stock",
+      name: `${t("stock")}`,
       selector: "stock",
       sortable: true
     },
     {
-      name: "Unit",
+      name: `${t("unit")}`,
       selector: "unit_name",
       sortable: true
     },
     {
-      name: "Notes",
+      name: `${t("notes")}`,
       selector: "notes",
       sortable: true
     },
     {
-      name: "Actions",
+      name: `${t("actions")}`,
       cell: (rows) => {
-        console.log('ini rows apa?')
         return (
           <Dropdown>
             <Dropdown.Toggle variant="secondary">
@@ -336,10 +335,10 @@ const InventoryIngredientTab = ({
 
             <Dropdown.Menu>
               <Dropdown.Item as="button" onClick={() => showEditModal(rows)}>
-                Edit
+                {t("edit")}
               </Dropdown.Item>
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                Delete
+                {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -388,9 +387,9 @@ const InventoryIngredientTab = ({
         <ListGroup style={{ padding: "1rem", marginLeft: "1rem" }}>
           <ListGroup.Item>
             <Row>
-              <Col style={{ fontWeight: "700" }}>Batch</Col>
-              <Col style={{ fontWeight: "700" }}>Stock</Col>
-              <Col style={{ fontWeight: "700" }}>Unit</Col>
+              <Col style={{ fontWeight: "700" }}>{t("batch")}</Col>
+              <Col style={{ fontWeight: "700" }}>{t("stock")}</Col>
+              <Col style={{ fontWeight: "700" }}>{t("unit")}</Col>
             </Row>
           </ListGroup.Item>
           {stockData.length ? (
@@ -422,9 +421,10 @@ const InventoryIngredientTab = ({
   return (
     <>
       <AddModal
+        t={t}
         stateModal={stateAddModal}
         cancelModal={closeAddModal}
-        title="Add New Raw Material"
+        title={t("addNewRawMaterial")}
         loading={loading}
         alert={alert}
         formikMaterial={formikMaterial}
@@ -435,9 +435,10 @@ const InventoryIngredientTab = ({
       />
 
       <EditModal
+        t={t}
         stateModal={stateEditModal}
         cancelModal={closeEditModal}
-        title="Edit Raw Material"
+        title={t("editRawMaterial")}
         loading={loading}
         alert={alert}
         formikMaterial={formikEditMaterial}
@@ -448,10 +449,11 @@ const InventoryIngredientTab = ({
       />
 
       <ConfirmModal
+        t={t}
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
-        title={`Delete Raw Material - ${currMaterial.name}`}
-        body={"Are you sure want to delete?"}
+        title={`${t("deleteRawMaterial")} - ${currMaterial.name}`}
+        body={t("areYouSureWantToDelete?")}
         loading={loading}
         buttonColor="danger"
         handleClick={() => handleDeleteMaterial(currMaterial.id)}
@@ -462,17 +464,17 @@ const InventoryIngredientTab = ({
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Raw Material</h3>
+                <h3>{t("rawMaterial")}</h3>
               </div>
               <div className="headerEnd" style={{ display: "flex" }}>
                 <div style={{ marginRight: "0.5rem" }}>
                   <Button variant="primary" onClick={showAddModal}>
-                    Add Raw Material
+                    {t("addRawMaterial")}
                   </Button>
                 </div>
 
                 <Dropdown>
-                  <Dropdown.Toggle variant="light">Stock</Dropdown.Toggle>
+                  <Dropdown.Toggle variant="light">{t("stock")}</Dropdown.Toggle>
 
                   <Dropdown.Menu>
                     <Link
@@ -480,28 +482,28 @@ const InventoryIngredientTab = ({
                         pathname: "/ingredient-inventory/incoming-stock"
                       }}
                     >
-                      <Dropdown.Item as="button">Incoming Stock</Dropdown.Item>
+                      <Dropdown.Item as="button">{t("incomingStock")}</Dropdown.Item>
                     </Link>
                     <Link
                       to={{
                         pathname: "/ingredient-inventory/outcoming-stock"
                       }}
                     >
-                      <Dropdown.Item as="button">Outcoming Stock</Dropdown.Item>
+                      <Dropdown.Item as="button">{t("outcomingStock")}</Dropdown.Item>
                     </Link>
                     <Link
                       to={{
                         pathname: "/ingredient-inventory/transfer-stock"
                       }}
                     >
-                      <Dropdown.Item as="button">Transfer Stock</Dropdown.Item>
+                      <Dropdown.Item as="button">{t("transferStock")}</Dropdown.Item>
                     </Link>
                     <Link
                       to={{
                         pathname: "/ingredient-inventory/stock-opname"
                       }}
                     >
-                      <Dropdown.Item as="button">Stock Opname</Dropdown.Item>
+                      <Dropdown.Item as="button">{t("stockOpname")}</Dropdown.Item>
                     </Link>
                   </Dropdown.Menu>
                 </Dropdown>
@@ -524,7 +526,7 @@ const InventoryIngredientTab = ({
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control
-                      placeholder="Search..."
+                      placeholder={t("search")}
                       value={search}
                       onChange={handleSearch}
                     />

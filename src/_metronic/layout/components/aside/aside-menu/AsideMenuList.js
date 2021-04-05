@@ -287,7 +287,7 @@ function AsideMenuList(props) {
                           )}
                         />
                       </span>
-                      <span className="menu-text">{t("productModule.outlet")}</span>
+                      <span className="menu-text">{t("outlet")}</span>
                     </NavLink>
                   </li>
                 );

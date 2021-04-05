@@ -3,6 +3,7 @@ import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import imageCompression from 'browser-image-compression';
+import { useTranslation } from "react-i18next";
 
 import {
   Row,
@@ -51,7 +52,7 @@ export const OutletTab = ({
   const [alertPhoto, setAlertPhoto] = React.useState("");
 
   const debouncedSearch = useDebounce(search, 1000);
-
+  const { t } = useTranslation();
   const initialValueOutlet = {
     name: "",
     phone_number: "",
@@ -354,29 +355,28 @@ export const OutletTab = ({
       width: "50px"
     },
     {
-      name: "Outlet Name",
+      name: `${t("outletName")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: "Location",
+      name: `${t("location")}`,
       selector: "location",
       sortable: true
     },
     {
-      name: "Phone Number",
+      name: `${t("phoneNumber")}`,
       selector: "phone_number",
       sortable: true
     },
     {
-      name: "Tax Status",
+      name: `${t("taxStatus")}`,
       selector: "tax",
       sortable: true
     },
     {
-      name: "Actions",
+      name: `${t("actions")}`,
       cell: (rows) => {
-        console.log('ini rows apaan bro', rows)
         return (
           <Dropdown>
             <Dropdown.Toggle variant="secondary">
@@ -388,13 +388,13 @@ export const OutletTab = ({
                 as="button"
                 onClick={() => showEditModalOutlet(rows)}
               >
-                Edit
+                {t("edit")}
               </Dropdown.Item>
               <Dropdown.Item
                 as="button"
                 onClick={() => showDeleteModalOutlet(rows)}
               >
-                Delete
+                {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -479,6 +479,7 @@ export const OutletTab = ({
   return (
     <>
       <ModalOutlet
+        t={t}
         stateModal={stateAddModal}
         cancelModal={cancelAddModalOutlet}
         title={"Add New Outlet"}
@@ -498,9 +499,10 @@ export const OutletTab = ({
       />
 
       <ModalOutlet
+        t={t}
         stateModal={stateEditModal}
         cancelModal={cancelEditModalOutlet}
-        title={`Edit Outlet - ${formikOutletEdit.getFieldProps("name").value}`}
+        title={`${t("editOutlet")}} - ${formikOutletEdit.getFieldProps("name").value}`}
         loading={loading}
         formikOutlet={formikOutletEdit}
         validationOutlet={validationOutletEdit}
@@ -517,10 +519,11 @@ export const OutletTab = ({
       />
 
       <ShowConfirmModal
+        t={t}
         state={stateDeleteModal}
         closeModal={cancelDeleteModalOutlet}
-        title={`Delete Outlet - ${formikOutlet.getFieldProps("name").value}`}
-        body={"Are you sure want to delete?"}
+        title={`${t("deleteOutlet")} - ${formikOutlet.getFieldProps("name").value}`}
+        body={t("areYouSureWantToDelete?")}
         loading={loading}
         buttonColor="danger"
         handleClick={handleDeleteOutlet}
@@ -531,7 +534,7 @@ export const OutletTab = ({
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Outlet Information</h3>
+                <h3>{t("outletInformation")}</h3>
               </div>
               <div className="headerEnd">
                 <Button
@@ -539,7 +542,7 @@ export const OutletTab = ({
                   style={{ marginLeft: "0.5rem" }}
                   onClick={showAddModalOutlet}
                 >
-                  Add New Outlet
+                  {t("addNewOutlet")}
                 </Button>
               </div>
             </div>
@@ -554,7 +557,7 @@ export const OutletTab = ({
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control
-                      placeholder="Search..."
+                      placeholder={t("search")}
                       value={search}
                       onChange={handleSearch}
                     />
@@ -567,7 +570,7 @@ export const OutletTab = ({
                         <Form.Label
                           style={{ alignSelf: "center", marginBottom: "0" }}
                         >
-                          Time:
+                          {t("time")}:
                         </Form.Label>
                         <Col>
                           <Form.Control

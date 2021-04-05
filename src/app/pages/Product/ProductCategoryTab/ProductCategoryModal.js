@@ -23,7 +23,7 @@ const ProductCategoryModal = ({
           {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
           <Form.Group>
-            <Form.Label>{t("productModule.categoryName")}</Form.Label>
+            <Form.Label>{t("categoryName")}</Form.Label>
             <Form.Control
               type="text"
               placeholder="Ex. : Food"

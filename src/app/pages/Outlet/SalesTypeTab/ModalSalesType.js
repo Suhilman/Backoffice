@@ -20,7 +20,8 @@ const ModalPayment = ({
   loading,
   formikSalesType,
   validationSalesType,
-  alert
+  alert,
+  t
 }) => {
   return (
     <Modal show={stateModal} onHide={cancelModal} size="sm">
@@ -34,7 +35,7 @@ const ModalPayment = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Name:</Form.Label>
+                <Form.Label>{t("name")}:</Form.Label>
                 <Form.Control
                   type="text"
                   name="name"
@@ -57,7 +58,7 @@ const ModalPayment = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Charge:</Form.Label>
+                <Form.Label>{t("charge")}:</Form.Label>
                 <InputGroup className="pb-3">
                   <InputGroup.Prepend>
                     <InputGroup.Text style={{ background: "transparent" }}>
@@ -91,7 +92,7 @@ const ModalPayment = ({
               <Form.Group>
                 <Form.Check
                   type="checkbox"
-                  label="Require Table"
+                  label={t("requireTable")}
                   name="require_table"
                   value={formikSalesType.getFieldProps("require_table").value}
                   onChange={(e) => {
@@ -109,7 +110,7 @@ const ModalPayment = ({
               <Form.Group>
                 <Form.Check
                   type="checkbox"
-                  label="Is Booking"
+                  label={t("isBooking")}
                   name="is_booking"
                   value={formikSalesType.getFieldProps("is_booking").value}
                   onChange={(e) => {
@@ -127,7 +128,7 @@ const ModalPayment = ({
               <Form.Group>
                 <Form.Check
                   type="checkbox"
-                  label="Is Delivery"
+                  label={t("isDelivery")}
                   name="is_delivery"
                   value={formikSalesType.getFieldProps("is_delivery").value}
                   onChange={(e) => {
@@ -146,13 +147,13 @@ const ModalPayment = ({
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>
-            Cancel
+          {t("cancel")}
           </Button>
           <Button variant="primary" type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save Changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         </Modal.Footer>

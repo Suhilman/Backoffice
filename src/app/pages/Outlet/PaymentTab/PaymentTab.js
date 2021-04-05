@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
+import { useTranslation } from "react-i18next";
 import { Row, Col, Button, Form, Dropdown, InputGroup } from "react-bootstrap";
 import {
   Switch,
@@ -34,14 +34,14 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
 
   const [allPaymentMethods, setAllPaymentMethods] = React.useState([]);
   const [allTypes, setAllTypes] = React.useState([]);
-
+  const { t } = useTranslation();
   const [search, setSearch] = React.useState("");
   const [filter, setFilter] = React.useState({
     type: "",
     status: ""
   });
 
-  const allStatuses = ["Active", "Inactive"];
+  const allStatuses = [`${t("active")}`, `${t("inactive")}`];
   const debouncedSearch = useDebounce(search, 1000);
 
   const getPaymentMethod = async (search, filter) => {
@@ -307,22 +307,22 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       width: "50px"
     },
     {
-      name: "Name",
+      name: `${t("name")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: "Type",
+      name: `${t("type")}`,
       selector: "type",
       sortable: true
     },
     {
-      name: "MDR",
+      name: `${t("mdr")}`,
       selector: "mdr",
       sortable: true
     },
     {
-      name: "Status",
+      name: `${t("status")}`,
       cell: (rows) => {
         return (
           <FormControl component="fieldset">
@@ -344,7 +344,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       }
     },
     {
-      name: "Actions",
+      name: `${t("actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -357,13 +357,13 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
                 as="button"
                 onClick={() => showEditModalPayment(rows)}
               >
-                Edit
+                {t("edit")}
               </Dropdown.Item>
               <Dropdown.Item
                 as="button"
                 onClick={() => showDeleteModalPayment(rows)}
               >
-                Delete
+                {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -390,9 +390,10 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
   return (
     <Row>
       <ModalPayment
+        t={t}
         stateModal={stateAddModal}
         cancelModal={cancelAddModalPayment}
-        title={"Add New Payment Method"}
+        title={t("addNewPaymentMethod")}
         loading={loading}
         formikPayment={formikPayment}
         validationPayment={validationPayment}
@@ -404,9 +405,10 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       />
 
       <ModalPayment
+        t={t}
         stateModal={stateEditModal}
         cancelModal={cancelEditModalPayment}
-        title={`Edit Payment Method - ${
+        title={`${t("editPaymentMethod")} - ${
           formikPaymentEdit.getFieldProps("name").value
         }`}
         loading={loading}
@@ -422,10 +424,10 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       <ShowConfirmModal
         state={stateDeleteModal}
         closeModal={cancelDeleteModalPayment}
-        title={`Delete Payment Method - ${
+        title={`${t("deletePaymentMethod")} - ${
           formikPayment.getFieldProps("name").value
         }`}
-        body={"Are you sure want to delete?"}
+        body={t("areYouSureWantToDelete?")}
         loading={loading}
         buttonColor="danger"
         handleClick={handleDeletePayment}
@@ -435,7 +437,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div className="headerPage">
             <div className="headerStart">
-              <h3>Payment Methods</h3>
+              <h3>{t("paymentMethod")}</h3>
             </div>
             <div className="headerEnd">
               <Button
@@ -443,7 +445,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
                 style={{ marginLeft: "0.5rem" }}
                 onClick={showAddModalPayment}
               >
-                Add New Payment Method
+                  {t("addNewPaymentMethod")}
               </Button>
             </div>
           </div>
@@ -459,7 +461,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
                   </InputGroup.Prepend>
                   <Form.Control
                     type="text"
-                    placeholder="Search..."
+                    placeholder={t("search")}
                     value={search}
                     onChange={handleSearch}
                   />
@@ -472,7 +474,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
                       <Form.Label
                         style={{ alignSelf: "center", marginBottom: "0" }}
                       >
-                        Type:
+                        {t("type")}:
                       </Form.Label>
                       <Col>
                         <Form.Control
@@ -481,7 +483,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
                           value={filter.type}
                           onChange={handleFilter}
                         >
-                          <option value="">All</option>
+                          <option value="">{t("all")}</option>
                           {allTypes.map((item) => {
                             return (
                               <option key={item.id} value={item.id}>
@@ -498,7 +500,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
                       <Form.Label
                         style={{ alignSelf: "center", marginBottom: "0" }}
                       >
-                        Status:
+                        {t("status")}:
                       </Form.Label>
                       <Col>
                         <Form.Control
@@ -507,7 +509,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
                           value={filter.status}
                           onChange={handleFilter}
                         >
-                          <option value="">All</option>
+                          <option value="">{t("all")}</option>
                           {allStatuses.map((item, index) => {
                             return (
                               <option key={index} value={item.toLowerCase()}>

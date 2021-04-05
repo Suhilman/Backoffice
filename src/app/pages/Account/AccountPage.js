@@ -1,5 +1,5 @@
 import React from "react";
-
+import { useTranslation } from "react-i18next";
 import { Tabs, Tab } from "react-bootstrap";
 
 import { AccountInformation } from "./AccountInformationTab";
@@ -16,31 +16,31 @@ export const AccountPage = () => {
       : "owner";
     setUser(curr);
   };
-
+  const { t } = useTranslation();
   React.useEffect(() => {
     handleUser();
   }, []);
 
   return (
     <Tabs activeKey={tabs} onSelect={(v) => setTabs(v)}>
-      <Tab eventKey="account" title="Account Information">
-        <AccountInformation />
+      <Tab eventKey="account" title={t("accountInformation")}>
+        <AccountInformation/>
       </Tab>
 
       <Tab
         eventKey="business"
-        title="Business Information"
+        title={t("businessInformation")}
         disabled={user === "owner" ? false : true}
       >
-        <BusinessInformation />
+        <BusinessInformation/>
       </Tab>
 
       <Tab
         eventKey="email"
-        title="Email Notifications"
+        title={t("emailNotification")}
         disabled={user === "owner" ? false : true}
       >
-        <EmailNotifications />
+        <EmailNotifications/>
       </Tab>
     </Tabs>
   );

@@ -4,7 +4,7 @@ import { Link, useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import { useFormik, FormikProvider, FieldArray } from "formik";
 import Select from "react-select";
-
+import { useTranslation } from "react-i18next";
 import { Button, Form, Row, Col, Alert, Spinner } from "react-bootstrap";
 import { Paper } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
@@ -21,6 +21,7 @@ export const EditRecipePage = ({ location, match }) => {
     currRecipe
   } = location.state;
   const { recipeId } = match.params;
+  const { t } = useTranslation();
   // console.log('ini currRecipe di edit page', currRecipe)
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
@@ -258,7 +259,7 @@ export const EditRecipePage = ({ location, match }) => {
       <CustomModal
         stateModal={stateCustom}
         cancelModal={closeCustomModal}
-        title="Add Custom Material"
+        title={t("addCustomMaterial")}
         loading={loading}
         alert={alert}
         formikCustom={formikCustom}
@@ -271,7 +272,7 @@ export const EditRecipePage = ({ location, match }) => {
             <Form noValidate onSubmit={formikRecipe.handleSubmit}>
               <div className="headerPage">
                 <div className="headerStart">
-                  <h3>Edit Recipe</h3>
+                  <h3>{t("editRecipe")}</h3>
                 </div>
                 <div className="headerEnd">
                   <Link to="/ingredient-inventory">
@@ -298,7 +299,7 @@ export const EditRecipePage = ({ location, match }) => {
                   <Row>
                     <Col>
                       <Form.Group>
-                        <Form.Label>Location:</Form.Label>
+                        <Form.Label>{t("location")}:</Form.Label>
                         <Select
                           options={optionsOutlet}
                           defaultValue={defaultValueOutlet}
@@ -326,7 +327,7 @@ export const EditRecipePage = ({ location, match }) => {
                     </Col>
                     <Col>
                       <Form.Group>
-                        <Form.Label>Product Name:</Form.Label>
+                        <Form.Label>{t("productName")}:</Form.Label>
                         <Form.Control
                           type="text"
                           value={currRecipe.currProduct.name}
@@ -336,7 +337,7 @@ export const EditRecipePage = ({ location, match }) => {
                     </Col>
                     <Col>
                       <Form.Group>
-                        <Form.Label>Product Price:</Form.Label>
+                        <Form.Label>{t("productPrice")}:</Form.Label>
                         <Form.Control
                           type="text"
                           value={currRecipe.currProduct.price}
@@ -349,7 +350,7 @@ export const EditRecipePage = ({ location, match }) => {
                   <Row>
                     <Col sm={6}>
                       <Form.Group>
-                        <Form.Label>Notes:</Form.Label>
+                        <Form.Label>{t("notes")}:</Form.Label>
                         <Form.Control
                           as="textarea"
                           name="notes"
@@ -374,22 +375,22 @@ export const EditRecipePage = ({ location, match }) => {
                 <Col>
                   <Row>
                     <Col style={{ padding: "1rem", textAlign: "center" }}>
-                      <h6>Category</h6>
+                      <h6>{t("category")}</h6>
                     </Col>
                     <Col style={{ padding: "1rem", textAlign: "center" }}>
-                      <h6>Raw Material</h6>
+                      <h6>{t("rawMaterial")}</h6>
                     </Col>
                     <Col style={{ padding: "1rem", textAlign: "center" }}>
-                      <h6>Quantity</h6>
+                      <h6>{t("quantity")}</h6>
                     </Col>
                     <Col style={{ padding: "1rem", textAlign: "center" }}>
-                      <h6>Unit</h6>
+                      <h6>{t("unit")}</h6>
                     </Col>
                     <Col style={{ padding: "1rem", textAlign: "center" }}>
-                      <h6>Material Calorie</h6>
+                      <h6>{t("materialCalorie")}</h6>
                     </Col>
                     <Col style={{ padding: "1rem", textAlign: "center" }}>
-                      <h6>Ingredient Price</h6>
+                      <h6>{t("ingredientPrice")}</h6>
                     </Col>
                     <Col sm={1}></Col>
                   </Row>
@@ -795,7 +796,7 @@ export const EditRecipePage = ({ location, match }) => {
                                 onClick={() => arrayHelpers.push(materialValue)}
                                 variant="primary"
                               >
-                                + Add Raw Material
+                                + {t("addRawMaterial")}
                               </Button>
 
                               <Button
@@ -803,7 +804,7 @@ export const EditRecipePage = ({ location, match }) => {
                                 variant="secondary"
                                 style={{ marginLeft: "0.5rem" }}
                               >
-                                + Add Custom Material
+                                + {t("addCustomMaterial")}
                               </Button>
                             </Row>
                           </div>
@@ -819,7 +820,7 @@ export const EditRecipePage = ({ location, match }) => {
                 <Col></Col>
                 <Col></Col>
                 <Col style={{ textAlign: "right", alignSelf: "center" }}>
-                  <h6>Total</h6>
+                  <h6>{t("total")}</h6>
                 </Col>
                 <Col>
                   <Form.Control

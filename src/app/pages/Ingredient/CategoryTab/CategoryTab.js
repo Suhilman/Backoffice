@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import * as Yup from "yup";
 import { useFormik } from "formik";
+import { useTranslation } from "react-i18next";
 
 import { Paper } from "@material-ui/core";
 import { Button, InputGroup, Form, Row, Col, Dropdown } from "react-bootstrap";
@@ -17,7 +18,7 @@ import ConfirmModal from "../../../components/ConfirmModal";
 const CategoryTab = ({ refresh, handleRefresh }) => {
   const [alert, setAlert] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-
+  const { t } = useTranslation();
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
@@ -222,17 +223,17 @@ const CategoryTab = ({ refresh, handleRefresh }) => {
       width: "50px"
     },
     {
-      name: "Name",
+      name: `${t("name")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: "Number of Raw Material",
+      name: `${t("numberOfRawMaterial")}`,
       selector: "total",
       sortable: true
     },
     {
-      name: "Actions",
+      name: `${t("actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -242,10 +243,10 @@ const CategoryTab = ({ refresh, handleRefresh }) => {
 
             <Dropdown.Menu>
               <Dropdown.Item as="button" onClick={() => showEditModal(rows)}>
-                Edit
+              {t("edit")}
               </Dropdown.Item>
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                Delete
+              {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -268,18 +269,20 @@ const CategoryTab = ({ refresh, handleRefresh }) => {
   return (
     <>
       <AddModal
+        t={t}
         stateModal={stateAddModal}
         cancelModal={closeAddModal}
-        title="Add New Category"
+        title={t("addNewCategory")}
         loading={loading}
         alert={alert}
         formikCategory={formikCategory}
         validationCategory={validationCategory}
       />
       <AddModal
+        t={t}
         stateModal={stateEditModal}
         cancelModal={closeEditModal}
-        title="Edit Category"
+        title={t("editCategory")}
         loading={loading}
         alert={alert}
         formikCategory={formikEditCategory}
@@ -289,8 +292,8 @@ const CategoryTab = ({ refresh, handleRefresh }) => {
       <ConfirmModal
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
-        title={`Delete Category - ${currCategory.name}`}
-        body={"Are you sure want to delete?"}
+        title={`${t("deleteCategory")}-  ${currCategory.name}`}
+        body={t("")}
         loading={loading}
         buttonColor="danger"
         handleClick={() => handleDeleteCategory(currCategory.id)}

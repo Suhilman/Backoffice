@@ -11,7 +11,8 @@ const AddModal = ({
   loading,
   alert,
   formikCategory,
-  validationCategory
+  validationCategory,
+  t
 }) => {
   return (
     <Modal show={stateModal} onHide={cancelModal} size="sm">
@@ -24,7 +25,7 @@ const AddModal = ({
           {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
           <Form.Group>
-            <Form.Label>Name:</Form.Label>
+            <Form.Label>{t("name")}:</Form.Label>
             <Form.Control
               type="text"
               name="name"
@@ -44,13 +45,13 @@ const AddModal = ({
 
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>
-            Cancel
+          {t("cancel")}
           </Button>
           <Button variant="primary" type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save Changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         </Modal.Footer>

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import imageCompression from 'browser-image-compression';
+import { useTranslation } from "react-i18next";
 
 import { Row, Col, Button, Form, Spinner } from "react-bootstrap";
 import { Paper } from "@material-ui/core";
@@ -44,7 +45,7 @@ export const BusinessInformation = () => {
     city_id: "",
     location_id: ""
   });
-
+  const { t } = useTranslation();
   const BusinessSchema = Yup.object().shape({
     name: Yup.string()
       .min(3, "Minimum 3 characters.")
@@ -270,47 +271,47 @@ export const BusinessInformation = () => {
 
   const allFields = [
     {
-      field: "Business Name",
+      field: `${t("businessName")}`,
       value: business.name
     },
     {
-      field: "Province",
+      field: `${t("province")}`,
       value: business.province_name
     },
     {
-      field: "City",
+      field: `${t("city")}`,
       value: business.city_name
     },
     {
-      field: "Business Location",
+      field: `${t("location")}`,
       value: business.business_location
     },
     {
-      field: "Business Address",
+      field: `${t("businessAddress")}`,
       value: business.business_address
     },
     {
-      field: "Business Phone Number",
+      field: `${t("businessPhoneNumber")}`,
       value: business.business_phone_number
     },
     {
-      field: "KTP Number",
+      field: `${t("ktpNumber")}`,
       value: business.ktp_number
     },
     {
-      field: "NPWP Number",
+      field: `${t("npwpNumber")}`,
       value: business.npwp_number
     },
     {
-      field: "Business Type",
+      field: `${t("businessType")}`,
       value: business.business_type
     },
     {
-      field: "Payment Method",
+      field: `${t("paymentMethod")}`,
       value: business.payment_method
     },
     {
-      field: "Sales Type",
+      field: `${t("salesType")}`,
       value: business.sales_type
     }
   ];
@@ -375,12 +376,12 @@ export const BusinessInformation = () => {
           <Form noValidate onSubmit={formikBusiness.handleSubmit}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Business Information</h3>
+                <h3>{t("businessInformation")}</h3>
               </div>
               <div className="headerEnd">
                 {stateComponent === "show" ? (
                   <Button variant="primary" onClick={handleStateComponent}>
-                    Change Business Information
+                    {t("changeBusinessInformation")}
                   </Button>
                 ) : (
                   <>
@@ -389,13 +390,13 @@ export const BusinessInformation = () => {
                       onClick={handleStateComponent}
                       style={{ marginRight: "1rem" }}
                     >
-                      Cancel
+                      {t("cancel")}
                     </Button>
                     <Button variant="primary" type="submit">
                       {loading ? (
                         <Spinner animation="border" variant="light" size="sm" />
                       ) : (
-                        "Save changes"
+                        `${t("saveChanges")}`
                       )}
                     </Button>
                   </>
@@ -416,12 +417,12 @@ export const BusinessInformation = () => {
               <Row style={{ padding: "1rem" }}>
                 <Col>
                   <Row style={{ padding: "1rem" }}>
-                    <h5>Change Business Information</h5>
+                    <h5>{t("changeBusinessInformation")}</h5>
                   </Row>
                   <Row style={{ padding: "1rem" }}>
                     <Col md={6}>
                       <Form.Group style={{ width: "80%" }}>
-                        <Form.Label>Business Name</Form.Label>
+                        <Form.Label>{t("businessName")}</Form.Label>
                         <Form.Control
                           type="text"
                           name="name"
@@ -440,7 +441,7 @@ export const BusinessInformation = () => {
                       </Form.Group>
 
                       <Form.Group style={{ width: "80%" }}>
-                        <Form.Label>KTP Number</Form.Label>
+                        <Form.Label>{t("ktpNumber")}</Form.Label>
                         <Form.Control
                           type="text"
                           name="ktp_number"
@@ -459,7 +460,7 @@ export const BusinessInformation = () => {
                       </Form.Group>
 
                       <Form.Group style={{ width: "80%" }}>
-                        <Form.Label>NPWP Number</Form.Label>
+                        <Form.Label>{t("npwpNumber")}</Form.Label>
                         <Form.Control
                           type="text"
                           name="npwp_number"
@@ -478,7 +479,7 @@ export const BusinessInformation = () => {
                       </Form.Group>
 
                       <Form.Group style={{ width: "80%" }}>
-                        <Form.Label>Business Category</Form.Label>
+                        <Form.Label>{t("businessCategory")}</Form.Label>
                         <Form.Control
                           as="select"
                           name="business_type_id"
@@ -508,8 +509,8 @@ export const BusinessInformation = () => {
                     </Col>
                     <Col md={6}>
                       <label>
-                        Upload KTP Picture
-                        <small className="ml-4">File size limit: 2 MB</small>
+                        {t("uploadKtpPicture")}
+                        <small className="ml-4">{t("fileSizeLimit")}</small>
                       </label>
                       <Row className="box">
                         <Col>
@@ -536,14 +537,14 @@ export const BusinessInformation = () => {
                             htmlFor="upload-ktp-file"
                             className="btn btn-primary"
                           >
-                            Upload File
+                            {t("uploadFile")}
                           </label>
                         </Col>
                       </Row>
 
                       <label>
-                        Upload NPWP Picture
-                        <small className="ml-4">File size limit: 2 MB</small>
+                        {t("uploadNpwpPicture")}
+                        <small className="ml-4">{t("fileSizeLimit")}</small>
                       </label>
                       <Row className="box">
                         <Col>
@@ -571,14 +572,14 @@ export const BusinessInformation = () => {
                             htmlFor="upload-npwp-file"
                             className="btn btn-primary"
                           >
-                            Upload File
+                            {t("uploadFile")}
                           </label>
                         </Col>
                       </Row>
 
                       <label>
-                        Upload Business Picture
-                        <small className="ml-4">File size limit: 2 MB</small>
+                        {t("uploadBusinessPicture")}
+                        <small className="ml-4">{t("fileSizeLimit")}</small>
                       </label>
                       <Row className="box">
                         <Col>
@@ -606,7 +607,7 @@ export const BusinessInformation = () => {
                             htmlFor="upload-business-file"
                             className="btn btn-primary"
                           >
-                            Upload File
+                            {t("uploadFile")}
                           </label>
                         </Col>
                       </Row>
@@ -614,12 +615,12 @@ export const BusinessInformation = () => {
                   </Row>
 
                   <Row style={{ padding: "1rem" }}>
-                    <h5>Change Business Location</h5>
+                    <h5>{t("changeBusinessLocation")}</h5>
                   </Row>
                   <Row style={{ padding: "1rem" }}>
                     <Col md={6}>
                       <Form.Group>
-                        <Form.Label>Province</Form.Label>
+                        <Form.Label>{t("province")}</Form.Label>
                         <Form.Control
                           as="select"
                           name="province_id"
@@ -650,7 +651,7 @@ export const BusinessInformation = () => {
                       </Form.Group>
 
                       <Form.Group>
-                        <Form.Label>Location</Form.Label>
+                        <Form.Label>{t("location")}</Form.Label>
                         <Form.Control
                           as="select"
                           name="location_id"
@@ -659,7 +660,7 @@ export const BusinessInformation = () => {
                           required
                         >
                           <option value={""} disabled hidden>
-                            Choose a Location
+                            {t("chooseALocation")}
                           </option>
                           {allLocations.length
                             ? allLocations.map((item) => {
@@ -682,7 +683,7 @@ export const BusinessInformation = () => {
                       </Form.Group>
 
                       <Form.Group>
-                        <Form.Label>Phone Number</Form.Label>
+                        <Form.Label>{t("phoneNumber")}</Form.Label>
                         <Form.Control
                           type="text"
                           name="business_phone_number"
@@ -706,7 +707,7 @@ export const BusinessInformation = () => {
                     </Col>
                     <Col md={6}>
                       <Form.Group>
-                        <Form.Label>City</Form.Label>
+                        <Form.Label>{t("city")}</Form.Label>
                         <Form.Control
                           as="select"
                           name="city_id"
@@ -717,7 +718,7 @@ export const BusinessInformation = () => {
                           required
                         >
                           <option value={""} disabled hidden>
-                            Choose a City
+                            {t("chooseACity")}
                           </option>
                           {allCities.length
                             ? allCities.map((item) => {
@@ -740,7 +741,7 @@ export const BusinessInformation = () => {
                       </Form.Group>
 
                       <Form.Group>
-                        <Form.Label>Address</Form.Label>
+                        <Form.Label>{t("address")}</Form.Label>
                         <Form.Control
                           as="textarea"
                           name="business_address"

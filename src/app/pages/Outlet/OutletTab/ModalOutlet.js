@@ -22,7 +22,8 @@ const ModalOutlet = ({
   alertPhoto,
   photoPreview,
   photo,
-  handlePreviewPhoto
+  handlePreviewPhoto,
+  t
 }) => {
   const [paymentDescription, setPaymentDescription] = useState("")
   const { getRootProps, getInputProps } = useDropzone({
@@ -53,7 +54,7 @@ const ModalOutlet = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Outlet Photo</Form.Label>
+                <Form.Label>{t("outletPhoto")}</Form.Label>
                 {alertPhoto ? <Alert variant="danger">{alertPhoto}</Alert> : ""}
                 <div
                   {...getRootProps({
@@ -64,9 +65,9 @@ const ModalOutlet = ({
                   {!photoPreview ? (
                     <>
                       <p>
-                        Drag 'n' drop some files here, or click to select files
+                        {t("dragAndDrop")}
                       </p>
-                      <p style={{ color: "gray" }}>File Size Limit: 2 MB</p>
+                      <p style={{ color: "gray" }}>{t("fileSizeLimit")}</p>
                     </>
                   ) : (
                     <>
@@ -95,7 +96,7 @@ const ModalOutlet = ({
               <Row>
                 <Col>
                   <Form.Group>
-                    <Form.Label>Outlet Name:</Form.Label>
+                    <Form.Label>{t("outletName")}:</Form.Label>
                     <Form.Control
                       type="text"
                       name="name"
@@ -118,7 +119,7 @@ const ModalOutlet = ({
               <Row>
                 <Col>
                   <Form.Group>
-                    <Form.Label>Phone Number:</Form.Label>
+                    <Form.Label>{t("phoneNumber")}:</Form.Label>
                     <Form.Control
                       type="text"
                       name="phone_number"
@@ -143,7 +144,7 @@ const ModalOutlet = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Select Province:</Form.Label>
+                <Form.Label>{t("selectProvince")}:</Form.Label>
                 <Form.Control
                   as="select"
                   name="province_id"
@@ -154,7 +155,7 @@ const ModalOutlet = ({
                   required
                 >
                   <option value="" disabled hidden>
-                    Choose a Province
+                    {t("chooseAProvince")}
                   </option>
                   {allProvinces?.length
                     ? allProvinces.map((item) => {
@@ -179,7 +180,7 @@ const ModalOutlet = ({
 
             <Col>
               <Form.Group>
-                <Form.Label>Select City:</Form.Label>
+                <Form.Label>{t("selectCity")}:</Form.Label>
                 <Form.Control
                   as="select"
                   name="city_id"
@@ -190,7 +191,7 @@ const ModalOutlet = ({
                   required
                 >
                   <option value="" disabled hidden>
-                    Choose a City
+                    {t("chooseACity")}
                   </option>
                   {allCities?.length
                     ? allCities.map((item) => {
@@ -216,7 +217,7 @@ const ModalOutlet = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Select Location:</Form.Label>
+                <Form.Label>{t("selectLocation")}:</Form.Label>
                 <Form.Control
                   as="select"
                   name="location_id"
@@ -225,7 +226,7 @@ const ModalOutlet = ({
                   required
                 >
                   <option value="" disabled hidden>
-                    Choose a Location
+                    {t("chooseALocation")}
                   </option>
                   {allLocations?.length
                     ? allLocations.map((item) => {
@@ -250,7 +251,7 @@ const ModalOutlet = ({
 
             <Col>
               <Form.Group>
-                <Form.Label>Postcode:</Form.Label>
+                <Form.Label>{t("postcode")}:</Form.Label>
                 <Form.Control
                   type="number"
                   name="postcode"
@@ -273,7 +274,7 @@ const ModalOutlet = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Address:</Form.Label>
+                <Form.Label>{t("address")}:</Form.Label>
                 <Form.Control
                   as="textarea"
                   name="address"
@@ -296,7 +297,7 @@ const ModalOutlet = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Payment Instruction:</Form.Label>
+                <Form.Label>{t("paymentInstruction")}:</Form.Label>
                 {/* <Editor
                   // initialValue={!formikOutlet.getFieldProps("payment_description").value ? "please describe to make a payment at your outlet" : formikOutlet.getFieldProps("payment_description").value }
                   init={{
@@ -336,7 +337,7 @@ const ModalOutlet = ({
           <Row>
             <Col>
               <Form.Group as={Row} style={{ padding: "0 1rem" }}>
-                <Form.Label>Outlet Status:</Form.Label>
+                <Form.Label>{t("outletStatus")}:</Form.Label>
                 <Col>
                   {["Active", "Inactive"].map((item, index) => {
                     return (
@@ -378,13 +379,13 @@ const ModalOutlet = ({
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button variant="primary" type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save Changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         </Modal.Footer>

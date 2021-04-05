@@ -320,7 +320,7 @@ export const AddTransferStockPage = ({ location }) => {
               <Col>
                 <Row>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>{t("productModule.productName")}</h6>
+                    <h6>{t("productName")}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
                     <h6>{t("quantity")}</h6>

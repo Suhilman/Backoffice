@@ -14,7 +14,8 @@ const ModalTax = ({
   validationTax,
   allTypes,
   allOutlets,
-  handleSelectOutlet
+  handleSelectOutlet,
+  t
 }) => {
   const optionsOutlet = allOutlets.map((item) => {
     return { value: item.id, label: item.name };
@@ -31,7 +32,7 @@ const ModalTax = ({
       <Form onSubmit={formikTax.handleSubmit}>
         <Modal.Body>
           <Form.Group>
-            <Form.Label>Select Type:</Form.Label>
+            <Form.Label>{t("selectType")}:</Form.Label>
             <Form.Control
               as="select"
               name="tax_type_id"
@@ -40,7 +41,7 @@ const ModalTax = ({
               required
             >
               <option value="" disabled hidden>
-                Choose a Type
+                {t("chooseAType")}
               </option>
               {allTypes.map((item) => {
                 return (
@@ -60,7 +61,7 @@ const ModalTax = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Name:</Form.Label>
+            <Form.Label>{t("name")}:</Form.Label>
             <Form.Control
               type="text"
               name="name"
@@ -77,7 +78,7 @@ const ModalTax = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Amount:</Form.Label>
+            <Form.Label>{t("amount")}:</Form.Label>
             <InputGroup className="pb-3">
               <InputGroup.Prepend>
                 <InputGroup.Text style={{ background: "transparent" }}>
@@ -101,7 +102,7 @@ const ModalTax = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Outlet:</Form.Label>
+            <Form.Label>{t("outlet")}:</Form.Label>
             <Select
               options={optionsOutlet}
               isMulti
@@ -122,13 +123,13 @@ const ModalTax = ({
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button variant="primary" type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save Changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         </Modal.Footer>

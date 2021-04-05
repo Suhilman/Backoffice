@@ -297,17 +297,17 @@ const ProductCategoryTab = ({ refresh, handleRefresh, t }) => {
       width: "50px"
     },
     {
-      name: `${t("productModule.categoryName")}`,
+      name: `${t("categoryName")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: `${t("productModule.numberOfProject")}`,
+      name: `${t("numberOfProject")}`,
       selector: "products",
       sortable: true
     },
     {
-      name: `${t("productModule.actions")}`,
+      name: `${t("actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -317,7 +317,7 @@ const ProductCategoryTab = ({ refresh, handleRefresh, t }) => {
 
             <Dropdown.Menu>
               <Dropdown.Item as="button" onClick={() => showAddToProduct(rows)}>
-                {t("productModule.addNewProductCategory")}
+                {t("addNewProductCategory")}
               </Dropdown.Item>
               <Dropdown.Item
                 as="button"
@@ -420,15 +420,15 @@ const ProductCategoryTab = ({ refresh, handleRefresh, t }) => {
           <div className="headerPage">
             <div className="headerStart">
               {!selectedData.length ? (
-                <h3>{t("productModule.categoryTitle")}</h3>
+                <h3>{t("categoryTitle")}</h3>
               ) : (
-                <h3>{selectedData.length}{t("productModule.itemSelected")}</h3>
+                <h3>{selectedData.length}{t("itemSelected")}</h3>
               )}
             </div>
             <div className="headerEnd">
               {!multiSelect ? (
                 <Button variant="primary" onClick={showAddCategoryModal}>
-                  {t("productModule.addNewProductCategory")}
+                  {t("addNewProductCategory")}
                 </Button>
               ) : (
                 <Button

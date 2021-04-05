@@ -221,12 +221,12 @@ const UnitTab = ({ refresh, handleRefresh, t }) => {
       sortable: true
     },
     {
-      name: `${t("productModule.unitConvertion")}`,
+      name: `${t("unitConvertion")}`,
       selector: "unit_conversion",
       sortable: true
     },
     {
-      name: `${t("productModule.actions")}`,
+      name: `${t("actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -292,7 +292,7 @@ const UnitTab = ({ refresh, handleRefresh, t }) => {
         t={t}
         stateModal={stateAddModal}
         cancelModal={closeAddModal}
-        title={t("productModule.addNewUnit")}
+        title={t("addNewUnit")}
         loading={loading}
         alert={alert}
         formikUnit={formikUnit}
@@ -325,11 +325,11 @@ const UnitTab = ({ refresh, handleRefresh, t }) => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>{t("productModule.titleTabUnit")}</h3>
+                <h3>{t("titleTabUnit")}</h3>
               </div>
               <div className="headerEnd">
                 <Button variant="primary" onClick={showAddModal}>
-                  {t("productModule.addNewUnit")}
+                  {t("addNewUnit")}
                 </Button>
               </div>
             </div>
@@ -344,7 +344,7 @@ const UnitTab = ({ refresh, handleRefresh, t }) => {
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control
-                      placeholder={t("productModule.search")}
+                      placeholder={t("search")}
                       value={search}
                       onChange={handleSearch}
                     />

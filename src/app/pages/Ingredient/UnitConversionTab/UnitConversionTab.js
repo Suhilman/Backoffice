@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-
+import { useTranslation } from "react-i18next";
 import { Paper } from "@material-ui/core";
 import {
   Button,
@@ -25,7 +25,7 @@ import ConfirmModal from "../../../components/ConfirmModal";
 const UnitConversionTab = ({ allUnits, refresh, handleRefresh }) => {
   const [alert, setAlert] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-
+  const { t } = useTranslation();
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
@@ -242,27 +242,27 @@ const UnitConversionTab = ({ allUnits, refresh, handleRefresh }) => {
       width: "50px"
     },
     {
-      name: "Name",
+      name: `${t("name")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: "Unit From",
+      name: `${t("unitFrom")}`,
       selector: "unit_from",
       sortable: true
     },
     {
-      name: "Unit To",
+      name: `${t("unitTo")}`,
       selector: "unit_to",
       sortable: true
     },
     {
-      name: "Value",
+      name: `${t("value")}`,
       selector: "value",
       sortable: true
     },
     {
-      name: "Actions",
+      name: `${t("actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -272,10 +272,10 @@ const UnitConversionTab = ({ allUnits, refresh, handleRefresh }) => {
 
             <Dropdown.Menu>
               <Dropdown.Item as="button" onClick={() => showEditModal(rows)}>
-                Edit
+              {t("edit")}
               </Dropdown.Item>
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                Delete
+              {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -300,9 +300,10 @@ const UnitConversionTab = ({ allUnits, refresh, handleRefresh }) => {
   return (
     <>
       <AddModal
+        t={t}
         stateModal={stateAddModal}
         cancelModal={closeAddModal}
-        title="Add New Unit Conversion"
+        title={t("addNewUnitConvertion")}
         loading={loading}
         alert={alert}
         formikUnitConversion={formikUnit}
@@ -310,9 +311,10 @@ const UnitConversionTab = ({ allUnits, refresh, handleRefresh }) => {
         allUnits={allUnits}
       />
       <AddModal
+        t={t}
         stateModal={stateEditModal}
         cancelModal={closeEditModal}
-        title={`Edit Unit Conversion - ${formikEditUnit.values.name}`}
+        title={`${t("editunitConvertion")} - ${formikEditUnit.values.name}`}
         loading={loading}
         alert={alert}
         formikUnitConversion={formikEditUnit}
@@ -323,8 +325,8 @@ const UnitConversionTab = ({ allUnits, refresh, handleRefresh }) => {
       <ConfirmModal
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
-        title={`Delete Unit Conversion - ${currUnit.name}`}
-        body={"Are you sure want to delete?"}
+        title={`${t("deleteUnitConvertion")} - ${currUnit.name}`}
+        body={t("areYouSureWantToDelete?")}
         loading={loading}
         buttonColor="danger"
         handleClick={() => handleDeleteUnit(currUnit.id)}
@@ -335,11 +337,11 @@ const UnitConversionTab = ({ allUnits, refresh, handleRefresh }) => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Unit Conversion</h3>
+                <h3>{t("unitConvertion")}</h3>
               </div>
               <div className="headerEnd">
                 <Button variant="primary" onClick={showAddModal}>
-                  Add New Unit Conversion
+                {t("addNewUnitConvertion")}
                 </Button>
               </div>
             </div>
@@ -354,7 +356,7 @@ const UnitConversionTab = ({ allUnits, refresh, handleRefresh }) => {
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control
-                      placeholder="Search..."
+                      placeholder={t("search")}
                       value={search}
                       onChange={handleSearch}
                     />

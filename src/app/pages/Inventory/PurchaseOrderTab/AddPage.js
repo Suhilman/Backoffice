@@ -238,7 +238,7 @@ export const AddPurchaseOrderPage = ({ location }) => {
                     required
                   >
                     <option value={""} disabled hidden>
-                      {t("productModule.chooseOutlet")}
+                      {t("chooseOutlet")}
                     </option>
                     {allOutlets.map((item) => {
                       return (
@@ -339,13 +339,13 @@ export const AddPurchaseOrderPage = ({ location }) => {
               <Col>
                 <Row>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>{t("productModule.productName")}</h6>
+                    <h6>{t("productName")}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
                     <h6>{t("quantity")}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>{t("productModule.price")}</h6>
+                    <h6>{t("price")}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
                     <h6>{t("priceTotal")}</h6>

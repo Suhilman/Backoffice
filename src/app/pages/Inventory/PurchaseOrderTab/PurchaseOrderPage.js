@@ -184,7 +184,7 @@ const PurchaseOrderPage = ({ refresh, handleRefresh, t }) => {
       sortable: true
     },
     {
-      name: `${t("productModule.actions")}`,
+      name: `${t("actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -291,7 +291,7 @@ const PurchaseOrderPage = ({ refresh, handleRefresh, t }) => {
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control
-                      placeholder={t("productModule.search")}
+                      placeholder={t("search")}
                       value={search}
                       onChange={handleSearch}
                     />

@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { Tabs, Tab } from "react-bootstrap";
-
+import { useTranslation } from "react-i18next";
 import InventoryTab from "./InventoryTab/InventoryTab";
 import CategoryTab from "./CategoryTab/CategoryTab";
 import UnitTab from "./UnitTab/UnitTab";
@@ -9,6 +9,7 @@ import UnitConversionTab from "./UnitConversionTab/UnitConversionTab";
 import RecipeTab from "./RecipeTab/RecipePage";
 
 export const IngredientPage = () => {
+  const { t } = useTranslation();
   const [tabs, setTabs] = React.useState("raw-material");
   const [allOutlets, setAllOutlets] = React.useState([]);
   const [allCategories, setAllCategories] = React.useState([]);
@@ -72,18 +73,20 @@ export const IngredientPage = () => {
 
   return (
     <Tabs activeKey={tabs} onSelect={(v) => setTabs(v)}>
-      <Tab eventKey="raw-material" title="Raw Material">
+      <Tab eventKey="raw-material" title={t("rawMaterial")}>
         <InventoryTab
           allOutlets={allOutlets}
           allCategories={allCategories}
           allUnits={allUnits}
           refresh={refresh}
           handleRefresh={handleRefresh}
+          t={t}
         />
       </Tab>
 
-      <Tab eventKey="recipe" title="Recipe">
+      <Tab eventKey="recipe" title={t("recipe")}>
         <RecipeTab
+          t={t}
           allOutlets={allOutlets}
           allMaterials={allMaterials}
           allUnits={allUnits}
@@ -93,7 +96,7 @@ export const IngredientPage = () => {
         />
       </Tab>
 
-      <Tab eventKey="category" title="Category">
+      <Tab eventKey="category" title={t("category")}>
         <CategoryTab refresh={refresh} handleRefresh={handleRefresh} />
       </Tab>
 
@@ -101,8 +104,9 @@ export const IngredientPage = () => {
         <UnitTab refresh={refresh} handleRefresh={handleRefresh} />
       </Tab> */}
 
-      <Tab eventKey="unit-conversion" title="Unit Conversion">
+      <Tab eventKey="unit-conversion" title={t("unitConvertion")}>
         <UnitConversionTab
+          t={t}
           allUnits={allUnits}
           refresh={refresh}
           handleRefresh={handleRefresh}

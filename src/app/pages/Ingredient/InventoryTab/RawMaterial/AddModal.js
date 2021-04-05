@@ -15,7 +15,8 @@ const AddModal = ({
   validationMaterial,
   allOutlets,
   allCategories,
-  allUnits
+  allUnits,
+  t
 }) => {
   const optionsOutlet = allOutlets.map((item) => {
     return { value: item.id, label: item.name };
@@ -44,7 +45,7 @@ const AddModal = ({
           {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
           <Form.Group>
-            <Form.Label>Location:</Form.Label>
+            <Form.Label>{t("location")}:</Form.Label>
             <Select
               options={optionsOutlet}
               name="outlet_id"
@@ -65,7 +66,7 @@ const AddModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Name:</Form.Label>
+            <Form.Label>{t("name")}:</Form.Label>
             <Form.Control
               type="text"
               name="name"
@@ -83,7 +84,7 @@ const AddModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Category:</Form.Label>
+            <Form.Label>{t("category")}:</Form.Label>
             <Select
               options={optionsCategory}
               name="raw_material_category_id"
@@ -107,7 +108,7 @@ const AddModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Stock:</Form.Label>
+            <Form.Label>{t("stock")}:</Form.Label>
             <Form.Control
               type="number"
               name="stock"
@@ -125,7 +126,7 @@ const AddModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Unit:</Form.Label>
+            <Form.Label>{t("unit")}:</Form.Label>
             <Select
               options={optionsUnit}
               name="unit_id"
@@ -145,7 +146,7 @@ const AddModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Price Per Unit:</Form.Label>
+            <Form.Label>{t("pricePerUnit")}:</Form.Label>
             <Form.Control
               type="number"
               name="price_per_unit"
@@ -163,7 +164,7 @@ const AddModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Calorie Per Unit:</Form.Label>
+            <Form.Label>{t("caloriePerUnit")}:</Form.Label>
             <Form.Control
               type="number"
               name="calorie_per_unit"
@@ -182,7 +183,7 @@ const AddModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Calorie Unit:</Form.Label>
+            <Form.Label>{t("calorieUnit")}:</Form.Label>
             <Select
               options={optionsCalorie}
               name="calorie_unit"
@@ -203,7 +204,7 @@ const AddModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Notes:</Form.Label>
+            <Form.Label>{t("notes")}:</Form.Label>
             <Form.Control
               as="textarea"
               name="notes"
@@ -223,7 +224,7 @@ const AddModal = ({
           <Form.Group>
             <Form.Check
               type="checkbox"
-              label="Sell as product"
+              label={t("sellAsProduct")}
               style={{ marginTop: "0.5rem" }}
               {...formikMaterial.getFieldProps("is_sold")}
               checked={
@@ -243,13 +244,13 @@ const AddModal = ({
 
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button variant="primary" type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save Changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         </Modal.Footer>

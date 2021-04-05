@@ -17,7 +17,8 @@ const RecipeTab = ({
   allUnits,
   allCategories,
   refresh,
-  handleRefresh
+  handleRefresh,
+  t
 }) => {
   const [alert, setAlert] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -102,22 +103,22 @@ const RecipeTab = ({
       width: "50px"
     },
     {
-      name: "Product",
+      name: `${t("product")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: "Raw Material Used",
+      name: `${t("rawMaterialUsed")}`,
       selector: "raw_material",
       sortable: true
     },
     {
-      name: "Total Nutrition",
+      name: `${t("totalNutrition")}`,
       selector: "total_nutrition",
       sortable: true
     },
     {
-      name: "Actions",
+      name: `${t("actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -138,11 +139,11 @@ const RecipeTab = ({
                   }
                 }}
               >
-                <Dropdown.Item as="button">Edit</Dropdown.Item>
+                <Dropdown.Item as="button">{t("edit")}</Dropdown.Item>
               </Link>
 
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                Delete
+              {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -194,8 +195,8 @@ const RecipeTab = ({
       <ConfirmModal
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
-        title={`Delete Recipe - ${currRecipe.name}`}
-        body={"Are you sure want to delete?"}
+        title={`${t("deleteRecipe")} - ${currRecipe.name}`}
+        body={t("areYouSureWantToDelete?")}
         loading={loading}
         buttonColor="danger"
         handleClick={() => handleDeleteRecipe(currRecipe.id)}
@@ -206,7 +207,7 @@ const RecipeTab = ({
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Recipe</h3>
+                <h3>{t("recipe")}</h3>
               </div>
             </div>
 
@@ -220,7 +221,7 @@ const RecipeTab = ({
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control
-                      placeholder="Search..."
+                      placeholder={t("search")}
                       value={search}
                       onChange={handleSearch}
                     />

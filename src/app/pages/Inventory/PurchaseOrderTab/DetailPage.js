@@ -76,7 +76,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
 
   const columns = [
     {
-      name: `${t("productModule.productName")}`,
+      name: `${t("productName")}`,
       selector: "product_name",
       sortable: true
     },
@@ -86,7 +86,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
       sortable: true
     },
     {
-      name: `${t("productModule.price")}`,
+      name: `${t("price")}`,
       selector: "price",
       sortable: true
     },

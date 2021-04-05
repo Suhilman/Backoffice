@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { KeyboardTimePicker } from "@material-ui/pickers";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 import { Row, Col, Button, Spinner } from "react-bootstrap";
 import {
   Switch,
@@ -38,7 +39,7 @@ export const EmailNotifications = () => {
   });
   const [stateComponent, setStateComponent] = React.useState("show");
   const [loading, setLoading] = React.useState(false);
-
+  const { t } = useTranslation();
   const getEmailNotifications = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     const userInfo = JSON.parse(localStorage.getItem("user_info"));
@@ -122,15 +123,15 @@ export const EmailNotifications = () => {
 
   const allFields = [
     {
-      field: "Cash Recap",
+      field: `${t("cashRecap")}`,
       description:
-        "Get a notification email when a cash recap activity happened",
+        `${t("getANorificationEmailWhenaCashRecapActivityHappened")}`,
       value: switchState.cashRecap,
       name: "cashRecap"
     },
     {
-      field: "Daily Sales Report",
-      description: "Get a sales report notification email once a day",
+      field: `${t("dailySalesReport")}`,
+      description: `${t("getASalesReportNotificationEmailOnceADay")}`,
       value: switchState.dailySales,
       timeValue: timingState.daily_sales,
       name: "dailySales",
@@ -152,8 +153,8 @@ export const EmailNotifications = () => {
       text: "You can choose time for sending email Daily Sales Report"
     },
     {
-      field: "Weekly Sales Report",
-      description: "Get a sales report notification email once a week",
+      field: `${t("weeklySalesReport")}`,
+      description: `${t("getASalesReportNotificationEmailOnceAWeek")}`,
       value: switchState.weeklySales,
       timeValue: timingState.weekly_sales,
       name: "weeklySales",
@@ -172,7 +173,7 @@ export const EmailNotifications = () => {
           }}
         />
       ),
-      text: "You can choose timing for sending email Weekly Sales Report",
+      text: `${t("youCanChooseTimingForSendingEmailWeeklySalesReport")}`,
       low: (
         <FormControl style={{ width: "100%" }}>
           <InputLabel htmlFor="hari">Day</InputLabel>
@@ -187,22 +188,22 @@ export const EmailNotifications = () => {
             }}
           >
             <option aria-label="None" value="" />
-            <option value={1}>Monday</option>
-            <option value={2}>Tuesday</option>
-            <option value={3}>Wednesday</option>
-            <option value={4}>Thursday</option>
-            <option value={5}>Friday</option>
-            <option value={6}>Saturday</option>
-            <option value={0}>Sunday</option>
+            <option value={1}>{t("monday")}</option>
+            <option value={2}>{t("tuesday")}</option>
+            <option value={3}>{t("wednesday")}</option>
+            <option value={4}>{t("tuesday")}</option>
+            <option value={5}>{t("friday")}</option>
+            <option value={6}>{t("saturday")}</option>
+            <option value={0}>{t("sunday")}</option>
           </Select>
         </FormControl>
       ),
-      text2: "You can change the day for set Weekly Reports"
+      text2: `${t("youCanChangeTheDayForSetWeeklyReports")}`
     },
     {
-      field: "Low Stock Alert",
+      field: `${t("lowStockAlert")}`,
       description:
-        "Get a daily notification when a product stock is nearly empty / empty",
+        `${t("getADailyNotificationWhenAProductStockIsNearlyEmpty/Empty")}`,
       value: switchState.lowStock,
       timeValue: timingState.stock_alert,
       name: "lowStock",
@@ -233,8 +234,8 @@ export const EmailNotifications = () => {
           }}
         />
       ),
-      text: "You can select time for sending email Low Stock Alert",
-      text2: "You can set the minimum all stock for notifications"
+      text: `${t("youcanSelecttimeForSendingEmailLowstockAlert")}`,
+      text2: `${t("youcanSetTheMinimumAllStockForNotification")}`
     }
   ];
 
@@ -301,13 +302,13 @@ export const EmailNotifications = () => {
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div className="headerPage">
             <div className="headerStart">
-              <h3>Email Notifications</h3>
+              <h3>{t("emailNotification")}</h3>
             </div>
 
             <div className="headerEnd">
               {stateComponent === "show" ? (
                 <Button variant="primary" onClick={handleStateComponent}>
-                  Edit
+                  {t("edit")}
                 </Button>
               ) : (
                 <>
@@ -316,13 +317,13 @@ export const EmailNotifications = () => {
                     onClick={handleStateComponent}
                     style={{ marginRight: "1rem" }}
                   >
-                    Cancel
+                    {t("canel")}
                   </Button>
                   <Button variant="primary" onClick={sendData}>
                     {loading ? (
                       <Spinner animation="border" variant="light" size="sm" />
                     ) : (
-                      "Save changes"
+                      `${t("saveChanges")}`
                     )}
                   </Button>
                 </>

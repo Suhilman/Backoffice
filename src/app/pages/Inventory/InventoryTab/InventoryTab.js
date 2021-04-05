@@ -65,7 +65,7 @@ const InventoryTab = ({ refresh, t }) => {
       sortable: true
     },
     {
-      name: `${t("productModule.startingStock")}`,
+      name: `${t("startingStock")}`,
       selector: "stock_starting",
       sortable: true
     },
@@ -231,7 +231,7 @@ const InventoryTab = ({ refresh, t }) => {
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control
-                      placeholder={t("productModule.search")}
+                      placeholder={t("search")}
                       value={search}
                       onChange={handleSearch}
                     />

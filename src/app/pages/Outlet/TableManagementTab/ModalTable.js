@@ -13,7 +13,8 @@ const ModalPayment = ({
   loading,
   formikTable,
   validationTable,
-  allOutlets
+  allOutlets,
+  t
 }) => {
   const [imageUrl, setImageUrl] = useState({})
   const data = {
@@ -48,7 +49,7 @@ const ModalPayment = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Select Outlet:</Form.Label>
+                <Form.Label>{t("selectOutlet")}:</Form.Label>
                 <Form.Control
                   as="select"
                   name="outlet_id"
@@ -57,7 +58,7 @@ const ModalPayment = ({
                   required
                 >
                   <option value="" disabled hidden>
-                    Choose an Outlet
+                    {t("chooseAnOutlet")}
                   </option>
                   {allOutlets?.length
                     ? allOutlets.map((item) => {
@@ -83,7 +84,7 @@ const ModalPayment = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Name:</Form.Label>
+                <Form.Label>{t("name")}:</Form.Label>
                 <Form.Control
                   type="text"
                   name="name"
@@ -105,7 +106,7 @@ const ModalPayment = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Capacity:</Form.Label>
+                <Form.Label>{t("capacity")}:</Form.Label>
                 <Form.Control
                   type="number"
                   name="capacity"
@@ -136,7 +137,7 @@ const ModalPayment = ({
                       includeMargin={true}
                       onClick={downloadQR}
                     />
-                    <p>please click qr code for download</p>
+                    <p>{t("pleaseClickQrcodeForDownload")}</p>
                   </div>
                 ) : null}
               </Form.Group>
@@ -145,13 +146,13 @@ const ModalPayment = ({
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button variant="primary" type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save Changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         </Modal.Footer>

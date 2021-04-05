@@ -25,7 +25,8 @@ const ModalPayment = ({
   handlePreviewPhoto,
   alertPhoto,
   photoPreview,
-  photo
+  photo,
+  t
 }) => {
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
@@ -45,7 +46,7 @@ const ModalPayment = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Select Type:</Form.Label>
+                <Form.Label>{t("selectType")}:</Form.Label>
                 <Form.Control
                   as="select"
                   name="payment_method_type_id"
@@ -54,7 +55,7 @@ const ModalPayment = ({
                   required
                 >
                   <option value="" disabled hidden>
-                    Choose a Type
+                    {t("chooseAType")}
                   </option>
                   {allTypes?.length
                     ? allTypes.map((item) => {
@@ -81,7 +82,7 @@ const ModalPayment = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Name:</Form.Label>
+                <Form.Label>{t("name")}:</Form.Label>
                 <Form.Control
                   type="text"
                   name="name"
@@ -104,7 +105,7 @@ const ModalPayment = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>MDR:</Form.Label>
+                <Form.Label>{t("mdr")}:</Form.Label>
                 <InputGroup className="pb-3">
                   <InputGroup.Prepend>
                     <InputGroup.Text style={{ background: "transparent" }}>
@@ -134,7 +135,7 @@ const ModalPayment = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>QR Image:</Form.Label>
+                <Form.Label>{t("qrImage")}:</Form.Label>
                 {alertPhoto ? <Alert variant="danger">{alertPhoto}</Alert> : ""}
                 <div
                   {...getRootProps({
@@ -145,9 +146,9 @@ const ModalPayment = ({
                   {!photoPreview ? (
                     <>
                       <p>
-                        Drag 'n' drop some files here, or click to select files
+                        {t("dragAndDrop")}
                       </p>
-                      <p style={{ color: "gray" }}>File Size Limit: 2 MB</p>
+                      <p style={{ color: "gray" }}>{t("fileSizeLimit")}</p>
                     </>
                   ) : (
                     <>
@@ -176,13 +177,13 @@ const ModalPayment = ({
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button variant="primary" type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save Changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         </Modal.Footer>

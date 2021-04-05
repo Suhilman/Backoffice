@@ -3,12 +3,12 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { Table } from "react-bootstrap";
 import rupiahFormat from "rupiah-format";
-
+import { useTranslation } from "react-i18next";
 import "../style.css";
 
 export const PaymentMethodTab = ({ selectedOutlet, startDate, endDate }) => {
   const [allPaymentMethods, setAllPaymentMethods] = React.useState([]);
-
+  const { t } = useTranslation();
   const getPaymentMethod = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
     const outlet_id = id ? `?outlet_id=${id}&` : "?";
@@ -88,9 +88,9 @@ export const PaymentMethodTab = ({ selectedOutlet, startDate, endDate }) => {
         <thead>
           <tr>
             <th></th>
-            <th>Payment Method</th>
-            <th>Number of Transaction</th>
-            <th>Total Collected</th>
+            <th>{t("paymentMethod")}</th>
+            <th>{t("numberOfTransaction")}</th>
+            <th>{t("totalCollected")}</th>
           </tr>
         </thead>
         <tbody>

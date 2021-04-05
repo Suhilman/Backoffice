@@ -16,7 +16,7 @@ import useDebounce from "../../../hooks/useDebounce";
 
 import "../../style.css";
 
-export const SalesTypeTab = ({ handleRefresh, refresh }) => {
+export const SalesTypeTab = ({ handleRefresh, refresh, t }) => {
   const [loading, setLoading] = React.useState(false);
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
@@ -225,17 +225,17 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
       width: "50px"
     },
     {
-      name: "Name",
+      name: `${t("name")}`,
       selector: "name",
       sortable: true
     },
     {
-      name: "Charge",
+      name: `${t("charge")}`,
       selector: "charge",
       sortable: true
     },
     {
-      name: "Actions",
+      name: `${t("actions")}`,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -248,13 +248,13 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
                 as="button"
                 onClick={() => showEditModalSalesType(rows)}
               >
-                Edit
+                {t("edit")}
               </Dropdown.Item>
               <Dropdown.Item
                 as="button"
                 onClick={() => showDeleteModalSalesType(rows)}
               >
-                Delete
+                {t("delete")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -280,9 +280,10 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
   return (
     <Row>
       <ModalSalesType
+        t={t}
         stateModal={stateAddModal}
         cancelModal={cancelAddModalSalesType}
-        title={"Add New Sales Type"}
+        title={t("addNewSalesType")}
         loading={loading}
         formikSalesType={formikSalesType}
         validationSalesType={validationSalesType}
@@ -290,9 +291,10 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
       />
 
       <ModalSalesType
+        t={t}
         stateModal={stateEditModal}
         cancelModal={cancelEditModalSalesType}
-        title={`Edit Sales Type - ${
+        title={`${t("editSalesType")} - ${
           formikSalesTypeEdit.getFieldProps("name").value
         }`}
         loading={loading}
@@ -304,10 +306,10 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
       <ShowConfirmModal
         state={stateDeleteModal}
         closeModal={cancelDeleteModalSalesType}
-        title={`Delete Sales Type - ${
+        title={`${t("deleteSalesType")} - ${
           formikSalesType.getFieldProps("name").value
         }`}
-        body={"Are you sure want to delete?"}
+        body={t("areYouSureWantToDelete?")}
         loading={loading}
         buttonColor="danger"
         handleClick={handleDeleteSalesType}
@@ -318,7 +320,7 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div className="headerPage">
             <div className="headerStart">
-              <h3>Sales Type</h3>
+              <h3>{t("salesType")}</h3>
             </div>
             <div className="headerEnd">
               <Button
@@ -326,7 +328,7 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
                 style={{ marginLeft: "0.5rem" }}
                 onClick={showAddModalSalesType}
               >
-                Add New Sales Type
+                {t("addNewSalesType")}
               </Button>
             </div>
           </div>
@@ -342,7 +344,7 @@ export const SalesTypeTab = ({ handleRefresh, refresh }) => {
                   </InputGroup.Prepend>
                   <Form.Control
                     type="text"
-                    placeholder="Search..."
+                    placeholder={t("search")}
                     value={search}
                     onChange={handleSearch}
                   />
