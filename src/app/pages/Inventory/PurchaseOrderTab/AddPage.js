@@ -64,13 +64,13 @@ export const AddPurchaseOrderPage = ({ location }) => {
           .min(1)
           .required("Please input product"),
         quantity: Yup.number()
-          .min(1, "Minimum 1")
+          .min(1, "Minimum 1 character")
           .required("Please input quantity"),
         price: Yup.number()
-          .min(0, "Minimum 0")
+          .min(0, "Minimum 0 character")
           .required("Please input price"),
         total_price: Yup.number()
-          .min(0, "Minimum 0")
+          .min(0, "Minimum 0 character")
           .required("Please input price total")
       })
     )

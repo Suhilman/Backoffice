@@ -2,7 +2,7 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
 import React, { useMemo, useEffect } from "react";
 import rupiah from "rupiah-format";
-
+import { useTranslation } from "react-i18next";
 import SVG from "react-inlinesvg";
 import objectPath from "object-path";
 import ApexCharts from "apexcharts";
@@ -11,7 +11,6 @@ import { CalendarToday } from "@material-ui/icons";
 import { toAbsoluteUrl } from "../../../_helpers";
 import { useHtmlClassService } from "../../../layout";
 import { DropdownMenu2 } from "../../dropdowns";
-
 import { DateRangePicker } from "react-date-range";
 import ExportExcel from "react-html-table-to-excel";
 
@@ -41,7 +40,7 @@ export function MixedWidget1({
   const uiService = useHtmlClassService();
 
   const calcPercentage = (a, b) => Math.floor((a / b) * 100) || 0;
-
+  const { t } = useTranslation();
   const layoutProps = useMemo(() => {
     return {
       colorsGrayGray500: objectPath.get(
@@ -134,7 +133,7 @@ export function MixedWidget1({
           <thead>
             <tr>
               <th>
-                Laporan Penjualan{" "}
+                {t("salesReport")}{" "}
                 {ranges.find((item) => item.id === rangeId).valueId}
               </th>
             </tr>
@@ -144,13 +143,13 @@ export function MixedWidget1({
           </tbody>
           <thead>
             <tr>
-              <th>Outlet</th>
+              <th>{t("outlet")}</th>
               <td>{outletName}</td>
             </tr>
           </thead>
           <thead>
             <tr>
-              <th>Tanggal</th>
+              <th>{t("date")}</th>
               <td>{ranges.find((item) => item.id === rangeId).displayDate}</td>
             </tr>
           </thead>
@@ -159,10 +158,10 @@ export function MixedWidget1({
           </tbody>
           <thead>
             <tr>
-              <th>Tanggal</th>
-              <th>Jumlah Transaksi</th>
-              <th>Penjualan</th>
-              <th>Rata-Rata</th>
+              <th>{t("date")}</th>
+              <th>{t("numberOfTransaction")}</th>
+              <th>{t("sales")}</th>
+              <th>{t("average")}</th>
             </tr>
           </thead>
           <tbody>
@@ -177,7 +176,7 @@ export function MixedWidget1({
               );
             })}
             <tr>
-              <th>Grand Total</th>
+              <th>{t("grandTotal")}</th>
               <th>{sumReports(reports, "totalTransactions")} </th>
               <th>{sumReports(reports, "totalSales")} </th>
               <th>{sumReports(reports, "average")} </th>
@@ -190,7 +189,7 @@ export function MixedWidget1({
         {/* Header */}
         <div className="card-header border-0 bg-danger py-5">
           <h3 className="card-title font-weight-bolder text-white">
-            Transaction Report
+            {t("transactionReport")}
           </h3>
 
           <div className="card-toolbar">
@@ -234,7 +233,7 @@ export function MixedWidget1({
               </Dropdown.Toggle>
               <Dropdown.Menu className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
                 <Dropdown.Item onClick={() => handleSelectOutlet()}>
-                  All Outlets
+                  {t("allOutlets")}
                 </Dropdown.Item>
                 {allOutlets.length
                   ? allOutlets.map((item) => {
@@ -288,16 +287,16 @@ export function MixedWidget1({
                   href="#"
                   className="text-warning font-weight-bold font-size-h6"
                 >
-                  Sales
+                  {t("sales")}
                 </a>
                 <p>
-                  ({rupiah.convert(yesterdaySales)}) Yesterday Sales <br />
+                  ({rupiah.convert(yesterdaySales)}){t("yesterdaySales")}<br />
                   {yesterdaySales && todaySales ? (
                     <>+{calcPercentage(todaySales, yesterdaySales) + "%"}</>
                   ) : (
                     ""
                   )}{" "}
-                  ({rupiah.convert(todaySales)}) Today Sales
+                  ({rupiah.convert(todaySales)}) {t("todaySales")}
                 </p>
               </div>
               <div className="col bg-light-primary px-6 py-8 rounded-xl mb-7">
@@ -312,10 +311,10 @@ export function MixedWidget1({
                   href="#"
                   className="text-primary font-weight-bold font-size-h6 mt-2"
                 >
-                  Transactions
+                  {t("transaction")}
                 </a>
                 <p>
-                  ({yesterdayTransactions.length}) Yesterday Transactions <br />
+                  ({yesterdayTransactions.length}) {t("yesterdayTransaction")} <br />
                   {yesterdayTransactions.length && todayTransactions.length ? (
                     <>
                       +
@@ -327,7 +326,7 @@ export function MixedWidget1({
                   ) : (
                     ""
                   )}
-                  ({todayTransactions.length}) Today Transactions
+                  ({todayTransactions.length}) {t("todayTransaction")}
                 </p>
               </div>
             </div>
@@ -523,6 +522,7 @@ const ModalCustomRange = ({
   handleSelectRange,
   ranges
 }) => {
+  const { t } = useTranslation();
   return (
     <Modal show={show} onHide={handleClose}>
       <DateRangePicker
@@ -542,10 +542,10 @@ const ModalCustomRange = ({
             handleClose();
           }}
         >
-          Save
+          {t("save")}
         </Button>
         <Button onClick={handleClose} variant="secondary">
-          Cancel
+          {t("cancel")}
         </Button>
       </Modal.Footer>
     </Modal>

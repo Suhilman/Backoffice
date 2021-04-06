@@ -85,13 +85,13 @@ export const LoyaltyPromoPage = () => {
     outlet_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose outlet."),
+      .required(`${t("pleaseChooseOutlet")}`),
     loyaltyPromo: Yup.array().of(
       Yup.object().shape({
         product_id: Yup.number(),
         point: Yup.number()
-          .min(1, "Point must be greater than 0")
-          .required("Please input a value")
+          .min(1, `${t("pointMustBeGreaterThan0")}`)
+          .required(`${t("pleaseInputAValue")}`)
       })
     )
   });
@@ -100,11 +100,11 @@ export const LoyaltyPromoPage = () => {
     outlet_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose outlet."),
+      .required(`${t("pleaseChooseOutlet")}`),
     product_id: Yup.number(),
     point: Yup.number()
-      .min(1, "Point must be greater than 0")
-      .required("Please input a value")
+      .min(1, `${t("pointMustBeGreaterThan0")}`)
+      .required(`${t("pleaseInputAValue")}`)
   });
 
   const SettingsSchema = Yup.object().shape({

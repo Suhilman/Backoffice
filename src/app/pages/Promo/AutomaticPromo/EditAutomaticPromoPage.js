@@ -102,27 +102,27 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
   // schema
   const valueTimeSchema = {
     name: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
-      .required("Please input a name"),
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputAName")}`),
     outlet_id: Yup.number()
       .min(1)
-      .required("Please choose an outlet"),
+      .required(`${t("pleaseChooseAnOutlet")}`),
     description_type: Yup.string()
       .matches(/regulation|how_to_use/)
-      .required("Please choose description type"),
-    description: Yup.string().min(1, "Minimum 1 character."),
-    promo_date_start: Yup.date().required("Please input date start"),
-    promo_date_end: Yup.date().required("Please input date end"),
+      .required(`${t("pleaseChooseDescriptionType")}`),
+    description: Yup.string().min(1, `${t("minimum1Character")}`),
+    promo_date_start: Yup.date().required(`${t("pleaseInputDateStart")}`),
+    promo_date_end: Yup.date().required(`${t("pleaseInputDateEnd")}`),
     promo_days: Yup.string()
       .min(1)
-      .required("Please choose promo days"),
+      .required(`${t("pleaseChoosePromodays")}`),
     promo_hour_start: Yup.string()
       .min(1)
-      .required("Please input hour start"),
+      .required(`${t("pleaseInputHourStart")}`),
     promo_hour_end: Yup.string()
       .min(1)
-      .required("Please input hour end")
+      .required(`${t("pleaseInputHourEnd")}`)
   };
 
   // quantity
@@ -131,16 +131,16 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
     quantity_product_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a product"),
+      .required(`${t("pleaseChooseAProduct")}`),
     quantity_type: Yup.string()
       .matches(/percentage|currency/)
-      .required("Please choose a discount type"),
+      .required(`${t("pleaseChooseADiscountType")}`),
     quantity_value: Yup.number()
-      .min(1, "Minimum 1")
-      .required("Please input a discount value"),
+      .min(1, `${t("minimum1Character")}`)
+      .required(`${t("pleaseInputADiscountValue")}`),
     quantity_amount: Yup.number()
-      .min(1, "Minimum 1")
-      .required("Please input a promo amount")
+      .min(1, `${t("minimum1Character")}`)
+      .required(`${t("pleaseInputAPromoAmount")}`)
   });
 
   // transaction
@@ -148,13 +148,13 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
     ...valueTimeSchema,
     transaction_type: Yup.string()
       .matches(/percentage|currency/)
-      .required("Please choose a discount type"),
+      .required(`${t("pleaseInputADiscountType")}`),
     transaction_value: Yup.number()
-      .min(1, "Minimum 1")
-      .required("Please input a discount value"),
+      .min(1, `${t("minimum1Character")}`)
+      .required(`${t("pleaseInputADiscountValue")}`),
     transaction_amount: Yup.number()
-      .min(1, "Minimum 1")
-      .required("Please input a promo amount")
+      .min(1, `${t("minimum1Character")}`)
+      .required(`${t("pleaseInputAPromoAmount")}`)
   });
 
   // xy
@@ -162,16 +162,16 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
     ...valueTimeSchema,
     xy_product_x_id: Yup.array()
       .of(Yup.number())
-      .required("Please input product x"),
+      .required(`${t("pleaseInputProductX")}`),
     xy_product_y_id: Yup.array()
       .of(Yup.number())
-      .required("Please input product y"),
+      .required(`${t("pleaseInputProductY")}`),
     xy_amount_x: Yup.number()
-      .min(1, "Minimum 1")
-      .required("Please input amount x"),
+      .min(1, `${t("minimum1Character")}`)
+      .required(`${t("pleaseInputAmountX")}`),
     xy_amount_y: Yup.number()
-      .min(1, "Minimum 1")
-      .required("Please input amount y"),
+      .min(1, `${t("minimum1Character")}`)
+      .required(`${t("pleaseInputAmountY")}`),
     xy_apply_multiply: Yup.boolean()
   });
 

@@ -79,37 +79,37 @@ export const EditProductPage = ({ match, location }) => {
       .min(1)
       .required("Please choose an outlet."),
     name: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
-      .required("Please input a product name."),
+      .min(3, `${t("minimum3Character ")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputAProductName")}`),
     product_category_id: Yup.number()
       .integer()
       .min(1),
     price: Yup.number()
       .integer()
       .min(1)
-      .required("Please input a price."),
+      .required(`${t("pleaseInputAPrice")}`),
     price_purchase: Yup.number()
       .integer()
-      .required("Please input a price purchase."),
+      .required(`${t("pleaseInputAPricePurchase")}`),
     stock: Yup.number()
       .integer()
       .min(0)
-      .required("Please input a stock."),
+      .required(`${t("pleaseInputAStock")}`),
     // product_tax_id: Yup.number()
     //   .integer()
     //   .min(1)
     //   .required("Please choose a tax."),
     status: Yup.string()
       .matches(/(active|inactive)/)
-      .required("Please input a status."),
+      .required(`${t("pleaseInputAStatus")}`),
     barcode: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters."),
+      .min(3, `${t("minimum3Character ")}`)
+      .max(50, `${t("maximum50Character")}`),
     sku: Yup.string()
-      .min(1, "Minimum 1 character.")
-      .max(50, "Maximum 50 characters.")
-      .required("Please input SKU"),
+      .min(1, `${t("minimum1Character")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputSku")}`),
     is_favorite: Yup.boolean().required(),
     has_raw_material: Yup.boolean().required(),
     has_recipe: Yup.boolean().required(),
@@ -123,12 +123,12 @@ export const EditProductPage = ({ match, location }) => {
       Yup.object().shape({
         id: Yup.string(),
         group_name: Yup.string()
-          .min(3, "Minimum 3 characters.")
-          .max(50, "Maximum 50 characters.")
-          .required("Please input group name"),
+          .min(3, `${t("minimum3Character ")}`)
+          .max(50, `${t("maximum50Character")}`)
+          .required(`${t("pleaseInputGroupName")}`),
         group_type: Yup.string()
           .matches(/single|multi/)
-          .required("Please input group type"),
+          .required(`${t("pleaseInputGroupType")}`),
         addons: Yup.array().of(
           Yup.object().shape({
             id: Yup.string(),

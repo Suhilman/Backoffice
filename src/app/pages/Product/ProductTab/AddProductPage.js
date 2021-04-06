@@ -74,7 +74,7 @@ export const AddProductPage = ({ location }) => {
   const ProductSchema = Yup.object().shape({
     outlet_id: Yup.number()
       .integer()
-      .min(1)
+      .min(1, "Minimum 1 characters.")
       .required("Please choose an outlet."),
     name: Yup.string()
       .min(3, "Minimum 3 characters.")
@@ -82,10 +82,10 @@ export const AddProductPage = ({ location }) => {
       .required("Please input a product name."),
     product_category_id: Yup.number()
       .integer()
-      .min(1),
+      .min(1, "Minimum 1 characters."),
     price: Yup.number()
       .integer()
-      .min(1)
+      .min(1, "Minimum 1 characters.")
       .required("Please input a price."),
     price_purchase: Yup.number()
       .integer()

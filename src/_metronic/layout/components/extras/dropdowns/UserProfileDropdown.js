@@ -8,11 +8,9 @@ import objectPath from "object-path";
 import { useHtmlClassService } from "../../../_core/MetronicLayout";
 import { toAbsoluteUrl } from "../../../../_helpers";
 import { DropdownTopbarItemToggler } from "../../../../_partials/dropdowns";
-
 import { useTranslation } from "react-i18next";
 export function UserProfileDropdown() {
   const { user } = useSelector((state) => state.auth);
-
   const uiService = useHtmlClassService();
   const layoutProps = useMemo(() => {
     return {
@@ -178,10 +176,10 @@ export function UserProfileDropdown() {
               to="/logout"
               className="btn btn-light-primary font-weight-bold"
             >
-              Sign Out
+              {t("signOut")}
             </Link>
             <Dropdown>
-              <Dropdown.Toggle variant="light">Choose Language</Dropdown.Toggle>
+              <Dropdown.Toggle variant="light">{t("chooseLanguage")}</Dropdown.Toggle>
 
               <Dropdown.Menu>
                 {chooseLanguages.map(item =>

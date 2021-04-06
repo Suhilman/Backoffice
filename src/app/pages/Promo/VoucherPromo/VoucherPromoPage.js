@@ -26,6 +26,7 @@ export const VoucherPromoPage = () => {
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [refresh, setRefresh] = React.useState(0);
+  const { t } = useTranslation();
 
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
@@ -40,7 +41,6 @@ export const VoucherPromoPage = () => {
 
   const [voucherPromos, setVoucherPromos] = React.useState([]);
   const [allOutlets, setAllOutlets] = React.useState([]);
-  const { t } = useTranslation();
   const initialValuePromo = {
     id: "",
     outlet_id: "",
@@ -57,29 +57,29 @@ export const VoucherPromoPage = () => {
     outlet_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose outlet."),
+      .required(`${t("pleaseChooseOutlet")}`),
     name: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
-      .required("Please input a name."),
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputAName")}`),
     code: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
-      .required("Please input a code."),
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputACode")}`),
     quota: Yup.number()
-      .min(1, "Minimum 1 quota.")
-      .required("Please input a quota."),
+      .min(1, `${t("minimum1Quota")}`)
+      .required(`${t("pleaseInputQuota")}`),
     description_type: Yup.string()
       .matches(/regulation|how_to_use/)
-      .required("Please choose type."),
-    description: Yup.string().min(1, "Minimum 1 character"),
+      .required(`${t("pleaseChooseType")}`),
+    description: Yup.string().min(1, `${t("minimum1Character")}`),
     type: Yup.string()
       .matches(/percentage|currency/)
-      .required("Please choose type."),
+      .required(`${t("pleaseChooseType")}`),
     value: Yup.number()
       .integer()
       .min(0)
-      .required("Please input value.")
+      .required(`${t("pleaseInputValue")}`)
   });
 
   const formikPromo = useFormik({

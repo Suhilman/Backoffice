@@ -54,26 +54,26 @@ export const SpecialPromoPage = () => {
     outlet_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose outlet."),
+      .required(`${t("pleaseChooseOutlet")}`),
     name: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
-      .required("Please input a name."),
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputAName")}`),
     description_type: Yup.string()
       .matches(/regulation|how_to_use/)
       .required("Please choose type."),
-    description: Yup.string().min(1, "Minimum 1 character"),
+    description: Yup.string().min(1, `${t("minimum1Character")}`),
     type: Yup.string()
       .matches(/percentage|currency/)
-      .required("Please choose type."),
+      .required(`${t("pleaseChooseType")}`),
     value: Yup.number()
       .integer()
       .min(0)
-      .required("Please input value."),
+      .required(`${t("pleaseInputValue")}`),
     promo_category_id: Yup.number()
       .integer()
       .min(0)
-      .required("Please input value.")
+      .required(`${t("pleaseInputValue")}`)
   });
 
   const formikPromo = useFormik({

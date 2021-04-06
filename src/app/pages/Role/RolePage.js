@@ -34,7 +34,7 @@ export const RolePage = () => {
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [refresh, setRefresh] = React.useState(0);
-
+  const { t } = useTranslation();
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
@@ -66,9 +66,9 @@ export const RolePage = () => {
 
   const RoleSchema = Yup.object().shape({
     name: Yup.string()
-      .min(3, "Minimum 3 characters")
-      .max(50, "Maximum 50 characters")
-      .required("Please input a role name."),
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputARoleName")}`),
     privileges: Yup.array().of(
       Yup.object().shape({
         id: Yup.number(),
@@ -76,7 +76,6 @@ export const RolePage = () => {
       })
     )
   });
-  const { t } = useTranslation();
   const formikAddRole = useFormik({
     initialValues: initialRole,
     validationSchema: RoleSchema,

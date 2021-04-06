@@ -3,8 +3,8 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import imageCompression from 'browser-image-compression';
 import { useTranslation } from "react-i18next";
+import imageCompression from 'browser-image-compression';
 import {
   Button,
   Row,
@@ -32,14 +32,13 @@ import "../style.css";
 export const DetailStaffPage = ({ match, location }) => {
   const { staffId } = match.params;
   const { allOutlets, allRoles, allAccessLists } = location.state;
-
+  const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [statePage, setStatePage] = React.useState("show");
   const [preview, setPreview] = React.useState("");
 
   const [selectedRole, setSelectedRole] = React.useState("");
-  const { t } = useTranslation();
   const [image, setImage] = React.useState("");
   const [staff, setStaff] = React.useState({
     outlet_id: "",
@@ -70,27 +69,27 @@ export const DetailStaffPage = ({ match, location }) => {
     outlet_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose an outlet."),
+      .required(`${t("pleaseChooseAnOutlet")}`),
     type: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
-      .required("Please choose a type."),
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Chartacter")}`)
+      .required(`${t("pleaseChooseAType")}`),
     role_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a role."),
+      .required(`${t("pleaseChooseARole")}`),
     name: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
-      .required("Please input a staff name."),
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputaStaffName")}`),
     staff_id: Yup.string()
       .min(5)
       .max(10)
-      .required("Please input a staff id."),
+      .required(`${t("pleaseInputAStaffID")}`),
     email: Yup.string()
       .email()
-      .required("Please input an email."),
-    phone_number: Yup.number().typeError("Please input a number only")
+      .required(`${t("pleaseInputAnEmail")}`),
+    phone_number: Yup.number().typeError(`${t("pleaseInputANumberOnly")}`)
   });
 
   const formikStaff = useFormik({

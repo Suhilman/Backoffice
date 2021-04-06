@@ -610,40 +610,39 @@ const ProductTab = ({
                         />
                         <div style={{ display: "none" }}>
                           <table id="table-to-xls">
-                            <thead>
-                              <tr>
-                                  <th>{t("productName")}</th>
-                                  <th>{t("description")}</th>
-                                  <th>{t("barcode")}</th>
-                                  <th>{t("sku")}</th>
-                                  <th>{t("price")}</th>
-                                  <th>{t("purchasePrice")}</th>
-                                  <th>{t("favorite")}</th>
-                                  <th>{t("category")}</th>
-                                  <th>{t("withRecipe")}</th>
-                                  <th>{t("stock")}</th>
-                                  <th>{t("unit")}</th>
-                                  <th>{t("expiredDate")}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                              {dataProduct.map((value, index) =>
-                                <tr key={index}>
-                                  <td>{value.name ? value.name : "-"}</td>
-                                  <td>{value.description ? value.description : "-"}</td>
-                                  <td>{value.barcode ? value.barcode : "-"}</td>
-                                  <td>{value.sku ? value.sku : "-"}</td>
-                                  <td>{value.price ? <NumberFormat value={parseInt(value.price)} className="foo" displayType={'text'} thousandSeparator={true} prefix={'Rp.'} renderText={(value, props) => <div {...props}>{value}</div>} /> : "-"}</td>
-                                  <td>{value.price_purchase ? <NumberFormat value={parseInt(value.price_purchase)} className="foo" displayType={'text'} thousandSeparator={true} prefix={'Rp.'} renderText={(value, props) => <div {...props}>{value}</div>} /> : "-"}</td>
-                                  <td>{value.is_favorite ? "Is Favorite" : "-"}</td>
-                                  <td>{value.Product_Category === null ? "-" : value.Product_Category.name}</td>
-                                  <td>{value.recipe_id ? "With Recipe" : "-"}</td>
-                                  <td>{value.stock ? value.stock : "-"}</td>
-                                  <td>{value.Unit === null ? "-" : value.Unit.name}</td>
-                                  <td>{value.Stocks.length > 0 ? value.Stocks[0].expired_date : "-"}</td>
-                                </tr>
-                              )}
-                            </tbody>
+                            <tr>
+                              <th>Export Product Result</th>
+                            </tr>
+                            <tr style={{ color: "yellow"}}>
+                              <th>{t("productName")}</th>
+                              <th>{t("description")}</th>
+                              <th>{t("barcode")}</th>
+                              <th>{t("sku")}</th>
+                              <th>{t("price")}</th>
+                              <th>{t("purchasePrice")}</th>
+                              <th>{t("favorite")}</th>
+                              <th>{t("category")}</th>
+                              <th>{t("withRecipe")}</th>
+                              <th>{t("stock")}</th>
+                              <th>{t("unit")}</th>
+                              <th>{t("expiredDate")}</th>
+                            </tr>
+                            {dataProduct.map((value, index) =>
+                              <tr key={index}>
+                                <td>{value.name ? value.name : "-"}</td>
+                                <td>{value.description ? value.description : "-"}</td>
+                                <td>{value.barcode ? value.barcode : "-"}</td>
+                                <td>{value.sku ? value.sku : "-"}</td>
+                                <td>{value.price ? <NumberFormat value={parseInt(value.price)} className="foo" displayType={'text'} thousandSeparator={true} prefix={'Rp.'} renderText={(value, props) => <div {...props}>{value}</div>} /> : "-"}</td>
+                                <td>{value.price_purchase ? <NumberFormat value={parseInt(value.price_purchase)} className="foo" displayType={'text'} thousandSeparator={true} prefix={'Rp.'} renderText={(value, props) => <div {...props}>{value}</div>} /> : "-"}</td>
+                                <td>{value.is_favorite ? "Is Favorite" : "-"}</td>
+                                <td>{value.Product_Category === null ? "-" : value.Product_Category.name}</td>
+                                <td>{value.recipe_id ? "With Recipe" : "-"}</td>
+                                <td>{value.stock ? value.stock : "-"}</td>
+                                <td>{value.Unit === null ? "-" : value.Unit.name}</td>
+                                <td>{value.Stocks.length > 0 ? value.Stocks[0].expired_date : "-"}</td>
+                              </tr>
+                            )}
                           </table>
                         </div>
                       </>

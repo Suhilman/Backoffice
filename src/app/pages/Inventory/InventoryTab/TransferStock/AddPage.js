@@ -62,7 +62,7 @@ export const AddTransferStockPage = ({ location }) => {
           .min(1)
           .required("Please input a product"),
         quantity: Yup.number()
-          .min(1, "Minimum 1")
+          .min(1, "Minimum 1 character")
           .required("Please input a quantity"),
         unit_id: Yup.string()
       })

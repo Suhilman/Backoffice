@@ -26,7 +26,7 @@ import "../style.css";
 export const AddStaffPage = ({ location }) => {
   const history = useHistory();
   const { allOutlets, allAccessLists, allRoles } = location.state;
-
+  const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
 
@@ -44,46 +44,45 @@ export const AddStaffPage = ({ location }) => {
     password_confirmation: "",
     pin: ""
   };
-  const { t } = useTranslation();
   const StaffSchema = Yup.object().shape({
     outlet_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose an outlet."),
+      .required(`${t("pleaseChooseAnOutlet")}`),
     type: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
-      .required("Please choose a type."),
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseChooseAType")}`),
     role_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a role."),
+      .required(`${t("pleaseChooseARole")}`),
     name: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
-      .required("Please input a product name."),
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputProductName")}`),
     staff_id: Yup.string()
       .min(5)
       .max(10)
-      .required("Please input a staff id."),
+      .required(`${t("pleaseInputStaffID")}`),
     email: Yup.string()
       .email()
-      .required("Please input an email."),
-    phone_number: Yup.number().typeError("Please input a number only"),
+      .required(`${t("pleaseInputAnEmail")}`),
+    phone_number: Yup.number().typeError(`${t("pleaseInputANumberOnly")}`),
     password: Yup.string()
       .matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!#%*?&]{8,20}$/,
-        "Password at least must have one uppercase, one numeric, and 8 characters long."
+        `${t("passwordAtLeastMustHaveOneUppercase,OneNumeric,And8CharactersLong")}`
       )
-      .required("Please input a password."),
+      .required(`${t("pleaseInputAPassword")}`),
     password_confirmation: Yup.string()
-      .oneOf([Yup.ref("password"), null], "Password do not match")
-      .required("Please input a password confirmation."),
+      .oneOf([Yup.ref("password"), null], `${t("passwordDoNotMatch")}`)
+      .required(`${t("PleaseInputAPasswordConfirmation")}`),
     pin: Yup.string()
-      .matches(/^\d+$/, "pin must be numbers")
+      .matches(/^\d+$/, `${t("pinMustBeNumber")}`)
       .min(6)
       .max(6)
-      .required("Please input a pin")
+      .required(`${t("pleaseInputAPin")}`)
   });
 
   const formikStaff = useFormik({
