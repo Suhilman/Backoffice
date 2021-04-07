@@ -126,7 +126,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
     : [];
   return (
     <>
-      <div className="style-pdf" ref={ref}>
+      <div className="style-pdf" style={{width: 1100, height: 500, color: "black solid"}} ref={ref}>
           <div className="container">
             <div className="row justify-content-between mb-5">
               <div className="col-md-6">
@@ -211,7 +211,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
                     pathname: "/inventory"
                   }}
                 >
-                  <Pdf targetRef={ref} filename="purchase-order.pdf" options={options} x={.5} y={.5} scale={1}>
+                  <Pdf targetRef={ref} filename="purchase-order.pdf" options={options} scale={1}>
                     {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>Export to PDF</Button>}
                   </Pdf>
                   {/* <Button variant="btn btn-outline-primary mr-2" onClick={handleExportPdf}>Export</Button> */}

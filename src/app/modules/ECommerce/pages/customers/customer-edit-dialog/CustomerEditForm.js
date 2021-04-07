@@ -15,15 +15,15 @@ import {
 // Validation schema
 const CustomerEditSchema = Yup.object().shape({
   firstName: Yup.string()
-    .min(3, "Minimum 3 symbols")
-    .max(50, "Maximum 50 symbols")
-    .required("Firstname is required"),
+    .min(3, `${t("minimum3Symbols")}`)
+    .max(50, `${t("maximum50Symbols")}`)
+    .required(`${t("firstnameIsRequired")}`),
   lastName: Yup.string()
-    .min(3, "Minimum 3 symbols")
-    .max(50, "Maximum 50 symbols")
-    .required("Lastname is required"),
+    .min(3, `${t("minimum3Symbols")}`)
+    .max(50, `${t("maximum50Symbols")}`)
+    .required(`${t("lastnameIsRequired")}`),
   email: Yup.string()
-    .email("Invalid email")
+    .email(`${t("invalidEmail")}`)
     .required("Email is required"),
   userName: Yup.string().required("Username is required"),
   dateOfBbirth: Yup.mixed()

@@ -4,13 +4,12 @@ import dayjs from "dayjs";
 import socketIOClient from "socket.io-client";
 
 import { Row, Col } from "react-bootstrap";
-
+import { useTranslation } from "react-i18next";
 import { MixedWidget1, StatsWidget11 } from "../widgets";
 import { ProductSale } from "./widgets/ProductSale";
 import { PaymentMethod } from "./widgets/PaymentMethod";
 import { ProductCategory } from "./widgets/ProductCategory";
 import { FinanceSummary } from "./widgets/FinanceSummary";
-
 import sum from "./helpers/sum";
 import combineAllSales from "./helpers/combineAllSales";
 
@@ -24,16 +23,16 @@ dayjs.extend(customParseFormat);
 export function Demo1Dashboard() {
   const [realTimeTransactions, setRealTimeTransactions] = React.useState([]);
   const [realTimeRange, setRealTimeRange] = React.useState([]);
-
+  const { t } = useTranslation();
   const [productSales, setProductSales] = React.useState({});
   const [paymentMethods, setPaymentMethods] = React.useState({});
   const [productCategories, setProductCategories] = React.useState({});
 
   const [allOutlets, setAllOutlets] = React.useState([]);
   const [outletId, setOutletId] = React.useState("");
-  const [outletName, setOutletName] = React.useState("All Outlets");
+  const [outletName, setOutletName] = React.useState(`${t("allOutlet")}`);
   const [rangeId, setRangeId] = React.useState(1);
-  const [rangeName, setRangeName] = React.useState("Today");
+  const [rangeName, setRangeName] = React.useState(`${t("today")}`);
 
   const [startRange, setStartRange] = React.useState(new Date());
   const [endRange, setEndRange] = React.useState(new Date());
@@ -80,7 +79,7 @@ export function Demo1Dashboard() {
   const ranges = [
     {
       id: 1,
-      value: "Today",
+      value: `${t("today")}`,
       valueId: "Hari Ini",
       displayDate: dayjs().format("DD-MM-YYYY"),
       date_start: dayjs()
@@ -92,7 +91,7 @@ export function Demo1Dashboard() {
     },
     {
       id: 2,
-      value: "This Week",
+      value: `${t("thisWeek")}`,
       valueId: "Pekan Ini",
       displayDate: `${dayjs()
         .startOf("week")
@@ -108,7 +107,7 @@ export function Demo1Dashboard() {
     },
     {
       id: 3,
-      value: "Last Week",
+      value: `${t("lastWeek")}`,
       valueId: "Pekan Lalu",
       displayDate: `${dayjs()
         .startOf("week")
@@ -128,7 +127,7 @@ export function Demo1Dashboard() {
     },
     {
       id: 4,
-      value: "This Month",
+      value: `${t("thisMonth")}`,
       valueId: "Bulan Ini",
       displayDate: `${dayjs()
         .startOf("month")
@@ -144,7 +143,7 @@ export function Demo1Dashboard() {
     },
     {
       id: 5,
-      value: "Last Month",
+      value: `${t("lastMonth")}`,
       valueId: "Bulan Lalu",
       displayDate: `${dayjs()
         .subtract(1, "month")
@@ -175,7 +174,7 @@ export function Demo1Dashboard() {
     // },
     {
       id: 7,
-      value: "This Year",
+      value: `${t("thisYear")}`,
       valueId: "Tahun Ini",
       displayDate: `${dayjs()
         .startOf("year")
@@ -191,7 +190,7 @@ export function Demo1Dashboard() {
     },
     {
       id: 8,
-      value: "Last Year",
+      value: `${t("lastYear")}`,
       valueId: "Tahun Lalu",
       displayDate: `${dayjs()
         .subtract(1, "year")
@@ -1041,6 +1040,7 @@ export function Demo1Dashboard() {
       <div className="row">
         <div className="col-lg-12 col-xxl-12">
           <StatsWidget11
+            t={t}
             className="card-stretch gutter-b"
             realTimeTransactions={realTimeTransactions}
             realTimeRange={realTimeRange}

@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import { ExcelRenderer } from "react-excel-renderer";
 import dayjs from "dayjs";
-import ExportExcel from "react-html-table-to-excel";
-import NumberFormat from 'react-number-format';
+import Select from "react-select";
+import NumberFormat from 'react-number-format'
 
 import {
   Row,
@@ -31,6 +31,7 @@ import useDebounce from "../../../hooks/useDebounce";
 
 import ConfirmModal from "../../../components/ConfirmModal";
 import ImportModal from "./ImportModal";
+import ExportModal from "./ExportModal"
 
 import "../../style.css";
 
@@ -48,6 +49,7 @@ const ProductTab = ({
   const [showConfirm, setShowConfirm] = React.useState(false);
   const [showConfirmBulk, setShowConfirmBulk] = React.useState(false);
   const [stateImport, setStateImport] = React.useState(false);
+  const [stateExport, setStateExport] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [filename, setFilename] = React.useState("");
   const [outletProduct, setOutletProduct] = React.useState([])
@@ -85,14 +87,21 @@ const ProductTab = ({
   }
 
   const handleExports = (data) => {
-    const result = []
-    allProducts.map(value => {
-      if (value.Outlet.name === data) {
-        result.push(value)
-      }
-    })
-    console.log('ini result apa', result)
-    setDataProduct(result)
+    if (data) {
+      const result = []
+      allProducts.map((value) => {
+        data.map(value2 => {
+          if (value.Outlet.name === value2.label) {
+            result.push(value)
+          }
+        })
+      })
+      setDataProduct(result)
+      console.log('ini data apaan', data)
+      console.log('ini result apa', result)
+    } else {
+      setDataProduct([])
+    }
   }
 
   const avoidExport = () => {
@@ -128,6 +137,7 @@ const ProductTab = ({
       const { data } = await axios.get(
         `${API_URL}/api/v1/product${filterProduct}`
       );
+      console.log('ini data apa?', data.data)
       setAllProducts(data.data);
       handleOutletProduct(data.data)
     } catch (err) {
@@ -216,6 +226,7 @@ const ProductTab = ({
 
     return data.map((item, index) => {
       const groupAddons = item.Group_Addons.map((group) => {
+        console.log('ini group apa', group)
         return {
           id: group.id,
           group_name: group.name,
@@ -267,7 +278,7 @@ const ProductTab = ({
         // purchase_price: item.price_purchase
         //   ? rupiahFormat.convert(item.price_purchase)
         //   : rupiahFormat.convert(0),
-        price: rupiahFormat.convert(item.price),
+        price: <NumberFormat value={item.price} displayType={'text'} thousandSeparator={true} prefix={'Rp.'} />,
         stock: item.stock,
         outlet: item.Outlet?.name,
         unit: item.Unit?.name || "-",
@@ -279,7 +290,9 @@ const ProductTab = ({
       };
     });
   };
-
+  const optionsOutlet = allOutlets.map((item) => {
+    return { value: item.id, label: item.name };
+  });
   const columns = [
     {
       name: "No.",
@@ -421,12 +434,14 @@ const ProductTab = ({
 
       try {
         if (!values.outlet_id.length) {
-          throw new Error("Please choose an outlet");
+          throw new Error(`${t("minimum1Character")}`);
         }
 
         const merged = values.outlet_id.map((item) => {
           const output = [];
           for (const val of values.products) {
+            if(val.name && val.sku && val.price)
+            {
             const obj = {
               ...val,
               outlet_id: item,
@@ -437,6 +452,7 @@ const ProductTab = ({
                     .format("YYYY-MM-DD")
                 : ""
             };
+            obj.sku = obj.sku.toString();
             // if (!val.barcode) delete obj.barcode;
             // if (!val.category) delete obj.category;
             if (!val.with_recipe) delete obj.with_recipe;
@@ -444,11 +460,13 @@ const ProductTab = ({
             if (!val.unit) delete obj.unit;
             if (!val.expired_date) delete obj.expired_date;
             output.push(obj);
+            }
           }
           return output;
         });
         enableLoading();
         for (const item of merged.flat(1)) {
+          console.log("ini item apa", item)
           if (!item.name) {
             throw new Error("there is product without name");
           }
@@ -463,6 +481,7 @@ const ProductTab = ({
         handleRefresh();
         handleCloseImport();
       } catch (err) {
+        console.log("appan nih", err.response)
         setAlert(err.response?.data.message || err.message);
         disableLoading();
       }
@@ -475,6 +494,10 @@ const ProductTab = ({
     setFilename("");
     formikImportProduct.setFieldValue("outlet_id", []);
     formikImportProduct.setFieldValue("products", []);
+  };
+  const handleCloseExport = () => {
+    setStateExport(false);
+    setDataProduct([])
   };
   const getJsDateFromExcel = (excelDate) => {
     return new Date((excelDate - (25567 + 1)) * 86400 * 1000);
@@ -535,6 +558,7 @@ const ProductTab = ({
             expired_date: getJsDateFromExcel(obj.expired_date)
           });
         });
+        console.log('ini data importnya', data)
         formikImportProduct.setFieldValue("products", data);
       }
     });
@@ -573,6 +597,15 @@ const ProductTab = ({
         filename={filename}
       />
 
+      <ExportModal 
+        loading={loading}
+        state={stateExport}
+        closeModal={handleCloseExport}
+        optionsOutlet={optionsOutlet}
+        handleExports={handleExports}
+        dataProduct={dataProduct}
+      />
+
       <Col md={12}>
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div className="headerPage">
@@ -586,69 +619,9 @@ const ProductTab = ({
             <div className="headerEnd" style={{ display: "flex" }}>
               {!multiSelect ? (
                 <>
-                  <Dropdown style={{ marginRight: "0.5rem" }}>
-                    <Dropdown.Toggle variant="outline-secondary">
-                      {t("exportOutlet")}
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                      {outletProduct.map(item => 
-                        <Dropdown.Item as="button" onClick={() => handleExports(item)} value={item}>
-                          {item}
-                        </Dropdown.Item>
-                      )}
-                    </Dropdown.Menu>
-                    {/* Start table excel */}
-                    {dataProduct.length > 0 ? (
-                      <>
-                        <ExportExcel
-                          id="test-table-xls-button"
-                          className="btn btn-outline-primary mx-2"
-                          table="table-to-xls"
-                          filename="tablexls"
-                          sheet="tablexls"
-                          buttonText={t("export")}
-                        />
-                        <div style={{ display: "none" }}>
-                          <table id="table-to-xls">
-                            <tr>
-                              <th>Export Product Result</th>
-                            </tr>
-                            <tr style={{ color: "yellow"}}>
-                              <th>{t("productName")}</th>
-                              <th>{t("description")}</th>
-                              <th>{t("barcode")}</th>
-                              <th>{t("sku")}</th>
-                              <th>{t("price")}</th>
-                              <th>{t("purchasePrice")}</th>
-                              <th>{t("favorite")}</th>
-                              <th>{t("category")}</th>
-                              <th>{t("withRecipe")}</th>
-                              <th>{t("stock")}</th>
-                              <th>{t("unit")}</th>
-                              <th>{t("expiredDate")}</th>
-                            </tr>
-                            {dataProduct.map((value, index) =>
-                              <tr key={index}>
-                                <td>{value.name ? value.name : "-"}</td>
-                                <td>{value.description ? value.description : "-"}</td>
-                                <td>{value.barcode ? value.barcode : "-"}</td>
-                                <td>{value.sku ? value.sku : "-"}</td>
-                                <td>{value.price ? <NumberFormat value={parseInt(value.price)} className="foo" displayType={'text'} thousandSeparator={true} prefix={'Rp.'} renderText={(value, props) => <div {...props}>{value}</div>} /> : "-"}</td>
-                                <td>{value.price_purchase ? <NumberFormat value={parseInt(value.price_purchase)} className="foo" displayType={'text'} thousandSeparator={true} prefix={'Rp.'} renderText={(value, props) => <div {...props}>{value}</div>} /> : "-"}</td>
-                                <td>{value.is_favorite ? "Is Favorite" : "-"}</td>
-                                <td>{value.Product_Category === null ? "-" : value.Product_Category.name}</td>
-                                <td>{value.recipe_id ? "With Recipe" : "-"}</td>
-                                <td>{value.stock ? value.stock : "-"}</td>
-                                <td>{value.Unit === null ? "-" : value.Unit.name}</td>
-                                <td>{value.Stocks.length > 0 ? value.Stocks[0].expired_date : "-"}</td>
-                              </tr>
-                            )}
-                          </table>
-                        </div>
-                      </>
-                    ) : ""}
-                    {/* End table excel */}
-                  </Dropdown>
+                  <Button style={{ marginRight: "0.5rem" }} variant="secondary" onClick={() => setStateExport(true)}>
+                    {t("export")}
+                  </Button>
                   <Button variant="secondary" onClick={handleOpenImport}>
                     {t("import")}
                   </Button>

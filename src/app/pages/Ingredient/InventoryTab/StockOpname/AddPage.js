@@ -4,7 +4,7 @@ import { Link, useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import { useFormik, FormikProvider, FieldArray } from "formik";
 import Select from "react-select";
-
+import { useTranslation } from "react-i18next";
 import {
   Button,
   Form,
@@ -21,7 +21,7 @@ import { CalendarToday, Delete } from "@material-ui/icons";
 export const AddOpnameMaterialPage = ({ location }) => {
   const history = useHistory();
   const { allOutlets, allMaterials } = location.state;
-
+  const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
 
@@ -49,19 +49,19 @@ export const AddOpnameMaterialPage = ({ location }) => {
     outlet_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose outlet"),
+      .required(`${t("pleaseChooseOutlet")}`),
     notes: Yup.string(),
-    date: Yup.string().required("Please input date"),
+    date: Yup.string().required(`${t("pleaseInputDate")}`),
     items: Yup.array().of(
       Yup.object().shape({
         stock_id: Yup.number()
           .min(1)
-          .required("Please input a raw material"),
+          .required(`${t("pleaseInputARawMaterial")}`),
         quantity_system: Yup.number()
-          .typeError("Please input a product")
-          .required("Please input a quantity system"),
+          .typeError(`${t("pleaseInputAProduct")}`)
+          .required(`${t("pleaseInputAQuantitySystem")}`),
         quantity_actual: Yup.number()
-          .min(0, "Minimum 0")
+          .min(0, `${t("minimum0Character")}`)
           .required("Please input a quantity actual"),
         unit_id: Yup.string().required("Please input a unit"),
         difference: Yup.number()

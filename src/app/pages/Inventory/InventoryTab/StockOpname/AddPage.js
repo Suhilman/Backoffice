@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import { useFormik, FormikProvider, FieldArray } from "formik";
 import dayjs from "dayjs";
 import Select from "react-select";
-
+import { useTranslation } from "react-i18next";
 import {
   Button,
   Form,
@@ -25,7 +25,7 @@ export const AddStockOpnamePage = ({ location }) => {
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
-
+  const { t } = useTranslation();
   const [startDate, setStartDate] = React.useState(new Date());
 
   const [hasUnit, setHasUnit] = React.useState(false);
@@ -51,30 +51,30 @@ export const AddStockOpnamePage = ({ location }) => {
     outlet_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose an outlet."),
+      .required(`${t("pleaseChooseAnOutlet")}`),
     notes: Yup.string(),
-    date: Yup.string().required("Please input date"),
+    date: Yup.string().required(`${t("pleaseInputDate")}`),
     items: Yup.array().of(
       Yup.object().shape({
         stock_id: Yup.number()
           .min(1)
-          .required("Please input a product"),
+          .required(`${t("pleaseInputAProduct")}`),
         quantity_system: Yup.number()
-          .typeError("Please input a product")
-          .required("Please input a quantity system"),
+          .typeError(`${t("pleaseInputAProduct")}`)
+          .required(`${t("pleaseInputAQuantitySystem")}`),
         quantity_actual: Yup.number()
-          .min(0, "Minimum 0")
-          .required("Please input a quantity actual"),
+          .min(0, `${t("minimum1Character")}`)
+          .required(`${t("pleaseInputAQuantityActual")}`),
         unit_id: Yup.string(),
         difference: Yup.number()
-          .typeError("Please input a quantity actual")
-          .required("Please input a difference"),
+          .typeError(`${t("pleaseInputAQuantityActual")}`)
+          .required(`${t("pleaseInputADifference")}`),
         price_system: Yup.number()
-          .typeError("Please input a product")
-          .required("Please input a price system"),
+          .typeError(`${t("pleaseInputAProduct")}`)
+          .required(`${t("pleaseInputAPriceSystem")}`),
         price_new: Yup.number()
-          .min(0, "Minimum 0")
-          .required("Please input a price actual")
+          .min(0, `${t("minimum0Character")}`)
+          .required(`${t("pleaseInputAPriceActual")}`)
       })
     )
   });

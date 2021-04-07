@@ -214,7 +214,7 @@ export function MixedWidget1({
                     </Dropdown.Item>
                   );
                 })}
-                <Dropdown.Item onClick={handleSelectDate}>Custom</Dropdown.Item>
+                <Dropdown.Item onClick={handleSelectDate}>{t("custom")}</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
 

@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
+import { useTranslation } from "react-i18next";
 import {
   Row,
   Col,
@@ -25,13 +25,13 @@ import ModalAddToProduct from "./ModalAddToProduct";
 
 import "../../style.css";
 
-const ProductCategoryTab = ({ refresh, handleRefresh, t }) => {
+const ProductCategoryTab = ({ refresh, handleRefresh}) => {
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [alertModal, setAlertModal] = React.useState("");
   const [showConfirmBulk, setShowConfirmBulk] = React.useState(false);
   const [modalAddToProduct, setModalAddToProduct] = React.useState(false);
-
+  const { t } = useTranslation();
   const [multiSelect, setMultiSelect] = React.useState(false);
   const [clearRows, setClearRows] = React.useState(true);
   const [selectedData, setSelectedData] = React.useState([]);
@@ -61,9 +61,9 @@ const ProductCategoryTab = ({ refresh, handleRefresh, t }) => {
 
   const CategorySchema = Yup.object().shape({
     name: Yup.string()
-      .min(3, "Minimum 3 characters")
-      .max(50, "Maximum 50 characters")
-      .required("Please input a category")
+      .min(3, `${t("minimum3Character ")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputACategory")}`)
   });
 
   const formikAddCategory = useFormik({

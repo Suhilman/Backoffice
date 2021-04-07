@@ -52,32 +52,32 @@ const SupplierTab = ({ refresh, handleRefresh, t }) => {
 
   const SupplierSchema = Yup.object().shape({
     supplier_name: Yup.string()
-      .min(1, "Minimum 1 character")
-      .required("Please input supplier name"),
+      .min(1, `${t("minimum1Character")}`)
+      .required(`${t("pleaseInputASupplierName")}`),
     address: Yup.string()
-      .min(1, "Minimum 1 character")
-      .required("Please input address"),
+      .min(1, `${t("minimum1Character")}`)
+      .required(`${t("minimum1Character")}`),
     phone_number: Yup.number()
-      .typeError("Number only")
-      .required("Please input phone number"),
+      .typeError(`${t("numberOnly")}`)
+      .required(`${t("pleaseInputPhoneNumber")}`),
     email: Yup.string()
       .email()
-      .required("Please input email")
+      .required(`${t("pleaseInputEmail")}`)
   });
 
   const SupplierEditSchema = Yup.object().shape({
     supplier_name: Yup.string()
-      .min(1, "Minimum 1 character")
-      .required("Please input supplier name"),
+      .min(1, `${t("minimum1Character")}`)
+      .required(`${t("pleaseInputSupplierName")}`),
     address: Yup.string()
-      .min(1, "Minimum 1 character")
-      .required("Please input address"),
+      .min(1, `${t("minimum1Character")}`)
+      .required(`${t("minimum1Character")}`),
     phone_number: Yup.number()
-      .typeError("Number only")
-      .required("Please input phone number"),
+      .typeError(`${t("numberOnly")}`)
+      .required(`${t("pleaseInputPhoneNumber")}`),
     email: Yup.string()
       .email()
-      .required("Please input email")
+      .required(`${t("pleaseInputEmail ")}`)
   });
 
   const formikSupplier = useFormik({

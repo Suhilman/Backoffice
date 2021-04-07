@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import { injectIntl } from "react-intl";
 import * as auth from "../_redux/authRedux";
 import { requestPassword } from "../_redux/authCrud";
+import { useTranslation } from "react-i18next";
 
 const initialValues = {
   email: "",
@@ -17,8 +18,8 @@ function ForgotPassword(props) {
   const ForgotPasswordSchema = Yup.object().shape({
     email: Yup.string()
       .email("Wrong email format")
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
+      .min(3, `${t("minimum3Symbols")}`)
+      .max(50, `${t("maximum50Symbols")}`)
       .required(
         intl.formatMessage({
           id: "AUTH.VALIDATION.REQUIRED_FIELD",
@@ -37,6 +38,7 @@ function ForgotPassword(props) {
 
     return "";
   };
+  const { t } = useTranslation();
 
   const formik = useFormik({
     initialValues,

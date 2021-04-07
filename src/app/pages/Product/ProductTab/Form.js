@@ -176,7 +176,7 @@ const FormTemplate = ({
                 </div>
               ) : null}
             </Form.Group>
-
+            {console.log("ini desimal e", formikProduct.getFieldProps("price").value)}
             <Form.Group>
               <Form.Label>{t("price")}*</Form.Label>
               <Form.Control

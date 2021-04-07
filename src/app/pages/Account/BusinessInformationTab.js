@@ -48,12 +48,12 @@ export const BusinessInformation = () => {
   const { t } = useTranslation();
   const BusinessSchema = Yup.object().shape({
     name: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
       .required("Please input a business name."),
     business_address: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
       .required("Please input a business address."),
     business_phone_number: Yup.number()
       .typeError("Please input a number only")

@@ -4,16 +4,17 @@ import { useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import imageCompression from 'browser-image-compression';
-
+import { useTranslation } from "react-i18next";
 import { Row, Col } from "react-bootstrap";
+import NumberFormat from 'react-number-format';
 
 import ModalManageAddons from "./ModalManageAddons";
 import FormTemplate from "./Form";
 import dayjs from "dayjs";
 
-import { useTranslation } from "react-i18next";
 
 export const EditProductPage = ({ match, location }) => {
+  const { t } = useTranslation();
   const product_id = match.params.productId;
   const {
     allOutlets,
@@ -77,7 +78,7 @@ export const EditProductPage = ({ match, location }) => {
     outlet_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose an outlet."),
+      .required(`${t("pleaseChooseAnOutletLocation")}`),
     name: Yup.string()
       .min(3, `${t("minimum3Character ")}`)
       .max(50, `${t("maximum50Character")}`)
@@ -311,8 +312,6 @@ export const EditProductPage = ({ match, location }) => {
       setExpiredDate("");
     }
   };
-
-  const { t } = useTranslation();
 
   return (
     <Row>

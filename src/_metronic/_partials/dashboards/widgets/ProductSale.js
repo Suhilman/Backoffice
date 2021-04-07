@@ -6,10 +6,10 @@ import ApexCharts from "apexcharts";
 import { Card } from "react-bootstrap";
 import { useHtmlClassService } from "../../../layout";
 import { KTUtil } from "../../../_assets/js/components/util";
-
+import { useTranslation } from "react-i18next";
 export function ProductSale({ className, productSales }) {
   const uiService = useHtmlClassService();
-
+  const { t } = useTranslation();
   const layoutProps = useMemo(() => {
     return {
       colorsGrayGray100: objectPath.get(
@@ -51,9 +51,9 @@ export function ProductSale({ className, productSales }) {
   return (
     <Card className="card-stretch gutter-b">
       <Card.Body style={{ padding: "2rem" }}>
-        <h3>Product Sales</h3>
+        <h3>{t("productSales")}</h3>
         <h5 style={{ fontSize: "1rem" }}>
-          Check out each collumn for more details
+          {t("checkOutEachCollumnForMoreDetails")}
         </h5>
         <div
           id="product-sales"

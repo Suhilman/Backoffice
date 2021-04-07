@@ -49,29 +49,29 @@ export const AddPurchaseOrderPage = ({ location }) => {
     outlet_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose outlet."),
+      .required(`${t("pleaseChooseOutlet")}`),
     supplier_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose supplier."),
+      .required(`${t("pleaseChooseSupplier")}`),
     po_number: Yup.string().nullable(),
     generated: Yup.boolean(),
     notes: Yup.string(),
-    date: Yup.string().required("Please input date"),
+    date: Yup.string().required(`${t("pleaseInputDate")}`),
     items: Yup.array().of(
       Yup.object().shape({
         product_id: Yup.number()
           .min(1)
-          .required("Please input product"),
+          .required(`${t("pleaseInputProduct")}`),
         quantity: Yup.number()
-          .min(1, "Minimum 1 character")
-          .required("Please input quantity"),
+          .min(1, `${t("minimum1Character")}`)
+          .required(`${t("pleaseInputQuantity")}`),
         price: Yup.number()
-          .min(0, "Minimum 0 character")
-          .required("Please input price"),
+          .min(0, `${t("minimum0Character")}`)
+          .required(`${t("pleaseInputPrice")}`),
         total_price: Yup.number()
-          .min(0, "Minimum 0 character")
-          .required("Please input price total")
+          .min(0, `${t("minimum0Character")}`)
+          .required(`${t("pleaseInputPriceTotal")}`)
       })
     )
   });

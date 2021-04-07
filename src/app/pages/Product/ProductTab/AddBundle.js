@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import Select from "react-select";
 import dayjs from "dayjs";
 import { useDropzone } from "react-dropzone";
-
+import { useTranslation } from "react-i18next";
 import { Row, Col, Button, Form, Alert, Spinner } from "react-bootstrap";
 import { Paper } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
@@ -14,7 +14,7 @@ import { Delete } from "@material-ui/icons";
 export const AddBundlePage = ({ location }) => {
   const history = useHistory();
   const { allOutlets, allCategories, allProducts } = location.state;
-
+  const { t } = useTranslation();
   const [photo, setPhoto] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
@@ -44,31 +44,31 @@ export const AddBundlePage = ({ location }) => {
   };
 
   const ProductSchema = Yup.object().shape({
-    outlet_id: Yup.string().required("Please choose an outlet."),
+    outlet_id: Yup.string().required(`${t("minimum1Character")}`),
     name: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
-      .required("Please input a bundle name."),
+      .min(3, `${t("minimum3Character ")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputABundleName")}`),
     product_category_id: Yup.string(),
     price: Yup.number()
       .integer()
       .min(1)
-      .required("Please input a price."),
+      .required(`${t("pleaseInputAPrice")}`),
     price_purchase: Yup.number()
       .integer()
-      .required("Please input a price purchase."),
+      .required(`${t("pleaseInputAPricePurchase")}`),
     // stock: Yup.number()
     //   .integer()
     //   .min(1)
     //   .required("Please input a stock."),
     status: Yup.string()
       .matches(/(active|inactive)/)
-      .required("Please input a status."),
+      .required(`${t("pleaseInputAStatus")}`),
     description: Yup.string().nullable(),
     bundle_items: Yup.array().of(
       Yup.object().shape({
         id: Yup.string(),
-        stock_id: Yup.string().required("Please choose product")
+        stock_id: Yup.string().required(`${t("pleaseChooseProduct")}`)
         // quantity: Yup.number()
         //   .integer()
         //   .min(0)

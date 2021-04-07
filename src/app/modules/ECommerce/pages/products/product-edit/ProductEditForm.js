@@ -16,16 +16,16 @@ import {
 // Validation schema
 const ProductEditSchema = Yup.object().shape({
   model: Yup.string()
-    .min(2, "Minimum 2 symbols")
-    .max(50, "Maximum 50 symbols")
-    .required("Model is required"),
+    .min(2, `${t("minimum2Symbols")}`)
+    .max(50, `${t("maximum50Symbols")}`)
+    .required(`${t("modelIsRequired")}`),
   manufacture: Yup.string()
-    .min(2, "Minimum 2 symbols")
-    .max(50, "Maximum 50 symbols")
-    .required("Manufacture is required"),
+    .min(2, `${t("minimum2Symbols")}`)
+    .max(50, `${t("maximum50Symbols")}`)
+    .required(`${t("manufactureIsRequired")}`),
   modelYear: Yup.number()
-    .min(1950, "1950 is minimum")
-    .max(2020, "2020 is maximum")
+    .min(1950, `${t("1950IsMinimum")}`)
+    .max(2020, `${t("2020IsMaximum")}`)
     .required("Model year is required"),
   mileage: Yup.number()
     .min(0, "0 is minimum")

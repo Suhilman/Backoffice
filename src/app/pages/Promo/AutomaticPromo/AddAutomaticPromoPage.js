@@ -120,7 +120,7 @@ export const AddAutomaticPromoPage = ({ location }) => {
       .matches(/percentage|currency/)
       .required(`${t("pleaseChooseADiscountType")}`),
     quantity_value: Yup.number()
-      .min(1, `${t("minimum!Character")}`)
+      .min(1, `${t("minimum1Character")}`)
       .required(`${t("pleaseInputaDiscountValue")}`),
     quantity_amount: Yup.number()
       .min(1, `${t("minimum1Character")}`)

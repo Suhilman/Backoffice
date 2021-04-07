@@ -67,13 +67,13 @@ export const OutletTab = ({
 
   const OutletSchema = Yup.object().shape({
     name: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
-      .required("Please input a product name."),
-    phone_number: Yup.number().typeError("Please input a number only"),
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputAProductName")}`),
+    phone_number: Yup.number().typeError(`${t("pleaseInputANumberOnly")}`),
     address: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(100, "Maximum 100 characters."),
+      .min(3, `${t("minimum3Character")}`)
+      .max(100, `${t("maximum100Character")}`),
     payment_description: Yup.string(),
     postcode: Yup.number()
       .integer()
@@ -81,18 +81,18 @@ export const OutletTab = ({
     province_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a province."),
+      .required(`${t("pleaseChooseAProvince")}`),
     city_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a city."),
+      .required(`${t("pleaseChooseACity")}`),
     location_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a location."),
+      .required(`${t("pleaseChooseALocation")}`),
     status: Yup.string()
       .matches(/(active|inactive)/)
-      .required("Please input a status.")
+      .required(`${t("pleaseInputAStatus")}`)
   });
 
   const formikOutlet = useFormik({

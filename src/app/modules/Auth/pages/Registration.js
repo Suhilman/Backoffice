@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { injectIntl } from "react-intl";
-
+import { useTranslation } from "react-i18next";
 import { Form } from "react-bootstrap";
 
 import ReCAPTCHA from "react-google-recaptcha";
@@ -34,11 +34,11 @@ function Registration(props) {
   const { intl } = props;
   const [loading, setLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
-
+  const { t } = useTranslation();
   const RegistrationSchema = Yup.object().shape({
     name: Yup.string()
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
+      .min(3, `${t("minimum3Symbols")}`)
+      .max(50, `${t("maximum50Symbols")}`)
       .required(
         intl.formatMessage({
           id: "AUTH.VALIDATION.REQUIRED_FIELD"
@@ -46,24 +46,24 @@ function Registration(props) {
       ),
     email: Yup.string()
       .email("Wrong email format")
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
+      .min(3, `${t("minimum3Symbols")}`)
+      .max(50, `${t("maximum50Symbols")}`)
       .required(
         intl.formatMessage({
           id: "AUTH.VALIDATION.REQUIRED_FIELD"
         })
       ),
     phone_number: Yup.string()
-      .min(8, "Minimum 3 symbols")
-      .max(13, "Maximum 50 symbols")
+      .min(8, `${t("minimum3Symbols")}`)
+      .max(13, `${t("maximum50Symbols")}`)
       .required(
         intl.formatMessage({
           id: "AUTH.VALIDATION.REQUIRED_FIELD"
         })
       ),
     password: Yup.string()
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
+      .min(3, `${t("minimum3Symbols")}`)
+      .max(50, `${t("maximum50Symbols")}`)
       .required(
         intl.formatMessage({
           id: "AUTH.VALIDATION.REQUIRED_FIELD"
@@ -85,11 +85,11 @@ function Registration(props) {
     business_type_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a business type."),
+      .required(`${t("pleaseChooseABusinessType")}`),
     business_province_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a province."),
+      .required(`${t("pleaseChooseAProvince")}`),
     business_city_id: Yup.number()
       .integer()
       .min(1)
@@ -133,23 +133,23 @@ function Registration(props) {
     business_type_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a business type."),
+      .required(`${t("pleaseChooseABusinessType")}`),
     business_province_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a province."),
+      .required(`${t("pleaseChooseAProvince")}`),
     business_city_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a city."),
+      .required(`${t("pleaseChooseACity")}`),
     business_location_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a business location."),
+      .required(`${t("pleaseChooseABusinessLocation ")}`),
     outlet_location_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose an outlet location.")
+      .required(`${t("pleaseChooseAnOutletLocation")}`)
   });
 
   const handleFormikBusiness = async (values, accessToken) => {

@@ -36,45 +36,45 @@ export const AccountInformation = () => {
   const AccountSchema = Yup.object().shape({
     email: Yup.string()
       .email()
-      .required("Please input an email."),
+      .required(`${t("pleaseInputAnEmail")}`),
     phone_number: Yup.number().typeError("Please input a number only"),
     old_password: Yup.string()
       .matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!#%*?&]{8,20}$/,
-        "Password at least must have one uppercase, one numeric, and 8 characters long."
+        `${t("passwordAtLeastMustHaveOneUppercase,OneNumeric,And8CharactersLong")}`
       )
-      .required("Please input a password."),
+      .required(`${t("pleaseInputAPassword")}`),
     new_password: Yup.string()
       .matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!#%*?&]{8,20}$/,
-        "Password at least must have one uppercase, one numeric, and 8 characters long."
+        `${t("passwordAtLeastMustHaveOneUppercase,OneNumeric,And8CharactersLong")}`
       )
-      .required("Please input a password."),
+      .required(`${t("pleaseInputAPassword")}`),
     password_confirmation: Yup.string()
-      .oneOf([Yup.ref("new_password"), null], "Password do not match")
-      .required("Please input a password confirmation.")
+      .oneOf([Yup.ref("new_password"), null], `${t("passwordDontMatch")}`)
+      .required(`${t("pleaseInputAPasswordConfirmation")}`)
   });
 
   const AccountStaffSchema = Yup.object().shape({
     email: Yup.string()
       .email()
-      .required("Please input an email."),
+      .required(`${t("pleaseInputAnEmail")}`),
     phone_number: Yup.number().typeError("Please input a number only"),
     old_password: Yup.string()
       .matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!#%*?&]{8,20}$/,
-        "Password at least must have one uppercase, one numeric, and 8 characters long."
+        `${t("passwordAtLeastMustHaveOneUppercase,OneNumeric,And8CharactersLong")}`
       )
-      .required("Please input a password."),
+      .required(`${t("pleaseInputAPassword")}`),
     new_password: Yup.string()
       .matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!#%*?&]{8,20}$/,
-        "Password at least must have one uppercase, one numeric, and 8 characters long."
+        `${t("passwordAtLeastMustHaveOneUppercase,OneNumeric,And8CharactersLong")}`
       )
-      .required("Please input a password."),
+      .required(`${t("pleaseInputAPassword")}`),
     password_confirmation: Yup.string()
-      .oneOf([Yup.ref("new_password"), null], "Password do not match")
-      .required("Please input a password confirmation."),
+      .oneOf([Yup.ref("new_password"), null], `${t("passwordDontMatch")}`)
+      .required(`${t("pleaseInputAPasswordConfirmation")}`),
     old_pin: Yup.string()
       .matches(/^\d+$/, "Please input numbers")
       .min(6)

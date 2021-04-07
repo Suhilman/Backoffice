@@ -10,7 +10,6 @@ import {
   FormControl,
   FormControlLabel
 } from "@material-ui/core";
-
 import DataTable from "react-data-table-component";
 
 import { Paper } from "@material-ui/core";
@@ -27,14 +26,13 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
-
+  const { t } = useTranslation();
   const [photo, setPhoto] = React.useState("");
   const [photoPreview, setPhotoPreview] = React.useState("");
   const [alertPhoto, setAlertPhoto] = React.useState("");
 
   const [allPaymentMethods, setAllPaymentMethods] = React.useState([]);
   const [allTypes, setAllTypes] = React.useState([]);
-  const { t } = useTranslation();
   const [search, setSearch] = React.useState("");
   const [filter, setFilter] = React.useState({
     type: "",
@@ -93,20 +91,20 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
 
   const PaymentSchema = Yup.object().shape({
     name: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
-      .required("Please input a name."),
+      .min(3, `${t("minimum3Character ")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputAName")}`),
     payment_method_type_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please input a payment method type."),
+      .required(`${t("pleaseInputAPaymentMethodType")}`),
     mdr: Yup.number()
       .integer()
       .min(0)
-      .required("Please input a mdr."),
+      .required(`${t("pleaseInputAMdr")}`),
     status: Yup.string()
       .matches(/(active|inactive)/)
-      .required("Please input a status.")
+      .required(`${t("pleaseInputAStatus")}`)
   });
 
   const formikPayment = useFormik({

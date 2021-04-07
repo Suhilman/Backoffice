@@ -47,13 +47,13 @@ const CategoryTab = ({ refresh, handleRefresh }) => {
   const CategorySchema = Yup.object().shape({
     name: Yup.string()
       .min(1, "Minimum 1 character")
-      .required("Please input name")
+      .required(`${t("pleaseInputName")}`)
   });
 
   const CategoryEditSchema = Yup.object().shape({
     name: Yup.string()
       .min(1, "Minimum 1 character")
-      .required("Please input name")
+      .required(`${t("pleaseInputName")}`)
   });
 
   const formikCategory = useFormik({

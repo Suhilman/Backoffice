@@ -53,14 +53,14 @@ const UnitTab = ({ refresh, handleRefresh, t }) => {
 
   const UnitSchema = Yup.object().shape({
     name: Yup.string()
-      .min(1, "Minimum 1 character")
-      .required("Please input name")
+      .min(1, `${t("minimum1Character")}`)
+      .required(`${t("pleaseInputName")}`)
   });
 
   const UnitEditSchema = Yup.object().shape({
     name: Yup.string()
-      .min(1, "Minimum 1 character")
-      .required("Please input name")
+      .min(1, `${t("minimum1Character")}`)
+      .required(`${t("pleaseInputName")}`)
   });
 
   const formikUnit = useFormik({

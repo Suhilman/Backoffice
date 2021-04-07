@@ -58,16 +58,16 @@ export const SalesTypeTab = ({ handleRefresh, refresh, t }) => {
 
   const SalesTypeSchema = Yup.object().shape({
     name: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
-      .required("Please input a name."),
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputAName")}`),
     require_table: Yup.boolean(),
     is_booking: Yup.boolean(),
     is_delivery: Yup.boolean(),
     charge: Yup.number()
       .integer()
       .min(0)
-      .required("Please input a charge.")
+      .required(`${t("pleaseInputACharge")}`)
   });
 
   const formikSalesType = useFormik({

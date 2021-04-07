@@ -71,33 +71,33 @@ export const EditRecipePage = ({ location, match }) => {
   // console.log('ini value materialnya', valueMaterial.price_per_unit)
 
   const RecipeSchema = Yup.object().shape({
-    outlet_id: Yup.number().required("Please choose an outlet."),
+    outlet_id: Yup.number().required(`${t("pleaseChooseAnOutlet")}`),
     total_calorie: Yup.number(),
     total_cogs: Yup.number(),
     notes: Yup.string().nullable(),
-    product_id: Yup.number().required("Please choose a product."),
+    product_id: Yup.number().required(`${t("pleaseChooseAProduct")}`),
     materials: Yup.array().of(
       Yup.object().shape({
         id: Yup.number().nullable(),
         raw_material_category_id: Yup.number()
-          .typeError("Please input a category")
-          .required("Please input a category"),
+          .typeError(`${t("pleaseInputACategory")}`)
+          .required(`${t("pleaseInputACategory")}`),
         raw_material_id: Yup.number()
-          .typeError("Please input a raw material")
-          .required("Please input a raw material"),
+          .typeError(`${t("pleaseInputARawMaterial")}`)
+          .required(`${t("pleaseInputARawMaterial")}`),
         quantity: Yup.number()
-          .min(0, "Minimum 0")
-          .typeError("Please input a quantity")
-          .required("Please input a quantity"),
+          .min(0, `${t("minimum0Character")}`)
+          .typeError(`${t("pleaseInputAQuantity")}`)
+          .required(`${t("pleaseInputAQuantity")}`),
         unit_id: Yup.number(),
         calorie_per_unit: Yup.number()
-          .min(0, "Minimum 0")
-          .typeError("Please input a calorie")
-          .required("Please input a calorie"),
+          .min(0, `${t("minimum0Character")}`)
+          .typeError(`${t("pleaseInputACalorie")}`)
+          .required(`${t("pleaseInputACalorie")}`),
         ingredient_price: Yup.number()
-          .min(0, "Minimum 0")
-          .typeError("Please input a price")
-          .required("Please input a price"),
+          .min(0, `${t("minimum0Character")}`)
+          .typeError(`${t("pleaseInputAPrice")}`)
+          .required(`${t("pleaseInputAPrice")}`),
         is_custom_material: Yup.boolean()
       })
     )

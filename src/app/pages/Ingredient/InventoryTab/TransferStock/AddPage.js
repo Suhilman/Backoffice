@@ -4,7 +4,7 @@ import { Link, useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import { useFormik, FormikProvider, FieldArray } from "formik";
 import Select from "react-select";
-
+import { useTranslation } from "react-i18next";
 import {
   Button,
   Form,
@@ -21,7 +21,7 @@ import { CalendarToday, Delete } from "@material-ui/icons";
 export const AddTransferMaterialPage = ({ location }) => {
   const history = useHistory();
   const { allOutlets, allMaterials, allUnits } = location.state;
-
+  const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
 
@@ -45,22 +45,22 @@ export const AddTransferMaterialPage = ({ location }) => {
     outlet_from_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose origin."),
+      .required(`${t("pleaseChooseOrigin")}`),
     outlet_to_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose destination."),
+      .required(`${t("pleaseChooseDestination")}`),
     notes: Yup.string(),
-    date: Yup.string().required("Please input date"),
+    date: Yup.string().required(`${t("pleaseInputDate")}`),
     items: Yup.array().of(
       Yup.object().shape({
         stock_id: Yup.number()
           .min(1)
-          .required("Please input a raw material"),
+          .required(`${t("pleaseInputARawMaterial")}`),
         quantity: Yup.number()
-          .min(1, "Minimum 1")
-          .required("Please input a quantity"),
-        unit_id: Yup.string().required("Please input a unit")
+          .min(1, `${t("minimum1Character")}`)
+          .required(`${t("pleaseInputAQuantity")}`),
+        unit_id: Yup.string().required(`${t("pleaseInputAUnit")}`)
       })
     )
   });

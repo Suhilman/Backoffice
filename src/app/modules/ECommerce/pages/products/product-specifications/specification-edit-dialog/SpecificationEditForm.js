@@ -15,8 +15,8 @@ import { SPECIFICATIONS_DICTIONARY } from "../SpecificationsUIHelper";
 // Validation schema
 const SpecificationEditSchema = Yup.object().shape({
   value: Yup.string()
-    .min(2, "Minimum 2 symbols")
-    .max(50, "Maximum 50 symbols")
+    .min(2, `${t("minimum2Symbols")}`)
+    .max(50, `${t("maximum50Symbols")}`)
     .required("Value is required"),
   specId: Yup.number().required("Specification type is required"),
 });

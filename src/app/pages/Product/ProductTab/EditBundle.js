@@ -47,7 +47,7 @@ export const EditBundlePage = ({ match, location }) => {
   };
 
   const ProductSchema = Yup.object().shape({
-    outlet_id: Yup.string().required("Please choose an outlet."),
+    outlet_id: Yup.string().required(`${t("pleaseChooseAnOutlet")}`),
     name: Yup.string()
       .min(3, `${t("minimum3Character ")}`)
       .max(50, `${t("maximum50Character")}`)

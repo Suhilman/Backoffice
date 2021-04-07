@@ -4,7 +4,7 @@ import objectPath from "object-path";
 import ApexCharts from "apexcharts";
 import dayjs from "dayjs";
 import rupiahFormat from "rupiah-format";
-
+import { useTranslation } from "react-i18next";
 import { useHtmlClassService } from "../../../layout";
 
 import "./style.css";
@@ -14,6 +14,7 @@ export function StatsWidget11({
   realTimeTransactions,
   realTimeRange
 }) {
+  const { t } = useTranslation();
   const uiService = useHtmlClassService();
   const layoutProps = useMemo(() => {
     return {
@@ -87,7 +88,7 @@ export function StatsWidget11({
               href="#"
               className="text-dark-75 text-hover-primary font-weight-bolder font-size-h5"
             >
-              Realtime Sales
+              {t("realtimeSales")}
             </a>
             {/* <span className="text-muted font-weight-bold mt-2">
               Your Daily Sales Chart

@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
 import * as auth from "../_redux/authRedux";
 import { login } from "../_redux/authCrud";
-
+import { useTranslation } from "react-i18next";
 import ReCAPTCHA from "react-google-recaptcha";
 
 import ModalVerify from "../components/ModalVerify";
@@ -33,7 +33,7 @@ function Login(props) {
   const [allProvinces, setAllProvinces] = useState([]);
   const [allCities, setAllCities] = useState([]);
   const [allLocations, setAllLocations] = useState([]);
-
+  const { t } = useTranslation();
   const [code, setCode] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
 
@@ -258,16 +258,16 @@ function Login(props) {
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
       .email("Wrong email format")
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
+      .min(3, `${t("minimum3Symbols")}`)
+      .max(50, `${t("maximum50Symbols")}`)
       .required(
         intl.formatMessage({
           id: "AUTH.VALIDATION.REQUIRED_FIELD"
         })
       ),
     password: Yup.string()
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
+      .min(3, `${t("minimum3Symbols")}`)
+      .max(50, `${t("maximum50Symbols")}`)
       .required(
         intl.formatMessage({
           id: "AUTH.VALIDATION.REQUIRED_FIELD"

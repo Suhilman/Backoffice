@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Modal, Spinner, Alert, Form, Row, Col } from "react-bootstrap";
 import Select from "react-select";
 import { useDropzone } from "react-dropzone";
-
+import { useTranslation } from "react-i18next";
 const ConfirmModal = ({
   state,
   loading,
@@ -22,7 +22,7 @@ const ConfirmModal = ({
       formikImportProduct.setFieldValue("outlet_id", []);
     }
   };
-
+  const { t } = useTranslation();
   const optionsOutlet = allOutlets.map((item) => {
     return { value: item.id, label: item.name };
   });
@@ -49,7 +49,7 @@ const ConfirmModal = ({
   return (
     <Modal show={state} onHide={closeModal}>
       <Modal.Header closeButton>
-        <Modal.Title>Import Product</Modal.Title>
+        <Modal.Title>{t("importProduct")}</Modal.Title>
       </Modal.Header>
 
       <Form onSubmit={formikImportProduct.handleSubmit}>
@@ -59,7 +59,7 @@ const ConfirmModal = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Location:</Form.Label>
+                <Form.Label>{t("location")}:</Form.Label>
                 <Select
                   options={optionsOutlet}
                   isMulti
@@ -83,7 +83,7 @@ const ConfirmModal = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>Import Excel:</Form.Label>
+                <Form.Label>{t("importExcel")}:</Form.Label>
                 <div
                   {...getRootProps({
                     className: "boxDashed dropzone"
@@ -95,9 +95,9 @@ const ConfirmModal = ({
                   ) : (
                     <>
                       <p>
-                        Drag 'n' drop some files here, or click to select files
+                        {t("dragAndDrop")}
                       </p>
-                      <p style={{ color: "gray" }}>File Size Limit: 2 MB</p>
+                      <p style={{ color: "gray" }}>{t("fileSizeLimit")}</p>
                     </>
                   )}
                 </div>
@@ -106,7 +106,7 @@ const ConfirmModal = ({
 
             <Col>
               <Form.Group>
-                <Form.Label>Download Template Excel:</Form.Label>
+                <Form.Label>{t("downloadTemplateExcel")}:</Form.Label>
                 <div
                   className="box"
                   style={{ textAlign: "center", padding: "2rem" }}
@@ -116,7 +116,7 @@ const ConfirmModal = ({
                     size="sm"
                     onClick={handleDownload}
                   >
-                    Download Template
+                      {t("downloadTemplate")}
                   </Button>
                 </div>
               </Form.Group>
@@ -126,13 +126,13 @@ const ConfirmModal = ({
 
         <Modal.Footer>
           <Button variant="secondary" onClick={closeModal}>
-            Close
+            {t("close")}
           </Button>
           <Button variant="primary" type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Confirm"
+              `${t("confirm")}`
             )}
           </Button>
         </Modal.Footer>

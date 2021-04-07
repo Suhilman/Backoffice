@@ -61,7 +61,7 @@ export const SpecialPromoPage = () => {
       .required(`${t("pleaseInputAName")}`),
     description_type: Yup.string()
       .matches(/regulation|how_to_use/)
-      .required("Please choose type."),
+      .required(`${t("pleaseChooseType")}`),
     description: Yup.string().min(1, `${t("minimum1Character")}`),
     type: Yup.string()
       .matches(/percentage|currency/)

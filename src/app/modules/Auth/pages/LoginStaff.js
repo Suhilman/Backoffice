@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
 import * as auth from "../_redux/authRedux";
 import { loginStaff } from "../_redux/authCrud";
-
+import { useTranslation } from "react-i18next";
 import ReCAPTCHA from "react-google-recaptcha";
 
 import ModalVerify from "../components/ModalVerify";
@@ -24,27 +24,27 @@ const LoginStaff = (props) => {
 
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState(false);
-
+  const { t } = useTranslation();
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
   const LoginSchema = Yup.object().shape({
     staff_id: Yup.string()
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
+      .min(3, `${t("minimum3Symbols")}`)
+      .max(50, `${t("maximum50Symbols")}`)
       .required("please input staff_id"),
     email: Yup.string()
       .email("Wrong email format")
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
+      .min(3, `${t("minimum3Symbols")}`)
+      .max(50, `${t("maximum50Symbols")}`)
       .required(
         intl.formatMessage({
           id: "AUTH.VALIDATION.REQUIRED_FIELD"
         })
       ),
     password: Yup.string()
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
+      .min(3, `${t("minimum3Symbols")}`)
+      .max(50, `${t("maximum50Symbols")}`)
       .required(
         intl.formatMessage({
           id: "AUTH.VALIDATION.REQUIRED_FIELD"

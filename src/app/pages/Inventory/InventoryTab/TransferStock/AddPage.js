@@ -49,21 +49,21 @@ export const AddTransferStockPage = ({ location }) => {
     outlet_from_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose an outlet origin."),
+      .required(`${t("pleaseChooseAnOutletOrigin")}`),
     outlet_to_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose an outlet destination."),
+      .required(`${t("pleaseChooseAnOutletDestination")}`),
     notes: Yup.string(),
-    date: Yup.string().required("Please input date"),
+    date: Yup.string().required(`${t("pleaseInputDate")}`),
     items: Yup.array().of(
       Yup.object().shape({
         stock_id: Yup.number()
           .min(1)
-          .required("Please input a product"),
+          .required(`${t("pleaseInputAProduct")}`),
         quantity: Yup.number()
-          .min(1, "Minimum 1 character")
-          .required("Please input a quantity"),
+          .min(1, `${t("minimum1Character")}`)
+          .required(`${t("pleaseInputQuantity")}`),
         unit_id: Yup.string()
       })
     )

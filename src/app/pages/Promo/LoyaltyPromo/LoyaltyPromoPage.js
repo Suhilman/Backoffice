@@ -91,7 +91,7 @@ export const LoyaltyPromoPage = () => {
         product_id: Yup.number(),
         point: Yup.number()
           .min(1, `${t("pointMustBeGreaterThan0")}`)
-          .required(`${t("pleaseInputAValue")}`)
+          .required(`${t("pleaseInputValue")}`)
       })
     )
   });
@@ -104,7 +104,7 @@ export const LoyaltyPromoPage = () => {
     product_id: Yup.number(),
     point: Yup.number()
       .min(1, `${t("pointMustBeGreaterThan0")}`)
-      .required(`${t("pleaseInputAValue")}`)
+      .required(`${t("pleaseInputValue")}`)
   });
 
   const SettingsSchema = Yup.object().shape({

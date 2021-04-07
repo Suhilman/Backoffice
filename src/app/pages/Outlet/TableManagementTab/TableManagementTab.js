@@ -76,18 +76,18 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
     outlet_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please input an outlet."),
+      .required(`${t("pleaseInputAnOutlet")}`),
     name: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
-      .required("Please input a name."),
+      .min(3, `${t("minimum3Character ")}`)
+      .max(50, `${t("maximum50Character ")}`)
+      .required(`${t("pleaseInputAName")}`),
     capacity: Yup.number()
       .integer()
       .min(1)
-      .required("Please input a capacity."),
+      .required(`${t("pleaseInputACapacity")}`),
     status: Yup.string()
       .matches(/(available)/)
-      .required("Please input a status.")
+      .required(`${t("pleaseInputAStatus ")}`)
   });
 
   const formikTable = useFormik({

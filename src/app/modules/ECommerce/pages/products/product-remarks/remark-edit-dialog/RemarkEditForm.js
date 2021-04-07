@@ -15,8 +15,8 @@ import {
 // Validation schema
 const RemarkEditSchema = Yup.object().shape({
   text: Yup.string()
-    .min(2, "Minimum 2 symbols")
-    .max(50, "Maximum 50 symbols")
+    .min(2, `${t("minimum2Symbols")}`)
+    .max(50, `${t("maximum50Symbols")}`)
     .required("Text is required"),
   type: Yup.number().required("Type is required"),
   dueDate: Yup.mixed()

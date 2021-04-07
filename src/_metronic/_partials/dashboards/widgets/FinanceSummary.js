@@ -8,7 +8,7 @@ import { DropdownCustomToggler, DropdownMenu1 } from "../../dropdowns";
 import rupiahFormat from "rupiah-format";
 import combineAllSales from "../helpers/combineAllSales";
 import sum from "../helpers/sum";
-
+import { useTranslation } from "react-i18next";
 export function FinanceSummary({
   className,
   totalSales,
@@ -16,6 +16,7 @@ export function FinanceSummary({
   totalRange
 }) {
   const uiService = useHtmlClassService();
+  const { t } = useTranslation();
   const layoutProps = useMemo(() => {
     return {
       colorsGrayGray500: objectPath.get(
@@ -91,7 +92,7 @@ export function FinanceSummary({
       <Card.Header>
         <Row>
           <Col style={{ alignSelf: "center" }}>
-            <h5>Finance Summary</h5>
+            <h5>{t("financeSummary")}</h5>
           </Col>
           <Col style={{ textAlign: "end" }}>
             <div className="card-toolbar">
@@ -115,11 +116,11 @@ export function FinanceSummary({
       <Card.Body style={{ padding: "0" }}>
         <Row style={{ padding: "2rem" }}>
           <Col>
-            <h6>Total Earnings</h6>
+            <h6>{t("totalEarning")}</h6>
             <h5>{rupiahFormat.convert(totalEarnings || 0)}</h5>
           </Col>
           <Col>
-            <h6>Average Product Price</h6>
+            <h6>{t("averageProductPrice")}</h6>
             <h5>{rupiahFormat.convert(averagePrice || 0)}</h5>
           </Col>
         </Row>

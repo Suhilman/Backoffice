@@ -48,19 +48,19 @@ export const CustomerPage = () => {
 
   const CustomerSchema = Yup.object().shape({
     name: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
-      .required("Please input a customer name."),
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputACustomerName")}`),
     email: Yup.string()
       .email()
-      .required("Please input an email."),
+      .required(`${t("pleaseInputAnEmail")}`),
     phone_number: Yup.number()
       .typeError("Please input a number only")
-      .required("Please input a phone number."),
+      .required(`${t("pleaseInputAPhoneNumber")}`),
     address: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
-      .required("Please input an address."),
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputAnAddress")}`),
     notes: Yup.string()
   });
 

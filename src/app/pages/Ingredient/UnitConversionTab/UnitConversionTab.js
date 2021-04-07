@@ -59,20 +59,20 @@ const UnitConversionTab = ({ allUnits, refresh, handleRefresh }) => {
 
   const UnitSchema = Yup.object().shape({
     name: Yup.string()
-      .min(1, "Minimum 1 character")
-      .required("Please input name"),
-    unit_from_id: Yup.number().required("Please choose unit"),
-    unit_to_id: Yup.number().required("Please choose unit"),
-    value: Yup.number().required("Please input value")
+      .min(1, `${t("minimum1Character")}`)
+      .required(`${t("pleaseInputName")}`),
+    unit_from_id: Yup.number().required(`${t("pleaseChooseUnit")}`),
+    unit_to_id: Yup.number().required(`${t("pleaseChooseUnit")}`),
+    value: Yup.number().required(`${t("pleaseInputValue")}`)
   });
 
   const UnitEditSchema = Yup.object().shape({
     name: Yup.string()
-      .min(1, "Minimum 1 character")
-      .required("Please input name"),
-    unit_from_id: Yup.number().required("Please choose unit"),
-    unit_to_id: Yup.number().required("Please choose unit"),
-    value: Yup.number().required("Please input value")
+      .min(1, `${t("minimum1Character")}`)
+      .required(`${t("pleaseInputName")}`),
+    unit_from_id: Yup.number().required(`${t("pleaseChooseUnit")}`),
+    unit_to_id: Yup.number().required(`${t("pleaseChooseUnit")}`),
+    value: Yup.number().required(`${t("pleaseInputValue")}`)
   });
 
   const formikUnit = useFormik({

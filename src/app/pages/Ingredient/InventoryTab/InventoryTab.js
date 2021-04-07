@@ -32,7 +32,7 @@ const InventoryIngredientTab = ({
 }) => {
   const [alert, setAlert] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-
+  const { t } = useTranslation();
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
@@ -78,30 +78,30 @@ const InventoryIngredientTab = ({
   };
 
   const MaterialSchema = Yup.object().shape({
-    outlet_id: Yup.number().required("Please choose outlet"),
+    outlet_id: Yup.number().required(`${t("pleaseChooseOutlet")}`),
     name: Yup.string()
-      .min(1, "Minimum 1 character")
-      .required("Please input name"),
-    raw_material_category_id: Yup.number().required("Please choose category"),
-    stock: Yup.number().required("Please input stock"),
-    unit_id: Yup.number().required("Please choose unit"),
-    price_per_unit: Yup.number().required("Please input price per unit"),
-    calorie_per_unit: Yup.number().required("Please input calorie"),
-    calorie_unit: Yup.string().required("Please input calorie unit"),
-    notes: Yup.string().min(1, "Minimum 1 character"),
+      .min(1, `${t("minimum1Character")}`)
+      .required(`${t("pleaseInputName")}`),
+    raw_material_category_id: Yup.number().required(`${t("pleaseChooseCategory")}`),
+    stock: Yup.number().required(`${t("pleaseInputStock")}`),
+    unit_id: Yup.number().required(`${t("pleaseInputUnit")}`),
+    price_per_unit: Yup.number().required(`${t("pleaseInputPricePerUnit")}`),
+    calorie_per_unit: Yup.number().required(`${t("pleaseInputCalorie")}`),
+    calorie_unit: Yup.string().required(`${t("pleaseInputCalorieUnit")}`),
+    notes: Yup.string().min(1, `${t("minimal1Character")}`),
     is_sold: Yup.boolean()
   });
 
   const MaterialEditSchema = Yup.object().shape({
-    outlet_id: Yup.number().required("Please choose outlet"),
+    outlet_id: Yup.number().required(`${t("pleaseChooseOutlet")}`),
     name: Yup.string()
-      .min(1, "Minimum 1 character")
-      .required("Please input name"),
-    raw_material_category_id: Yup.number().required("Please choose category"),
-    stock: Yup.number().required("Please input stock"),
-    unit_id: Yup.number().required("Please choose unit"),
-    price_per_unit: Yup.number().required("Please input price per unit"),
-    notes: Yup.string().min(1, "Minimum 1 character"),
+      .min(1, `${t("minimal1Character")}`)
+      .required(`${t("pleaseInputName")}`),
+    raw_material_category_id: Yup.number().required(`${t("pleaseChooseCategory")}`),
+    stock: Yup.number().required(`${t("pleaseInputStock")}`),
+    unit_id: Yup.number().required(`${t("pleaseInputUnit")}`),
+    price_per_unit: Yup.number().required(`${t("pleaseInputPricePerUnit")}`),
+    notes: Yup.string().min(1, `${t("minimal1Character")}`),
     is_sold: Yup.boolean()
   });
 
@@ -291,7 +291,6 @@ const InventoryIngredientTab = ({
       disableLoading();
     }
   };
-  const { t } = useTranslation();
   const columns = [
     {
       name: "No.",

@@ -55,24 +55,24 @@ export const AddIncomingStockPage = ({ location }) => {
     outlet_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose an outlet."),
+      .required(`${t("pleaseChooseAnOutlet")}`),
     notes: Yup.string(),
-    date: Yup.string().required("Please input date"),
+    date: Yup.string().required(`${t("pleaseInputDate")}`),
     items: Yup.array().of(
       Yup.object().shape({
         product_id: Yup.number()
           .min(1)
-          .required("Please input a product"),
+          .required(`${t("pleaseInputAProduct")}`),
         quantity: Yup.number()
-          .min(1, "Minimum 1")
-          .required("Please input a quantity"),
+          .min(1, `${t("minimum1Character")}`)
+          .required(`${t("pleaseInputAQuantity")}`),
         unit_id: Yup.string(),
         price: Yup.number()
-          .min(0, "Minimum 0")
-          .required("Please input a price"),
+          .min(0, `${t("minimum0Character")}`)
+          .required(`${t("pleaseInputAPrice")}`),
         total_price: Yup.number()
-          .min(0, "Minimum 0")
-          .required("Please input a total price")
+          .min(0, `${t("minimum0Character")}`)
+          .required(`${t("pleaseInputATotalPrice")}`)
       })
     )
   });

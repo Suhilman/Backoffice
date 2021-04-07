@@ -98,17 +98,17 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
 
   const TaxSchema = Yup.object().shape({
     name: Yup.string()
-      .min(3, "Minimum 3 characters.")
-      .max(50, "Maximum 50 characters.")
-      .required("Please input a name."),
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputAName")}`),
     value: Yup.number()
       .integer()
       .min(1)
-      .required("Please input a value."),
+      .required(`${t("pleaseInputValue")}`),
     tax_type_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a type."),
+      .required(`${t("pleaseChooseAType")}`),
     outlet_id: Yup.array().of(Yup.number().min(1))
   });
 
