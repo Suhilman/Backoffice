@@ -154,6 +154,7 @@
     "categoryName": "Category Name",
     "numberOfProject": "Number of Project",
     "productStatus": "Product Status",
+    "productFavorite": "Produk Favorite",
     "productTitle": "Product Title",
     "favoriteProduct": "Favotire Product",
     "productPhoto": "Product Photo",
@@ -716,5 +717,8 @@
     "pleaseInputQuota": "Please Input Quota",
     "pleaseInputProductName": "Please Input Product Name",
     "pleaseInputStaffID": "Please Input Staff ID",
-    "productCategory": "Product Category"
+    "productCategory": "Product Category",
+    "changeBusinessLocation": "Change Business Location",
+    "businessCategory": "Business Category",
+    "chooseCurrency": "Choose Currency"
 }

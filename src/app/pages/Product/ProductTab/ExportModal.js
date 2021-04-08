@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button, Modal, Spinner, Alert, Form, Row, Col } from "react-bootstrap";
 import Select from "react-select";
+import axios from 'axios'
 import ExportExcel from "react-html-table-to-excel";
 import NumberFormat from 'react-number-format';
 import rupiahFormat from "rupiah-format";
@@ -8,7 +9,22 @@ import Moment from 'react-moment';
 import { useTranslation } from "react-i18next";
 const ExportModal = ({state, closeModal, optionsOutlet, handleExports, loading, dataProduct}) => {
   const { t } = useTranslation();
-  
+  const [currency, setCurrency] = React.useState("")
+const handleCurrency = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+
+    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+    console.log("currency nya brpw", data.data.Currency.name)
+     
+
+    setCurrency(data.data.Currency.name)
+  }
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
+
   return (
     <div>
       <Modal show={state} onHide={closeModal}>
@@ -69,9 +85,9 @@ const ExportModal = ({state, closeModal, optionsOutlet, handleExports, loading, 
                         <td>{value.barcode ? value.barcode : "-"}</td>
                         <td>{value.sku ? value.sku : "-"}</td>
                         {/* <td>{value.price ? <NumberFormat value={parseInt(value.price)} className="foo" displayType={'text'} thousandSeparator={true} prefix={'Rp.'} renderText={(value, props) => <div {...props}>{value},00</div>} /> : "-"}</td> */}
-                        <td>{value.price ? rupiahFormat.convert(parseInt(value.price)) : "-"}</td>
+                        <td>{value.price ? <NumberFormat value={value.price} displayType={'text'} thousandSeparator={true} prefix={currency} /> : "-"}</td>
                         {/* <td>{value.price_purchase ? <NumberFormat value={parseInt(value.price_purchase)} className="foo" displayType={'text'} thousandSeparator={true} prefix={'Rp.'} renderText={(value, props) => <div {...props}>{value},00</div>} /> : "-"}</td> */}
-                        <td>{value.price_purchase ? rupiahFormat.convert(parseInt(value.price_purchase)) : "-"}</td>
+                        <td>{value.price_purchase ? <NumberFormat value={value.price_purchase} displayType={'text'} thousandSeparator={true} prefix={currency} /> : "-"}</td>
                         <td>{value.is_favorite ? "Is Favorite" : "-"}</td>
                         <td>{value.Product_Category === null ? "-" : value.Product_Category.name}</td>
                         <td>{value.recipe_id ? "With Recipe" : "-"}</td>

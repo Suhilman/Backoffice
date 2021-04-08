@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
 import rupiahFormat from "rupiah-format";
+import NumberFormat from 'react-number-format'
 
 import { Paper } from "@material-ui/core";
 import { Row, Col, Form, Button } from "react-bootstrap";
@@ -10,7 +11,28 @@ import DataTable from "react-data-table-component";
 
 export const DetailStockOpnamePage = ({ match }) => {
   const { stockId } = match.params;
-
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
+      const API_URL = process.env.REACT_APP_API_URL;
+      const userInfo = JSON.parse(localStorage.getItem("user_info"));
+  
+      const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+  
+      console.log("currency nya brpw", data.data.Currency.name)
+       
+  
+      if (data.data.Currency.name === 'Rp') {
+        setCurrency("Rp.")
+      } else if (data.data.Currency.name === '$') {
+        setCurrency("$")
+      } else {
+        setCurrency("Rp.")
+      }
+    }
+    React.useEffect(() => {
+      handleCurrency()
+    }, [])
+  
   const [stockOpname, setOpnameStock] = React.useState("");
 
   const getStockOpname = async (id) => {
@@ -75,8 +97,8 @@ export const DetailStockOpnamePage = ({ match }) => {
           quantity_actual: item.quantity_actual,
           unit: item.Unit?.name || "-",
           difference: item.difference,
-          price_system: rupiahFormat.convert(item.price_system),
-          price_new: rupiahFormat.convert(item.price_new)
+          price_system: <NumberFormat value={item.price_system} displayType={'text'} thousandSeparator={true} prefix={currency} />,
+          price_new: <NumberFormat value={item.price_new} displayType={'text'} thousandSeparator={true} prefix={currency} />
         };
       })
     : [];

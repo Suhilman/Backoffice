@@ -54,6 +54,7 @@ const ProductTab = ({
   const [filename, setFilename] = React.useState("");
   const [outletProduct, setOutletProduct] = React.useState([])
   const [dataProduct, setDataProduct] = React.useState([])
+  const [currency, setCurrency] = React.useState("")
 
   const [search, setSearch] = React.useState("");
   const [filter, setFilter] = React.useState({
@@ -63,7 +64,6 @@ const ProductTab = ({
   });
 
   const [allProducts, setAllProducts] = React.useState([]);
-
   const [product, setProduct] = React.useState({
     id: "",
     name: ""
@@ -144,6 +144,22 @@ const ProductTab = ({
       setAllProducts([]);
     }
   };
+
+  const handleCurrency = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+
+    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+    console.log("currency nya brpw", data.data.Currency.name)
+     
+
+    setCurrency(data.data.Currency.name)
+  }
+
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
 
   React.useEffect(() => {
     let isMounted = true; // note this flag denote mount status
@@ -278,7 +294,7 @@ const ProductTab = ({
         // purchase_price: item.price_purchase
         //   ? rupiahFormat.convert(item.price_purchase)
         //   : rupiahFormat.convert(0),
-        price: <NumberFormat value={item.price} displayType={'text'} thousandSeparator={true} prefix={'Rp.'} />,
+        price: <NumberFormat value={item.price} displayType={'text'} thousandSeparator={true} prefix={currency} />,
         stock: item.stock,
         outlet: item.Outlet?.name,
         unit: item.Unit?.name || "-",

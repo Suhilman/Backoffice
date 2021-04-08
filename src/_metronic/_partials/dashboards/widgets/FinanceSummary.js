@@ -1,11 +1,13 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
 import React, { useMemo, useEffect } from "react";
+import axios from 'axios'
 import { Card, Row, Col, Dropdown } from "react-bootstrap";
 import objectPath from "object-path";
 import ApexCharts from "apexcharts";
 import { useHtmlClassService } from "../../../layout";
 import { DropdownCustomToggler, DropdownMenu1 } from "../../dropdowns";
 import rupiahFormat from "rupiah-format";
+import NumberFormat from 'react-number-format'
 import combineAllSales from "../helpers/combineAllSales";
 import sum from "../helpers/sum";
 import { useTranslation } from "react-i18next";
@@ -15,6 +17,21 @@ export function FinanceSummary({
   totalTransactions,
   totalRange
 }) {
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+
+    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+    console.log("currency nya brpw", data.data.Currency.name)
+    
+    setCurrency(data.data.Currency.name)
+  }
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
+
   const uiService = useHtmlClassService();
   const { t } = useTranslation();
   const layoutProps = useMemo(() => {
@@ -117,11 +134,11 @@ export function FinanceSummary({
         <Row style={{ padding: "2rem" }}>
           <Col>
             <h6>{t("totalEarning")}</h6>
-            <h5>{rupiahFormat.convert(totalEarnings || 0)}</h5>
+            <h5><NumberFormat value={totalEarnings || 0} displayType={'text'} thousandSeparator={true} prefix={currency} /></h5>
           </Col>
           <Col>
             <h6>{t("averageProductPrice")}</h6>
-            <h5>{rupiahFormat.convert(averagePrice || 0)}</h5>
+            <h5><NumberFormat value={averagePrice || 0} displayType={'text'} thousandSeparator={true} prefix={currency} /></h5>
           </Col>
         </Row>
 

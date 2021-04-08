@@ -531,7 +531,7 @@
     "lastLogin": "Login terakhir",
     "storeID": "ID Toko",
     "businessInformation": "Informasi bisnis",
-    "emailNotification": "pemberitahuan email",
+    "emailNotification": "Pemberitahuan email",
     "newPassword": "kata sandi baru",
     "oldPassword": "kata sandi lama",
     "confirmPassword": "konfirmasi sandi",
@@ -717,5 +717,8 @@
     "pleaseInputQuota": "Silakan masukkan kuota",
     "pleaseInputProductName": "Silakan masukkan nama produk",
     "pleaseInputStaffID": "Silakan masukkan ID staf",
-    "productCategory": "Kategori Produk"
+    "productCategory": "Kategori Produk",
+    "changeBusinessLocation": "Ubah Lokasi Bisnis",
+    "businessCategory": "Kategori Bisnis",
+    "chooseCurrency": "Pilih Mata Uang"
   }

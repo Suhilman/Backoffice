@@ -4,13 +4,16 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import imageCompression from 'browser-image-compression';
 import { useTranslation } from "react-i18next";
+import NumberFormat from 'react-number-format'
 
 import { Row, Col, Button, Form, Spinner } from "react-bootstrap";
 import { Paper } from "@material-ui/core";
 
 import "../style.css";
+import { DropdownButton, Dropdown } from "react-bootstrap";
 
 export const BusinessInformation = () => {
+  const API_URL = process.env.REACT_APP_API_URL;
   const [loading, setLoading] = React.useState(false);
 
   const [previewKtp, setPreviewKtp] = React.useState("");
@@ -19,11 +22,13 @@ export const BusinessInformation = () => {
   const [imageKtp, setImageKtp] = React.useState("");
   const [imageNpwp, setImageNpwp] = React.useState("");
   const [businessImage, setBusinessImage] = React.useState("");
+  const [allCurrencies, setAllCurrencies] = React.useState([])
 
   const [allBusinessTypes, setAllBusinessTypes] = React.useState([]);
   const [allProvinces, setAllProvinces] = React.useState([]);
   const [allCities, setAllCities] = React.useState([]);
   const [allLocations, setAllLocations] = React.useState([]);
+  const [tabs, setTabs] = React.useState(0);
 
   const [stateComponent, setStateComponent] = React.useState("show");
   const [refresh, setRefresh] = React.useState("show");
@@ -43,7 +48,8 @@ export const BusinessInformation = () => {
     business_type_id: "",
     province_id: "",
     city_id: "",
-    location_id: ""
+    location_id: "",
+    currency_id: ""
   });
   const { t } = useTranslation();
   const BusinessSchema = Yup.object().shape({
@@ -77,9 +83,43 @@ export const BusinessInformation = () => {
     location_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please input a business location")
+      .required("Please input a business location"),
+    currency_id: Yup.string()
+      .required("Please choose currency")
   });
-
+  // const handleSelectTab = async (prefix, noCurrency) => {
+  //   try {
+  //     const dataObj = JSON.parse(localStorage.getItem("user_info"))
+  //     const {data} = await axios.get(`${API_URL}/api/v1/business/${dataObj.business_id}`)
+  //     console.log('ini data business', data.data)
+  //     const editBusiness = {
+  //       name: "Hanif Kumaraaaaaaaa",
+  //       phone_number: data.data.phone_number,
+  //       address: data.data.address,
+  //       ktp_owner: data.data.ktp_owner,
+  //       npwp_business: data.data.npwp_business,
+  //       business_type_id: data.data.business_type_id,
+  //       location_id: data.data.location_id,
+  //       currency_id: noCurrency,
+  //     }
+  //     console.log('edit business', editBusiness)
+  //     // await axios.put(`${API_URL}/api/v1/business/${dataObj.business_id}`,
+  //     //   editBusiness
+  //     // )
+  //     setTabs(noCurrency);
+  //     console.log('ini value apa', noCurrency)
+  //   } catch (error) {
+  //     console.log('error edit currency', error)
+  //   }
+  // };
+  const handleAllCurrencies = async () => {
+    const {data} = await axios.get(`${API_URL}/api/v1/currency`)
+    setAllCurrencies(data.data)
+    console.log("semua mata uang", data.data)
+  }
+  React.useEffect(() => {
+    handleAllCurrencies()
+  },[])
   const formikBusiness = useFormik({
     enableReinitialize: true,
     initialValues: business,
@@ -87,15 +127,21 @@ export const BusinessInformation = () => {
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
       const userInfo = JSON.parse(localStorage.getItem("user_info"));
+      console.log('ini valie ap aaja', values)
+      console.log('ini currency_id', values.currency_id)
+      // const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
 
+      // console.log("currency nya brpw", data.data.Currency.name)
+      //  
       const options = {
         maxSizeMB: 0.5,
         maxWidthOrHeight: 1920,
         useWebWorker: true
       }
-
+      
       const formData = new FormData();
       formData.append("name", values.name);
+      formData.append("currency_id", values.currency_id);
       formData.append("phone_number", values.business_phone_number);
       formData.append("location_id", values.location_id);
       formData.append("ktp_owner", values.ktp_number);
@@ -118,6 +164,7 @@ export const BusinessInformation = () => {
         formData.append("image", compressedBusinessImage);
       }
       try {
+        console.log('ini append', formData)
         enableLoading();
         await axios.put(
           `${API_URL}/api/v1/business/${userInfo.business_id}`,
@@ -171,7 +218,8 @@ export const BusinessInformation = () => {
         business_type_id: data.data.business_type_id,
         province_id: data.data.Location.City.Province.id,
         city_id: data.data.Location.City.id,
-        location_id: data.data.location_id
+        location_id: data.data.location_id,
+        currency_id: data.data.currency_id,
       });
 
       setImageKtp(
@@ -313,6 +361,10 @@ export const BusinessInformation = () => {
     {
       field: `${t("salesType")}`,
       value: business.sales_type
+    },
+    {
+      field: `${t("chooseCurrency")}`,
+      value: business.currency_id
     }
   ];
 
@@ -369,6 +421,19 @@ export const BusinessInformation = () => {
     setPreviewBusinessImage(preview);
   };
 
+  const currency = [
+    {
+      no: 1,
+      prefix: "Rp",
+      name: "Indonesia (Rupiah)"
+    },
+    {
+      no: 2,
+      prefix: "$",
+      name: "US (Dollar)"
+    }
+  ]
+
   return (
     <Row>
       <Col md={12}>
@@ -380,9 +445,26 @@ export const BusinessInformation = () => {
               </div>
               <div className="headerEnd">
                 {stateComponent === "show" ? (
-                  <Button variant="primary" onClick={handleStateComponent}>
-                    {t("changeBusinessInformation")}
-                  </Button>
+                  <div className="d-flex">
+                    {/* <DropdownButton id="dropdown-basic-button"
+                      title={ tabs !== 0 ?
+                        allCurrencies.find((item) => item.id === parseInt(tabs))
+                          .full_name : `${t("chooseCurrency")}`
+                      }>
+                      {allCurrencies.map(item =>
+                        <Dropdown.Item
+                          as="button"
+                          onClick={() => handleSelectTab(item.name, item.id)}
+                          className="selected"
+                        >
+                        {item.full_name}
+                        </Dropdown.Item>
+                      )}
+                    </DropdownButton> */}
+                    <Button variant="primary" style={{marginLeft: ".5rem"}} onClick={handleStateComponent}>
+                      {t("changeBusinessInformation")}
+                    </Button>
+                  </div>
                 ) : (
                   <>
                     <Button
@@ -477,7 +559,6 @@ export const BusinessInformation = () => {
                           </div>
                         ) : null}
                       </Form.Group>
-
                       <Form.Group style={{ width: "80%" }}>
                         <Form.Label>{t("businessCategory")}</Form.Label>
                         <Form.Control
@@ -502,6 +583,34 @@ export const BusinessInformation = () => {
                           <div className="fv-plugins-message-container">
                             <div className="fv-help-block">
                               {formikBusiness.errors.business_type_id}
+                            </div>
+                          </div>
+                        ) : null}
+                      </Form.Group>
+                      <Form.Group style={{ width: "80%" }}>
+                        <Form.Label>{t("chooseCurrency")}</Form.Label>
+                        <Form.Control
+                          as="select"
+                          name="currency_id"
+                          {...formikBusiness.getFieldProps("currency_id")}
+                          className={validationBusiness("currency_id")}
+                          required
+                        >
+                          {allCurrencies.length
+                            ? allCurrencies.map((item) => {
+                                return (
+                                  <option key={item.id} value={item.id}>
+                                    {item.full_name}
+                                  </option>
+                                );
+                              })
+                            : ""}
+                        </Form.Control>
+                        {formikBusiness.touched.currency_id &&
+                        formikBusiness.errors.currency_id ? (
+                          <div className="fv-plugins-message-container">
+                            <div className="fv-help-block">
+                              {formikBusiness.errors.currency_id}
                             </div>
                           </div>
                         ) : null}

@@ -2,12 +2,29 @@ import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import axios from "axios";
 import rupiahFormat from "rupiah-format";
+import NumberFormat from 'react-number-format'
 import "../style.css";
 import { Table } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
   const { t } = useTranslation();
   const [salesPerProduct, setSalesPerProduct] = useState([]);
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+
+    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+    console.log("currency nya brpw", data.data.Currency.name)
+     
+
+    setCurrency(data.data.Currency.name)
+  }
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
+
   const getDataSalesPerProduct = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
     const outlet_id = id ? `?outlet_id=${id}&` : "?";
@@ -174,7 +191,7 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
                   <td>{item.product}</td>
                   <td>{item.category}</td>
                   <td>{item.kuantitas}</td>
-                  <td>{rupiahFormat.convert(item.total_sales)}</td>
+                  <td>{<NumberFormat value={item.total_sales} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
                 </tr>
               );
             })
@@ -188,7 +205,7 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
             <th></th>
             <th>{sumReports(salesPerProduct, "kuantitas")} </th>
             <th>
-              {rupiahFormat.convert(sumReports(salesPerProduct, "total_sales"))}{" "}
+              {<NumberFormat value={sumReports(salesPerProduct, "total_sales")} displayType={'text'} thousandSeparator={true} prefix={currency} />}{" "}
             </th>
           </tr>
         </tbody>

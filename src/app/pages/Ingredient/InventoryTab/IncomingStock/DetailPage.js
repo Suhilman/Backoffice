@@ -7,12 +7,27 @@ import { useTranslation } from "react-i18next";
 import { Paper } from "@material-ui/core";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import DataTable from "react-data-table-component";
-
+import NumberFormat from 'react-number-format'
 export const DetailIncomingMaterialPage = ({ match }) => {
   const { materialId } = match.params;
   const { t } = useTranslation();
   const [incomingStock, setIncomingStock] = React.useState("");
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
 
+    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+    console.log("currency nya brpw", data.data.Currency.name)
+     
+
+    setCurrency(data.data.Currency.name)
+  }
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
+  
   const getIncomingStock = async (id) => {
     const API_URL = process.env.REACT_APP_API_URL;
     // const filterCustomer = `?name=${search}&sort=${filter.time}`;
@@ -64,9 +79,9 @@ export const DetailIncomingMaterialPage = ({ match }) => {
         return {
           material_name: item.Raw_Material.name,
           quantity: item.quantity,
-          price: rupiahFormat.convert(item.price),
+          price: <NumberFormat value={item.price} displayType={'text'} thousandSeparator={true} prefix={currency} />,
           unit: item.Unit.name,
-          total_price: rupiahFormat.convert(item.total_price)
+          total_price: <NumberFormat value={item.total_price} displayType={'text'} thousandSeparator={true} prefix={currency} />
         };
       })
     : [];

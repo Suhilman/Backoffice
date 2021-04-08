@@ -5,9 +5,26 @@ import { Table } from "react-bootstrap";
 import rupiahFormat from "rupiah-format";
 import { useTranslation } from "react-i18next";
 import "../style.css";
+import NumberFormat from 'react-number-format'
 
 export const PaymentMethodTab = ({ selectedOutlet, startDate, endDate }) => {
   const [allPaymentMethods, setAllPaymentMethods] = React.useState([]);
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+
+    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+    console.log("currency nya brpw", data.data.Currency.name)
+     
+
+    setCurrency(data.data.Currency.name)
+  }
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
+
   const { t } = useTranslation();
   const getPaymentMethod = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -100,7 +117,7 @@ export const PaymentMethodTab = ({ selectedOutlet, startDate, endDate }) => {
                 <td></td>
                 <td>{item.method}</td>
                 <td>{item.transaction}</td>
-                <td>{rupiahFormat.convert(item.total)}</td>
+                <td><NumberFormat value={item.total} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
               </tr>
             );
           })}

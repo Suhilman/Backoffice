@@ -2,12 +2,29 @@ import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import axios from "axios";
 import rupiahFormat from "rupiah-format";
+import NumberFormat from 'react-number-format'
 import "../style.css";
 import { Table } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 const StaffTransaction = ({ selectedOutlet, startDate, endDate }) => {
   const { t } = useTranslation();
   const [StaffTransaction, setStaffTransaction] = useState([]);
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+
+    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+    console.log("currency nya brpw", data.data.Currency.name)
+     
+
+    setCurrency(data.data.Currency.name)
+  }
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
+
   const getStaffTransaction = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
     const outlet_id = id ? `?outlet_id=${id}&` : "?";
@@ -178,7 +195,7 @@ const StaffTransaction = ({ selectedOutlet, startDate, endDate }) => {
                   <td>{item.staff_name}</td>
                   <td>{item.jumlah_rekap}</td>
                   <td>{item.jumlah_transaksi}</td>
-                  <td>{rupiahFormat.convert(item.total_transaksi)}</td>
+                  <td>{<NumberFormat value={item.total_transaksi} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
                 </tr>
               );
             })
@@ -192,9 +209,7 @@ const StaffTransaction = ({ selectedOutlet, startDate, endDate }) => {
             <th></th>
             <th></th>
             <th>
-              {rupiahFormat.convert(
-                sumReports(StaffTransaction, "total_transaksi")
-              )}{" "}
+              {<NumberFormat value={sumReports(StaffTransaction, "total_transaksi")} displayType={'text'} thousandSeparator={true} prefix={currency} />}{" "}
             </th>
           </tr>
         </tbody>

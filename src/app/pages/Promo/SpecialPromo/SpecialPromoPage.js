@@ -6,6 +6,7 @@ import imageCompression from 'browser-image-compression';
 import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import rupiahFormat from "rupiah-format";
+import NumberFormat from 'react-number-format'
 
 import { Row, Col, Button, Dropdown } from "react-bootstrap";
 import {
@@ -35,7 +36,22 @@ export const SpecialPromoPage = () => {
   const [photo, setPhoto] = React.useState("");
   const [photoPreview, setPhotoPreview] = React.useState("");
   const [alertPhoto, setAlertPhoto] = React.useState("");
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
 
+    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+    console.log("currency nya brpw", data.data.Currency.name)
+     
+
+    setCurrency(data.data.Currency.name)
+  }
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
+  
   const [specialPromos, setSpecialPromos] = React.useState([]);
   const [allOutlets, setAllOutlets] = React.useState([]);
   const { t } = useTranslation();
@@ -324,7 +340,7 @@ export const SpecialPromoPage = () => {
       const value =
         item.type === "percentage"
           ? item.value + "%"
-          : rupiahFormat.convert(item.value);
+          : <NumberFormat value={item.value} displayType={'text'} thousandSeparator={true} prefix={currency} />;
 
       return {
         id: item.id,

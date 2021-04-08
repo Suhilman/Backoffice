@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Row, Col, Button, Dropdown } from "react-bootstrap";
+import NumberFormat from 'react-number-format'
 import {
   Switch,
   FormGroup,
@@ -49,6 +50,21 @@ export const LoyaltyPromoPage = () => {
   const [allProducts, setAllProducts] = React.useState([]);
 
   const [selectedProducts, setSelectedProducts] = React.useState([]);
+const [currency, setCurrency] = React.useState("")
+const handleCurrency = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+
+    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+    console.log("currency nya brpw", data.data.Currency.name)
+     
+
+    setCurrency(data.data.Currency.name)
+  }
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
 
   const initialValuePromo = {
     outlet_id: "",
@@ -504,7 +520,7 @@ export const LoyaltyPromoPage = () => {
         outlet_name: item.Outlet?.name,
         product_name: item.Product ? item.Product.name : '-',
         product_category: item.Product ? item.Product.Product_Category ? item.Product.Product_Category.name: '-' : "-",
-        product_price: item.Product ? rupiahFormat.convert(item.Product.price) : rupiahFormat.convert(0),
+        product_price: item.Product ? <NumberFormat value={item.Product.price} displayType={'text'} thousandSeparator={true} prefix={currency} /> : <NumberFormat value={0} displayType={'text'} thousandSeparator={true} prefix={currency} />,
         product_id: item.product_id,
         point: item.point,
         point_status: item.status

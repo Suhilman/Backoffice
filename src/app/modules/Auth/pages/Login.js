@@ -74,7 +74,7 @@ function Login(props) {
     validationSchema: BusinessSchema,
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
-
+      console.log("kurendukan senyum rramahmu teman kecilku")
       try {
         enableLoading();
         setAlertModal("");
@@ -293,12 +293,17 @@ function Login(props) {
     onSubmit: (values, { setStatus, setSubmitting }) => {
       enableLoading();
       login(values.email, values.password, captchaToken)
-        .then(({ data }) => {
-          const { token, user } = data.data;
+        .then(async ({ data }) => {
+          const API_URL = process.env.REACT_APP_API_URL;
 
+          const { token, user } = data.data;
+          const dataBusiness = await axios.get(`${API_URL}/api/v1/business/${user.business_id}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          )
+          localStorage.setItem("currency", dataBusiness.data.data.Currency.name)
+          localStorage.setItem("token", `Bearer ${token}`)
           setToken(`Bearer ${token}`);
           localStorage.setItem("user_info", JSON.stringify(user));
-
           disableLoading();
           if (!user.is_verified) {
             setSubmitting(false);

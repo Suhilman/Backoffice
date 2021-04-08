@@ -3,12 +3,29 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { Table } from "react-bootstrap";
 import rupiahFormat from "rupiah-format";
+import NumberFormat from 'react-number-format'
 import { useTranslation } from "react-i18next";
 import "../style.css";
 
 export const CategorySalesTab = ({ selectedOutlet, startDate, endDate }) => {
   const [allCategorySales, setAllCategorySales] = React.useState([]);
   const [allCategories, setAllCategories] = React.useState([]);
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+
+    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+    console.log("currency nya brpw", data.data.Currency.name)
+     
+
+    setCurrency(data.data.Currency.name)
+  }
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
+
   const { t } = useTranslation();
   const getCategorySales = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -197,7 +214,7 @@ export const CategorySalesTab = ({ selectedOutlet, startDate, endDate }) => {
                 <td>{item.category}</td>
                 <td>{item.sold}</td>
                 <td>{item.refunded}</td>
-                <td>{rupiahFormat.convert(item.total)}</td>
+                <td><NumberFormat value={item.total} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
               </tr>
             );
           })}

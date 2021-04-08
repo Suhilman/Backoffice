@@ -5,6 +5,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import dayjs from "dayjs";
 import rupiahFormat from "rupiah-format";
+import NumberFormat from 'react-number-format'
 import imageCompression from 'browser-image-compression';
 import { useTranslation } from "react-i18next";
 import {
@@ -33,6 +34,21 @@ export const DetailCustomerPage = ({ match }) => {
   const [image, setImage] = React.useState("");
   const [previewInitial, setPreviewInitial] = React.useState("");
   const [imageInitial, setImageInitial] = React.useState("");
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+
+    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+    console.log("currency nya brpw", data.data.Currency.name)
+     
+
+    setCurrency(data.data.Currency.name)
+  }
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
 
   const [customer, setCustomer] = React.useState({
     name: "",
@@ -241,8 +257,7 @@ export const DetailCustomerPage = ({ match }) => {
       setStatePage("show");
     }
   };
-
-  const handleImage = (e) => {
+   const handleImage = (e) => {
     let preview;
     let img;
 
@@ -306,7 +321,7 @@ export const DetailCustomerPage = ({ match }) => {
       return {
         time: dayjs(item.createdAt).format("DD/MM/YYYY HH:mm"),
         product,
-        total_price: rupiahFormat.convert(total_price) || 0,
+        total_price: <NumberFormat value={total_price} displayType={'text'} thousandSeparator={true} prefix={currency} /> || 0,
         items: item.Transaction_Items
       };
     });
@@ -565,7 +580,7 @@ export const DetailCustomerPage = ({ match }) => {
           </Form>
         </Col>
       </Row>
-
+      {}
       <Row style={{ marginTop: "2rem" }}>
         <Col>
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
@@ -598,7 +613,7 @@ export const DetailCustomerPage = ({ match }) => {
                 <div className="title">{t("totalTransaction")}</div>
                 <h5 style={{ marginBottom: "2rem" }}>
                   {customerStats.total_transaction
-                    ? rupiahFormat.convert(customerStats.total_transaction)
+                    ? <NumberFormat value={customerStats.total_transaction} displayType={'text'} thousandSeparator={true} prefix={currency} />
                     : "-"}
                 </h5>
 
@@ -614,7 +629,7 @@ export const DetailCustomerPage = ({ match }) => {
                 <div className="title">{t("averageTransaction")}</div>
                 <h5 style={{ marginBottom: "2rem" }}>
                   {customerStats.average_transaction
-                    ? rupiahFormat.convert(customerStats.average_transaction)
+                    ? <NumberFormat value={customerStats.average_transaction} displayType={'text'} thousandSeparator={true} prefix={currency} />
                     : "-"}
                 </h5>
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import axios from "axios";
 import rupiahFormat from "rupiah-format";
+import NumberFormat from 'react-number-format'
 import "../style.css";
 import { Table } from "react-bootstrap";
 
@@ -13,6 +14,22 @@ const SalesPerHour = ({
   endTime
 }) => {
   const [salesPerHour, setSalesPerHour] = useState([]);
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+
+    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+    console.log("currency nya brpw", data.data.Currency.name)
+     
+
+    setCurrency(data.data.Currency.name)
+  }
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
+
   const getDataSalesPerHour = async (
     id,
     start_range,
@@ -252,8 +269,8 @@ const SalesPerHour = ({
                 <tr key={index}>
                   <td>{timeSet(parseInt(item.time))}</td>
                   <td>{item.jumlah_transaksi}</td>
-                  <td>{rupiahFormat.convert(item.total_penjualan)}</td>
-                  <td>{rupiahFormat.convert(item.rata_rata)}</td>
+                  <td>{<NumberFormat value={item.total_penjualan} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
+                  <td>{<NumberFormat value={item.rata_rata} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
                 </tr>
               );
             })
@@ -266,12 +283,10 @@ const SalesPerHour = ({
             <th>Grand Total</th>
             <th>{sumReports(salesPerHour, "jumlah_transaksi")}</th>
             <th>
-              {rupiahFormat.convert(
-                sumReports(salesPerHour, "total_penjualan")
-              )}{" "}
+              {<NumberFormat value={sumReports(salesPerHour, "total_penjualan")} displayType={'text'} thousandSeparator={true} prefix={currency} />}{" "}
             </th>
             <th>
-              {rupiahFormat.convert(sumReports(salesPerHour, "rata_rata"))}{" "}
+              {<NumberFormat value={sumReports(salesPerHour, "rata_rata")} displayType={'text'} thousandSeparator={true} prefix={currency} />}{" "}
             </th>
           </tr>
         </tbody>

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
 import rupiahFormat from "rupiah-format";
+import NumberFormat from 'react-number-format'
 
 import { Paper } from "@material-ui/core";
 import { Row, Col, Form, Button } from "react-bootstrap";
@@ -12,7 +13,28 @@ export const DetailIncomingStockPage = ({ match }) => {
   const { stockId } = match.params;
 
   const [incomingStock, setIncomingStock] = React.useState("");
-
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
+      const API_URL = process.env.REACT_APP_API_URL;
+      const userInfo = JSON.parse(localStorage.getItem("user_info"));
+  
+      const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+  
+      console.log("currency nya brpw", data.data.Currency.name)
+       
+  
+      if (data.data.Currency.name === 'Rp') {
+        setCurrency("Rp.")
+      } else if (data.data.Currency.name === '$') {
+        setCurrency("$")
+      } else {
+        setCurrency("Rp.")
+      }
+    }
+    React.useEffect(() => {
+      handleCurrency()
+    }, [])
+  
   const getIncomingStock = async (id) => {
     const API_URL = process.env.REACT_APP_API_URL;
     // const filterCustomer = `?name=${search}&sort=${filter.time}`;
@@ -70,8 +92,8 @@ export const DetailIncomingStockPage = ({ match }) => {
           product_name: item.Product ? item.Product.name : "",
           quantity: item.quantity,
           unit: item.Unit?.name || "-",
-          price: rupiahFormat.convert(item.price),
-          total_price: rupiahFormat.convert(item.total_price),
+          price: <NumberFormat value={item.price} displayType={'text'} thousandSeparator={true} prefix={currency} />,
+          total_price: <NumberFormat value={item.total_price} displayType={'text'} thousandSeparator={true} prefix={currency} />,
           expired_date: item.expired_date
             ? dayjs(item.expired_date).format("DD-MMM-YYYY")
             : "-"

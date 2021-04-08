@@ -5,10 +5,32 @@ import { Table } from "react-bootstrap";
 import rupiahFormat from "rupiah-format";
 import { useTranslation } from "react-i18next";
 import "../style.css";
-
+import NumberFormat from 'react-number-format'
 export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate }) => {
   const [allPromoSales, setAllPromoSales] = React.useState([]);
   const { t } = useTranslation();
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
+      const API_URL = process.env.REACT_APP_API_URL;
+      const userInfo = JSON.parse(localStorage.getItem("user_info"));
+
+      const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+      console.log("currency nya brpw", data.data.Currency.name)
+       
+
+      if (data.data.Currency.name === 'Rp') {
+        setCurrency("Rp.")
+      } else if (data.data.Currency.name === '$') {
+        setCurrency("$")
+      } else {
+        setCurrency("Rp.")
+      }
+    }
+    React.useEffect(() => {
+      handleCurrency()
+    }, [])
+
   const getDiscountSales = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
     const outlet_id = id ? `?outlet_id=${id}&` : "?";
@@ -289,7 +311,7 @@ export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate }) => {
                   <td>
                     {item.quota ? `${item.usage}/${item.quota}` : item.usage}
                   </td>
-                  <td>{rupiahFormat.convert(item.total)}</td>
+                  <td><NumberFormat value={item.total} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
                 </tr>
               );
             })
@@ -303,7 +325,7 @@ export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate }) => {
             <td>{t("grandTotal")}</td>
             <td>{sumReports(promoSalesData(), "usage")}</td>
             <td>
-              {rupiahFormat.convert(sumReports(promoSalesData(), "total"))}{" "}
+              <NumberFormat value={sumReports(promoSalesData(), "total")} displayType={'text'} thousandSeparator={true} prefix={currency} />
             </td>
           </tr>
         </tbody>

@@ -3,12 +3,29 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { Table } from "react-bootstrap";
 import rupiahFormat from "rupiah-format";
+import NumberFormat from 'react-number-format'
 import { useTranslation } from "react-i18next";
 import "../style.css";
 
 export const RecapTab = ({ selectedOutlet, startDate, endDate }) => {
   const [allRecaps, setAllRecaps] = React.useState([]);
   const { t } = useTranslation();
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+
+    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+    console.log("currency nya brpw", data.data.Currency.name)
+     
+
+    setCurrency(data.data.Currency.name)
+  }
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
+
   const [reports, setReports] = React.useState([
     {
       date: "",
@@ -215,9 +232,9 @@ export const RecapTab = ({ selectedOutlet, startDate, endDate }) => {
                     ? dayjs(item.recap_time_close).format("HH:mm")
                     : "-"}
                 </td>
-                <td>{rupiahFormat.convert(item.total_actual)}</td>
-                <td>{rupiahFormat.convert(item.total_system)}</td>
-                <td>{rupiahFormat.convert(item.difference)}</td>
+                <td>{<NumberFormat value={item.total_actual} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
+                <td>{<NumberFormat value={item.total_system} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
+                <td>{<NumberFormat value={item.difference} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
               </tr>
             );
           })}

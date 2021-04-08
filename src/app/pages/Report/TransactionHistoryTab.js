@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import dayjs from "dayjs";
 import rupiahFormat from "rupiah-format";
+import NumberFormat from 'react-number-format'
 import { Row, Col, ListGroup } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
@@ -14,6 +15,22 @@ export const TransactionHistoryTab = ({
   status
 }) => {
   const [allTransactions, setAllTransactions] = React.useState([]);
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+
+    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+    console.log("currency nya brpw", data.data.Currency.name)
+     
+
+    setCurrency(data.data.Currency.name)
+  }
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
+
   const { t } = useTranslation();
   const [reports, setReports] = React.useState([
     {
@@ -138,10 +155,8 @@ export const TransactionHistoryTab = ({
         no: index + 1,
         receipt_id: item.receipt_id,
         staff_charge: item.User ? item.User.User_Profile.name: "",
-        payment_total: rupiahFormat.convert(item.Payment?.payment_total || 0),
-        total_discount: rupiahFormat.convert(
-          item.Payment?.payment_discount || 0
-        ),
+        payment_total: <NumberFormat value={item.Payment?.payment_total || 0} displayType={'text'} thousandSeparator={true} prefix={currency} />,
+        total_discount: <NumberFormat value={item.Payment?.payment_discount || 0} displayType={'text'} thousandSeparator={true} prefix={currency} />,
         outlet_name: item.Outlet?.name || "-",
         // created_at: dayjs(item.createdAt).format("DD-MM-YYYY HH:mm:ss"),
         status: item.status,
@@ -159,7 +174,7 @@ export const TransactionHistoryTab = ({
         item.Product?.name || "-",
         addons.join(","),
         item.quantity,
-        rupiahFormat.convert(item.price_product)
+        <NumberFormat value={item.price_product} displayType={'text'} thousandSeparator={true} prefix={currency} />
       ];
     });
 

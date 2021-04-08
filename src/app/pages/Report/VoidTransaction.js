@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import axios from "axios";
 import rupiahFormat from "rupiah-format";
+import NumberFormat from 'react-number-format'
 import "../style.css";
 import { Table } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
@@ -9,6 +10,22 @@ import { useTranslation } from "react-i18next";
 const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
   const { t } = useTranslation();
   const [voidTransaction, setVoidTransaction] = useState([]);
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+
+    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+    console.log("currency nya brpw", data.data.Currency.name)
+     
+
+    setCurrency(data.data.Currency.name)
+  }
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
+
   const getVoidTransaction = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
     const outlet_id = id ? `?outlet_id=${id}&` : "?";
@@ -187,7 +204,7 @@ const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
                   <td>{item.receipt}</td>
                   <td>{item.nama_staff}</td>
                   <td>{item.refund_name}</td>
-                  <td>{rupiahFormat.convert(item.total_transaksi)}</td>
+                  <td>{<NumberFormat value={item.total_transaksi} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
                   <td>{item.note}</td>
                 </tr>
               );
@@ -203,9 +220,7 @@ const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
             <th></th>
             <th></th>
             <th>
-              {rupiahFormat.convert(
-                sumReports(voidTransaction, "total_transaksi")
-              )}{" "}
+              {<NumberFormat value={sumReports(voidTransaction, "total_transaksi")} displayType={'text'} thousandSeparator={true} prefix={currency} />}{" "}
             </th>
             <th></th>
           </tr>

@@ -6,6 +6,7 @@ import { jsPDF } from "jspdf"
 import Pdf from "react-to-pdf";
 import beetposLogo from '../../../../images/396 PPI-06 1.png'
 import { useTranslation } from "react-i18next";
+import NumberFormat from 'react-number-format'
 
 import { Paper } from "@material-ui/core";
 import { Row, Col, Form, Button } from "react-bootstrap";
@@ -19,6 +20,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
 
   const [purchaseOrder, setPurchaseOrder] = React.useState("");
   const [dataToPdf, setDataToPdf] = React.useState({})
+  const [currency, setCurrency] = React.useState("")
 
   const getPurchaseOrder = async (id) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -73,7 +75,19 @@ export const DetailPurchaseOrderPage = ({ match }) => {
   React.useEffect(() => {
     getPurchaseOrder(orderId);
   }, [orderId]);
+  const handleCurrency = () => {
+    if (localStorage.getItem("prefix") === 'Rp') {
+      setCurrency("Rp.")
+    } else if (localStorage.getItem("prefix") === '$') {
+      setCurrency("$")
+    } else {
+      setCurrency("Rp.")
+    }
+  }
 
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
   const columns = [
     {
       name: `${t("productName")}`,
@@ -126,7 +140,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
     : [];
   return (
     <>
-      <div className="style-pdf" style={{width: 1100, height: 500, color: "black solid"}} ref={ref}>
+      <div className="style-pdf" style={{width: 1100, height: "fit-content", color: "black solid"}} ref={ref}>
           <div className="container">
             <div className="row justify-content-between mb-5">
               <div className="col-md-6">
@@ -136,7 +150,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
                   <p className="text-mute">{dataToPdf.dataPembelian}</p>
                 </div>
                 <h4>{t("priceTotal")}</h4>
-                <h2>Rp. {dataToPdf.tagihan}</h2>
+                <h2><NumberFormat value={dataToPdf.tagihan} displayType={'text'} thousandSeparator={true} prefix={currency} /></h2>
               </div>
               <div className="col-md-6 d-flex flex-column align-items-end">
                 <div className="logo-wrapper">
@@ -167,8 +181,8 @@ export const DetailPurchaseOrderPage = ({ match }) => {
                     <tr>
                       <th scope="col">{t("products")}</th>
                       <th scope="col">{t("quantity")}</th>
-                      <th scope="col">{t("price")} (Rp)</th>
-                      <th scope="col">{t("priceTotal")} (Rp)</th>
+                      <th scope="col">{t("price")} {currency}</th>
+                      <th scope="col">{t("priceTotal")} {currency}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -177,8 +191,8 @@ export const DetailPurchaseOrderPage = ({ match }) => {
                         <tr>
                           <td>{item.Product.name}</td>
                           <td>{item.quantity}</td>
-                          <td>{item.price}</td>
-                          <td>{item.total_price}</td>
+                          <td><NumberFormat value={item.price} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
+                          <td><NumberFormat value={item.total_price} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
                         </tr> 
                         )
                     : ""}
@@ -189,11 +203,11 @@ export const DetailPurchaseOrderPage = ({ match }) => {
             <div className="row align-items-end flex-column mr-3">
               <div className="d-flex">
                 <p className="text-mute mr-5">{t("priceSubtotal")}</p>
-                <p className="text-mute ml-5">{dataToPdf.tagihan}</p>
+                <p className="text-mute ml-5"><NumberFormat value={dataToPdf.tagihan} displayType={'text'} thousandSeparator={true} prefix={currency} /></p>
               </div>
               <div className="d-flex">
                 <h4 className="mr-5">{t("totalBill")}</h4>
-                <h4 className="text-mute ml-5">{dataToPdf.tagihan}</h4>
+                <h4 className="text-mute ml-5"><NumberFormat value={dataToPdf.tagihan} displayType={'text'} thousandSeparator={true} prefix={currency} /></h4>
               </div>
             </div>
           </div>

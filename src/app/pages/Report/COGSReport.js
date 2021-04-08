@@ -2,11 +2,34 @@ import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import axios from "axios";
 import rupiahFormat from "rupiah-format";
+import NumberFormat from 'react-number-format'
 import "../style.css";
 import { Table } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 const COGSReport = ({ selectedOutlet, startDate, endDate }) => {
   const { t } = useTranslation();
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
+      const API_URL = process.env.REACT_APP_API_URL;
+      const userInfo = JSON.parse(localStorage.getItem("user_info"));
+
+      const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+      console.log("currency nya brpw", data.data.Currency.name)
+       
+
+      if (data.data.Currency.name === 'Rp') {
+        setCurrency("Rp.")
+      } else if (data.data.Currency.name === '$') {
+        setCurrency("$")
+      } else {
+        setCurrency("Rp.")
+      }
+    }
+    React.useEffect(() => {
+      handleCurrency()
+    }, [])
+
   const [COGSTransaction, setCOGSTransaction] = useState([]);
   const getDataCOGS = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -184,9 +207,9 @@ const COGSReport = ({ selectedOutlet, startDate, endDate }) => {
                   <td>{item.product}</td>
                   <td>{item.category}</td>
                   <td>{item.kuantitas}</td>
-                  <td>{rupiahFormat.convert(item.product_hpp)}</td>
-                  <td>{rupiahFormat.convert(item.product_sold_price)}</td>
-                  <td>{rupiahFormat.convert(item.profit)}</td>
+                  <td><NumberFormat value={item.product_hpp} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
+                  <td><NumberFormat value={item.product_sold_price} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
+                  <td><NumberFormat value={item.profit} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
                 </tr>
               );
             })
@@ -200,15 +223,13 @@ const COGSReport = ({ selectedOutlet, startDate, endDate }) => {
             <th></th>
             <th>{sumReports(COGSTransaction, "kuantitas")} </th>
             <th>
-              {rupiahFormat.convert(sumReports(COGSTransaction, "product_hpp"))}{" "}
+            <NumberFormat value={sumReports(COGSTransaction, "product_hpp")} displayType={'text'} thousandSeparator={true} prefix={currency} />
             </th>
             <th>
-              {rupiahFormat.convert(
-                sumReports(COGSTransaction, "product_sold_price")
-              )}{" "}
+            <NumberFormat value={sumReports(COGSTransaction, "product_sold_price")} displayType={'text'} thousandSeparator={true} prefix={currency} />
             </th>
             <th>
-              {rupiahFormat.convert(sumReports(COGSTransaction, "profit"))}{" "}
+            <NumberFormat value={sumReports(COGSTransaction, "profit")} displayType={'text'} thousandSeparator={true} prefix={currency} />
             </th>
           </tr>
         </tbody>

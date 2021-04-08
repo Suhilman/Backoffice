@@ -2,14 +2,17 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
 import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
-import Dropdown from "react-bootstrap/Dropdown";
 import { useSelector } from "react-redux";
+import { DropdownButton, Dropdown } from "react-bootstrap";
+
 import objectPath from "object-path";
 import { useHtmlClassService } from "../../../_core/MetronicLayout";
 import { toAbsoluteUrl } from "../../../../_helpers";
 import { DropdownTopbarItemToggler } from "../../../../_partials/dropdowns";
 import { useTranslation } from "react-i18next";
 export function UserProfileDropdown() {
+  const [tabs, setTabs] = React.useState(0);
+
   const { user } = useSelector((state) => state.auth);
   const uiService = useHtmlClassService();
   const layoutProps = useMemo(() => {
@@ -22,18 +25,21 @@ export function UserProfileDropdown() {
 
   const chooseLanguages = [
     {
+      no: 1,
       key: "id",
       language: "Indonesia"
     },
     {
+      no: 2,
       key: "en",
       language: "English"
     }
   ]
   
   const { t, i18n } = useTranslation();
-  
-  const changeLanguage = (language) => {
+
+  const changeLanguage = (language, noLanugage) => {
+    setTabs(noLanugage);
     i18n.changeLanguage(language)
   };
 
@@ -178,7 +184,7 @@ export function UserProfileDropdown() {
             >
               {t("signOut")}
             </Link>
-            <Dropdown>
+            {/* <Dropdown>
               <Dropdown.Toggle variant="light">{t("chooseLanguage")}</Dropdown.Toggle>
 
               <Dropdown.Menu>
@@ -186,7 +192,22 @@ export function UserProfileDropdown() {
                   <Dropdown.Item as="button" onClick={() => changeLanguage(item.key)}>{item.language}</Dropdown.Item>
                 )}
               </Dropdown.Menu>
-            </Dropdown>
+            </Dropdown> */}
+            <DropdownButton id="dropdown-basic-button"
+            title={ tabs !== 0 ?
+              chooseLanguages.find((item) => item.no === parseInt(tabs))
+                .language : `${t("chooseLanguage")}`
+            }>
+            {chooseLanguages.map(item =>
+              <Dropdown.Item
+                as="button"
+                onClick={() => changeLanguage(item.key, item.no)}
+                className="selected"
+              >
+              {item.language}
+              </Dropdown.Item>
+            )}
+            </DropdownButton>
             {/* <a href="#" className="btn btn-clean font-weight-bold">
               Upgrade Plan
             </a> */}

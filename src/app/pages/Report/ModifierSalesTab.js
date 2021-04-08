@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-
+import NumberFormat from 'react-number-format'
 import { Row, Col, Table, Dropdown, DropdownButton } from "react-bootstrap";
 
 import { Paper } from "@material-ui/core";
@@ -18,7 +18,22 @@ export const ModifierSalesTab = ({ allOutlets }) => {
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
 
+    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+    console.log("currency nya brpw", data.data.Currency.name)
+     
+
+    setCurrency(data.data.Currency.name)
+  }
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
+  
   const getModifierSales = async (id) => {
     const API_URL = process.env.REACT_APP_API_URL;
 
@@ -174,7 +189,7 @@ export const ModifierSalesTab = ({ allOutlets }) => {
                     <td>{item.modifier}</td>
                     <td>{item.sold}</td>
                     <td>{item.refunded}</td>
-                    <td>{rupiahFormat.convert(item.total)}</td>
+                    <td>{<NumberFormat value={item.total} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
                   </tr>
                 );
               })}

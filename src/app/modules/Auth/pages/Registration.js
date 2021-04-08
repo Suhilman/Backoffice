@@ -320,7 +320,6 @@ function Registration(props) {
         captchaToken
       )
         .then(({ data }) => {
-          console.log('ini data setelah then register', data)
           const { owner, accessToken } = data.data;
           setToken(`Bearer ${accessToken}`);
           setVerificationCode(owner.verification_code);

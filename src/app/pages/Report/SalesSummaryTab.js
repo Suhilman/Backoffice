@@ -5,9 +5,12 @@ import rupiahFormat from "rupiah-format";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import "../style.css";
+import NumberFormat from 'react-number-format'
 
 export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
   const [allTransactions, setAllTransactions] = React.useState([]);
+  const [currency, setCurrency] = React.useState("")
+
   const [reports, setReports] = React.useState([
     {
       product_name: "",
@@ -21,6 +24,22 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
     }
   ]);
   const { t } = useTranslation();
+  
+  const handleCurrency = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+
+    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+    console.log("currency nya brpw", data.data.Currency.name)
+     
+
+    setCurrency(data.data.Currency.name)
+  }
+
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
 
   const getTransactions = async (id, start_range, end_range) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -451,7 +470,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
               <tr key={index}>
                 <td></td>
                 <td>{item.key}</td>
-                <td>{rupiahFormat.convert(item.value)}</td>
+                <td><NumberFormat value={item.value} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
               </tr>
             );
           })}

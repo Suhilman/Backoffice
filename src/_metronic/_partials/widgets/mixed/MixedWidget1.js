@@ -2,6 +2,7 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
 import React, { useMemo, useEffect } from "react";
 import rupiah from "rupiah-format";
+import axios from 'axios'
 import { useTranslation } from "react-i18next";
 import SVG from "react-inlinesvg";
 import objectPath from "object-path";
@@ -13,6 +14,7 @@ import { useHtmlClassService } from "../../../layout";
 import { DropdownMenu2 } from "../../dropdowns";
 import { DateRangePicker } from "react-date-range";
 import ExportExcel from "react-html-table-to-excel";
+import NumberFormat from 'react-number-format'
 
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
@@ -38,7 +40,22 @@ export function MixedWidget1({
   reports
 }) {
   const uiService = useHtmlClassService();
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
 
+    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+    console.log("currency nya brpw", data.data.Currency.name)
+     
+
+    setCurrency(data.data.Currency.name)
+  }
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
+  
   const calcPercentage = (a, b) => Math.floor((a / b) * 100) || 0;
   const { t } = useTranslation();
   const layoutProps = useMemo(() => {
@@ -290,13 +307,13 @@ export function MixedWidget1({
                   {t("sales")}
                 </a>
                 <p>
-                  ({rupiah.convert(yesterdaySales)}){t("yesterdaySales")}<br />
+                  (<NumberFormat value={yesterdaySales} displayType={'text'} thousandSeparator={true} prefix={currency} />{t("yesterdaySales")}<br />
                   {yesterdaySales && todaySales ? (
                     <>+{calcPercentage(todaySales, yesterdaySales) + "%"}</>
                   ) : (
                     ""
                   )}{" "}
-                  ({rupiah.convert(todaySales)}) {t("todaySales")}
+                  (<NumberFormat value={todaySales} displayType={'text'} thousandSeparator={true} prefix={currency} />{t("todaySales")}
                 </p>
               </div>
               <div className="col bg-light-primary px-6 py-8 rounded-xl mb-7">
