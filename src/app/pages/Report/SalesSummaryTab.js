@@ -368,8 +368,48 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
     );
   }
 
-  const grandTotal =
-    sumReports(reports, "totalSales") - totalDiscount + totalService;
+  const completedTransactions = allTransactions.filter(
+    (item) =>
+      item.Payment?.status === "done" || item.Payment?.status === "refund"
+  );
+  const doneTransactions = allTransactions.filter(
+    (item) => item.Payment?.status === "done"
+  );
+  const voidTransactions = allTransactions.filter(
+    (item) => item.Payment?.status === "refund"
+  );
+
+  const income = completedTransactions.reduce(
+    (init, curr) => (init += curr.Payment?.payment_total),
+    0
+  );
+
+  const grossSales = income;
+
+  const voidSales = voidTransactions.reduce(
+    (init, curr) => (init += curr.Payment.payment_total),
+    0
+  );
+
+  const bonus = completedTransactions.reduce(
+    (init, curr) => (init += curr.Payment?.payment_service),
+    0
+  );
+
+  const taxSales = doneTransactions.reduce(
+    (init, curr) => (init += curr.Payment.payment_tax),
+    0
+  );
+
+  const nettSales = grossSales - voidSales - bonus;
+
+  const roundingSales = 0;
+
+  const totalCollected = nettSales + bonus - taxSales + roundingSales;
+
+  // const grandTotal =
+  //   sumReports(reports, "totalSales") - totalDiscount + totalService;
+  const grandTotal = totalCollected;
 
   return (
     <>

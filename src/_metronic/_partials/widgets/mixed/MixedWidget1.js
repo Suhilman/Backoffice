@@ -13,9 +13,10 @@ import { toAbsoluteUrl } from "../../../_helpers";
 import { useHtmlClassService } from "../../../layout";
 import { DropdownMenu2 } from "../../dropdowns";
 import { DateRangePicker } from "react-date-range";
+import Swal from "sweetalert2"
 import ExportExcel from "react-html-table-to-excel";
 import NumberFormat from 'react-number-format'
-
+import { useHistory } from "react-router-dom";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 
@@ -132,7 +133,6 @@ export function MixedWidget1({
       .toLowerCase();
     return `transaksi-${processValue}_${date}`;
   };
-
   return (
     <>
       <ModalCustomRange

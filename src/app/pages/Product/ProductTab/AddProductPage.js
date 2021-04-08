@@ -311,7 +311,7 @@ export const AddProductPage = ({ location }) => {
   return (
     <Row>
       <ModalManageAddons
-        title={`Add Product Addons for - ${formikProduct.values.name}`}
+        title={`${t("addProductAddonsFor")} - ${formikProduct.values.name}`}
         showManageAddons={showManageAddons}
         cancelModalAddons={cancelModalAddons}
         saveChangesAddons={saveChangesAddons}
@@ -324,7 +324,7 @@ export const AddProductPage = ({ location }) => {
 
       <Col>
         <FormTemplate
-          title="Add Product"
+          title={t("addProduct")}
           loading={loading}
           allTaxes={allTaxes}
           alertPhoto={alertPhoto}

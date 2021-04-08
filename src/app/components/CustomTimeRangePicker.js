@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
 import { KeyboardTimePicker } from "@material-ui/pickers";
+import { useTranslation } from "react-i18next";
 
 const CustomTimeRangePicker = ({
   show,
@@ -11,6 +12,7 @@ const CustomTimeRangePicker = ({
   handleStartTime,
   handleEndTime
 }) => {
+  const { t } = useTranslation();
   return (
     <Modal show={show} onHide={handleClose}>
       <div
@@ -47,7 +49,7 @@ const CustomTimeRangePicker = ({
       <Modal.Footer>
         <Button onClick={handleSave}>Save</Button>
         <Button onClick={handleClose} variant="secondary">
-          Cancel
+          {t("cancel")}
         </Button>
       </Modal.Footer>
     </Modal>

@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
 import { DateRangePicker } from "react-date-range";
+import { useTranslation } from "react-i18next";
 
 const CustomDateRange = ({
   show,
@@ -10,6 +11,7 @@ const CustomDateRange = ({
   endRange,
   handleStartRange
 }) => {
+  const { t } = useTranslation();
   return (
     <Modal show={show} onHide={handleClose}>
       <DateRangePicker
@@ -23,9 +25,9 @@ const CustomDateRange = ({
         onChange={handleStartRange}
       />
       <Modal.Footer>
-        <Button onClick={handleSave}>Save</Button>
+        <Button onClick={handleSave}>{t("save")}</Button>
         <Button onClick={handleClose} variant="secondary">
-          Cancel
+          {t("cancel")}
         </Button>
       </Modal.Footer>
     </Modal>

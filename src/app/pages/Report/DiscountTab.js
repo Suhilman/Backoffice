@@ -212,7 +212,7 @@ export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate }) => {
     );
 
     data.push({
-      name: "",
+      name: "Grand Total",
       usage: totalUsage,
       total: totalAmount
     });
@@ -284,11 +284,11 @@ export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate }) => {
                 <td>{t("dataNotFound")}</td>
               </tr>
             )}
-            <tr>
+            {/* <tr>
               <td>Grand Total</td>
               <td>{sumReports(promoSalesData(), "usage")}</td>
               <td>{sumReports(promoSalesData(), "total")} </td>
-            </tr>
+            </tr> */}
           </tbody>
         </table>
       </div>
@@ -320,14 +320,14 @@ export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate }) => {
               <td>{t("dataNotFound")}</td>
             </tr>
           )}
-          <tr>
+          {/* <tr>
             <td></td>
             <td>{t("grandTotal")}</td>
             <td>{sumReports(promoSalesData(), "usage")}</td>
             <td>
               <NumberFormat value={sumReports(promoSalesData(), "total")} displayType={'text'} thousandSeparator={true} prefix={currency} />
             </td>
-          </tr>
+          </tr> */}
         </tbody>
       </Table>
     </>

@@ -80,7 +80,7 @@ export function RemarkDeleteDialog() {
             onClick={remarksUIProps.closeDeleteRemarkDialog}
             className="btn btn-light btn-elevate"
           >
-            Cancel
+            {t("cancel")}
           </button>
           <> </>
           <button

@@ -135,7 +135,7 @@ export function CustomersUpdateStateDialog({ show, onHide }) {
             onClick={onHide}
             className="btn btn-light btn-elevate mr-3"
           >
-            Cancel
+            {t("cancel")}
           </button>
           <button
             type="button"

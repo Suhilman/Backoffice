@@ -262,7 +262,7 @@ function ConfirmationDialogRaw9(props) {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleCancel} color="primary">
-          Cancel
+          {t("cancel")}
         </Button>
         <Button onClick={handleOk} color="primary">
           Ok
@@ -813,7 +813,7 @@ export default function DialogsExamplesPage() {
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={handleClose4} color="primary">
-                    Cancel
+                    {t("cancel")}
                   </Button>
                   <Button onClick={handleClose4} color="primary">
                     Subscribe
@@ -959,7 +959,7 @@ export default function DialogsExamplesPage() {
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={handleClose10} color="primary">
-                    Cancel
+                    {t("cancel")}
                   </Button>
                   <Button onClick={handleClose10} color="primary">
                     Subscribe
@@ -1002,7 +1002,7 @@ export default function DialogsExamplesPage() {
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={handleClose11} color="primary">
-                    Cancel
+                    {t("cancel")}
                   </Button>
                   <Button onClick={handleClose11} color="primary">
                     Subscribe
@@ -1266,7 +1266,7 @@ export default function FormDialog() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
-            Cancel
+            {t("cancel")}
           </Button>
           <Button onClick={handleClose} color="primary">
             Subscribe
@@ -1714,7 +1714,7 @@ function ConfirmationDialogRaw(props) {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleCancel} color="primary">
-          Cancel
+          {t("cancel")}
         </Button>
         <Button onClick={handleOk} color="primary">
           Ok
@@ -1841,7 +1841,7 @@ Praesent commodo cursus magna, vel scelerisque nisl consectetur et.\`,
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
-            Cancel
+            {t("cancel")}
           </Button>
           <Button onClick={handleClose} color="primary">
             Subscribe
@@ -1904,7 +1904,7 @@ export default function DraggableDialog() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
-            Cancel
+            {t("cancel")}
           </Button>
           <Button onClick={handleClose} color="primary">
             Subscribe

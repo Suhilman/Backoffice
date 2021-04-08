@@ -44,7 +44,7 @@ const QuantityTab = ({
 
               <div className="headerEnd">
                 <Link to="/promo/automatic-promo">
-                  <Button variant="outline-secondary">Cancel</Button>
+                  <Button variant="outline-secondary">{t("cancel")}</Button>
                 </Link>
                 <Button
                   variant="primary"

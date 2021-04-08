@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Button, Modal, Spinner, Form, Alert } from "react-bootstrap";
-
+import { useTranslation } from "react-i18next";
 import "../../style.css";
 
 const AddModal = ({
@@ -13,6 +13,7 @@ const AddModal = ({
   formikCustom,
   validationCustom
 }) => {
+  const { t } = useTranslation();
   return (
     <Modal show={stateModal} onHide={cancelModal} size="sm">
       <Modal.Header closeButton>
@@ -24,7 +25,7 @@ const AddModal = ({
           {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
           <Form.Group>
-            <Form.Label>Name:</Form.Label>
+            <Form.Label>{t("name")}:</Form.Label>
             <Form.Control
               type="text"
               name="name"
@@ -40,7 +41,7 @@ const AddModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Price:</Form.Label>
+            <Form.Label>{t("price")}:</Form.Label>
             <Form.Control
               type="number"
               name="price"
@@ -58,13 +59,13 @@ const AddModal = ({
 
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button variant="primary" type="submit">
             {loading ? (
               <Spinner animation="border" variant="light" size="sm" />
             ) : (
-              "Save Changes"
+              `${t("saveChanges")}`
             )}
           </Button>
         </Modal.Footer>

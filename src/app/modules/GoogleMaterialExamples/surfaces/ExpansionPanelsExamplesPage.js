@@ -268,7 +268,7 @@ export default function ExpansionPanelsExamplesPage() {
                 </ExpansionPanelDetails>
                 <Divider />
                 <ExpansionPanelActions>
-                  <Button size="small">Cancel</Button>
+                  <Button size="small">{t("cancel")}</Button>
                   <Button size="small" color="primary">
                     Save
                   </Button>
@@ -718,7 +718,7 @@ export default function DetailedExpansionPanel() {
         </ExpansionPanelDetails>
         <Divider />
         <ExpansionPanelActions>
-          <Button size="small">Cancel</Button>
+          <Button size="small">{t("cancel")}</Button>
           <Button size="small" color="primary">
             Save
           </Button>

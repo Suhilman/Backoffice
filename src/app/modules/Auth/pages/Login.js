@@ -9,7 +9,6 @@ import * as auth from "../_redux/authRedux";
 import { login } from "../_redux/authCrud";
 import { useTranslation } from "react-i18next";
 import ReCAPTCHA from "react-google-recaptcha";
-
 import ModalVerify from "../components/ModalVerify";
 import ModalRegister from "../components/ModalRegister";
 
@@ -22,7 +21,6 @@ function Login(props) {
   const { intl } = props;
   const [loading, setLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
-
   const [token, setToken] = useState("");
   const [showVerifyModal, setShowVerifyModal] = useState(false);
   const [showBusinessModal, setShowBusinessModal] = useState(false);

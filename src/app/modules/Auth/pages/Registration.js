@@ -181,6 +181,17 @@ function Registration(props) {
           businessData,
           { headers: { Authorization: accessToken } }
         );
+        const now = new Date()
+        now.setDate(now.getDate()+14)
+        const dataSubscription = {
+          subscription_type_id: 10,
+          expired_date: now,
+          status: "active"
+        }
+        await axios.post(`${API_URL}/api/v1/subscription`,
+          dataSubscription,
+          { headers: { Authorization: accessToken } }
+        )
 
         await axios.patch(`${API_URL}/api/v1/outlet/${outlet_id}`, outletData, {
           headers: { Authorization: accessToken }
@@ -319,12 +330,12 @@ function Registration(props) {
         values.password,
         captchaToken
       )
-        .then(({ data }) => {
+        .then(async ({ data }) => {
           const { owner, accessToken } = data.data;
           setToken(`Bearer ${accessToken}`);
           setVerificationCode(owner.verification_code);
           localStorage.setItem("user_info", JSON.stringify(owner));
-          console.log('ini owner', owner)
+          
           if (!owner.is_verified) {
             setSubmitting(false);
             openVerifyModal();

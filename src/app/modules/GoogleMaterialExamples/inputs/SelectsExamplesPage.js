@@ -1027,7 +1027,7 @@ export default function SelectsExamplesPage() {
                   </DialogContent>
                   <DialogActions>
                     <Button onClick={handleClose6} color="primary">
-                      Cancel
+                      {t("cancel")}
                     </Button>
                     <Button onClick={handleClose6} color="primary">
                       Ok
@@ -1975,7 +1975,7 @@ export default function DialogSelect() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
-            Cancel
+            {t("cancel")}
           </Button>
           <Button onClick={handleClose} color="primary">
             Ok

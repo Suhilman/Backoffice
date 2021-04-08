@@ -226,7 +226,7 @@ export const AddOutcomingStockPage = ({ location }) => {
                     {loading ? (
                       <Spinner animation="border" variant="light" size="sm" />
                     ) : (
-                      "Save"
+                      `${t("save")}`
                     )}
                   </Button>
                 </div>

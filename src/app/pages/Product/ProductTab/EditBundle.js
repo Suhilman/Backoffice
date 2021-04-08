@@ -331,7 +331,7 @@ export const EditBundlePage = ({ match, location }) => {
               </div>
               <div className="headerEnd">
                 <Link to="/product">
-                  <Button variant="outline-secondary">Cancel</Button>
+                  <Button variant="outline-secondary">{t("cancel")}</Button>
                 </Link>
                 <Button
                   variant="primary"
@@ -341,7 +341,7 @@ export const EditBundlePage = ({ match, location }) => {
                   {loading ? (
                     <Spinner animation="border" variant="light" size="sm" />
                   ) : (
-                    "Save"
+                    `${t("save")}`
                   )}
                 </Button>
               </div>

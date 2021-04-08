@@ -54,6 +54,7 @@ import { AddOpnameMaterialPage } from "./pages/Ingredient/InventoryTab/StockOpna
 import { DetailOpnameMaterialPage } from "./pages/Ingredient/InventoryTab/StockOpname/DetailPage";
 import { AddBundlePage } from "./pages/Product/ProductTab/AddBundle";
 import { EditBundlePage } from "./pages/Product/ProductTab/EditBundle";
+import NotificationExpired from "./components/NotificationExpired"
 
 export default function BasePage() {
   const [currPrivileges, setCurrPrivileges] = React.useState({
@@ -482,6 +483,7 @@ export const ProtectedRoute = ({
 }) => {
   return (
     <>
+      <NotificationExpired />
       {isRoute ? (
         <Route
           {...rest}

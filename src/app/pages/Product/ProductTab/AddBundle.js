@@ -299,11 +299,11 @@ export const AddBundlePage = ({ location }) => {
           <Form noValidate onSubmit={formikProduct.handleSubmit}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Add Product Bundle</h3>
+                <h3>{t("addProductBundle")}</h3>
               </div>
               <div className="headerEnd">
                 <Link to="/product">
-                  <Button variant="outline-secondary">Cancel</Button>
+                  <Button variant="outline-secondary">{t("cancel")}</Button>
                 </Link>
                 <Button
                   variant="primary"
@@ -313,7 +313,7 @@ export const AddBundlePage = ({ location }) => {
                   {loading ? (
                     <Spinner animation="border" variant="light" size="sm" />
                   ) : (
-                    "Save"
+                    `${t("save")}`
                   )}
                 </Button>
               </div>
@@ -324,7 +324,7 @@ export const AddBundlePage = ({ location }) => {
             <Row style={{ padding: "1rem" }}>
               <Col>
                 <Form.Group>
-                  <Form.Label>Outlet*</Form.Label>
+                  <Form.Label>{t("outlet")}*</Form.Label>
                   <Select
                     options={optionsOutlet}
                     defaultValue={defaultValueOutlet}
@@ -346,7 +346,7 @@ export const AddBundlePage = ({ location }) => {
                 </Form.Group>
 
                 <Form.Group>
-                  <Form.Label>Bundle Name*</Form.Label>
+                  <Form.Label>{t("bundleName")}*</Form.Label>
                   <Form.Control
                     type="text"
                     name="name"
@@ -385,7 +385,7 @@ export const AddBundlePage = ({ location }) => {
                 </Form.Group> */}
 
                 <Form.Group>
-                  <Form.Label>Bundle Description</Form.Label>
+                  <Form.Label>{t("bundleDescription")}</Form.Label>
                   <Form.Control
                     as="textarea"
                     name="description"
@@ -406,7 +406,7 @@ export const AddBundlePage = ({ location }) => {
               <Col>
                 <Form.Group>
                   <div>
-                    <Form.Label>Bundle Status*</Form.Label>
+                    <Form.Label>{t("bundleStatus")}*</Form.Label>
                   </div>
                   <div style={{ marginTop: ".5rem" }}>
                     {["Active", "Inactive"].map((item, index) => {
@@ -440,7 +440,7 @@ export const AddBundlePage = ({ location }) => {
                 </Form.Group>
 
                 <Form.Group style={{ marginTop: "2.5rem" }}>
-                  <Form.Label>Category</Form.Label>
+                  <Form.Label>{t("category")}</Form.Label>
                   <Select
                     options={optionsCategory}
                     defaultValue={defaultValueCategory}
@@ -465,7 +465,7 @@ export const AddBundlePage = ({ location }) => {
                 </Form.Group>
 
                 <Form.Group>
-                  <Form.Label>Product Photo</Form.Label>
+                  <Form.Label>{t("productPhoto")}</Form.Label>
                   {alertPhoto ? (
                     <Alert variant="danger">{alertPhoto}</Alert>
                   ) : (
@@ -480,10 +480,9 @@ export const AddBundlePage = ({ location }) => {
                     {!photoPreview ? (
                       <>
                         <p>
-                          Drag 'n' drop some files here, or click to select
-                          files
+                          {t("dragAndDrop")}
                         </p>
-                        <p style={{ color: "gray" }}>File Size Limit: 2 MB</p>
+                        <p style={{ color: "gray" }}>{t("fileSizeLimit")}</p>
                       </>
                     ) : (
                       <>
@@ -513,7 +512,7 @@ export const AddBundlePage = ({ location }) => {
                         size="sm"
                         onClick={handleDeletePhoto}
                       >
-                        Remove Photo
+                        {t("removePhoto")}
                       </Button>
                     </div>
                   ) : (
@@ -540,7 +539,7 @@ export const AddBundlePage = ({ location }) => {
                                 <Row key={index}>
                                   <Col>
                                     <Form.Group>
-                                      <Form.Label>Product*</Form.Label>
+                                      <Form.Label>{t("product")}*</Form.Label>
                                       <Select
                                         options={optionsProduct}
                                         formatGroupLabel={formatGroupLabel}
@@ -594,7 +593,7 @@ export const AddBundlePage = ({ location }) => {
 
                                   <Col>
                                     <Form.Group>
-                                      <Form.Label>System Price*</Form.Label>
+                                      <Form.Label>{t("systemPrice")}*</Form.Label>
                                       <Form.Control
                                         type="number"
                                         value={
@@ -636,7 +635,7 @@ export const AddBundlePage = ({ location }) => {
                                   });
                                 }}
                               >
-                                + Add Product
+                                + {t("addProduct")}
                               </Button>
                             </Col>
                           </Row>
@@ -709,7 +708,7 @@ export const AddBundlePage = ({ location }) => {
 
               <Col>
                 <Form.Group>
-                  <Form.Label>Total System Price</Form.Label>
+                  <Form.Label>{t("totalSystemPrice")}</Form.Label>
                   <Form.Control
                     type="number"
                     name="price"

@@ -407,7 +407,7 @@ export const DetailCustomerPage = ({ match }) => {
                       {loading ? (
                         <Spinner animation="border" variant="light" size="sm" />
                       ) : (
-                        "Save"
+                        `${t("save")}`
                       )}
                     </Button>
                   )}

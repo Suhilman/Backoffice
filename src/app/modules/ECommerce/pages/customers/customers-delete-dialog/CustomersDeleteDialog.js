@@ -76,7 +76,7 @@ export function CustomersDeleteDialog({ show, onHide }) {
             onClick={onHide}
             className="btn btn-light btn-elevate"
           >
-            Cancel
+            {t("cancel")}
           </button>
           <> </>
           <button

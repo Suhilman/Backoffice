@@ -81,7 +81,7 @@ export function SpecificationsDeleteDialog() {
             onClick={specsUIProps.onHide}
             className="btn btn-light btn-elevate"
           >
-            Cancel
+            {t("cancel")}
           </button>
           <> </>
           <button

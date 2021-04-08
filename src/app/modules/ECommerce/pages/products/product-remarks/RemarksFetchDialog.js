@@ -77,7 +77,7 @@ export function RemarksFetchDialog() {
             onClick={remarksUIProps.closeFetchRemarksDialog}
             className="btn btn-light btn-elevate"
           >
-            Cancel
+            {t("cancel")}
           </button>
           <> </>
           <button

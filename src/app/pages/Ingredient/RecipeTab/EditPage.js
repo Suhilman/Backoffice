@@ -276,7 +276,7 @@ export const EditRecipePage = ({ location, match }) => {
                 </div>
                 <div className="headerEnd">
                   <Link to="/ingredient-inventory">
-                    <Button variant="secondary">Cancel</Button>
+                    <Button variant="secondary">{t("cancel")}</Button>
                   </Link>
                   <Button
                     variant="primary"
@@ -286,7 +286,7 @@ export const EditRecipePage = ({ location, match }) => {
                     {loading ? (
                       <Spinner animation="border" variant="light" size="sm" />
                     ) : (
-                      "Save"
+                      `${t("save")}`
                     )}
                   </Button>
                 </div>

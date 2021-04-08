@@ -139,7 +139,7 @@ export const EmailNotifications = () => {
         <KeyboardTimePicker
           margin="normal"
           id="daily-sales"
-          label="Select Time"
+          label={t("selectTime")}
           ampm={false}
           name="daily_sales"
           disabled={stateComponent === "show" ? true : false}
@@ -163,7 +163,7 @@ export const EmailNotifications = () => {
           margin="normal"
           id="weekly-sales"
           name="weekly_sales"
-          label="Select Time"
+          label={t("selectTime")}
           ampm={false}
           disabled={stateComponent === "show" ? true : false}
           value={timingState.weekly_sales}
@@ -209,7 +209,7 @@ export const EmailNotifications = () => {
       name: "lowStock",
       low: (
         <TextField
-          label="Minimum"
+          label={t("minimum")}
           type="number"
           disabled={stateComponent === "show" ? true : false}
           onChange={handleMinimumChange}
@@ -225,7 +225,7 @@ export const EmailNotifications = () => {
           id="low-stock"
           name="stock_alert"
           ampm={false}
-          label="Select Time"
+          label={t("selectTime")}
           disabled={stateComponent === "show" ? true : false}
           value={timingState.stock_alert}
           onChange={handleStockChange}
@@ -354,7 +354,7 @@ export const EmailNotifications = () => {
                               }
                             />
                           }
-                          label={item.value ? "Active" : "Inactive"}
+                          label={item.value ? `${t("active")}` : `${t("inactive")}`}
                           labelPlacement="start"
                         />
                       </FormGroup>

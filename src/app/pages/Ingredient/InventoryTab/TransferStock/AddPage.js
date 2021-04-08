@@ -165,7 +165,7 @@ export const AddTransferMaterialPage = ({ location }) => {
               </div>
               <div className="headerEnd">
                 <Link to="/ingredient-inventory/transfer-stock">
-                  <Button variant="secondary">Cancel</Button>
+                  <Button variant="secondary">{t("cancel")}</Button>
                 </Link>
                 <Button
                   variant="primary"
@@ -175,7 +175,7 @@ export const AddTransferMaterialPage = ({ location }) => {
                   {loading ? (
                     <Spinner animation="border" variant="light" size="sm" />
                   ) : (
-                    "Save"
+                    `${t("save")}`
                   )}
                 </Button>
               </div>

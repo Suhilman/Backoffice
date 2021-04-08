@@ -253,7 +253,7 @@ export const AddStockOpnamePage = ({ location }) => {
               </div>
               <div className="headerEnd">
                 <Link to="/inventory/stock-opname">
-                  <Button variant="secondary">Cancel</Button>
+                  <Button variant="secondary">{t("cancel")}</Button>
                 </Link>
                 <Button
                   variant="primary"
@@ -263,7 +263,7 @@ export const AddStockOpnamePage = ({ location }) => {
                   {loading ? (
                     <Spinner animation="border" variant="light" size="sm" />
                   ) : (
-                    "Save"
+                    `${t("save")}`
                   )}
                 </Button>
               </div>
