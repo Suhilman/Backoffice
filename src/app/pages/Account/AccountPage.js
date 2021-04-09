@@ -1,6 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Tabs, Tab } from "react-bootstrap";
+import NotificationExpired from "../../components/NotificationExpired"
 
 import { AccountInformation } from "./AccountInformationTab";
 import { BusinessInformation } from "./BusinessInformationTab";
@@ -22,26 +23,29 @@ export const AccountPage = () => {
   }, []);
 
   return (
-    <Tabs activeKey={tabs} onSelect={(v) => setTabs(v)}>
-      <Tab eventKey="account" title={t("accountInformation")}>
-        <AccountInformation/>
-      </Tab>
+    <>
+      <NotificationExpired />
+      <Tabs activeKey={tabs} onSelect={(v) => setTabs(v)}>
+        <Tab eventKey="account" title={t("accountInformation")}>
+          <AccountInformation/>
+        </Tab>
 
-      <Tab
-        eventKey="business"
-        title={t("businessInformation")}
-        disabled={user === "owner" ? false : true}
-      >
-        <BusinessInformation/>
-      </Tab>
+        <Tab
+          eventKey="business"
+          title={t("businessInformation")}
+          disabled={user === "owner" ? false : true}
+        >
+          <BusinessInformation/>
+        </Tab>
 
-      <Tab
-        eventKey="email"
-        title={t("emailNotification")}
-        disabled={user === "owner" ? false : true}
-      >
-        <EmailNotifications/>
-      </Tab>
-    </Tabs>
+        <Tab
+          eventKey="email"
+          title={t("emailNotification")}
+          disabled={user === "owner" ? false : true}
+        >
+          <EmailNotifications/>
+        </Tab>
+      </Tabs>
+    </>
   );
 };
