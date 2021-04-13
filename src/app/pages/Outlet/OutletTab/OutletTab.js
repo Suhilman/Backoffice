@@ -50,6 +50,7 @@ export const OutletTab = ({
   const [photo, setPhoto] = React.useState("");
   const [photoPreview, setPhotoPreview] = React.useState("");
   const [alertPhoto, setAlertPhoto] = React.useState("");
+  const [latitudeLongitude, setLatitudeLongitude] = React.useState({})
 
   const debouncedSearch = useDebounce(search, 1000);
   const { t } = useTranslation();
@@ -60,6 +61,8 @@ export const OutletTab = ({
     payment_description: "",
     postcode: "",
     province_id: "",
+    latitude: "",
+    longitude: "",
     city_id: "",
     location_id: "",
     status: "active"
@@ -105,10 +108,14 @@ export const OutletTab = ({
         maxWidthOrHeight: 1920,
         useWebWorker: true
       }
+      const locationPointer = JSON.parse(localStorage.getItem("addLocation"))
+      console.log("kudune koe ngerteni", locationPointer)
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("location_id", values.location_id);
       formData.append("status", values.status);
+      formData.append("latitude", locationPointer.lat); 
+      formData.append("longitude", locationPointer.lng);
       formData.append("payment_description", values.payment_description)
       if (photo && photoPreview) {
         console.log('originalFile instanceof Blob', photo instanceof Blob)
@@ -127,6 +134,8 @@ export const OutletTab = ({
         handleRefresh();
         disableLoading();
         cancelAddModalOutlet();
+        localStorage.removeItem("addLocation")
+        localStorage.removeItem("location")
       } catch (err) {
         disableLoading();
       }
@@ -143,11 +152,14 @@ export const OutletTab = ({
         maxWidthOrHeight: 1920,
         useWebWorker: true
       }
-      console.log('ini data di edit', values)
+      const locationPointer = JSON.parse(localStorage.getItem("addLocation"))
+      console.log('ini data di edit', locationPointer)
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("location_id", values.location_id);
       formData.append("status", values.status);
+      formData.append("latitude", locationPointer.lat);
+      formData.append("longitude", locationPointer.lng);
       formData.append("payment_description", values.payment_description)
       if (photo && photoPreview) {
         console.log('originalFile instanceof Blob', photo instanceof Blob)
@@ -164,12 +176,13 @@ export const OutletTab = ({
         handleRefresh();
         disableLoading();
         cancelEditModalOutlet();
+        localStorage.removeItem("addLocation")
+        localStorage.removeItem("location")
       } catch (err) {
         disableLoading();
       }
     }
   });
-
   const validationOutlet = (fieldname) => {
     if (formikOutlet.touched[fieldname] && formikOutlet.errors[fieldname]) {
       return "is-invalid";
@@ -204,6 +217,7 @@ export const OutletTab = ({
   const cancelAddModalOutlet = () => {
     formikOutlet.resetForm();
     setStateAddModal(false);
+    localStorage.removeItem("addLocation")
   };
 
   const showEditModalOutlet = (data) => {
@@ -220,6 +234,11 @@ export const OutletTab = ({
       location_id: data.location_id,
       status: data.status
     });
+    const location = {
+      lng: data.longitude,
+      lat: data.latitude
+    }
+    localStorage.setItem("location", JSON.stringify(location))
 
     const province_id = data.province_id;
     const city_id = data.city_id;
@@ -241,11 +260,14 @@ export const OutletTab = ({
 
     setStateEditModal(true);
   };
+
+  console.log("bismillah", latitudeLongitude)
   const cancelEditModalOutlet = () => {
     formikOutletEdit.resetForm();
     setAllCities([]);
     setAllLocations([]);
     setStateEditModal(false);
+    localStorage.removeItem("location")
   };
   const showDeleteModalOutlet = (data) => {
     formikOutlet.setFieldValue("id", data.id);
@@ -424,6 +446,8 @@ export const OutletTab = ({
         city_id: item.Location.City.id,
         province_id: item.Location.City.Province.id,
         locationFull: capitalize,
+        latitude: item.latitude,
+        longitude: item.longitude,
         phone_number: item.phone_number || "",
         status: item.status,
         tax: item.Outlet_Taxes.length ? "Taxable" : "No Tax",
@@ -482,7 +506,7 @@ export const OutletTab = ({
         t={t}
         stateModal={stateAddModal}
         cancelModal={cancelAddModalOutlet}
-        title={"Add New Outlet"}
+        title={`${t("addNewOutlet")}`}
         loading={loading}
         formikOutlet={formikOutlet}
         validationOutlet={validationOutlet}
@@ -500,6 +524,7 @@ export const OutletTab = ({
 
       <ModalOutlet
         t={t}
+        latitudeLongitude={latitudeLongitude}
         stateModal={stateEditModal}
         cancelModal={cancelEditModalOutlet}
         title={`${t("editOutlet")} - ${formikOutletEdit.getFieldProps("name").value}`}
