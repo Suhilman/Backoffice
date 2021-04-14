@@ -24,8 +24,9 @@ import {
 import "@reach/combobox/styles.css"
 import "../../style.css";
 import { marker } from 'leaflet';
+import axios from 'axios';
 const libraries = ["places"]
-const ModalMap = ({cancelModal, stateModal}) => {
+const ModalMap = ({cancelModal, stateModal, formikOutlet}) => {
   const [selected, setSelected] = useState(null)
   const [firstLocation, setFirstLocation] = useState(null)
   const [firstAddLocation, setFirstAddLocation] = useState(null)
@@ -54,13 +55,23 @@ const ModalMap = ({cancelModal, stateModal}) => {
     disableDefaultUI: true,
     zoomControl: true
   }
-  const handleOnLocation = (e) => {
+  const handleOnLocation = async (e) => {
+    const API_URL = process.env.REACT_APP_API_URL;
     console.log("latitude", e.latLng.lat())
     console.log("langitude", e.latLng.lng())
-    // const oneLocation = markers.pop()
     setFirstAddLocation({lat: e.latLng.lat(), lng: e.latLng.lng()})
+    localStorage.setItem("location", JSON.stringify({lat: e.latLng.lat(), lng: e.latLng.lng()}))
     localStorage.setItem("addLocation", JSON.stringify({lat: e.latLng.lat(), lng: e.latLng.lng()}))
+    const result = await axios.get(`${API_URL}/api/v1/outlet/get-address?latitude=${e.latLng.lat()}&longitude=${e.latLng.lng()}`)
+    console.log("ini adalah result address", result)
+    if (result.data.resultAddress.postcode && result.data.resultAddress.address) {
+      formikOutlet.setFieldValue("postcode", result.data.resultAddress.postcode.long_name)
+      console.log("ini postcodenya di modal Map", result.data.resultAddress.postcode.long_name)
+      console.log("ini addressnya di modal Map", result.data.resultAddress.address)
+      formikOutlet.setFieldValue("address", result.data.resultAddress.address)
+    }
   }
+  console.log("firstAddLocation", firstAddLocation)
   return (
     <div>
       <Modal show={stateModal} onHide={cancelModal} size="lg">
@@ -68,7 +79,7 @@ const ModalMap = ({cancelModal, stateModal}) => {
         <Modal.Title>Pick Location</Modal.Title>
       </Modal.Header>
         <Modal.Body>
-          <Row>
+        <Row>
             <Col>
               {localStorage.getItem("location") ? (
                 <GoogleMap 
@@ -78,11 +89,10 @@ const ModalMap = ({cancelModal, stateModal}) => {
                   options={options}
                   onClick={(event) => {
                     console.log("event apa nih", event)
-                    setMarkers(current => [...current, {
+                    setMarkers({
                       lat: event.latLng.lat(),
-                      lng: event.latLng.lng(),
-                      time: new Date()
-                    }])
+                      lng: event.latLng.lng()
+                    })
                     handleOnLocation(event)
                   }}
                   onLoad={onMapLoad}
@@ -90,13 +100,9 @@ const ModalMap = ({cancelModal, stateModal}) => {
                   {localStorage.getItem("location") ? (<Marker position={JSON.parse(localStorage.getItem("location"))}
                   />) : null }
 
-                  {markers.map(marker => 
-                    <Marker key={marker.time.toISOString()} 
-                    position={{lat: marker.lat, lng: marker.lng}} 
-                    onClick={() => {
-                      setSelected(marker)
-                    }}
-                  />)}
+                  <Marker
+                    position={JSON.parse(localStorage.getItem("location"))} 
+                  />
 
                   {selected ? (
                     <InfoWindow position={{ lat: selected.lat, lng: selected.lng }} onCloseClick={() => {setSelected(null)}} >
@@ -116,11 +122,10 @@ const ModalMap = ({cancelModal, stateModal}) => {
                   options={options}
                   onClick={(event) => {
                     console.log("event apa nih", event)
-                    setMarkers(current => [...current, {
+                    setMarkers({
                       lat: event.latLng.lat(),
-                      lng: event.latLng.lng(),
-                      time: new Date()
-                    }])
+                      lng: event.latLng.lng()
+                    })
                     handleOnLocation(event)
                   }}
                   onLoad={onMapLoad}
@@ -128,13 +133,9 @@ const ModalMap = ({cancelModal, stateModal}) => {
                   {firstAddLocation ? (<Marker position={firstAddLocation}
                   />) : null }
 
-                  {markers.map(marker => 
-                    <Marker key={marker.time.toISOString()} 
-                    position={{lat: marker.lat, lng: marker.lng}} 
-                    onClick={() => {
-                      setSelected(marker)
-                    }}
-                  />)}
+                  <Marker
+                    position={firstAddLocation} 
+                  />
 
                   {selected ? (
                     <InfoWindow position={{ lat: selected.lat, lng: selected.lng }} onCloseClick={() => {setSelected(null)}} >
@@ -173,6 +174,7 @@ function Search () {
     },
     radius: 200 * 1000
   })
+  console.log("search nya sudah ada")
 
   return (
     <div className="search">

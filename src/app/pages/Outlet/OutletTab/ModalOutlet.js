@@ -55,6 +55,7 @@ const ModalOutlet = ({
       <ModalMap 
         stateModal={showModalMap}
         cancelModal={cancelDeleteModalOutlet}
+        formikOutlet={formikOutlet}
       />
       <Modal show={stateModal} onHide={cancelModal} size="lg">
         <Modal.Header closeButton>

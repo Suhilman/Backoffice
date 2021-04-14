@@ -731,5 +731,7 @@
     "totalSystemPrice": "Total System Price",
     "save": "Save",
     "yourBeetPOSTrialWillEndIn": "Your BeetPOS trial will end in",
-    "day(s)": "day(s)"
+    "day(s)": "day(s)",
+    "maximum100Character": "Maximum 100 Character",
+    "maximum200Character": "Maximum 200 Character"
 }

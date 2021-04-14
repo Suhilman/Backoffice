@@ -76,7 +76,7 @@ export const OutletTab = ({
     phone_number: Yup.number().typeError(`${t("pleaseInputANumberOnly")}`),
     address: Yup.string()
       .min(3, `${t("minimum3Character")}`)
-      .max(100, `${t("maximum100Character")}`),
+      .max(200, `${t("maximum100Character")}`),
     payment_description: Yup.string(),
     postcode: Yup.number()
       .integer()
@@ -108,8 +108,8 @@ export const OutletTab = ({
         maxWidthOrHeight: 1920,
         useWebWorker: true
       }
+      console.log("ini adalah value tambah formik outlet", values)
       const locationPointer = JSON.parse(localStorage.getItem("addLocation"))
-      console.log("kudune koe ngerteni", locationPointer)
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("location_id", values.location_id);
@@ -217,6 +217,7 @@ export const OutletTab = ({
   const cancelAddModalOutlet = () => {
     formikOutlet.resetForm();
     setStateAddModal(false);
+    localStorage.removeItem("location")
     localStorage.removeItem("addLocation")
   };
 
@@ -267,6 +268,7 @@ export const OutletTab = ({
     setAllCities([]);
     setAllLocations([]);
     setStateEditModal(false);
+    localStorage.removeItem("addLocation")
     localStorage.removeItem("location")
   };
   const showDeleteModalOutlet = (data) => {

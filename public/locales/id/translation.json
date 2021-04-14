@@ -731,5 +731,7 @@
     "totalSystemPrice": "Total Harga Sistem",
     "save": "Simpan",
     "yourBeetPOSTrialWillEndIn": "Uji coba BeetPOS Anda akan berakhir pada",
-    "day(s)": "hari"
+    "day(s)": "hari",
+    "maximum100Character": "Maksimal 100 Karakter",
+    "maximum200Character": "Maksimal 200 Karakter"
   }
