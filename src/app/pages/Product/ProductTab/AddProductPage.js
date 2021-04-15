@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { useFormik } from "formik";
@@ -12,6 +12,7 @@ import FormTemplate from "./Form";
 import dayjs from "dayjs";
 
 export const AddProductPage = ({ location }) => {
+  const API_URL = process.env.REACT_APP_API_URL;
   const history = useHistory();
   const {
     allOutlets,
@@ -24,6 +25,7 @@ export const AddProductPage = ({ location }) => {
   const [photo, setPhoto] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
+  const [allSupplier, setAllSupplier] = React.useState([])
   const [alertPhoto, setAlertPhoto] = React.useState("");
   const [showManageAddons, setShowManageAddons] = React.useState(false);
   const [photoPreview, setPhotoPreview] = React.useState("");
@@ -57,6 +59,8 @@ export const AddProductPage = ({ location }) => {
     stock: 0,
     product_tax_id: "",
     status: "active",
+    supplier_id: "",
+    supplier: "",
     barcode: "",
     sku: "",
     is_favorite: false,
@@ -101,6 +105,10 @@ export const AddProductPage = ({ location }) => {
     status: Yup.string()
       .matches(/(active|inactive)/)
       .required(`${t("pleaseInputAStatus")}`),
+    supplier_id: Yup.number()
+      .integer()
+      .min(1, `${t("minimum1Character")}`),
+    supplier: Yup.string(),
     barcode: Yup.string()
       .min(3, `${t("minimum3Character")}`)
       .max(50, `${t("maximum50Character")}`),
@@ -151,8 +159,6 @@ export const AddProductPage = ({ location }) => {
         maxWidthOrHeight: 1920,
         useWebWorker: true
       }
-      const API_URL = process.env.REACT_APP_API_URL;
-
       const formData = new FormData();
       formData.append("outlet_id", values.outlet_id);
       formData.append("name", values.name);
@@ -163,6 +169,8 @@ export const AddProductPage = ({ location }) => {
       formData.append("has_recipe", values.has_recipe);
       formData.append("has_stock", values.has_stock);
       formData.append("status", values.status);
+      formData.append("supplier_id", values.supplier_id);
+      formData.append("supplier", values.supplier);
 
       if (values.groupAddons.length)
         formData.append("groupAddons", JSON.stringify(values.groupAddons));
@@ -277,6 +285,23 @@ export const AddProductPage = ({ location }) => {
     (val) => val.value === formikProduct.values.product_category_id
   );
 
+  const getAllSupplier = async () => {
+    try {
+      const {data} = await axios.get(`${API_URL}/api/v1/supplier`)
+      setAllSupplier(data.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const optionsSupplier = allSupplier.map((item) => {
+    return { value: item.id, label: item.name };
+  });
+  const defaultValueSupplier = optionsSupplier.find(
+    (val) => val.value === formikProduct.values.supplier_id
+  );
+  useEffect(() => {
+    getAllSupplier()
+  }, [])
   const optionsUnit = allUnit.map((item) => {
     return { value: item.id, label: item.name };
   });
@@ -339,6 +364,8 @@ export const AddProductPage = ({ location }) => {
           optionsOutlet={optionsOutlet}
           optionsCategory={optionsCategory}
           optionsUnit={optionsUnit}
+          optionsSupplier={optionsSupplier}
+          defaultValueSupplier={defaultValueSupplier}
           defaultValueOutlet={defaultValueOutlet}
           defaultValueCategory={defaultValueCategory}
           defaultValueUnit={defaultValueUnit}

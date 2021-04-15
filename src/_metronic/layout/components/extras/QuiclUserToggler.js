@@ -46,14 +46,15 @@ export function QuickUserToggler() {
                 </>
               </div>
             </div>
-            <Notification marginBottom="200px"/>
+            {/* <Notification marginBottom="200px"/> */}
           </OverlayTrigger>
         </>
       )}
 
       {!layoutProps.offcanvas && (
         <>
-          <UserProfileDropdown /> <Notification margin="13px"/>
+          <UserProfileDropdown /> 
+          {/* <Notification margin="13px"/> */}
         </>
       )}
     </>

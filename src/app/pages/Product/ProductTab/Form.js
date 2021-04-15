@@ -40,6 +40,8 @@ const FormTemplate = ({
   validationProduct,
   alert,
   handleDeletePhoto,
+  optionsSupplier,
+  defaultValueSupplier,
   optionsOutlet,
   optionsCategory,
   optionsUnit,
@@ -176,7 +178,6 @@ const FormTemplate = ({
                 </div>
               ) : null}
             </Form.Group>
-            {console.log("ini desimal e", formikProduct.getFieldProps("price").value)}
             <Form.Group>
               <Form.Label>{t("price")}*</Form.Label>
               <Form.Control
@@ -359,6 +360,36 @@ const FormTemplate = ({
                 <div className="fv-plugins-message-container">
                   <div className="fv-help-block">
                     {formikProduct.errors.sku}
+                  </div>
+                </div>
+              ) : null}
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>{t("supplier")}</Form.Label>
+              <Select
+                options={optionsSupplier}
+                defaultValue={defaultValueSupplier}
+                name="supplier_id"
+                className="basic-single"
+                classNamePrefix="select"
+                onChange={(value) =>{
+                  formikProduct.setFieldValue(
+                    "supplier_id",
+                    value.value
+                  )
+                  formikProduct.setFieldValue(
+                    "supplier",
+                    value.label
+                  )
+                }
+                }
+              />
+              {formikProduct.touched.supplier_id &&
+              formikProduct.errors.supplier_id ? (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    {formikProduct.errors.supplier_id}
                   </div>
                 </div>
               ) : null}

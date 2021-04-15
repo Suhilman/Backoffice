@@ -50,3 +50,35 @@
   top: 0;
   background-color: red;
 }
+
+.low-stock-alert p {
+  margin: 0;
+  padding: 0;
+}
+.content-notif{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 11px;
+}
+.wrap-image{
+  cursor: pointer;
+  object-fit: contain;
+  width: 17px;
+  height: 17px;
+}
+.wrap-image > img {
+  width: 100%;
+  height: 100%;
+}
+.button-download{
+  cursor: pointer;
+  margin-left: 7px;
+  font-size: 10px;
+  color: white;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  background-color: #A5DD6D;
+  padding: 1px 45px;
+  box-shadow: 0 0 0 10px #ECF8E1;
+}

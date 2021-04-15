@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { useFormik } from "formik";
@@ -27,9 +27,9 @@ export const EditProductPage = ({ match, location }) => {
   } = location.state;
   const history = useHistory();
   const API_URL = process.env.REACT_APP_API_URL;
-
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
+  const [allSupplier, setAllSupplier] = React.useState([])
   const [alertPhoto, setAlertPhoto] = React.useState("");
   const [photo, setPhoto] = React.useState(
     currProduct.image ? `${API_URL}/${currProduct.image}` : ""
@@ -60,6 +60,7 @@ export const EditProductPage = ({ match, location }) => {
     status: currProduct.status,
     barcode: currProduct.barcode || "",
     sku: currProduct.sku || "",
+    supplier_id: currProduct.supplier_id,
     is_favorite: currProduct.is_favorite,
     has_raw_material: currProduct.has_raw_material,
     raw_material_id: currProduct.raw_material_id,
@@ -84,6 +85,9 @@ export const EditProductPage = ({ match, location }) => {
       .max(50, `${t("maximum50Character")}`)
       .required(`${t("pleaseInputAProductName")}`),
     product_category_id: Yup.number()
+      .integer()
+      .min(1),
+    supplier_id: Yup.number()
       .integer()
       .min(1),
     price: Yup.number()
@@ -164,6 +168,8 @@ export const EditProductPage = ({ match, location }) => {
       formData.append("price", values.price);
       formData.append("price_purchase", values.price_purchase);
       formData.append("stock", values.stock);
+      formData.append("supplier", values.supplier);
+      formData.append("supplier_id", values.supplier_id);
       formData.append("is_favorite", values.is_favorite);
       formData.append("has_recipe", values.has_recipe);
       formData.append("has_stock", values.has_stock);
@@ -279,7 +285,23 @@ export const EditProductPage = ({ match, location }) => {
   const defaultValueCategory = optionsCategory.find(
     (val) => val.value === formikProduct.values.product_category_id
   );
-
+  const getAllSupplier = async () => {
+    try {
+      const {data} = await axios.get(`${API_URL}/api/v1/supplier`)
+      setAllSupplier(data.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const optionsSupplier = allSupplier.map((item) => {
+    return { value: item.id, label: item.name };
+  });
+  const defaultValueSupplier = optionsSupplier.find(
+    (val) => val.value === formikProduct.values.supplier_id
+  );
+  useEffect(() => {
+    getAllSupplier()
+  }, [])
   const optionsUnit = allUnit.map((item) => {
     return { value: item.id, label: item.name };
   });
@@ -342,6 +364,8 @@ export const EditProductPage = ({ match, location }) => {
           validationProduct={validationProduct}
           alert={alert}
           handleDeletePhoto={handleDeletePhoto}
+          optionsSupplier={optionsSupplier}
+          defaultValueSupplier={defaultValueSupplier}
           optionsOutlet={optionsOutlet}
           optionsCategory={optionsCategory}
           optionsUnit={optionsUnit}

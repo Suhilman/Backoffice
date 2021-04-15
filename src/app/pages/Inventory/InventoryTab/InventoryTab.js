@@ -26,7 +26,6 @@ const InventoryTab = ({ refresh, t }) => {
   const getInventory = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     const filterInventory = `?name=${search}`;
-
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/product${filterInventory}`);
       setInventory(data.data);
@@ -65,6 +64,11 @@ const InventoryTab = ({ refresh, t }) => {
       sortable: true
     },
     {
+      name: `${t("supplier")}`,
+      selector: "supplier",
+      sortable: true
+    },
+    {
       name: `${t("startingStock")}`,
       selector: "stock_starting",
       sortable: true
@@ -95,7 +99,6 @@ const InventoryTab = ({ refresh, t }) => {
     let adjusment = 0;
     let incoming_stock = 0;
     let outcoming_stock = 0;
-
     if (item.Product_Adjusment) {
       const difference =
         item.Product_Adjusment.stock_current -
@@ -124,6 +127,7 @@ const InventoryTab = ({ refresh, t }) => {
       no: index + 1,
       outlet_name: item.Outlet?.name,
       name: item.name,
+      supplier: item.supplier ? item.supplier : "-",
       stock: item.stock,
       stock_starting: item.stock_starting,
       incoming_stock,

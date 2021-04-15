@@ -97,8 +97,6 @@ const ProductTab = ({
         })
       })
       setDataProduct(result)
-      console.log('ini data apaan', data)
-      console.log('ini result apa', result)
     } else {
       setDataProduct([])
     }
@@ -137,7 +135,6 @@ const ProductTab = ({
       const { data } = await axios.get(
         `${API_URL}/api/v1/product${filterProduct}`
       );
-      console.log('ini data apa?', data.data)
       setAllProducts(data.data);
       handleOutletProduct(data.data)
     } catch (err) {
@@ -148,12 +145,7 @@ const ProductTab = ({
   const handleCurrency = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     const userInfo = JSON.parse(localStorage.getItem("user_info"));
-
     const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
-
-    console.log("currency nya brpw", data.data.Currency.name)
-     
-
     setCurrency(data.data.Currency.name)
   }
 
@@ -242,7 +234,6 @@ const ProductTab = ({
 
     return data.map((item, index) => {
       const groupAddons = item.Group_Addons.map((group) => {
-        console.log('ini group apa', group)
         return {
           id: group.id,
           group_name: group.name,
@@ -290,7 +281,7 @@ const ProductTab = ({
         id: item.id,
         no: index + 1,
         name: item.name,
-        category: item.Product_Category ? item.Product_Category.name : "",
+        category: item.Product_Category ? item.Product_Category.name : "-",
         // purchase_price: item.price_purchase
         //   ? rupiahFormat.convert(item.price_purchase)
         //   : rupiahFormat.convert(0),
@@ -482,7 +473,6 @@ const ProductTab = ({
         });
         enableLoading();
         for (const item of merged.flat(1)) {
-          console.log("ini item apa", item)
           if (!item.name) {
             throw new Error("there is product without name");
           }
@@ -497,7 +487,6 @@ const ProductTab = ({
         handleRefresh();
         handleCloseImport();
       } catch (err) {
-        console.log("appan nih", err.response)
         setAlert(err.response?.data.message || err.message);
         disableLoading();
       }
@@ -574,7 +563,6 @@ const ProductTab = ({
             expired_date: getJsDateFromExcel(obj.expired_date)
           });
         });
-        console.log('ini data importnya', data)
         formikImportProduct.setFieldValue("products", data);
       }
     });
