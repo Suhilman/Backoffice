@@ -262,7 +262,6 @@ export const OutletTab = ({
     setStateEditModal(true);
   };
 
-  console.log("bismillah", latitudeLongitude)
   const cancelEditModalOutlet = () => {
     formikOutletEdit.resetForm();
     setAllCities([]);

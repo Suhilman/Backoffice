@@ -6,7 +6,19 @@ import SVG from "react-inlinesvg";
 import { toAbsoluteUrl, checkIsActive } from "../../../../_helpers";
 import { connect } from "react-redux";
 import { useTranslation } from "react-i18next";
+import inventoryIcon from "../../../../../images/icons8-in-inventory-96.png"
+import productIcon from "../../../../../images/icons8-exclusive-product-60.png"
+import dashboardIcon from "../../../../../images/icons8-dashboard-52.png"
+import reportIcon from "../../../../../images/icons8-business-report-96.png"
+import kitchenIcon from "../../../../../images/icons8-kitchen-room-48.png"
+import outletIcon from "../../../../../images/icons8-store-front-96.png"
+import promoIcon from "../../../../../images/icons8-voucher-64.png"
+import staffIcon from "../../../../../images/icons8-staff-100.png"
+import roleIcon from "../../../../../images/icons8-confirm-96.png"
+import customerIcon from "../../../../../images/icons8-customer-insight-64.png"
+import accountIcon from "../../../../../images/icons8-search-account-256.png"
 
+import './style.css'
 // TODO: ambil privileges dari store
 const select = (appState) => {
   return {
@@ -140,13 +152,16 @@ function AsideMenuList(props) {
                     aria-haspopup="true"
                   >
                     <NavLink className="menu-link" to="/dashboard">
-                      <span className="svg-icon menu-icon">
+                      {/* <span className="svg-icon menu-icon">
                         <SVG
                           src={toAbsoluteUrl(
                             "/media/svg/icons/Design/Layers.svg"
                           )}
                         />
-                      </span>
+                      </span> */}
+                      <div className="wrapper-icon">
+                        <img src={dashboardIcon} alt="Icon Dashboard"/>
+                      </div>
                       <span className="menu-text">{t("dashboard")}</span>
                     </NavLink>
                   </li>
@@ -164,13 +179,16 @@ function AsideMenuList(props) {
                     aria-haspopup="true"
                   >
                     <NavLink className="menu-link" to="/report">
-                      <span className="svg-icon menu-icon">
+                      {/* <span className="svg-icon menu-icon">
                         <SVG
                           src={toAbsoluteUrl(
                             "/media/svg/icons/Design/Layers.svg"
                           )}
                         />
-                      </span>
+                      </span> */}
+                      <div className="wrapper-icon">
+                        <img src={reportIcon} alt="Icon Report"/>
+                      </div>
                       <span className="menu-text">{t("report")}</span>
                     </NavLink>
                   </li>
@@ -199,13 +217,16 @@ function AsideMenuList(props) {
                     )}`}
                   >
                     <NavLink className="menu-link" to="/product">
-                      <span className="svg-icon menu-icon">
+                      {/* <span className="svg-icon menu-icon">
                         <SVG
                           src={toAbsoluteUrl(
                             "/media/svg/icons/Shopping/Bag2.svg"
                           )}
                         />
-                      </span>
+                      </span> */}
+                      <div className="wrapper-icon">
+                        <img src={productIcon} alt="Icon Product"/>
+                      </div>
                       <span className="menu-text">{t("product")}</span>
                     </NavLink>
                   </li>
@@ -222,13 +243,16 @@ function AsideMenuList(props) {
                     )}`}
                   >
                     <NavLink className="menu-link" to="/inventory">
-                      <span className="svg-icon menu-icon">
+                      {/* <span className="svg-icon menu-icon">
                         <SVG
                           src={toAbsoluteUrl(
                             "/media/svg/icons/Shopping/Bag2.svg"
                           )}
                         />
-                      </span>
+                      </span> */}
+                      <div className="wrapper-icon">
+                        <img src={inventoryIcon} alt="Icon Inventory"/>
+                      </div>
                       <span className="menu-text">{t("inventory")}</span>
                     </NavLink>
                   </li>
@@ -245,13 +269,16 @@ function AsideMenuList(props) {
                     )}`}
                   >
                     <NavLink className="menu-link" to="/ingredient-inventory">
-                      <span className="svg-icon menu-icon">
+                      {/* <span className="svg-icon menu-icon">
                         <SVG
                           src={toAbsoluteUrl(
                             "/media/svg/icons/Shopping/Bag2.svg"
                           )}
                         />
-                      </span>
+                      </span> */}
+                      <div className="wrapper-icon">
+                        <img src={kitchenIcon} alt="Icon Kitchen"/>
+                      </div>
                       <span className="menu-text">{t("kitchen")}</span>
                     </NavLink>
                   </li>
@@ -280,13 +307,16 @@ function AsideMenuList(props) {
                     )}`}
                   >
                     <NavLink className="menu-link" to="/outlet">
-                      <span className="svg-icon menu-icon">
+                      {/* <span className="svg-icon menu-icon">
                         <SVG
                           src={toAbsoluteUrl(
                             "/media/svg/icons/Shopping/Bag2.svg"
                           )}
                         />
-                      </span>
+                      </span> */}
+                      <div className="wrapper-icon">
+                        <img src={outletIcon} alt="Icon Outlet"/>
+                      </div>
                       <span className="menu-text">{t("outlet")}</span>
                     </NavLink>
                   </li>
@@ -303,13 +333,16 @@ function AsideMenuList(props) {
                     )}`}
                   >
                     <NavLink className="menu-link" to="/promo">
-                      <span className="svg-icon menu-icon">
+                      {/* <span className="svg-icon menu-icon">
                         <SVG
                           src={toAbsoluteUrl(
                             "/media/svg/icons/Shopping/Bag2.svg"
                           )}
                         />
-                      </span>
+                      </span> */}
+                      <div className="wrapper-icon">
+                        <img src={promoIcon} alt="Icon Promo"/>
+                      </div>
                       <span className="menu-text">{t("promo")}</span>
                     </NavLink>
                   </li>
@@ -326,13 +359,16 @@ function AsideMenuList(props) {
                     )}`}
                   >
                     <NavLink className="menu-link" to="/staff">
-                      <span className="svg-icon menu-icon">
+                      {/* <span className="svg-icon menu-icon">
                         <SVG
                           src={toAbsoluteUrl(
                             "/media/svg/icons/Shopping/Bag2.svg"
                           )}
                         />
-                      </span>
+                      </span> */}
+                      <div className="wrapper-icon">
+                        <img src={staffIcon} alt="Icon Staff"/>
+                      </div>
                       <span className="menu-text">{t("staff")}</span>
                     </NavLink>
                   </li>
@@ -345,13 +381,16 @@ function AsideMenuList(props) {
                     className={`menu-item ${getMenuItemActive("/role", false)}`}
                   >
                     <NavLink className="menu-link" to="/role">
-                      <span className="svg-icon menu-icon">
+                      {/* <span className="svg-icon menu-icon">
                         <SVG
                           src={toAbsoluteUrl(
                             "/media/svg/icons/Shopping/Bag2.svg"
                           )}
                         />
-                      </span>
+                      </span> */}
+                      <div className="wrapper-icon">
+                        <img src={roleIcon} alt="Icon Role"/>
+                      </div>
                       <span className="menu-text">{t("role")}</span>
                     </NavLink>
                   </li>
@@ -367,13 +406,16 @@ function AsideMenuList(props) {
                     )}`}
                   >
                     <NavLink className="menu-link" to="/customer">
-                      <span className="svg-icon menu-icon">
+                      {/* <span className="svg-icon menu-icon">
                         <SVG
                           src={toAbsoluteUrl(
                             "/media/svg/icons/Shopping/Bag2.svg"
                           )}
                         />
-                      </span>
+                      </span> */}
+                      <div className="wrapper-icon">
+                        <img src={customerIcon} alt="Icon Customer"/>
+                      </div>
                       <span className="menu-text">{t("customer")}</span>
                     </NavLink>
                   </li>
@@ -388,9 +430,12 @@ function AsideMenuList(props) {
 
         <li className={`menu-item ${getMenuItemActive("/account", false)}`}>
           <NavLink className="menu-link" to="/account">
-            <span className="svg-icon menu-icon">
+            {/* <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Shopping/Bag2.svg")} />
-            </span>
+            </span> */}
+            <div className="wrapper-icon">
+              <img src={accountIcon} alt="Icon Account"/>
+            </div>
             <span className="menu-text">{t("account")}</span>
           </NavLink>
         </li>

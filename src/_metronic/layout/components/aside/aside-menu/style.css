@@ -1,0 +1,11 @@
+.wrapper-icon{
+  width: 20px;
+  margin-right: 15px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.wrapper-icon > img {
+  width: 100%;
+  height: 100%;
+}

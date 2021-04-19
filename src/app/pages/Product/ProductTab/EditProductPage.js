@@ -48,7 +48,7 @@ export const EditProductPage = ({ match, location }) => {
   const [hasExpiredDate, setHasExpiredDate] = React.useState(
     currStock && currStock.expired_date ? true : false
   );
-
+  console.log("ini currProduct", currProduct)
   const product = {
     outlet_id: currProduct.outlet_id,
     name: currProduct.name,
@@ -60,6 +60,7 @@ export const EditProductPage = ({ match, location }) => {
     status: currProduct.status,
     barcode: currProduct.barcode || "",
     sku: currProduct.sku || "",
+    supplier: currProduct.supplier,
     supplier_id: currProduct.supplier_id,
     is_favorite: currProduct.is_favorite,
     has_raw_material: currProduct.has_raw_material,
@@ -87,9 +88,7 @@ export const EditProductPage = ({ match, location }) => {
     product_category_id: Yup.number()
       .integer()
       .min(1),
-    supplier_id: Yup.number()
-      .integer()
-      .min(1),
+    supplier_id: Yup.number(),
     price: Yup.number()
       .integer()
       .min(1)
@@ -159,6 +158,8 @@ export const EditProductPage = ({ match, location }) => {
         maxWidthOrHeight: 1920,
         useWebWorker: true
       }
+      console.log("ini data formik edit", values)
+      
       const API_URL = process.env.REACT_APP_API_URL;
       const currStock = currProduct.Stocks.find((item) => item.is_initial);
 
@@ -168,8 +169,8 @@ export const EditProductPage = ({ match, location }) => {
       formData.append("price", values.price);
       formData.append("price_purchase", values.price_purchase);
       formData.append("stock", values.stock);
-      formData.append("supplier", values.supplier);
-      formData.append("supplier_id", values.supplier_id);
+      formData.append("supplier", values.supplier || currProduct.supplier);
+      formData.append("supplier_id", values.supplier_id || currProduct.supplier_id);
       formData.append("is_favorite", values.is_favorite);
       formData.append("has_recipe", values.has_recipe);
       formData.append("has_stock", values.has_stock);

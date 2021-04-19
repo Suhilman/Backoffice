@@ -256,6 +256,7 @@ export const ReportPage = () => {
     setTime(`${time_start} - ${end_time}`);
     setShowTimePicker(false);
   };
+  console.log("baksoow", allOutlets)
   return (
     <>
       <CustomDateRange
@@ -364,7 +365,7 @@ export const ReportPage = () => {
                         {allOutlets.map((item) => {
                           return (
                             <option key={item.id} value={item.id}>
-                              {item.Location.name}
+                              {item.name}
                             </option>
                           );
                         })}

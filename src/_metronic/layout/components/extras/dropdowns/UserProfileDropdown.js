@@ -1,10 +1,12 @@
 /* eslint-disable no-restricted-imports */
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { DropdownButton, Dropdown } from "react-bootstrap";
 import iconTrash from '../../../../../../src/images/5981684251543238936 5.png'
+import axios from 'axios'
+
 
 import objectPath from "object-path";
 import { useHtmlClassService } from "../../../_core/MetronicLayout";
@@ -14,6 +16,8 @@ import { useTranslation } from "react-i18next";
 import './style.css'
 export function UserProfileDropdown() {
   const [tabs, setTabs] = React.useState(0);
+  const [notifStockAlert, setNotifStockAlert] = useState([])
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const { user } = useSelector((state) => state.auth);
   const uiService = useHtmlClassService();
@@ -24,7 +28,17 @@ export function UserProfileDropdown() {
         "light"
     };
   }, [uiService]);
-
+  const handleGetNotification = async () => {
+    try {
+      const result = await axios.get(`${API_URL}/api/v1/business-notification`)
+      setNotifStockAlert(result.data.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(() => {
+    handleGetNotification()
+  }, [])
   const chooseLanguages = [
     {
       no: 1,
@@ -113,14 +127,17 @@ export function UserProfileDropdown() {
         </>
 
         <div className="navi navi-spacer-x-0 pt-5">
+
+          {/* Start Notification Email */}
+
           <div className="low-stock-alert px-8">
             <h5 style={{ fontWeight: 700 }}>Low Stock Allert</h5>
             <div className="content-notif mt-5">
-              <div className="content-left">
-                <p>Indomie Goreng <span className="mx-2 text-danger">4</span>Pcs.</p>
-                <p>Telur <span className="mx-2 text-danger">3</span>Pcs.</p>
-                <p>Pocari Sweat 350ml <span className="mx-2 text-danger">2</span>Pcs.</p>
-              </div>
+                <div className="content-left">
+                  {notifStockAlert.map(value =>
+                    <p>{value.message}</p>
+                  )}
+                </div>
               <div className="content-right">
                 <div className="wrap-image">
                   <img src={iconTrash} alt="Icon Trash"/>
@@ -163,6 +180,10 @@ export function UserProfileDropdown() {
               </div>
             </div>
           </div>
+
+          {/* End Notification Email */}
+
+
           {/* <a className="navi-item px-8">
               <div className="navi-link">
                 <div className="navi-icon mr-2">

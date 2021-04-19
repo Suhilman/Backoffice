@@ -16,8 +16,11 @@ import {
 } from "@material-ui/core";
 
 import "../style.css";
+import { map } from "lodash-es";
 
 export const EmailNotifications = () => {
+  const API_URL = process.env.REACT_APP_API_URL;
+
   const [switchState, setSwitchState] = React.useState({
     cashRecap: false,
     dailySales: false,
@@ -41,14 +44,37 @@ export const EmailNotifications = () => {
   const [loading, setLoading] = React.useState(false);
   const { t } = useTranslation();
   const getEmailNotifications = async () => {
-    const API_URL = process.env.REACT_APP_API_URL;
     const userInfo = JSON.parse(localStorage.getItem("user_info"));
-
     try {
       const settingsNotification = await axios.get(
         `${API_URL}/api/v1/email-notification/${userInfo.business_id}`
       );
-      console.log(settingsNotification);
+      const { data } = await axios.get(
+        `${API_URL}/api/v1/product`
+      );
+      data.data.map(async value => {
+        if(value.has_stock) {
+          if(value.stock <= settingsNotification.data.data.timeState[2].minimum_stock) {
+            if(value.unit_id) {
+              const message = {
+                title: "Stock Alert",
+                message: `${value.name} ${value.stock} ${value.Unit.name}` 
+              }
+              await axios.post(`${API_URL}/api/v1/business-notification`, message)
+              console.log("ini data yang akan di push notification", `${value.name} ${value.stock} ${value.Unit.name}`)
+            } else {
+              const message = {
+                title: "Stock Alert",
+                message: `${value.name} ${value.stock} unit` 
+              }
+              await axios.post(`${API_URL}/api/v1/business-notification`, message)
+              console.log("ini data yang akan di push notification", `${value.name} ${value.stock} unit`)
+            }
+          }
+        }
+      })
+      console.log("ini data semua produk", data.data)
+      console.log("ini data email notification", settingsNotification.data.data);
       setSwitchState({
         cashRecap:
           settingsNotification.data.data.emailNotification.rekap_kas || false,
