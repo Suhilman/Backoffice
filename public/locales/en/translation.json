@@ -398,7 +398,7 @@
     "aPromoThatCanBeAutomaticallyAppliedIfATransactionMetACertainCriteriaThatHasBeenSet": "A promo that can be automatically applied if a transaction met a certain criteria that has been set",
     "voucherCanBeCreatedAndSharedToTheCustomerForADiscount": "Voucher can be created and shared to the customer for a discount",
     "point/LoyalitySystemCanBeActivedToGiveCustomerLoyalityPointsThatCanBeExchangedForRewardsAndDiscount": "Point / Loyalty System can be activated to give customer loyalty points that can be exchanged for rewards and discounts",
-    "point/LoyaltySystem": "Point/LoyaltySystem",
+    "point/LoyaltySystem": "Point/Loyalty System",
     "backToMainView": "Back To Main View",
     "addNewSpecialPromo": "Add New Special Promo",
     "promoName": "Promo Name",
@@ -739,5 +739,6 @@
 
     "backToStaffList":"Back to Staff List",
     "editStaffData": "Edit Staff Data",
-    "optional": "Optional"
+    "optional": "Optional",
+    "editTable": "Edit Table"
 }

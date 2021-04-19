@@ -1,4 +1,5 @@
 import React from "react";
+import axios from 'axios'
 
 import {
   Button,
@@ -24,10 +25,14 @@ const ModalPayment = ({
   allTypes,
   handlePreviewPhoto,
   alertPhoto,
+  refreshDelete,
   photoPreview,
   photo,
-  t
+  t,
+  idMethod
 }) => {
+  const API_URL = process.env.REACT_APP_API_URL;
+
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
     maxSize: 2 * 1000 * 1000,
@@ -35,7 +40,15 @@ const ModalPayment = ({
       handlePreviewPhoto(file);
     }
   });
-
+  const handleDelete = async () => {
+    try {
+      const reuslt = await axios.get(`${API_URL}/api/v1/payment-method/delete-qrcode/${idMethod}`)
+      console.log("reuslt", reuslt)
+      refreshDelete()
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <Modal show={stateModal} onHide={cancelModal} size="sm">
       <Modal.Header closeButton>
@@ -143,7 +156,7 @@ const ModalPayment = ({
                   })}
                 >
                   <input {...getInputProps()} />
-                  {!photoPreview ? (
+                  {!photoPreview || photoPreview == null ? (
                     <>
                       <p>
                         {t("dragAndDrop")}
@@ -174,6 +187,11 @@ const ModalPayment = ({
               </Form.Group>
             </Col>
           </Row>
+          {photo ? (
+            <Row className="justify-content-md-center">
+              <div className="btn btn-danger" onClick={handleDelete}>Delete QR Code</div>
+            </Row>
+          ) : null }
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>

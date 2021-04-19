@@ -398,7 +398,7 @@
     "aPromoThatCanBeAutomaticallyAppliedIfATransactionMetACertainCriteriaThatHasBeenSet": "Promo yang dapat diterapkan secara otomatis jika transaksi memenuhi kriteria tertentu yang telah ditetapkan",
     "voucherCanBeCreatedAndSharedToTheCustomerForADiscount": "Voucher dapat dibuat dan dibagikan kepada pelanggan untuk mendapatkan diskon",
     "point/LoyalitySystemCanBeActivedToGiveCustomerLoyalityPointsThatCanBeExchangedForRewardsAndDiscount": "Sistem Poin / Loyalitas dapat diaktifkan untuk memberikan poin loyalitas pelanggan yang dapat ditukar dengan hadiah dan diskon",
-    "point/LoyaltySystem": "Point/LoyaltySystem",
+    "point/LoyaltySystem": "Poin/Loyalitas Sistem",
     "backToMainView": "Kembali ke Tampilan Utama ",
     "addNewSpecialPromo": "Tambahkan Promo Khusus Baru",
     "promoName": "Nama Promo",
@@ -739,5 +739,6 @@
 
     "backToStaffList":"Kembali ke daftar staf",
     "editStaffData": "Ubah data staf",
-    "optional": "Pilihan"
+    "optional": "Pilihan",
+    "editTable": "Ubah meja"
   }

@@ -30,6 +30,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
   const [photo, setPhoto] = React.useState("");
   const [photoPreview, setPhotoPreview] = React.useState("");
   const [alertPhoto, setAlertPhoto] = React.useState("");
+  const [idMethod, setIdMethod] = React.useState(null)
 
   const [allPaymentMethods, setAllPaymentMethods] = React.useState([]);
   const [allTypes, setAllTypes] = React.useState([]);
@@ -50,16 +51,22 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       const { data } = await axios.get(
         `${API_URL}/api/v1/payment-method${filterPayment}`
       );
+      console.log("${API_URL}/api/v1/payment-method${filterPayment}", data.data)
       setAllPaymentMethods(data.data);
     } catch (err) {
       setAllPaymentMethods([]);
     }
   };
-
+  const refreshDelete = () => {
+    console.log("refresh delete")
+    setPhotoPreview("")
+    setPhoto("")
+  }
   const getPaymentMethodTypes = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/payment-method-type`);
+      console.log("${API_URL}/api/v1/payment-method-type", data.data)
       setAllTypes(data.data);
     } catch (err) {
       console.log(err);
@@ -205,6 +212,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
   };
 
   const showEditModalPayment = (data) => {
+    console.log("data yang mau di edit", data)
     formikPaymentEdit.setValues({
       id: data.id,
       name: data.name,
@@ -215,6 +223,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
 
     if (data.qr_image) {
       const API_URL = process.env.REACT_APP_API_URL;
+      setIdMethod(data.id)
       setPhoto(`${API_URL}${data.qr_image}`);
       setPhotoPreview(`${API_URL}${data.qr_image}`);
     }
@@ -409,6 +418,8 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
         title={`${t("editPaymentMethod")} - ${
           formikPaymentEdit.getFieldProps("name").value
         }`}
+        refreshDelete={refreshDelete}
+        idMethod={idMethod}
         loading={loading}
         formikPayment={formikPaymentEdit}
         validationPayment={validationPaymentEdit}
