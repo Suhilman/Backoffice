@@ -48,7 +48,9 @@ export const DetailStaffPage = ({ match, location }) => {
     name: "",
     email: "",
     phone_number: "",
-    location_name: ""
+    location_name: "",
+    password: "",
+    pin: ""
   });
   const [staffInitial, setStaffInitial] = React.useState({
     outlet_id: "",
@@ -58,7 +60,9 @@ export const DetailStaffPage = ({ match, location }) => {
     name: "",
     email: "",
     phone_number: "",
-    location_name: ""
+    location_name: "",
+    password: "",
+    pin: ""
   });
 
   const [attendance, setAttendance] = React.useState([]);
@@ -104,13 +108,15 @@ export const DetailStaffPage = ({ match, location }) => {
         maxWidthOrHeight: 1920,
         useWebWorker: true
       }
-
+      console.log("formikStaff", values)
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("staff_id", values.staff_id);
       formData.append("email", values.email);
       formData.append("role_id", values.role_id);
       formData.append("type", values.type);
+      formData.append("password", values.password)
+      formData.append("pin", values.pin)
       if (image && preview) {
         console.log('originalFile instanceof Blob', image instanceof Blob)
         const compressedImage = await imageCompression(image, options)
@@ -489,6 +495,20 @@ export const DetailStaffPage = ({ match, location }) => {
                       ) : null}
                     </>
                   )} */}
+                  
+                  {statePage === "edit" ? (
+                    <>
+                      <div className="title mt-5">{t("password")} ({t("optional")})</div>
+                      <Form.Control
+                        type="password"
+                        name="password"
+                        placeholder="Please insert for update password"
+                        onChange={(e) => {
+                          formikStaff.setFieldValue("password", e.target.value)
+                        }}
+                      />
+                    </>
+                  ) : null }
                 </Col>
 
                 <Col md={3}>
@@ -595,6 +615,19 @@ export const DetailStaffPage = ({ match, location }) => {
                       ) : null}
                     </>
                   )} */}
+                  {statePage === "edit" ? (
+                    <>
+                      <div className="title mt-5">{t("pin")} ({t("optional")})</div>
+                      <Form.Control
+                        type="password"
+                        name="pin"
+                        placeholder="Please insert for update pin"
+                        onChange={(e) => {
+                          formikStaff.setFieldValue("pin", e.target.value)
+                        }}
+                      />
+                    </>
+                  ) : null }
                 </Col>
 
                 <Col md={3}>

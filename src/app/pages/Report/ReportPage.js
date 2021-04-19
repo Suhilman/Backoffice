@@ -352,7 +352,7 @@ export const ReportPage = () => {
                     <Form.Label
                       style={{ alignSelf: "center", marginBottom: "0" }}
                     >
-                      {t("location")}:
+                      {t("outlet")}:
                     </Form.Label>
                     <Col>
                       <Form.Control

@@ -60,6 +60,7 @@ const FormTemplate = ({
       handlePreviewPhoto(file);
     }
   });
+  console.log("optionsUnit", optionsUnit)
   const CustomInputDate = ({ value, onClick }) => {
     return (
       <Form.Control

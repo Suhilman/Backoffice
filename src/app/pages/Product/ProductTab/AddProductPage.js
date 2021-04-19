@@ -11,14 +11,13 @@ import ModalManageAddons from "./ModalManageAddons";
 import FormTemplate from "./Form";
 import dayjs from "dayjs";
 
+const API_URL = process.env.REACT_APP_API_URL;
 export const AddProductPage = ({ location }) => {
-  const API_URL = process.env.REACT_APP_API_URL;
   const history = useHistory();
   const {
     allOutlets,
     allCategories,
     allTaxes,
-    allUnit,
     allMaterials
   } = location.state;
   const { t } = useTranslation();
@@ -31,6 +30,7 @@ export const AddProductPage = ({ location }) => {
   const [photoPreview, setPhotoPreview] = React.useState("");
   const [expiredDate, setExpiredDate] = React.useState("");
   const [hasExpiredDate, setHasExpiredDate] = React.useState(false);
+  const [allUnit, setAllUnit] = React.useState([])
 
   const [savedAddons, setSavedAddons] = React.useState([
     {
@@ -332,7 +332,13 @@ export const AddProductPage = ({ location }) => {
       setExpiredDate("");
     }
   };
-
+  const handleAllUnit = async () => {
+    const {data} = await axios.get(`${API_URL}/api/v1/unit`) 
+    setAllUnit(data.data)
+  }
+  useEffect(() => {
+    handleAllUnit()
+  }, [])
   return (
     <Row>
       <ModalManageAddons

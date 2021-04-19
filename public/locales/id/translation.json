@@ -545,7 +545,7 @@
     "npwpNumber": "Nomor NPWP",
     "businessType": "Jenis Bisnis",
     "uploadKtpPicture": "Unggah Gambar KTP",
-    "uploadNpwpPicture": "Unggah Gambar KTP",
+    "uploadNpwpPicture": "Unggah Gambar NPWP",
     "uploadBusinessPicture": "Unggah Gambar Bisnis",
     "getANorificationEmailWhenaCashRecapActivityHappened": "Dapatkan email notifikasi saat terjadi aktivitas rekap tunai",
     "dailySalesReport": "Laporan Penjualan Harian",
@@ -735,5 +735,9 @@
     "day(s)": "hari",
     "maximum100Character": "Maksimal 100 Karakter",
     "maximum200Character": "Maksimal 200 Karakter",
-    "notification": "Pemberitahuan"
+    "notification": "Pemberitahuan",
+
+    "backToStaffList":"Kembali ke daftar staf",
+    "editStaffData": "Ubah data staf",
+    "optional": "Pilihan"
   }

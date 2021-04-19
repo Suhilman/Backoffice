@@ -735,5 +735,9 @@
     "day(s)": "day(s)",
     "maximum100Character": "Maximum 100 Character",
     "maximum200Character": "Maximum 200 Character",
-    "notification": "Notification"
+    "notification": "Notification",
+
+    "backToStaffList":"Back to Staff List",
+    "editStaffData": "Edit Staff Data",
+    "optional": "Optional"
 }

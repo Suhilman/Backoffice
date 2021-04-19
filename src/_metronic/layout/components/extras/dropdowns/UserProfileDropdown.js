@@ -59,6 +59,21 @@ export function UserProfileDropdown() {
     i18n.changeLanguage(language)
   };
 
+
+  const handleDeleteStock = async () => {
+    const idStock = []
+    notifStockAlert.map(value => {
+      idStock.push(value.id)
+    })
+    if (idStock) {
+      idStock.map(async (value) => {
+        const result = await axios.delete(`${API_URL}/api/v1/business-notification/${value}`)
+        console.log("thenNotification", result.data.data)
+        setNotifStockAlert(result.data.data)
+      })
+    } 
+  }
+
   return (
     <Dropdown drop="down" alignRight>
       <Dropdown.Toggle
@@ -131,19 +146,21 @@ export function UserProfileDropdown() {
           {/* Start Notification Email */}
 
           <div className="low-stock-alert px-8">
-            <h5 style={{ fontWeight: 700 }}>Low Stock Allert</h5>
-            <div className="content-notif mt-5">
-                <div className="content-left">
-                  {notifStockAlert.map(value =>
-                    <p>{value.message}</p>
-                  )}
-                </div>
-              <div className="content-right">
-                <div className="wrap-image">
-                  <img src={iconTrash} alt="Icon Trash"/>
+            <h5 style={{ fontWeight: 700 }}>Low Stock Alert</h5>
+            {notifStockAlert.length > 0 ? (
+              <div className="content-notif mt-5">
+                  <div className="content-left">
+                    {notifStockAlert.map(value =>
+                      <p>{value.message}</p>
+                    )}
+                  </div>
+                <div className="content-right">
+                  <div className="wrap-image" onClick={handleDeleteStock}>
+                    <img src={iconTrash} alt="Icon Trash"/>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : <div>empty</div> }
           </div>
           <hr/>
           <div className="low-stock-alert px-8">
