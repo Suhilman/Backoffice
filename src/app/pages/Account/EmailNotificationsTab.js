@@ -43,6 +43,26 @@ export const EmailNotifications = () => {
   const [stateComponent, setStateComponent] = React.useState("show");
   const [loading, setLoading] = React.useState(false);
   const { t } = useTranslation();
+
+  const handleNotifTransactionRecap = async () => {
+    try {
+      const userInfo = JSON.parse(localStorage.getItem("user_info"));
+      const {data} = await axios.get(`${API_URL}/api/v1/transaction/find-transaction-recap?businessId=${userInfo.business_id}`)
+      console.log("data apaan", data.data)
+      data.data.map(async value => {
+        const message = {
+          title: `Transaction Recap At ${value.Outlet.name}`,
+          message: `${value.createdAt.split("T")[0]} - ${value.createdAt.split("T")[1]} \n Recap By ${value.User.User_Profile.name}` 
+        }
+        console.log("ini messagenya", message)
+        await axios.post(`${API_URL}/api/v1/business-notification`, message)
+        console.log("yey berhasill")
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const getEmailNotifications = async () => {
     const userInfo = JSON.parse(localStorage.getItem("user_info"));
     try {
@@ -145,6 +165,7 @@ export const EmailNotifications = () => {
   };
   React.useEffect(() => {
     getEmailNotifications();
+    handleNotifTransactionRecap()
   }, []);
 
   const allFields = [
@@ -343,7 +364,7 @@ export const EmailNotifications = () => {
                     onClick={handleStateComponent}
                     style={{ marginRight: "1rem" }}
                   >
-                    {t("canel")}
+                    {t("cancel")}
                   </Button>
                   <Button variant="primary" onClick={sendData}>
                     {loading ? (

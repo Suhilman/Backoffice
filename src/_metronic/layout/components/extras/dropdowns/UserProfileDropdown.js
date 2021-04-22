@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { DropdownButton, Dropdown } from "react-bootstrap";
 import iconTrash from '../../../../../../src/images/5981684251543238936 5.png'
 import axios from 'axios'
-
+import dayjs from "dayjs";
 
 import objectPath from "object-path";
 import { useHtmlClassService } from "../../../_core/MetronicLayout";
@@ -17,6 +17,11 @@ import './style.css'
 export function UserProfileDropdown() {
   const [tabs, setTabs] = React.useState(0);
   const [notifStockAlert, setNotifStockAlert] = useState([])
+  const [notifRecapTransaction, setNotifRecapTransaction] = useState([])
+  const [dateReport, setDateReport] = useState([])
+  const [filterWeeklyReport, setFilterWeeklyReport] = useState([])
+  const [filterDailyReport, setFilterDailyReport] = useState([])
+
   const API_URL = process.env.REACT_APP_API_URL;
 
   const { user } = useSelector((state) => state.auth);
@@ -30,15 +35,72 @@ export function UserProfileDropdown() {
   }, [uiService]);
   const handleGetNotification = async () => {
     try {
+      const userInfo = JSON.parse(localStorage.getItem("user_info"));
+      console.log("userInfo", userInfo)
+      const resultReport = await axios.get(`${API_URL}/api/v1/transaction/find-transaction-recap?businessId=${userInfo.business_id}`)
+      setDateReport(resultReport.data.data)
       const result = await axios.get(`${API_URL}/api/v1/business-notification`)
-      setNotifStockAlert(result.data.data)
+      const stockAlert = []
+      const transactionRecap = []
+      result.data.data.map(value => {
+        console.log("result.data.data", value)
+        if(value.title === "Stock Alert") {
+          stockAlert.push(value)
+        }
+        if(value.title.split("At")[0] === "Transaction Recap ") {
+          transactionRecap.push(value)
+        }
+      })
+      console.log("resultReport", resultReport.data.data)
+      console.log("stockAlert", stockAlert)
+      console.log("transactionRecap", transactionRecap)
+      setNotifStockAlert(stockAlert)
+      setNotifRecapTransaction(transactionRecap)
+      logicDate(resultReport.data.data)
     } catch (error) {
       console.log(error)
     }
   }
+  const logicDate = (dateReport) => {
+    console.log("logicDate")
+    console.log("dateReport", dateReport)
+    const esBuah = []
+    const esAlpukat = []
+    dateReport.map(value => {
+      const now = new Date()
+      const dateRecap = new Date(value.createdAt)
+      console.log("now.getDate()", now.getDate())
+      console.log("dateRecap.getDate()", dateRecap.getDate())
+      if(now.getMonth() - dateRecap.getMonth() == 0) {
+        console.log("jika sama bulannya")
+        if(now.getDate() - dateRecap.getDate() <= 7) {
+          console.log("jika sama bulannya dan kurang dari 8 hari")
+          console.log("now.getDate() - dateRecap.getDate()", now.getDate() - dateRecap.getDate() === 0)
+          esBuah.push(value)
+        } 
+        if (now.getDate() - dateRecap.getDate() === 0) {
+          console.log("hari ini")
+          esAlpukat.push(value)
+        }
+      } else if (now.getMonth() - dateRecap.getMonth() == 1) {
+        console.log("jika tidak sama bulannya")
+        if(now.getDate() + dateRecap.getDate() - 30 <= 7) {
+          console.log("jika tidak sama bulannya dan kurang dari 8 hari")
+          esBuah.push(value)
+        }
+      }
+    })
+    console.log("esAlpukat", esAlpukat)
+    setFilterWeeklyReport(esBuah)
+    setFilterDailyReport(esAlpukat)
+  }
+
   useEffect(() => {
     handleGetNotification()
   }, [])
+  console.log("filterDailyReport", filterDailyReport)
+  console.log("filterWeeklyReport", filterWeeklyReport)
+  console.log("notifRecapTransaction", notifRecapTransaction)
   const chooseLanguages = [
     {
       no: 1,
@@ -72,6 +134,17 @@ export function UserProfileDropdown() {
         setNotifStockAlert(result.data.data)
       })
     } 
+  }
+
+  const handleDeleteRecap = async(id) => {
+    try {
+      console.log("ini id yang mau dihapus", id)
+      const result = await axios.delete(`${API_URL}/api/v1/business-notification/${id}`)
+      console.log("setNotifRecapTransaction", result.data.data)
+      handleGetNotification()
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -141,11 +214,11 @@ export function UserProfileDropdown() {
           )}
         </>
 
-        <div className="navi navi-spacer-x-0 pt-5">
-
+        <div className="navi navi-spacer-x-0 pt-5 ">
+        {/* wrapper-popup-notification */}
           {/* Start Notification Email */}
 
-          <div className="low-stock-alert px-8">
+          {/* <div className="low-stock-alert px-8">
             <h5 style={{ fontWeight: 700 }}>Low Stock Alert</h5>
             {notifStockAlert.length > 0 ? (
               <div className="content-notif mt-5">
@@ -164,40 +237,64 @@ export function UserProfileDropdown() {
           </div>
           <hr/>
           <div className="low-stock-alert px-8">
-            <h5 style={{ fontWeight: 700 }}>Transaction Recap At [Nama Outlet]</h5>
-            <div className="content-notif mt-5">
-              <div className="content-left">
-                <p>[tanggalRecap] - [WaktuRecap]</p>
-                <p>[Recap By [NamaStaff]]</p>
-                <div className="button-download">
-                  Download Report
+            {notifRecapTransaction.map(value => 
+            <>
+              {console.log(value)}
+              <h5 className="mt-4" style={{ fontWeight: 700 }}>{value.title}</h5>
+              <div className="content-notif mt-2">
+                <div className="content-left">
+                  <p>{value.message}</p>
+                </div>
+                <div className="content-right">
+                  <div className="wrap-image" onClick={() => handleDeleteRecap(value.id)}>
+                    <img src={iconTrash} alt="Icon Trash"/>
+                  </div>
                 </div>
               </div>
-              <div className="content-right">
-                <div className="wrap-image">
-                  <img src={iconTrash} alt="Icon Trash"/>
-                </div>
-              </div>
+            </>
+            )}
+            <div className="button-download">
+              Download Report
             </div>
           </div>
           <hr/>
           <div className="low-stock-alert px-8">
             <h5 style={{ fontWeight: 700 }}>Weekly Report has been sent</h5>
-            <div className="content-notif mt-5">
-              <div className="content-left">
-                <p>[tanggalKirim] - [WaktuKirim]</p>
-                <div className="button-download">
-                  Download Report
+            {filterWeeklyReport.map(value => 
+              <div className="content-notif mt-5">
+                <div className="content-left">
+                  <p>{value.createdAt.split("T")[0]} - {value.createdAt.split("T")[1]}</p>
+                </div>
+                <div className="content-right">
+                  <div className="wrap-image">
+                    <img src={iconTrash} alt="Icon Trash"/>
+                  </div>
                 </div>
               </div>
-              <div className="content-right">
-                <div className="wrap-image">
-                  <img src={iconTrash} alt="Icon Trash"/>
-                </div>
-              </div>
+            )}
+            <div className="button-download">
+              Download Report
             </div>
           </div>
-
+          <hr/>
+          <div className="low-stock-alert px-8">
+            <h5 style={{ fontWeight: 700 }}>Daily Report has been sent</h5>
+            {filterDailyReport.map(value => 
+              <div className="content-notif mt-5">
+                <div className="content-left">
+                  <p>{value.createdAt.split("T")[0]} - {value.createdAt.split("T")[1]}</p>
+                </div>
+                <div className="content-right">
+                  <div className="wrap-image">
+                    <img src={iconTrash} alt="Icon Trash"/>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div className="button-download">
+              Download Report
+            </div>
+          </div> */}
           {/* End Notification Email */}
 
 

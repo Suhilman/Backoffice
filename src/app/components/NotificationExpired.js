@@ -24,8 +24,8 @@ const NotificationExpired = () => {
         const expired_tolerance = subscription.Subscription_Type.expired_tolerance
         const dateNow = new Date()
         const dateExpired = new Date(getDateExpired)
-        console.log("ini tanggal expirednya", dateExpired.getMonth())
-        console.log("ini tanggal sekarang", dateNow.getMonth())
+        console.log("ini bulan expirednya", dateExpired.getMonth())
+        console.log("ini bulan sekarang", dateNow.getMonth())
         console.log("ini hasilnya", dateExpired.getMonth() - dateNow.getMonth())
         let countDate;
         if (dateExpired.getFullYear() - dateNow.getFullYear() > 0) {
@@ -44,6 +44,12 @@ const NotificationExpired = () => {
               history.push('/logout');
               Swal.fire(`Masa uji coba sudah habis`, "", "warning")
             }
+          } else if (dateExpired.getMonth() - dateNow.getMonth() === 1) {
+            const expired = 30 - dateNow.getDate() + dateExpired.getDate()
+            console.log("dateNow", dateNow.getDate())
+            console.log("dateExpired", dateExpired.getDate())
+            console.log("Man Jadda Wajada")
+            setCountExpired(expired)
           } else {
             const resultMonth = dateExpired.getMonth() - dateNow.getMonth()
             console.log("dateExpired.getMonth()", dateExpired.getMonth())

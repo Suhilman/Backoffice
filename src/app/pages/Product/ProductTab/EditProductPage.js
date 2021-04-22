@@ -90,11 +90,9 @@ export const EditProductPage = ({ match, location }) => {
       .min(1),
     supplier_id: Yup.number(),
     price: Yup.number()
-      .integer()
       .min(1)
       .required(`${t("pleaseInputAPrice")}`),
     price_purchase: Yup.number()
-      .integer()
       .required(`${t("pleaseInputAPricePurchase")}`),
     stock: Yup.number()
       .integer()

@@ -740,5 +740,7 @@
     "backToStaffList":"Kembali ke daftar staf",
     "editStaffData": "Ubah data staf",
     "optional": "Pilihan",
-    "editTable": "Ubah meja"
+    "editTable": "Ubah meja",
+    "editRecipe": "Ubah Resep",
+    "pointStatus": "Status Poin"
   }

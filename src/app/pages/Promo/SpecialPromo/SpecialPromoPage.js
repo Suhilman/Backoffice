@@ -20,6 +20,7 @@ import DataTable from "react-data-table-component";
 import { Search, MoreHoriz } from "@material-ui/icons";
 
 import SpecialPromoModal from "./SpecialPromoModal";
+import SpecialPromoModalEdit from './SpecialPromoModalEdit'
 import ShowConfirmModal from "../../../components/ConfirmModal";
 
 import "../../style.css";
@@ -66,7 +67,7 @@ export const SpecialPromoPage = () => {
     promo_category_id: 1
   };
 
-  const PromoSchema = Yup.object().shape({
+  const EditPromoSchema = Yup.object().shape({
     outlet_id: Yup.number()
       .integer()
       .min(1)
@@ -83,7 +84,30 @@ export const SpecialPromoPage = () => {
       .matches(/percentage|currency/)
       .required(`${t("pleaseChooseType")}`),
     value: Yup.number()
+      .min(0)
+      .required(`${t("pleaseInputValue")}`),
+    promo_category_id: Yup.number()
       .integer()
+      .min(0)
+      .required(`${t("pleaseInputValue")}`)
+  });
+
+  const PromoSchema = Yup.object().shape({
+    outlet_id: Yup.array()
+      .of(Yup.number().min(1))
+      .required(`${t("pleaseChooseOutlet")}`),
+    name: Yup.string()
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputAName")}`),
+    description_type: Yup.string()
+      .matches(/regulation|how_to_use/)
+      .required(`${t("pleaseChooseType")}`),
+    description: Yup.string().min(1, `${t("minimum1Character")}`),
+    type: Yup.string()
+      .matches(/percentage|currency/)
+      .required(`${t("pleaseChooseType")}`),
+    value: Yup.number()
       .min(0)
       .required(`${t("pleaseInputValue")}`),
     promo_category_id: Yup.number()
@@ -103,7 +127,7 @@ export const SpecialPromoPage = () => {
         useWebWorker: true
       }
       const promoData = new FormData();
-      promoData.append("outlet_id", values.outlet_id);
+      promoData.append("outlet_id", JSON.stringify(values.outlet_id));
       promoData.append("name", values.name);
       promoData.append("description_type", values.description_type);
       promoData.append("description", values.description);
@@ -145,7 +169,7 @@ export const SpecialPromoPage = () => {
   const formikEditPromo = useFormik({
     enableReinitialize: true,
     initialValues: initialValuePromo,
-    validationSchema: PromoSchema,
+    validationSchema: EditPromoSchema,
     onSubmit: async (values) => {
       const options = {
         maxSizeMB: 0.5,
@@ -464,7 +488,7 @@ export const SpecialPromoPage = () => {
         allOutlets={allOutlets}
       />
 
-      <SpecialPromoModal
+      <SpecialPromoModalEdit
         t={t}
         stateModal={stateEditModal}
         cancelModal={closeEditModal}

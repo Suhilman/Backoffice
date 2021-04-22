@@ -88,11 +88,9 @@ export const AddProductPage = ({ location }) => {
       .integer()
       .min(1, `${t("minimum1Character")}`),
     price: Yup.number()
-      .integer()
       .min(1, `${t("minimum1Character")}`)
       .required(`${t("pleaseInputAPrice")}`),
     price_purchase: Yup.number()
-      .integer()
       .required(`${t("pleaseInputAPricePurchase")}`),
     stock: Yup.number()
       .integer()

@@ -50,8 +50,8 @@ export const LoyaltyPromoPage = () => {
   const [allProducts, setAllProducts] = React.useState([]);
 
   const [selectedProducts, setSelectedProducts] = React.useState([]);
-const [currency, setCurrency] = React.useState("")
-const handleCurrency = async () => {
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     const userInfo = JSON.parse(localStorage.getItem("user_info"));
 
@@ -98,9 +98,8 @@ const handleCurrency = async () => {
   });
 
   const PromoSchema = Yup.object().shape({
-    outlet_id: Yup.number()
-      .integer()
-      .min(1)
+    outlet_id: Yup.array()
+      .of(Yup.number().min(1))
       .required(`${t("pleaseChooseOutlet")}`),
     loyaltyPromo: Yup.array().of(
       Yup.object().shape({
@@ -122,7 +121,7 @@ const handleCurrency = async () => {
       .min(1, `${t("pointMustBeGreaterThan0")}`)
       .required(`${t("pleaseInputValue")}`)
   });
-
+  
   const SettingsSchema = Yup.object().shape({
     status: Yup.string().oneOf(["active", "inactive"]),
     registration_bonus_status: Yup.string().oneOf(["active", "inactive"]),
@@ -137,7 +136,7 @@ const handleCurrency = async () => {
     validationSchema: PromoSchema,
     onSubmit: async (values) => {
       const promoData = {
-        outlet_id: values.outlet_id,
+        outlet_id: JSON.stringify(values.outlet_id),
         loyaltyPromo: values.loyaltyPromo
       };
 

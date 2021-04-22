@@ -740,5 +740,7 @@
     "backToStaffList":"Back to Staff List",
     "editStaffData": "Edit Staff Data",
     "optional": "Optional",
-    "editTable": "Edit Table"
+    "editTable": "Edit Table",
+    "editRecipe": "Edit Recipe",
+    "pointStatus": "Point Status"
 }

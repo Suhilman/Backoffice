@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { useFormik } from "formik";
+
 import * as Yup from "yup";
 import dayjs from "dayjs";
 import imageCompression from 'browser-image-compression';
@@ -18,6 +19,7 @@ import DataTable from "react-data-table-component";
 import { MoreHoriz } from "@material-ui/icons";
 
 import VoucherPromoModal from "./VoucherPromoModal";
+import VoucherPromoModalEdit from "./VoucherPromoModalEdit";
 import ShowConfirmModal from "../../../components/ConfirmModal";
 
 import "../../style.css";
@@ -54,6 +56,33 @@ export const VoucherPromoPage = () => {
   };
 
   const PromoSchema = Yup.object().shape({
+    outlet_id: Yup.array()
+      .of(Yup.number().min(1))
+      .required(`${t("pleaseChooseOutlet")}`),
+    name: Yup.string()
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputAName")}`),
+    code: Yup.string()
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputACode")}`),
+    quota: Yup.number()
+      .min(1, `${t("minimum1Quota")}`)
+      .required(`${t("pleaseInputQuota")}`),
+    description_type: Yup.string()
+      .matches(/regulation|how_to_use/)
+      .required(`${t("pleaseChooseType")}`),
+    description: Yup.string().min(1, `${t("minimum1Character")}`),
+    type: Yup.string()
+      .matches(/percentage|currency/)
+      .required(`${t("pleaseChooseType")}`),
+    value: Yup.number()
+      .min(0)
+      .required(`${t("pleaseInputValue")}`)
+  });
+
+  const EditPromoSchema = Yup.object().shape({
     outlet_id: Yup.number()
       .integer()
       .min(1)
@@ -77,7 +106,6 @@ export const VoucherPromoPage = () => {
       .matches(/percentage|currency/)
       .required(`${t("pleaseChooseType")}`),
     value: Yup.number()
-      .integer()
       .min(0)
       .required(`${t("pleaseInputValue")}`)
   });
@@ -93,7 +121,7 @@ export const VoucherPromoPage = () => {
         useWebWorker: true
       }
       const promoData = new FormData();
-      promoData.append("outlet_id", values.outlet_id);
+      promoData.append("outlet_id", JSON.stringify(values.outlet_id));
       promoData.append("name", values.name);
       promoData.append("description_type", values.description_type);
       promoData.append("description", values.description);
@@ -138,7 +166,7 @@ export const VoucherPromoPage = () => {
   const formikEditPromo = useFormik({
     enableReinitialize: true,
     initialValues: initialValuePromo,
-    validationSchema: PromoSchema,
+    validationSchema: EditPromoSchema,
     onSubmit: async (values) => {
       const options = {
         maxSizeMB: 0.5,
@@ -470,7 +498,7 @@ export const VoucherPromoPage = () => {
         setEndDate={setEndDate}
       />
 
-      <VoucherPromoModal
+      <VoucherPromoModalEdit
         t={t}
         stateModal={stateEditModal}
         cancelModal={closeEditModal}

@@ -17,7 +17,7 @@ import DatePicker from "react-datepicker";
 
 import "../../style.css";
 
-const VoucherPromoModal = ({
+const VoucherPromoModalEdit = ({
   stateModal,
   cancelModal,
   title,
@@ -68,6 +68,37 @@ const VoucherPromoModal = ({
 
           <Row>
             <Col>
+            {formikPromo.getFieldProps("outlet_id").value ? (
+            <Form.Group>
+                <Form.Label>{t("outlet")}:</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="outlet_id"
+                  {...formikPromo.getFieldProps("outlet_id")}
+                  className={validationPromo("outlet_id")}
+                  required
+                >
+                  <option value="" disabled hidden>
+                  {t("chooseOutlet")}
+                  </option>
+                  {allOutlets.map((item) => {
+                    return (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    );
+                  })}
+                </Form.Control>
+                {formikPromo.touched.outlet_id &&
+                formikPromo.errors.outlet_id ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikPromo.errors.outlet_id}
+                    </div>
+                  </div>
+                ) : null}
+              </Form.Group>
+            ) : (
               <Form.Group>
                 <Form.Label>{t("outlet")}:</Form.Label>
                 <Select
@@ -87,6 +118,7 @@ const VoucherPromoModal = ({
                   </div>
                 ) : null}
               </Form.Group>
+            )}
             </Col>
             <Col>
               <Form.Group>
@@ -356,4 +388,4 @@ const DateTimePicker = ({ startDate, setStartDate }) => {
   );
 };
 
-export default VoucherPromoModal;
+export default VoucherPromoModalEdit;

@@ -6,7 +6,7 @@ import Select from "react-select";
 
 import "../../style.css";
 
-const SpecialPromoModal = ({
+const SpecialPromoModalEdit = ({
   stateModal,
   cancelModal,
   title,
@@ -52,18 +52,29 @@ const SpecialPromoModal = ({
       <Form noValidate onSubmit={formikPromo.handleSubmit}>
         <Modal.Body>
           {alert ? <Alert variant="danger">{alert}</Alert> : ""}
+
           <Row>
             <Col>
               <Form.Group>
                 <Form.Label>{t("outlet")}:</Form.Label>
-                <Select
-                  options={optionsOutlet}
-                  isMulti
+                <Form.Control
+                  as="select"
                   name="outlet_id"
-                  className="basic-multi-select"
-                  classNamePrefix="select"
-                  onChange={(value) => handleSelectOutlet(value, formikPromo)}
-                />
+                  {...formikPromo.getFieldProps("outlet_id")}
+                  className={validationPromo("outlet_id")}
+                  required
+                >
+                  <option value="" disabled hidden>
+                  {t("chooseOutlet")}
+                  </option>
+                  {allOutlets.map((item) => {
+                    return (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    );
+                  })}
+                </Form.Control>
                 {formikPromo.touched.outlet_id &&
                 formikPromo.errors.outlet_id ? (
                   <div className="fv-plugins-message-container">
@@ -266,4 +277,4 @@ const SpecialPromoModal = ({
   );
 };
 
-export default SpecialPromoModal;
+export default SpecialPromoModalEdit;
