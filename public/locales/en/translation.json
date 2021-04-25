@@ -742,5 +742,10 @@
     "optional": "Optional",
     "editTable": "Edit Table",
     "editRecipe": "Edit Recipe",
-    "pointStatus": "Point Status"
+    "pointStatus": "Point Status",
+    "unitFrom": "Unit From",
+    "totalRecipePrice": "Total Recipe Price",
+    "pleaseInputProvince": "Please Input Province",
+    "pleaseInputCity": "Please Input City",
+    "pleaseInputLocation": "Please Input Location"
 }

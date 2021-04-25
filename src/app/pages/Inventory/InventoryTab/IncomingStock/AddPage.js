@@ -164,12 +164,14 @@ export const AddIncomingStockPage = ({ location }) => {
 
   const optionsProduct = allProducts
     .map((item) => {
+      console.log("semua item", item)
       if (item.outlet_id === formikStock.values.outlet_id) {
         return {
           value: item.id,
           label: item.name,
           Stocks: item.Stocks,
-          Unit: item.unit_id
+          Unit: item.unit_id,
+          price: item.price
         };
       } else {
         return "";
@@ -177,9 +179,23 @@ export const AddIncomingStockPage = ({ location }) => {
     })
     .filter((item) => item);
 
+  console.log("optionsProduct", optionsProduct)
+  console.log("allProducts", allProducts)
+
   const optionsUnit = allUnits.map((item) => {
     return { value: item.id, label: item.name };
   });
+
+  const defaultValueUnit = (index) => {
+    console.log("ini unit nya", formikStock.values.items[index])
+    let result;
+    optionsUnit.map(item => {
+      if(item.value === formikStock.values.items[index].unit_id){
+        result = item.label
+      }
+    })
+    return result
+  }
 
   const handleShowConfirm = (e) => {
     e.preventDefault()
@@ -364,10 +380,29 @@ export const AddIncomingStockPage = ({ location }) => {
                                         className="basic-single"
                                         classNamePrefix="select"
                                         onChange={(value) => {
+                                          console.log("opo neh iki ??", value)
                                           formikStock.setFieldValue(
                                             `items[${index}].product_id`,
                                             value.value
                                           );
+
+                                          formikStock.setFieldValue(
+                                            `items[${index}].price`,
+                                            value.price
+                                          );
+
+                                          formikStock.setFieldValue(
+                                            `items[${index}].quantity`,
+                                            1
+                                          );
+
+                                          console.log("total quantity", formikStock.getFieldProps(`items[${index}].quantity`).value)
+                                          
+                                          formikStock.setFieldValue(
+                                            `items[${index}].unit_id`,
+                                            value.Unit
+                                          );
+
                                           const currStock = value.Stocks.find(
                                             (val) => val.is_initial
                                           );
@@ -404,9 +439,10 @@ export const AddIncomingStockPage = ({ location }) => {
                                         {...formikStock.getFieldProps(
                                           `items[${index}].quantity`
                                         )}
-                                        onChange={(e) =>
+                                        onChange={(e) => {
                                           handleChangeQuantity(e, index)
-                                        }
+
+                                        }}
                                         onBlur={(e) =>
                                           handleChangeQuantity(e, index)
                                         }
@@ -429,29 +465,12 @@ export const AddIncomingStockPage = ({ location }) => {
                                   {hasUnit ? (
                                     <Col>
                                       <Form.Group>
-                                        <Select
-                                          options={optionsUnit}
-                                          name={`items[${index}].unit_id`}
-                                          className="basic-single"
-                                          classNamePrefix="select"
-                                          onChange={(value) =>
-                                            formikStock.setFieldValue(
-                                              `items[${index}].unit_id`,
-                                              value.value
-                                            )
-                                          }
+                                        <Form.Control
+                                          type="text"
+                                          value={defaultValueUnit(index)}
+                                          disabled
+                                          name={`materials[${index}].unit_id`}
                                         />
-                                        {formikStock.touched.items &&
-                                        formikStock.errors.items ? (
-                                          <div className="fv-plugins-message-container">
-                                            <div className="fv-help-block">
-                                              {
-                                                formikStock.errors.items[index]
-                                                  ?.unit_id
-                                              }
-                                            </div>
-                                          </div>
-                                        ) : null}
                                       </Form.Group>
                                     </Col>
                                   ) : (

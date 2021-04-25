@@ -202,7 +202,7 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
       formData.append("quantity_amount", values.quantity_amount);
 
       if (values.description) formData.append("description", values.description);
-      if (photo && photoPreview) {
+      if (photo.name) {
         console.log('originalFile instanceof Blob', photo instanceof Blob)
         const compressedPhoto = await imageCompression(photo, options)
         formData.append("automaticPromoImage", compressedPhoto);
@@ -250,7 +250,7 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
 
       if (values.description)
         formData.append("description", values.description);
-      if (photo && photoPreview) {
+      if (photo.name) {
         console.log('originalFile instanceof Blob', photo instanceof Blob)
         const compressedPhoto = await imageCompression(photo, options)
         formData.append("automaticPromoImage", compressedPhoto);
@@ -305,7 +305,7 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
 
       if (values.description)
         formData.append("description", values.description);
-      if (photo && photoPreview) {
+      if (photo.name) {
         console.log('originalFile instanceof Blob', photo instanceof Blob)
         const compressedPhoto = await imageCompression(photo, options)
         formData.append("automaticPromoImage", compressedPhoto);

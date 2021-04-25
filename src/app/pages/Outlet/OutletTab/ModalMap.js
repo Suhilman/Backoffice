@@ -40,8 +40,6 @@ const ModalMap = ({cancelModal, stateModal, formikOutlet}) => {
   const onMapLoad = React.useCallback((map) =>{
     mapRef.current = map
   }, [])
-  if (loadError) return "Load Map Error"
-  if (!isLoaded) return "Loading Map"
   const mapContainerStyle = {
     width: "100%",
     height: "50vh"
@@ -50,7 +48,6 @@ const ModalMap = ({cancelModal, stateModal, formikOutlet}) => {
     lat: parseFloat(),
     lng: parseFloat()
   }
-  console.log('zombie', localStorage.getItem("location"))
   const options = {
     disableDefaultUI: true,
     zoomControl: true

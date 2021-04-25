@@ -72,7 +72,6 @@ function Login(props) {
     validationSchema: BusinessSchema,
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
-      console.log("kurendukan senyum rramahmu teman kecilku")
       try {
         enableLoading();
         setAlertModal("");
@@ -301,6 +300,44 @@ function Login(props) {
           localStorage.setItem("currency", dataBusiness.data.data.Currency.name)
           localStorage.setItem("token", `Bearer ${token}`)
           setToken(`Bearer ${token}`);
+
+          // Handle Check Country || jika diluar indonesia, ketika membuat outlet bisa select addres. Jika luar indonesia select diubah menjadi text
+
+          const options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+          };
+          
+          const success = async (pos) =>  {
+            try {
+              const crd = pos.coords;
+              console.log('Your current position is:');
+              console.log(`Latitude : ${crd.latitude}`);
+              console.log(`Longitude: ${crd.longitude}`);
+              console.log(`More or less ${crd.accuracy} meters.`);
+              const result = await axios.get(`${API_URL}/api/v1/outlet/get-address?latitude=${parseFloat(crd.latitude)}&longitude=${parseFloat(crd.longitude)}`)
+              console.log("country address", result.data.resultAddress.address)
+              const checkCountry = result.data.resultAddress.address.includes("Indonesia");
+              console.log("true kah", checkCountry)
+              if(checkCountry) {
+                localStorage.setItem("checkCountry", true);
+              } else {
+                localStorage.setItem("checkCountry", false);
+              }
+            } catch (error) {
+              console.error(error)
+            }
+          }
+          
+          const error = (err) => {
+            console.warn(`ERROR(${err.code}): ${err.message}`);
+          }
+          
+          navigator.geolocation.getCurrentPosition(success, error, options)
+
+          // End Check Country
+
           localStorage.setItem("user_info", JSON.stringify(user));
           disableLoading();
           if (!user.is_verified) {

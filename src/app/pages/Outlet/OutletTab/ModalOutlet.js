@@ -4,6 +4,8 @@ import { Button, Modal, Spinner, Form, Row, Col, Alert } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import { Editor } from '@tinymce/tinymce-react'; 
 import ModalMap from './ModalMap'
+import axios from 'axios'
+
 const ModalOutlet = ({
   stateModal,
   cancelModal,
@@ -24,6 +26,8 @@ const ModalOutlet = ({
   latitudeLongitude,
   t
 }) => {
+  const API_URL = process.env.REACT_APP_API_URL;
+  const [conditionCountry, setConditionCountry] = useState("")
   const [paymentDescription, setPaymentDescription] = useState("")
   const [showModalMap, setShowModalMap] = useState(false)
   const { getRootProps, getInputProps } = useDropzone({
@@ -37,6 +41,7 @@ const ModalOutlet = ({
   const cancelDeleteModalOutlet = () => {
     setShowModalMap(false);
   };
+
   const handleEditorChange = (e) => {
     formikOutlet.setFieldValue("payment_description", e.target.getContent())
     console.log(
@@ -45,9 +50,9 @@ const ModalOutlet = ({
     );
   }
   useEffect(() => {
+    setConditionCountry(localStorage.getItem("checkCountry"))
     setPaymentDescription(formikOutlet.getFieldProps("payment_description").value)
   }, [])
-
   // Start Map
   
   return (
@@ -161,9 +166,9 @@ const ModalOutlet = ({
                 </Row>
               </Col>
             </Row>
-            {console.log("opo iki", formikOutlet.getFieldProps("phone_number"))}
             <Row>
               <Col>
+              {conditionCountry === "true" || formikOutlet.getFieldProps("location_id").value ? (
                 <Form.Group>
                   <Form.Label>{t("selectProvince")}:</Form.Label>
                   <Form.Control
@@ -197,9 +202,30 @@ const ModalOutlet = ({
                     </div>
                   ) : null}
                 </Form.Group>
+              ) : (
+                <Form.Group>
+                  <Form.Label>{t("pleaseInputProvince")}:</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="province"
+                    placeholder="Enter province"
+                    {...formikOutlet.getFieldProps("province")}
+                    className={validationOutlet("province")}
+                    required
+                  />
+                  {formikOutlet.touched.province && formikOutlet.errors.province ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikOutlet.errors.province}
+                      </div>
+                    </div>
+                  ) : null}
+                </Form.Group>
+              )}
               </Col>
 
               <Col>
+              {conditionCountry === "true" || formikOutlet.getFieldProps("location_id").value ? (
                 <Form.Group>
                   <Form.Label>{t("selectCity")}:</Form.Label>
                   <Form.Control
@@ -232,11 +258,32 @@ const ModalOutlet = ({
                     </div>
                   ) : null}
                 </Form.Group>
+              ) : (
+                <Form.Group>
+                  <Form.Label>{t("pleaseInputCity")}:</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="city"
+                    placeholder="Enter city"
+                    {...formikOutlet.getFieldProps("city")}
+                    className={validationOutlet("city")}
+                    required
+                  />
+                  {formikOutlet.touched.city && formikOutlet.errors.city ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikOutlet.errors.city}
+                      </div>
+                    </div>
+                  ) : null}
+                </Form.Group>
+              )}
               </Col>
             </Row>
 
             <Row>
               <Col>
+              {conditionCountry === "true" || formikOutlet.getFieldProps("location_id").value ? (
                 <Form.Group>
                   <Form.Label>{t("selectLocation")}:</Form.Label>
                   <Form.Control
@@ -268,6 +315,26 @@ const ModalOutlet = ({
                     </div>
                   ) : null}
                 </Form.Group>
+              ) : (
+                <Form.Group>
+                  <Form.Label>{t("pleaseInputLocation")}:</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="location"
+                    placeholder="Enter location"
+                    {...formikOutlet.getFieldProps("location")}
+                    className={validationOutlet("location")}
+                    required
+                  />
+                  {formikOutlet.touched.location && formikOutlet.errors.location ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikOutlet.errors.location}
+                      </div>
+                    </div>
+                  ) : null}
+                </Form.Group>
+              )}
               </Col>
 
               <Col>

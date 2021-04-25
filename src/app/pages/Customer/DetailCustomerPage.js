@@ -112,7 +112,7 @@ export const DetailCustomerPage = ({ match }) => {
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("email", values.email);
-      if (image && preview) {
+      if (image.name) {
         console.log('originalFile instanceof Blob', image instanceof Blob)
         const commpressedImage = await imageCompression(image, options)
         formData.append("profilePicture", commpressedImage);

@@ -184,7 +184,7 @@ export const VoucherPromoPage = () => {
       promoData.append("quota", values.quota);
       promoData.append("promo_date_start", startDate);
       promoData.append("promo_date_end", endDate);
-      if (photo && photoPreview) {
+      if (photo.name) {
         console.log('originalFile instanceof Blob', photo instanceof Blob)
         const compressedPhoto = await imageCompression(photo, options)
         promoData.append("voucherPromoImage", compressedPhoto);

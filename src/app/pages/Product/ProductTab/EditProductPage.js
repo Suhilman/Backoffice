@@ -186,8 +186,8 @@ export const EditProductPage = ({ match, location }) => {
         formData.append("description", values.description);
       if (values.product_category_id)
         formData.append("product_category_id", values.product_category_id);
-      if (photo && photoPreview) {
-        console.log('originalFile instanceof Blob', photo instanceof Blob)
+      if (photo.name) {
+        console.log('originalFile instanceof File', photo instanceof Blob)
         const compressedPhoto = await imageCompression(photo, options)
         formData.append("productImage", compressedPhoto);
       }

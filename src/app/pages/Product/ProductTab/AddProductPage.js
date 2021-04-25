@@ -180,6 +180,7 @@ export const AddProductPage = ({ location }) => {
         formData.append("product_category_id", values.product_category_id);
 
       if (photo && photoPreview) {
+        console.log("jika photo dan photo previewnya ada")
         console.log('originalFile instanceof Blob', photo instanceof Blob)
         const compressedPhoto = await imageCompression(photo, options)
         formData.append("productImage", compressedPhoto);

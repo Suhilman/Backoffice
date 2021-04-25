@@ -117,7 +117,7 @@ export const DetailStaffPage = ({ match, location }) => {
       formData.append("type", values.type);
       formData.append("password", values.password)
       formData.append("pin", values.pin)
-      if (image && preview) {
+      if (image.name) {
         console.log('originalFile instanceof Blob', image instanceof Blob)
         const compressedImage = await imageCompression(image, options)
         formData.append("profile_picture", compressedImage);
@@ -132,6 +132,7 @@ export const DetailStaffPage = ({ match, location }) => {
         setAlert("");
         setStatePage("show");
       } catch (err) {
+        console.log("error edit staff", err)
         setAlert(err.response.data.message || err.message);
         disableLoading();
       }

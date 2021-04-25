@@ -58,6 +58,9 @@ export const OutletTab = ({
     name: "",
     phone_number: "",
     address: "",
+    province: "",
+    city: "",
+    location: "",
     payment_description: "",
     postcode: "",
     province_id: "",
@@ -71,28 +74,27 @@ export const OutletTab = ({
   const OutletSchema = Yup.object().shape({
     name: Yup.string()
       .min(3, `${t("minimum3Character")}`)
-      .max(50, `${t("maximum50Character")}`)
-      .required(`${t("pleaseInputAProductName")}`),
+      .max(50, `${t("maximum50Character")}`),
     phone_number: Yup.number().typeError(`${t("pleaseInputANumberOnly")}`),
     address: Yup.string()
       .min(3, `${t("minimum3Character")}`)
       .max(200, `${t("maximum100Character")}`),
+    province: Yup.string(),
+    city: Yup.string(),
+    location: Yup.string(),
     payment_description: Yup.string(),
     postcode: Yup.number()
       .integer()
       .min(1),
     province_id: Yup.number()
       .integer()
-      .min(1)
-      .required(`${t("pleaseChooseAProvince")}`),
+      .min(1),
     city_id: Yup.number()
       .integer()
-      .min(1)
-      .required(`${t("pleaseChooseACity")}`),
+      .min(1),
     location_id: Yup.number()
       .integer()
-      .min(1)
-      .required(`${t("pleaseChooseALocation")}`),
+      .min(1),
     status: Yup.string()
       .matches(/(active|inactive)/)
       .required(`${t("pleaseInputAStatus")}`)
@@ -112,10 +114,25 @@ export const OutletTab = ({
       const locationPointer = JSON.parse(localStorage.getItem("addLocation"))
       const formData = new FormData();
       formData.append("name", values.name);
-      formData.append("location_id", values.location_id);
+      if(values.location_id) {
+        formData.append("location_id", values.location_id);
+      }
+      if(values.province) {
+        formData.append("province", values.province);
+      }
+      if(values.city) {
+        formData.append("city", values.city);
+      }
+      if(values.location) {
+        formData.append("location", values.location);
+      }
       formData.append("status", values.status);
-      formData.append("latitude", locationPointer.lat); 
-      formData.append("longitude", locationPointer.lng);
+      if (locationPointer) {
+        formData.append("latitude", locationPointer.lat); 
+      }
+      if (locationPointer) {
+        formData.append("longitude", locationPointer.lng);
+      }
       formData.append("payment_description", values.payment_description)
       if (photo && photoPreview) {
         console.log('originalFile instanceof Blob', photo instanceof Blob)
@@ -156,12 +173,27 @@ export const OutletTab = ({
       console.log('ini data di edit', locationPointer)
       const formData = new FormData();
       formData.append("name", values.name);
-      formData.append("location_id", values.location_id);
+      if(values.location_id) {
+        formData.append("location_id", values.location_id);
+      }
+      if(values.province) {
+        formData.append("province", values.province);
+      }
+      if(values.city) {
+        formData.append("city", values.city);
+      }
+      if(values.location) {
+        formData.append("location", values.location);
+      }
       formData.append("status", values.status);
-      formData.append("latitude", locationPointer.lat);
-      formData.append("longitude", locationPointer.lng);
+      if(locationPointer) {
+        formData.append("latitude", locationPointer.lat);
+      }
+      if(locationPointer) {
+        formData.append("longitude", locationPointer.lng);
+      }
       formData.append("payment_description", values.payment_description)
-      if (photo && photoPreview) {
+      if (photo.name) {
         console.log('originalFile instanceof Blob', photo instanceof Blob)
         const compressedPhoto = await imageCompression(photo, options)
         formData.append("outlet", compressedPhoto);
@@ -223,43 +255,60 @@ export const OutletTab = ({
 
   const showEditModalOutlet = (data) => {
     console.log('ini adalah data yang mau di edit', data)
-    formikOutletEdit.setValues({
-      id: data.id,
-      name: data.name,
-      phone_number: data.phone_number,
-      address: data.address,
-      payment_description: data.payment_description,
-      postcode: data.postcode,
-      province_id: data.province_id,
-      city_id: data.city_id,
-      location_id: data.location_id,
-      status: data.status
-    });
+    if(data.location_id) {
+      formikOutletEdit.setValues({
+        id: data.id,
+        name: data.name,
+        phone_number: data.phone_number,
+        address: data.address,
+        payment_description: data.payment_description,
+        postcode: data.postcode,
+        province_id: data.province_id,
+        city_id: data.city_id,
+        location_id: data.location_id,
+        status: data.status
+      });
+
+      const province_id = data.province_id;
+      const city_id = data.city_id;
+  
+      formikOutletEdit.setFieldValue("province_id", province_id);
+  
+      const provinces = [...allProvinces];
+      const [cities] = provinces
+        .filter((item) => item.id === parseInt(province_id))
+        .map((item) => item.Cities);
+      setAllCities(cities);
+  
+      formikOutletEdit.setFieldValue("city_id", city_id);
+  
+      const [locations] = cities
+        .filter((item) => item.id === parseInt(city_id))
+        .map((item) => item.Locations);
+      setAllLocations(locations);
+  
+      setStateEditModal(true);
+    } else {
+      formikOutletEdit.setValues({
+        id: data.id,
+        name: data.name,
+        phone_number: data.phone_number,
+        address: data.address,
+        payment_description: data.payment_description,
+        postcode: data.postcode,
+        province: data.province,
+        city: data.city,
+        location: data.location,
+        status: data.status
+      });
+      setStateEditModal(true);
+    }
+    
     const location = {
       lng: data.longitude,
       lat: data.latitude
     }
     localStorage.setItem("location", JSON.stringify(location))
-
-    const province_id = data.province_id;
-    const city_id = data.city_id;
-
-    formikOutletEdit.setFieldValue("province_id", province_id);
-
-    const provinces = [...allProvinces];
-    const [cities] = provinces
-      .filter((item) => item.id === parseInt(province_id))
-      .map((item) => item.Cities);
-    setAllCities(cities);
-
-    formikOutletEdit.setFieldValue("city_id", city_id);
-
-    const [locations] = cities
-      .filter((item) => item.id === parseInt(city_id))
-      .map((item) => item.Locations);
-    setAllLocations(locations);
-
-    setStateEditModal(true);
   };
 
   const cancelEditModalOutlet = () => {
@@ -428,34 +477,60 @@ export const OutletTab = ({
 
   const dataOutlets = () => {
     return allOutlets.map((item, index) => {
-      const location = `${item.Location.name}, ${item.Location.City.name}, ${item.Location.City.Province.name}`;
-      const capitalize = location
-        .toLowerCase()
-        .split(" ")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ");
-
-      return {
-        id: item.id,
-        no: index + 1,
-        name: item.name,
-        location: item.Location.name,
-        address: item.address || "",
-        payment_description: item.payment_description,
-        postcode: item.postcode || "",
-        location_id: item.Location.id,
-        city_id: item.Location.City.id,
-        province_id: item.Location.City.Province.id,
-        locationFull: capitalize,
-        latitude: item.latitude,
-        longitude: item.longitude,
-        phone_number: item.phone_number || "",
-        status: item.status,
-        tax: item.Outlet_Taxes.length ? "Taxable" : "No Tax",
-        allTaxes: item.Outlet_Taxes.map((item) => item.Tax.name).join(", ")
-      };
+      console.log("ini item apa", item)
+      if(item.Location) {
+        console.log("jika locationnya ada")
+        const location = `${item.Location.name}, ${item.Location.City.name}, ${item.Location.City.Province.name}`;
+        const capitalize = location
+          .toLowerCase()
+          .split(" ")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
+  
+        return {
+          id: item.id,
+          no: index + 1,
+          name: item.name,
+          location: item.Location.name,
+          address: item.address || "",
+          payment_description: item.payment_description,
+          postcode: item.postcode || "",
+          location_id: item.Location.id,
+          city_id: item.Location.City.id,
+          province_id: item.Location.City.Province.id,
+          locationFull: capitalize,
+          latitude: item.latitude,
+          longitude: item.longitude,
+          phone_number: item.phone_number || "",
+          status: item.status,
+          tax: item.Outlet_Taxes.length ? "Taxable" : "No Tax",
+          allTaxes: item.Outlet_Taxes.map((item) => item.Tax.name).join(", ")
+        };
+      } else {
+        console.log("jika tidak ada")
+        return {
+          id: item.id,
+          no: index + 1,
+          name: item.name,
+          address: item.address || "",
+          payment_description: item.payment_description,
+          postcode: item.postcode || "",
+          province: item.province,
+          city: item.city,
+          location: item.location,
+          latitude: item.latitude,
+          longitude: item.longitude,
+          phone_number: item.phone_number || "",
+          status: item.status,
+          tax: item.Outlet_Taxes.length ? "Taxable" : "No Tax",
+          allTaxes: item.Outlet_Taxes.map((item) => item.Tax.name).join(", ")
+        };
+      }
+      
     });
   };
+
+  console.log("dataOutlet", dataOutlets())
 
   const ExpandableComponent = ({ data }) => {
     const keys = [

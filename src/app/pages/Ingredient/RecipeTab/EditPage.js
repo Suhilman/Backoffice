@@ -7,7 +7,7 @@ import Select from "react-select";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Row, Col, Alert, Spinner } from "react-bootstrap";
 import { Paper } from "@material-ui/core";
-import { Delete } from "@material-ui/icons";
+import { CropLandscapeOutlined, Delete } from "@material-ui/icons";
 
 import CustomModal from "./CustomModal";
 
@@ -22,7 +22,6 @@ export const EditRecipePage = ({ location, match }) => {
   } = location.state;
   const { recipeId } = match.params;
   const { t } = useTranslation();
-  // console.log('ini currRecipe di edit page', currRecipe)
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
 
@@ -47,7 +46,7 @@ export const EditRecipePage = ({ location, match }) => {
     raw_material_category_id: "",
     raw_material_id: "",
     quantity: 0,
-    unit_id: "",
+    unit_id: 0,
     calorie_per_unit: 0,
     ingredient_price: 0,
     is_custom_material: false
@@ -55,7 +54,6 @@ export const EditRecipePage = ({ location, match }) => {
 
   const handleMaterial = async (value) => {
     try {
-      // console.log('ini function handle material')
       const API_URL = process.env.REACT_APP_API_URL;
       const result = await axios.get(`${API_URL}/api/v1/raw-material`);
       result.data.data.map((item) => {
@@ -63,12 +61,10 @@ export const EditRecipePage = ({ location, match }) => {
           setValueMaterial(item)
         }
       })
-      // console.log('ini result handle material', result)
     } catch (err) {
       setAlert(err.response?.data.message || err.message);
     }
   }
-  // console.log('ini value materialnya', valueMaterial.price_per_unit)
 
   const RecipeSchema = Yup.object().shape({
     outlet_id: Yup.number().required(`${t("pleaseChooseAnOutlet")}`),
@@ -102,8 +98,6 @@ export const EditRecipePage = ({ location, match }) => {
       })
     )
   });
-
-  // console.log('ini total nya', currTotalPrice)
 
   const formikRecipe = useFormik({
     initialValues: initialValueRecipe,
@@ -145,7 +139,6 @@ export const EditRecipePage = ({ location, match }) => {
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
-
 
   const initialValueCustom = {
     name: "",
@@ -214,7 +207,6 @@ export const EditRecipePage = ({ location, match }) => {
         val.value ===
         formikRecipe.values.materials[index].raw_material_category_id
     );
-  // console.log('ini default kategori', defaultValueCategory )
   const optionsRaw = (index) =>
     allCategories
       .filter(
@@ -226,10 +218,10 @@ export const EditRecipePage = ({ location, match }) => {
         return item.Raw_Materials.filter(
           (val) => val.outlet_id === formikRecipe.values.outlet_id
         ).map((val) => {
-          // console.log('ini adalah looping all categories', val.price_per_unit)
           return {
             value: val.id,
             label: val.name,
+            unit_id: val.unit_id,
             calorie: val.calorie_per_unit,
             total_price: val.price_per_unit,
             calorie_unit: val.calorie_unit
@@ -242,18 +234,19 @@ export const EditRecipePage = ({ location, match }) => {
     optionsRaw(index).find(
       (val) =>
         val.value === formikRecipe.values.materials[index].raw_material_id,
-        // console.log('default value raw', formikRecipe.values.materials[index].raw_material_id)
     );
-
-
   const optionsUnit = allUnits.map((item) => {
     return { value: item.id, label: item.name };
   });
-  const defaultValueUnit = (index) =>
-    optionsUnit.find(
-      (val) => val.value === formikRecipe.values.materials[index].unit_id
-    );
-
+  const defaultValueUnit = (index) => {
+    let result;
+    optionsUnit.map(item => {
+      if(item.value === formikRecipe.values.materials[index].unit_id){
+        result = item.label
+      }
+    })
+    return result
+  }
   return (
     <>
       <CustomModal
@@ -403,7 +396,6 @@ export const EditRecipePage = ({ location, match }) => {
                           <div>
                             {formikRecipe.values.materials.map(
                               (item, index) => {
-                                // console.log('item formik recipe', item)
                                 if (!item.is_custom_material) {
                                   return (
                                     <Row key={index}>
@@ -458,6 +450,10 @@ export const EditRecipePage = ({ location, match }) => {
                                               formikRecipe.setFieldValue(
                                                 `materials[${index}].raw_material_id`,
                                                 value.value
+                                              );
+                                              formikRecipe.setFieldValue(
+                                                `materials[${index}].unit_id`,
+                                                value.unit_id
                                               );
                                               formikRecipe.setFieldValue(
                                                 `materials[${index}].quantity`,
@@ -579,6 +575,14 @@ export const EditRecipePage = ({ location, match }) => {
                                         </Form.Group>
                                       </Col>
                                       <Col>
+                                      <Form.Group>
+                                        <Form.Control
+                                          type="text"
+                                          value={defaultValueUnit(index)}
+                                          disabled
+                                          name={`materials[${index}].unit_id`}
+                                        />
+                                      </Form.Group>
                                         {/* <Form.Group>
                                           <Form.Control
                                             type="text"
@@ -605,7 +609,7 @@ export const EditRecipePage = ({ location, match }) => {
                                               </div>
                                             ) : null}
                                           </Form.Group> */}
-                                        <Form.Group>
+                                        {/* <Form.Group>
                                           <Select
                                             options={optionsUnit}
                                             defaultValue={defaultValueUnit(
@@ -633,7 +637,7 @@ export const EditRecipePage = ({ location, match }) => {
                                               </div>
                                             </div>
                                           ) : null}
-                                        </Form.Group>
+                                        </Form.Group> */}
                                       </Col>
                                       <Col>
                                         <Form.Group>
@@ -680,7 +684,6 @@ export const EditRecipePage = ({ location, match }) => {
                                             )}
                                             onChange={(e) => {
                                               const { value } = e.target;
-                                              // console.log('apa ini', value)
                                               formikRecipe.setFieldValue(
                                                 `materials[${index}].ingredient_price`,
                                                 value
@@ -834,7 +837,6 @@ export const EditRecipePage = ({ location, match }) => {
                   />
                 </Col>
                 <Col>
-                {/* {console.log('ini total_cogs', formikRecipe.getFieldProps("total_cogs").value)} */}
                   <Form.Control
                     type="number"
                     name="total_cogs"

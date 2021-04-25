@@ -148,18 +148,18 @@ export const BusinessInformation = () => {
       formData.append("npwp_business", values.npwp_number);
       formData.append("business_type_id", values.business_type_id);
       formData.append("address", values.business_address);
-      if (imageKtp && previewKtp) {
-        console.log('originalFile instanceof Blob', imageKtp instanceof Blob)
+      if (imageKtp.name) {
+        console.log('originalFile instanceof Blob', imageKtp instanceof File)
         const compressedBusinessImage = await imageCompression(imageKtp, options)
         formData.append("ktp_picture", compressedBusinessImage);
       }
-      if (imageNpwp && previewNpwp) {
-        console.log('originalFile instanceof Blob', imageNpwp instanceof Blob)
+      if (imageNpwp.name) {
+        console.log('originalFile instanceof File', imageNpwp instanceof File)
         const compressedBusinessImage = await imageCompression(imageNpwp, options)
         formData.append("npwp_picture", compressedBusinessImage)
       }
-      if (businessImage && previewBusinessImage) {
-        console.log('originalFile instanceof Blob', businessImage instanceof Blob)
+      if (businessImage.name) {
+        console.log('originalFile instanceof File', businessImage instanceof File)
         const compressedBusinessImage = await imageCompression(businessImage, options)
         formData.append("image", compressedBusinessImage);
       }
@@ -174,6 +174,7 @@ export const BusinessInformation = () => {
         disableLoading();
         setStateComponent("show");
       } catch (err) {
+        console.log("error apa", err)
         disableLoading();
       }
     }

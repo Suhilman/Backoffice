@@ -184,7 +184,7 @@ export const SpecialPromoPage = () => {
       promoData.append("type", values.type);
       promoData.append("value", values.value);
       promoData.append("promo_category_id", values.promo_category_id);
-      if (photo && photoPreview) {
+      if (photo.name) {
         console.log('originalFile instanceof Blob', photo instanceof Blob)
         const compressedPhoto = await imageCompression(photo, options)
         promoData.append("specialPromoImage", compressedPhoto);

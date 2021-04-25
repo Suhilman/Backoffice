@@ -9,10 +9,10 @@
     "deleteOutlet": "Hapus Toko",
     "editOutlet": "Ubah Toko",
     "addNewOutlet": "Tambahkan Toko Baru",
-    "selectProvince": "Pilih Province",
+    "selectProvince": "Pilih Provinci",
     "selectLocation": "Pilih Lokasi",
     "selectCity": "Pilih Kota",
-    "chooseAProvince": "Memilih Province",
+    "chooseAProvince": "Memilih Provinci",
     "chooseACity": "Memilih Kota",
     "postcode": "Kode Pos",
     "chooseALocation": "Memilih Lokasi",
@@ -742,5 +742,10 @@
     "optional": "Pilihan",
     "editTable": "Ubah meja",
     "editRecipe": "Ubah Resep",
-    "pointStatus": "Status Poin"
+    "pointStatus": "Status Poin",
+    "unitFrom": "Dari Satuan",
+    "totalRecipePrice": "Total Harga Resep",
+    "pleaseInputProvince": "Silakan Masukkan Provinci",
+    "pleaseInputCity": "Silakan Masukkan Kota",
+    "pleaseInputLocation": "Silakan Masukkan Lokasi"
   }
