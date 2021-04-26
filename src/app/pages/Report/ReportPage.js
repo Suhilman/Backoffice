@@ -203,7 +203,6 @@ export const ReportPage = () => {
 
   const handleSelectOutlet = (e) => {
     const { value } = e.target;
-
     let outlet;
     if (value) {
       outlet = allOutlets.find((item) => item.id === parseInt(value));

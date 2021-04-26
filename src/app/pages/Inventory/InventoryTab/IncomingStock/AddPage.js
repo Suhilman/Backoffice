@@ -396,6 +396,8 @@ export const AddIncomingStockPage = ({ location }) => {
                                             1
                                           );
 
+                                          formikStock.setFieldValue(`items[${index}].total_price`, value.price);
+
                                           console.log("total quantity", formikStock.getFieldProps(`items[${index}].quantity`).value)
                                           
                                           formikStock.setFieldValue(
@@ -474,7 +476,16 @@ export const AddIncomingStockPage = ({ location }) => {
                                       </Form.Group>
                                     </Col>
                                   ) : (
-                                    ""
+                                    <Col>
+                                      <Form.Group>
+                                        <Form.Control
+                                          type="text"
+                                          value="Unit"
+                                          disabled
+                                          name={`materials[${index}].unit_id`}
+                                        />
+                                      </Form.Group>
+                                    </Col>
                                   )}
 
                                   <Col>

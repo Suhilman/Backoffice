@@ -168,7 +168,7 @@ const ModalOutlet = ({
             </Row>
             <Row>
               <Col>
-              {conditionCountry === "true" || formikOutlet.getFieldProps("location_id").value ? (
+              {/* {conditionCountry === "true" || formikOutlet.getFieldProps("location_id").value ? ( */}
                 <Form.Group>
                   <Form.Label>{t("selectProvince")}:</Form.Label>
                   <Form.Control
@@ -202,7 +202,7 @@ const ModalOutlet = ({
                     </div>
                   ) : null}
                 </Form.Group>
-              ) : (
+              {/* ) : (
                 <Form.Group>
                   <Form.Label>{t("pleaseInputProvince")}:</Form.Label>
                   <Form.Control
@@ -221,11 +221,11 @@ const ModalOutlet = ({
                     </div>
                   ) : null}
                 </Form.Group>
-              )}
+              )} */}
               </Col>
 
               <Col>
-              {conditionCountry === "true" || formikOutlet.getFieldProps("location_id").value ? (
+              {/* {conditionCountry === "true" || formikOutlet.getFieldProps("location_id").value ? ( */}
                 <Form.Group>
                   <Form.Label>{t("selectCity")}:</Form.Label>
                   <Form.Control
@@ -258,7 +258,7 @@ const ModalOutlet = ({
                     </div>
                   ) : null}
                 </Form.Group>
-              ) : (
+              {/* ) : (
                 <Form.Group>
                   <Form.Label>{t("pleaseInputCity")}:</Form.Label>
                   <Form.Control
@@ -277,13 +277,13 @@ const ModalOutlet = ({
                     </div>
                   ) : null}
                 </Form.Group>
-              )}
+              )} */}
               </Col>
             </Row>
 
             <Row>
               <Col>
-              {conditionCountry === "true" || formikOutlet.getFieldProps("location_id").value ? (
+              {/* {conditionCountry === "true" || formikOutlet.getFieldProps("location_id").value ? ( */}
                 <Form.Group>
                   <Form.Label>{t("selectLocation")}:</Form.Label>
                   <Form.Control
@@ -315,7 +315,7 @@ const ModalOutlet = ({
                     </div>
                   ) : null}
                 </Form.Group>
-              ) : (
+              {/* ) : (
                 <Form.Group>
                   <Form.Label>{t("pleaseInputLocation")}:</Form.Label>
                   <Form.Control
@@ -334,7 +334,7 @@ const ModalOutlet = ({
                     </div>
                   ) : null}
                 </Form.Group>
-              )}
+              )} */}
               </Col>
 
               <Col>

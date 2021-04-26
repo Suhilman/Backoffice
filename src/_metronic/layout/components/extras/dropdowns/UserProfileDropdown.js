@@ -33,8 +33,53 @@ export function UserProfileDropdown() {
         "light"
     };
   }, [uiService]);
+  const getEmailNotifications = async () => {
+    try {
+      const userInfo = JSON.parse(localStorage.getItem("user_info"));
+      const settingsNotification = await axios.get(
+        `${API_URL}/api/v1/email-notification/${userInfo.business_id}`
+      );
+      const { data } = await axios.get(
+        `${API_URL}/api/v1/product`
+      );
+      console.log("settingsNotification", settingsNotification.data.data)
+      const dateSettings = new Date(settingsNotification.data.data.timeState[2].time)
+      const dateNow = new Date()
+      data.data.map(async value => {
+        if(value.has_stock) {
+          if(value.stock <= settingsNotification.data.data.timeState[2].minimum_stock) {
+            if(dateSettings.getHours() - dateNow.getHours() <= 0){
+              if(dateSettings.getMinutes() - dateNow.getMinutes() <= 0 && dateSettings.getMinutes() - dateNow.getMinutes() >= -10) {
+                console.log("sudah waktunya kirim notif")
+                if(value.unit_id) {
+                  const message = {
+                    title: "Stock Alert",
+                    message: `${value.name} ${value.stock} ${value.Unit.name}` 
+                  }
+                  await axios.post(`${API_URL}/api/v1/business-notification`, message)
+                  console.log("ini data yang akan di push notification", `${value.name} ${value.stock} ${value.Unit.name}`)
+                } else {
+                  const message = {
+                    title: "Stock Alert",
+                    message: `${value.name} ${value.stock} unit` 
+                  }
+                  await axios.post(`${API_URL}/api/v1/business-notification`, message)
+                  console.log("ini data yang akan di push notification", `${value.name} ${value.stock} unit`)
+                }
+              }
+            } else {
+              console.log("belum waktunya kirim notif")
+            }
+          }
+        }
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const handleGetNotification = async () => {
     try {
+      await getEmailNotifications()
       const userInfo = JSON.parse(localStorage.getItem("user_info"));
       console.log("userInfo", userInfo)
       const resultReport = await axios.get(`${API_URL}/api/v1/transaction/find-transaction-recap?businessId=${userInfo.business_id}`)
@@ -77,10 +122,16 @@ export function UserProfileDropdown() {
           console.log("jika sama bulannya dan kurang dari 8 hari")
           console.log("now.getDate() - dateRecap.getDate()", now.getDate() - dateRecap.getDate() === 0)
           esBuah.push(value)
-        } 
+        }
         if (now.getDate() - dateRecap.getDate() === 0) {
-          console.log("hari ini")
-          esAlpukat.push(value)
+          if(dateRecap.getHours() - now.getHours() <= 0) {
+            esAlpukat.push(value)
+          }
+        }
+        if (now.getDate() - dateRecap.getDate() === 1) {
+          if(dateRecap.getHours() - now.getHours() >= 0) {
+            esAlpukat.push(value)
+          }
         }
       } else if (now.getMonth() - dateRecap.getMonth() == 1) {
         console.log("jika tidak sama bulannya")
@@ -95,9 +146,6 @@ export function UserProfileDropdown() {
     setFilterDailyReport(esAlpukat)
   }
 
-  useEffect(() => {
-    handleGetNotification()
-  }, [])
   console.log("filterDailyReport", filterDailyReport)
   console.log("filterWeeklyReport", filterWeeklyReport)
   console.log("notifRecapTransaction", notifRecapTransaction)
@@ -147,6 +195,10 @@ export function UserProfileDropdown() {
     }
   }
 
+  useEffect(() => {
+    handleGetNotification()
+  }, [])
+
   return (
     <Dropdown drop="down" alignRight>
       <Dropdown.Toggle
@@ -154,6 +206,7 @@ export function UserProfileDropdown() {
         id="dropdown-toggle-user-profile"
       >
         <div
+          onClick={handleGetNotification}
           className={
             "btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2"
           }
@@ -214,87 +267,109 @@ export function UserProfileDropdown() {
           )}
         </>
 
-        <div className="navi navi-spacer-x-0 pt-5 ">
-        {/* wrapper-popup-notification */}
+        <div className="navi navi-spacer-x-0 pt-5 wrapper-popup-notification">
           {/* Start Notification Email */}
 
-          {/* <div className="low-stock-alert px-8">
-            <h5 style={{ fontWeight: 700 }}>Low Stock Alert</h5>
+          <div className="low-stock-alert px-8">
             {notifStockAlert.length > 0 ? (
-              <div className="content-notif mt-5">
-                  <div className="content-left">
-                    {notifStockAlert.map(value =>
-                      <p>{value.message}</p>
-                    )}
-                  </div>
-                <div className="content-right">
-                  <div className="wrap-image" onClick={handleDeleteStock}>
-                    <img src={iconTrash} alt="Icon Trash"/>
+              <>
+                <h5 style={{ fontWeight: 700 }}>Low Stock Alert</h5>
+                <div className="content-notif mt-5">
+                    <div className="content-left">
+                      {notifStockAlert.map(value =>
+                        <p>{value.message}</p>
+                      )}
+                    </div>
+                  <div className="content-right">
+                    <div className="wrap-image" onClick={handleDeleteStock}>
+                      <img src={iconTrash} alt="Icon Trash"/>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ) : <div>empty</div> }
+              </>
+            ) : 
+              <h5 style={{ fontWeight: 700 }}>Low Stock Alert (empty)</h5>
+            }
           </div>
           <hr/>
-          <div className="low-stock-alert px-8">
-            {notifRecapTransaction.map(value => 
+          {notifRecapTransaction.length > 0 ? (
             <>
-              {console.log(value)}
-              <h5 className="mt-4" style={{ fontWeight: 700 }}>{value.title}</h5>
-              <div className="content-notif mt-2">
-                <div className="content-left">
-                  <p>{value.message}</p>
-                </div>
-                <div className="content-right">
-                  <div className="wrap-image" onClick={() => handleDeleteRecap(value.id)}>
-                    <img src={iconTrash} alt="Icon Trash"/>
+              <div className="low-stock-alert px-8">
+                {notifRecapTransaction.map(value => 
+                <>
+                  <h5 className="mt-4" style={{ fontWeight: 700 }}>{value.title}</h5>
+                  <div className="content-notif mt-2">
+                    <div className="content-left">
+                      <p>{value.message}</p>
+                    </div>
+                    <div className="content-right">
+                      <div className="wrap-image" onClick={() => handleDeleteRecap(value.id)}>
+                        <img src={iconTrash} alt="Icon Trash"/>
+                      </div>
+                    </div>
                   </div>
+                </>
+                )}
+                <div className="button-download">
+                  Download Report
                 </div>
               </div>
             </>
-            )}
-            <div className="button-download">
-              Download Report
+          ) : (
+            <div className="low-stock-alert px-8">
+              <h5 className="mt-4" style={{ fontWeight: 700 }}>Transaction Recap (empty)</h5>
             </div>
-          </div>
+          )}
           <hr/>
-          <div className="low-stock-alert px-8">
-            <h5 style={{ fontWeight: 700 }}>Weekly Report has been sent</h5>
-            {filterWeeklyReport.map(value => 
-              <div className="content-notif mt-5">
-                <div className="content-left">
-                  <p>{value.createdAt.split("T")[0]} - {value.createdAt.split("T")[1]}</p>
-                </div>
-                <div className="content-right">
-                  <div className="wrap-image">
-                    <img src={iconTrash} alt="Icon Trash"/>
+          {filterWeeklyReport.length > 0 ? (
+            <div className="low-stock-alert px-8">
+              <h5 style={{ fontWeight: 700 }}>Weekly Report has been sent</h5>
+              {filterWeeklyReport.map(value => 
+                <div className="content-notif mt-5">
+                  <div className="content-left">
+                    <p>{value.createdAt.split("T")[0]} - {value.createdAt.split("T")[1]}</p>
+                  </div>
+                  <div className="content-right">
+                    <div className="wrap-image">
+                      <img src={iconTrash} alt="Icon Trash"/>
+                    </div>
                   </div>
                 </div>
+              )}
+              <div className="button-download">
+                Download Report
               </div>
-            )}
-            <div className="button-download">
-              Download Report
             </div>
-          </div>
+          ) : (
+            <div className="low-stock-alert px-8">
+              <h5 style={{ fontWeight: 700 }}>Weekly Report has been sent (empty)</h5>
+            </div>
+          ) }
           <hr/>
-          <div className="low-stock-alert px-8">
-            <h5 style={{ fontWeight: 700 }}>Daily Report has been sent</h5>
-            {filterDailyReport.map(value => 
-              <div className="content-notif mt-5">
-                <div className="content-left">
-                  <p>{value.createdAt.split("T")[0]} - {value.createdAt.split("T")[1]}</p>
-                </div>
-                <div className="content-right">
-                  <div className="wrap-image">
-                    <img src={iconTrash} alt="Icon Trash"/>
+          {filterDailyReport.length > 0 ? (
+            <div className="low-stock-alert px-8">
+              <h5 style={{ fontWeight: 700 }}>Daily Report has been sent</h5>
+              {filterDailyReport.map(value => 
+                <div className="content-notif mt-5">
+                  <div className="content-left">
+                    <p>{value.createdAt.split("T")[0]} - {value.createdAt.split("T")[1]}</p>
+                  </div>
+                  <div className="content-right">
+                    <div className="wrap-image">
+                      <img src={iconTrash} alt="Icon Trash"/>
+                    </div>
                   </div>
                 </div>
+              )}
+              <div className="button-download">
+                Download Report
               </div>
-            )}
-            <div className="button-download">
-              Download Report
             </div>
-          </div> */}
+          ) : (
+            <div className="low-stock-alert px-8">
+              <h5 style={{ fontWeight: 700 }}>Daily Report has been sent (empty)</h5>
+            </div>
+          ) }
           {/* End Notification Email */}
 
 

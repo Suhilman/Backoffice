@@ -72,29 +72,59 @@ export const EmailNotifications = () => {
       const { data } = await axios.get(
         `${API_URL}/api/v1/product`
       );
+      const dateSettings = new Date(settingsNotification.data.data.timeState[2].time)
+      const dateNow = new Date()
+      console.log("ini data semua", settingsNotification.data.data)
+      console.log("data.data", data.data)
+      
       data.data.map(async value => {
         if(value.has_stock) {
           if(value.stock <= settingsNotification.data.data.timeState[2].minimum_stock) {
-            if(value.unit_id) {
-              const message = {
-                title: "Stock Alert",
-                message: `${value.name} ${value.stock} ${value.Unit.name}` 
+            if(dateSettings.getHours() - dateNow.getHours() <= 0){
+              if(dateSettings.getMinutes() - dateNow.getMinutes() <= 0 && dateSettings.getMinutes() - dateNow.getMinutes() >= -10) {
+                console.log("sudah waktunya kirim notif")
+                if(value.unit_id) {
+                  const message = {
+                    title: "Stock Alert",
+                    message: `${value.name} ${value.stock} ${value.Unit.name}` 
+                  }
+                  await axios.post(`${API_URL}/api/v1/business-notification`, message)
+                  console.log("ini data yang akan di push notification", `${value.name} ${value.stock} ${value.Unit.name}`)
+                } else {
+                  const message = {
+                    title: "Stock Alert",
+                    message: `${value.name} ${value.stock} unit` 
+                  }
+                  await axios.post(`${API_URL}/api/v1/business-notification`, message)
+                  console.log("ini data yang akan di push notification", `${value.name} ${value.stock} unit`)
+                }
               }
-              await axios.post(`${API_URL}/api/v1/business-notification`, message)
-              console.log("ini data yang akan di push notification", `${value.name} ${value.stock} ${value.Unit.name}`)
             } else {
-              const message = {
-                title: "Stock Alert",
-                message: `${value.name} ${value.stock} unit` 
-              }
-              await axios.post(`${API_URL}/api/v1/business-notification`, message)
-              console.log("ini data yang akan di push notification", `${value.name} ${value.stock} unit`)
+              console.log("belum waktunya kirim notif")
             }
           }
         }
       })
+      const milisecond = new Date(settingsNotification.data.data.timeState[2].time)
+      const milisecondSekarang = new Date()
+
+      const convertWaktu = new Date(milisecond)
+      const convertWaktuSekarang = new Date(milisecondSekarang)
+
       console.log("ini data semua produk", data.data)
-      console.log("ini data email notification", settingsNotification.data.data);
+      console.log("ini seting milisecond", milisecond.getTime());
+      console.log("ini milisecond sekarang", milisecondSekarang.getTime());
+      console.log("convert waktu", convertWaktu.toString())
+      console.log("convert waktu sekarang", convertWaktuSekarang.toString())
+
+      console.log("hasilnya jam", dateSettings.getHours() - dateNow.getHours())
+      console.log("hasilnya menit", dateSettings.getMinutes() - dateNow.getMinutes())
+
+      console.log("ini setting Jam", milisecond.getHours())
+      console.log("ini Jam sekarang", milisecondSekarang.getHours())
+      console.log("ini setting Menit", milisecond.getMinutes())
+      console.log("ini Meint sekarang", milisecondSekarang.getMinutes())
+
       setSwitchState({
         cashRecap:
           settingsNotification.data.data.emailNotification.rekap_kas || false,
@@ -301,6 +331,8 @@ export const EmailNotifications = () => {
       minimum_stock: minimum,
       day: day
     };
+
+    console.log("emailData", emailData)
 
     try {
       enableLoading();

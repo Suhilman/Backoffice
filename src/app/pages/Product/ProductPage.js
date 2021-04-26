@@ -21,6 +21,7 @@ export const ProductPage = () => {
   const [allTaxes, setAllTaxes] = React.useState([]);
   const [allUnit, setAllUnit] = React.useState([]);
   const [allMaterials, setAllMaterials] = React.useState([]);
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const getOutlet = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -45,7 +46,6 @@ export const ProductPage = () => {
   };
 
   const getTax = async () => {
-    const API_URL = process.env.REACT_APP_API_URL;
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/product-tax`);
       setAllTaxes(data.data);
@@ -53,6 +53,50 @@ export const ProductPage = () => {
       setAllTaxes([]);
     }
   };
+
+  const getEmailNotifications = async () => {
+    try {
+      const userInfo = JSON.parse(localStorage.getItem("user_info"));
+      const settingsNotification = await axios.get(
+        `${API_URL}/api/v1/email-notification/${userInfo.business_id}`
+      );
+      const { data } = await axios.get(
+        `${API_URL}/api/v1/product`
+      );
+      const dateSettings = new Date(settingsNotification.data.data.timeState[2].time)
+      const dateNow = new Date()
+      data.data.map(async value => {
+        if(value.has_stock) {
+          if(value.stock <= settingsNotification.data.data.timeState[2].minimum_stock) {
+            if(dateSettings.getHours() - dateNow.getHours() <= 0){
+              if(dateSettings.getMinutes() - dateNow.getMinutes() <= 0 && dateSettings.getMinutes() - dateNow.getMinutes() >= -10) {
+                console.log("sudah waktunya kirim notif")
+                if(value.unit_id) {
+                  const message = {
+                    title: "Stock Alert",
+                    message: `${value.name} ${value.stock} ${value.Unit.name}` 
+                  }
+                  await axios.post(`${API_URL}/api/v1/business-notification`, message)
+                  console.log("ini data yang akan di push notification", `${value.name} ${value.stock} ${value.Unit.name}`)
+                } else {
+                  const message = {
+                    title: "Stock Alert",
+                    message: `${value.name} ${value.stock} unit` 
+                  }
+                  await axios.post(`${API_URL}/api/v1/business-notification`, message)
+                  console.log("ini data yang akan di push notification", `${value.name} ${value.stock} unit`)
+                }
+              }
+            } else {
+              console.log("belum waktunya kirim notif")
+            }
+          }
+        }
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const getUnit = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -83,6 +127,7 @@ export const ProductPage = () => {
     getTax();
     getUnit();
     getMaterial();
+    getEmailNotifications()
   }, []);
 
   React.useEffect(() => {
