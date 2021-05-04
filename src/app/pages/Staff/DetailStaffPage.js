@@ -118,16 +118,14 @@ export const DetailStaffPage = ({ match, location }) => {
       formData.append("password", values.password)
       formData.append("pin", values.pin)
       if (image.name) {
-        console.log('originalFile instanceof Blob', image instanceof Blob)
-        const compressedImage = await imageCompression(image, options)
-        formData.append("profile_picture", compressedImage);
+        formData.append("profile_picture", image);
       }
       formData.append("phone_number", values.phone_number);
       formData.append("outlet_id", values.outlet_id);
 
       try {
         enableLoading();
-        await axios.put(`${API_URL}/api/v1/staff/${staffId}`, formData);
+        await axios.put(`${API_URL}/api/v1/staff/update-development/${staffId}`, formData);
         disableLoading();
         setAlert("");
         setStatePage("show");
@@ -216,16 +214,22 @@ export const DetailStaffPage = ({ match, location }) => {
   const handleImage = (e) => {
     let preview;
     let img;
-
+    console.log('File Gambar', e.target.files[0])
     if (e.target.files && e.target.files[0]) {
-      preview = URL.createObjectURL(e.target.files[0]);
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          console.log("reader.result", reader.result)
+            setPreview(reader.result);
+        }
+      }
+      reader.readAsDataURL(e.target.files[0])
       img = e.target.files[0];
+      console.log("img", img)
+      setImage(img)
     } else {
       preview = "";
     }
-
-    setImage(img);
-    setPreview(preview);
   };
 
   const handleStatePage = () => {
@@ -425,7 +429,7 @@ export const DetailStaffPage = ({ match, location }) => {
                   </Paper>
 
                   <p className="text-muted mt-1">
-                    {t("allowedFileTypes")}
+                    {t("allowedFileTypes")}: .png, .jpg, .jpeg | {t("fileSizeLimit")}: 2MB
                   </p>
                 </Col>
 

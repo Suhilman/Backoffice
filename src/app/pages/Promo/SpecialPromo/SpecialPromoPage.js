@@ -121,11 +121,6 @@ export const SpecialPromoPage = () => {
     initialValues: initialValuePromo,
     validationSchema: PromoSchema,
     onSubmit: async (values) => {
-      const options = {
-        maxSizeMB: 0.5,
-        maxWidthOrHeight: 1920,
-        useWebWorker: true
-      }
       const promoData = new FormData();
       promoData.append("outlet_id", JSON.stringify(values.outlet_id));
       promoData.append("name", values.name);
@@ -134,16 +129,14 @@ export const SpecialPromoPage = () => {
       promoData.append("type", values.type);
       promoData.append("value", values.value);
       promoData.append("promo_category_id", values.promo_category_id);
-      if (photo && photoPreview) {
-        console.log('originalFile instanceof Blob', photo instanceof Blob)
-        const compressedPhoto = await imageCompression(photo, options)
-        promoData.append("specialPromoImage", compressedPhoto);
+      if (photo) {
+        promoData.append("specialPromoImage", photo);
       }
 
       const API_URL = process.env.REACT_APP_API_URL;
       try {
         enableLoading();
-        await axios.post(`${API_URL}/api/v1/special-promo`, promoData);
+        await axios.post(`${API_URL}/api/v1/special-promo/create-development`, promoData);
         handleRefresh();
         disableLoading();
         closeAddModal();
@@ -185,15 +178,13 @@ export const SpecialPromoPage = () => {
       promoData.append("value", values.value);
       promoData.append("promo_category_id", values.promo_category_id);
       if (photo.name) {
-        console.log('originalFile instanceof Blob', photo instanceof Blob)
-        const compressedPhoto = await imageCompression(photo, options)
-        promoData.append("specialPromoImage", compressedPhoto);
+        promoData.append("specialPromoImage", photo);
       }
       const API_URL = process.env.REACT_APP_API_URL;
       try {
         enableLoading();
         await axios.put(
-          `${API_URL}/api/v1/special-promo/${values.id}`,
+          `${API_URL}/api/v1/special-promo/update-development/${values.id}`,
           promoData
         );
         handleRefresh();
@@ -333,15 +324,21 @@ export const SpecialPromoPage = () => {
     let img;
 
     if (file.length) {
-      preview = URL.createObjectURL(file[0]);
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          console.log("reader.result", reader.result)
+          setPhotoPreview(reader.result);
+        }
+      }
+      reader.readAsDataURL(file[0])
       img = file[0];
+      console.log("img", img)
+      setPhoto(img)
     } else {
       preview = "";
       setAlertPhoto("file is too large or not supported");
     }
-
-    setPhotoPreview(preview);
-    setPhoto(img);
   };
 
   const handleDeletePromo = async () => {

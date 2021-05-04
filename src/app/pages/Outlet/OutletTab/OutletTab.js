@@ -134,10 +134,9 @@ export const OutletTab = ({
         formData.append("longitude", locationPointer.lng);
       }
       formData.append("payment_description", values.payment_description)
-      if (photo && photoPreview) {
-        console.log('originalFile instanceof Blob', photo instanceof Blob)
-        const compressedPhoto = await imageCompression(photo, options)
-        formData.append("outlet", compressedPhoto);
+      if (photo) {
+        console.log("photo apaan", photo)
+        formData.append("outlet", photo);
       }
       if (values.address) formData.append("address", values.address);
       if (values.postcode) formData.append("postcode", values.postcode);
@@ -147,7 +146,7 @@ export const OutletTab = ({
       const API_URL = process.env.REACT_APP_API_URL;
       try {
         enableLoading();
-        await axios.post(`${API_URL}/api/v1/outlet`, formData);
+        await axios.post(`${API_URL}/api/v1/outlet/create-development`, formData);
         handleRefresh();
         disableLoading();
         cancelAddModalOutlet();
@@ -164,13 +163,8 @@ export const OutletTab = ({
     initialValues: initialValueOutlet,
     validationSchema: OutletSchema,
     onSubmit: async (values) => {
-      const options = {
-        maxSizeMB: 0.5,
-        maxWidthOrHeight: 1920,
-        useWebWorker: true
-      }
       const locationPointer = JSON.parse(localStorage.getItem("addLocation"))
-      console.log('ini data di edit', locationPointer)
+      console.log('ini data di edit', values)
       const formData = new FormData();
       formData.append("name", values.name);
       if(values.location_id) {
@@ -193,18 +187,19 @@ export const OutletTab = ({
         formData.append("longitude", locationPointer.lng);
       }
       formData.append("payment_description", values.payment_description)
+      console.log('ini photonya', photo)
       if (photo.name) {
-        console.log('originalFile instanceof Blob', photo instanceof Blob)
-        const compressedPhoto = await imageCompression(photo, options)
-        formData.append("outlet", compressedPhoto);
+        formData.append("outlet", photo);
       }
       if (values.address) formData.append("address", values.address);
       if (values.postcode) formData.append("postcode", values.postcode);
       if (values.phone_number) formData.append("phone_number", values.phone_number);
+
       const API_URL = process.env.REACT_APP_API_URL;
+
       try {
         enableLoading();
-        await axios.put(`${API_URL}/api/v1/outlet/${values.id}`, formData);
+        await axios.put(`${API_URL}/api/v1/outlet/update-development/${values.id}`, formData);
         handleRefresh();
         disableLoading();
         cancelEditModalOutlet();
@@ -374,16 +369,21 @@ export const OutletTab = ({
     let img;
 
     if (file.length) {
-      preview = URL.createObjectURL(file[0]);
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          console.log("reader.result", reader.result)
+          setPhotoPreview(reader.result);
+        }
+      }
+      reader.readAsDataURL(file[0])
       img = file[0];
+      console.log("img", img)
+      setPhoto(img)
     } else {
       preview = "";
       setAlertPhoto("file is too large or not supported");
     }
-
-    console.log('ini preview outlet', preview)
-    setPhotoPreview(preview);
-    setPhoto(img);
   };
 
   const enableLoading = () => setLoading(true);
@@ -409,12 +409,12 @@ export const OutletTab = ({
       setPhoto(
         `${data.data.image ? `${API_URL}/${data.data.image}` : ""}`
       )
+      console.log("ini photonya boeowww", `${API_URL}/${data.data.image}`)
       setAllOutlets(data.data);
     } catch (err) {
       setAllOutlets([]);
     }
   };
-
   React.useEffect(() => {
     getOutlets(debouncedSearch, filter);
   }, [refresh, debouncedSearch, filter]);
@@ -501,6 +501,7 @@ export const OutletTab = ({
           locationFull: capitalize,
           latitude: item.latitude,
           longitude: item.longitude,
+          image: item.image,
           phone_number: item.phone_number || "",
           status: item.status,
           tax: item.Outlet_Taxes.length ? "Taxable" : "No Tax",
@@ -520,6 +521,7 @@ export const OutletTab = ({
           location: item.location,
           latitude: item.latitude,
           longitude: item.longitude,
+          image: item.image,
           phone_number: item.phone_number || "",
           status: item.status,
           tax: item.Outlet_Taxes.length ? "Taxable" : "No Tax",

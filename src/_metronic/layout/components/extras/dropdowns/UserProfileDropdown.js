@@ -21,6 +21,7 @@ export function UserProfileDropdown() {
   const [dateReport, setDateReport] = useState([])
   const [filterWeeklyReport, setFilterWeeklyReport] = useState([])
   const [filterDailyReport, setFilterDailyReport] = useState([])
+  const [emailNotification, setEmailNotification] = useState({})
 
   const API_URL = process.env.REACT_APP_API_URL;
 
@@ -42,7 +43,7 @@ export function UserProfileDropdown() {
       const { data } = await axios.get(
         `${API_URL}/api/v1/product`
       );
-      console.log("settingsNotification", settingsNotification.data.data)
+
       const dateSettings = new Date(settingsNotification.data.data.timeState[2].time)
       const dateNow = new Date()
       data.data.map(async value => {
@@ -73,6 +74,7 @@ export function UserProfileDropdown() {
           }
         }
       })
+      return settingsNotification.data.data
     } catch (error) {
       console.log(error)
     }
@@ -106,23 +108,35 @@ export function UserProfileDropdown() {
       console.log(error)
     }
   }
-  const logicDate = (dateReport) => {
-    console.log("logicDate")
-    console.log("dateReport", dateReport)
+  const logicDate = async (dateReport) => {
+    const result = await getEmailNotifications()
     const esBuah = []
     const esAlpukat = []
     dateReport.map(value => {
       const now = new Date()
       const dateRecap = new Date(value.createdAt)
-      console.log("now.getDate()", now.getDate())
-      console.log("dateRecap.getDate()", dateRecap.getDate())
+
+      let dateWeekly = null
       if(now.getMonth() - dateRecap.getMonth() == 0) {
-        console.log("jika sama bulannya")
-        if(now.getDate() - dateRecap.getDate() <= 7) {
-          console.log("jika sama bulannya dan kurang dari 8 hari")
-          console.log("now.getDate() - dateRecap.getDate()", now.getDate() - dateRecap.getDate() === 0)
+        if(dateRecap.getDay() === result.day) {
+          console.log("wew")
+          dateWeekly = now.getDate() - 7
+        }
+        console.log("dateRecap diluar kondisi", dateRecap.getDate())
+        if(dateRecap.getDate() >= dateWeekly) {
+          console.log("value", value)
+        }
+        if(dateRecap.getDate() >= dateWeekly && dateRecap.getDate() <= now.getDate()) {
+          console.log("dateRecap didalam kondisi", dateRecap.getDate())
+          console.log("now.getDate()", now.getDate())
+          console.log("dateWeekly", dateWeekly)
           esBuah.push(value)
         }
+        // if(now.getDate() - dateRecap.getDate() <= 7) {
+        //   console.log("jika sama bulannya dan kurang dari 8 hari")
+        //   console.log("now.getDate() - dateRecap.getDate()", now.getDate() - dateRecap.getDate() === 0)
+        //   esBuah.push(value)
+        // }
         if (now.getDate() - dateRecap.getDate() === 0) {
           if(dateRecap.getHours() - now.getHours() <= 0) {
             esAlpukat.push(value)
@@ -342,7 +356,7 @@ export function UserProfileDropdown() {
             </div>
           ) : (
             <div className="low-stock-alert px-8">
-              <h5 style={{ fontWeight: 700 }}>Weekly Report has been sent (empty)</h5>
+              <h5 style={{ fontWeight: 700 }}>Weekly Report (empty)</h5>
             </div>
           ) }
           <hr/>
@@ -367,7 +381,7 @@ export function UserProfileDropdown() {
             </div>
           ) : (
             <div className="low-stock-alert px-8">
-              <h5 style={{ fontWeight: 700 }}>Daily Report has been sent (empty)</h5>
+              <h5 style={{ fontWeight: 700 }}>Daily Report (empty)</h5>
             </div>
           ) }
           {/* End Notification Email */}

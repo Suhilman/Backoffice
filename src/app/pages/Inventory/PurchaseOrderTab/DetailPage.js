@@ -1,13 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import { jsPDF } from "jspdf"
 import Pdf from "react-to-pdf";
 import beetposLogo from '../../../../images/396 PPI-06 1.png'
-import { useTranslation } from "react-i18next";
 import NumberFormat from 'react-number-format'
-
+import localizedFormat from 'dayjs/plugin/localizedFormat'
 import { Paper } from "@material-ui/core";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import DataTable from "react-data-table-component";
@@ -18,7 +18,10 @@ export const DetailPurchaseOrderPage = ({ match }) => {
 
   const ref = React.createRef()
 
+  dayjs.extend(localizedFormat)
+
   const [purchaseOrder, setPurchaseOrder] = React.useState("");
+  const [dateTime, setDateTime] = React.useState("")
   const [dataToPdf, setDataToPdf] = React.useState({})
   const [currency, setCurrency] = React.useState("")
 
@@ -62,6 +65,23 @@ export const DetailPurchaseOrderPage = ({ match }) => {
           }
           setDataToPdf(allData)
           setPurchaseOrder(data.data.data)
+          const dt = new Date();
+          console.log(`${
+            (dt.getMonth()+1).toString().padStart(2, '0')}/${
+            dt.getDate().toString().padStart(2, '0')}/${
+            dt.getFullYear().toString().padStart(4, '0')}-${
+            dt.getHours().toString().padStart(2, '0')}:${
+            dt.getMinutes().toString().padStart(2, '0')}:${
+            dt.getSeconds().toString().padStart(2, '0')}`
+          );
+          console.log("data.data.data", data.data.data)
+          setDateTime(`${
+            (dt.getMonth()+1).toString().padStart(2, '0')}-${
+            dt.getDate().toString().padStart(2, '0')}-${
+            dt.getFullYear().toString().padStart(4, '0')}_${
+            dt.getHours().toString().padStart(2, '0')}-${
+            dt.getMinutes().toString().padStart(2, '0')}-${
+            dt.getSeconds().toString().padStart(2, '0')}`)
         }
       } else {
         console.log('something went wrong')
@@ -127,6 +147,14 @@ export const DetailPurchaseOrderPage = ({ match }) => {
   const options = {
     orientation: 'landscape'
   };
+  console.log("purchaseOrder", purchaseOrder)
+  const setFileName = () => {
+    if(purchaseOrder) {
+      return `Purchase-Order_${dataToPdf.namaBusiness}_${purchaseOrder.Outlet.name}_${dateTime}`
+    }
+  }
+  const fileName = setFileName()
+  console.log("fileName", fileName)
 
   const dataOrder = purchaseOrder
     ? purchaseOrder.Purchase_Order_Products.map((item, index) => {
@@ -144,10 +172,10 @@ export const DetailPurchaseOrderPage = ({ match }) => {
           <div className="container">
             <div className="row justify-content-between mb-5">
               <div className="col-md-6">
-                <h1>{t("purchaseOrder")}</h1>
+                <h1 className="mb-3">{t("purchaseOrder")}</h1>
                 <div className="d-flex justify-content-between">
                   <h4>{t("purchaseDate")}</h4>
-                  <p className="text-mute">{dataToPdf.dataPembelian}</p>
+                  <p className="text-mute">{dayjs(dataToPdf.dataPembelian).format("LLLL")}</p>
                 </div>
                 <h4>{t("priceTotal")}</h4>
                 <h2><NumberFormat value={dataToPdf.tagihan} displayType={'text'} thousandSeparator={true} prefix={currency} /></h2>
@@ -225,7 +253,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
                     pathname: "/inventory"
                   }}
                 >
-                  <Pdf targetRef={ref} filename="purchase-order.pdf" options={options} scale={1}>
+                  <Pdf targetRef={ref} filename={fileName} options={options} scale={1}>
                     {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>Export to PDF</Button>}
                   </Pdf>
                   {/* <Button variant="btn btn-outline-primary mr-2" onClick={handleExportPdf}>Export</Button> */}

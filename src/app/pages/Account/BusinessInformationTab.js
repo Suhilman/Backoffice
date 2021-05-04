@@ -16,6 +16,7 @@ export const BusinessInformation = () => {
   const API_URL = process.env.REACT_APP_API_URL;
   const [loading, setLoading] = React.useState(false);
 
+  const [stateImage, setStateImage] = React.useState(false)
   const [previewKtp, setPreviewKtp] = React.useState("");
   const [previewNpwp, setPreviewNpwp] = React.useState("");
   const [previewBusinessImage, setPreviewBusinessImage] = React.useState("");
@@ -120,19 +121,17 @@ export const BusinessInformation = () => {
   React.useEffect(() => {
     handleAllCurrencies()
   },[])
+
   const formikBusiness = useFormik({
     enableReinitialize: true,
     initialValues: business,
     validationSchema: BusinessSchema,
     onSubmit: async (values) => {
+      console.log("Bismillah")
+      console.log("formikBusiness values", values)
       const API_URL = process.env.REACT_APP_API_URL;
       const userInfo = JSON.parse(localStorage.getItem("user_info"));
       console.log('ini valie ap aaja', values)
-      console.log('ini currency_id', values.currency_id)
-      // const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
-
-      // console.log("currency nya brpw", data.data.Currency.name)
-      //  
       const options = {
         maxSizeMB: 0.5,
         maxWidthOrHeight: 1920,
@@ -149,31 +148,34 @@ export const BusinessInformation = () => {
       formData.append("business_type_id", values.business_type_id);
       formData.append("address", values.business_address);
       if (imageKtp.name) {
-        console.log('originalFile instanceof Blob', imageKtp instanceof File)
-        const compressedBusinessImage = await imageCompression(imageKtp, options)
-        formData.append("ktp_picture", compressedBusinessImage);
+        formData.append("ktp_picture", imageKtp);
       }
       if (imageNpwp.name) {
-        console.log('originalFile instanceof File', imageNpwp instanceof File)
-        const compressedBusinessImage = await imageCompression(imageNpwp, options)
-        formData.append("npwp_picture", compressedBusinessImage)
+        formData.append("npwp_picture", imageNpwp)
       }
+      console.log("businessImage", businessImage)
       if (businessImage.name) {
-        console.log('originalFile instanceof File', businessImage instanceof File)
-        const compressedBusinessImage = await imageCompression(businessImage, options)
-        formData.append("image", compressedBusinessImage);
+        formData.append("image", businessImage);
       }
       try {
         console.log('ini append', formData)
         enableLoading();
         await axios.put(
-          `${API_URL}/api/v1/business/${userInfo.business_id}`,
+          `${API_URL}/api/v1/business/update-development/${userInfo.business_id}`,
           formData
         );
         handleRefresh();
         disableLoading();
-        setStateComponent("show");
+        console.log("imageKtp", imageKtp)
+        console.log("imageNpwp", imageNpwp)
+        console.log("businessImage", businessImage)
+        if (stateImage) {
+        } else {
+          setStateComponent("show");
+        }
+        setStateImage(false)
       } catch (err) {
+        setStateImage(false)
         console.log("error apa", err)
         disableLoading();
       }
@@ -379,47 +381,69 @@ export const BusinessInformation = () => {
   };
 
   const handlePreviewKtp = (e) => {
+    setStateImage(true)
     let preview;
     let img;
     if (e.target.files && e.target.files[0]) {
-      preview = URL.createObjectURL(e.target.files[0]);
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          console.log("reader.result", reader.result)
+            setPreviewKtp(reader.result);
+        }
+      }
+      reader.readAsDataURL(e.target.files[0])
       img = e.target.files[0];
+      console.log("img", img)
+      setImageKtp(img)
+      formikBusiness.submitForm()
     } else {
       preview = "";
     }
-
-    setImageKtp(img);
-    setPreviewKtp(preview);
   };
 
   const handlePreviewNpwp = (e) => {
+    setStateImage(true)
     let preview;
     let img;
-
     if (e.target.files && e.target.files[0]) {
-      preview = URL.createObjectURL(e.target.files[0]);
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          console.log("reader.result", reader.result)
+          setPreviewNpwp(reader.result);
+        }
+      }
+      reader.readAsDataURL(e.target.files[0])
       img = e.target.files[0];
+      console.log("img", img)
+      setImageNpwp(img)
+      formikBusiness.submitForm()
     } else {
       preview = "";
     }
-
-    setImageNpwp(img);
-    setPreviewNpwp(preview);
   };
 
   const handlePreviewBusiness = (e) => {
+    setStateImage(true)
     let preview;
     let img;
-
     if (e.target.files && e.target.files[0]) {
-      preview = URL.createObjectURL(e.target.files[0]);
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          console.log("reader.result", reader.result)
+            setPreviewBusinessImage(reader.result);
+        }
+      }
+      reader.readAsDataURL(e.target.files[0])
       img = e.target.files[0];
+      console.log("img", img)
+      setBusinessImage(img)
+      formikBusiness.submitForm()
     } else {
       preview = "";
     }
-
-    setBusinessImage(img);
-    setPreviewBusinessImage(preview);
   };
 
   const currency = [

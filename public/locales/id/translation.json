@@ -156,7 +156,7 @@
     "numberOfProject": "Jumlah Proyek",
     "productTitle": "Daftar Produk",
     "productStatus": "Status Produk",
-    "productFavorite": "Produk Favorite",
+    "productFavorite": "Produk Favorit",
     "productType": "Tipe Product",
     "productAddOns": "Produk Add-ons",
     "manageAddOns": "Mengelola Add-ons",
@@ -747,5 +747,7 @@
     "totalRecipePrice": "Total Harga Resep",
     "pleaseInputProvince": "Silakan Masukkan Provinci",
     "pleaseInputCity": "Silakan Masukkan Kota",
-    "pleaseInputLocation": "Silakan Masukkan Lokasi"
+    "pleaseInputLocation": "Silakan Masukkan Lokasi",
+    "reportDate": "Tanggal Laporan",
+    "stockId": "ID Stok"
   }

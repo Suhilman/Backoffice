@@ -14,7 +14,8 @@ import {
   Form,
   Dropdown,
   InputGroup,
-  ButtonGroup
+  ButtonGroup,
+  ListGroup
 } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import {
@@ -568,6 +569,42 @@ const ProductTab = ({
     });
   };
 
+  const ExpandableComponent = ({ data }) => {
+    const keys = [
+      {
+        key: "Product",
+        value: "name"
+      },
+      {
+        key: "Category",
+        value: "category"
+      },
+      {
+        key: "Outlet",
+        value: "outlet"
+      }
+    ];
+
+    return (
+      <>
+        <ListGroup style={{ padding: "1rem", marginLeft: "1rem" }}>
+          {keys.map((val, index) => {
+            return (
+              <ListGroup.Item key={index}>
+                <Row>
+                  <Col md={3} style={{ fontWeight: "700" }}>
+                    {val.key}
+                  </Col>
+                  <Col>{data[val.value] || "-"}</Col>
+                </Row>
+              </ListGroup.Item>
+            );
+          })}
+        </ListGroup>
+      </>
+    );
+  };
+
   return (
     <Row>
       <ConfirmModal
@@ -794,8 +831,8 @@ const ProductTab = ({
             pagination
             columns={columns}
             data={productData(allProducts)}
-            // expandableRows
-            // expandableRowsComponent={<ExpandableComponent />}
+            expandableRows
+            expandableRowsComponent={<ExpandableComponent />}
             style={{ minHeight: "100%" }}
             selectableRows={multiSelect}
             onSelectedRowsChange={handleSelected}

@@ -203,15 +203,13 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
 
       if (values.description) formData.append("description", values.description);
       if (photo.name) {
-        console.log('originalFile instanceof Blob', photo instanceof Blob)
-        const compressedPhoto = await imageCompression(photo, options)
-        formData.append("automaticPromoImage", compressedPhoto);
+        formData.append("automaticPromoImage", photo);
       }
 
       try {
         enableLoading();
         await axios.put(
-          `${API_URL}/api/v1/automatic-promo/${promoId}`,
+          `${API_URL}/api/v1/automatic-promo/update-development/${promoId}`,
           formData
         );
         disableLoading();
@@ -251,14 +249,12 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
       if (values.description)
         formData.append("description", values.description);
       if (photo.name) {
-        console.log('originalFile instanceof Blob', photo instanceof Blob)
-        const compressedPhoto = await imageCompression(photo, options)
-        formData.append("automaticPromoImage", compressedPhoto);
+        formData.append("automaticPromoImage", photo);
       }
       try {
         enableLoading();
         await axios.put(
-          `${API_URL}/api/v1/automatic-promo/${promoId}`,
+          `${API_URL}/api/v1/automatic-promo/update-development/${promoId}`,
           formData
         );
         disableLoading();
@@ -306,15 +302,13 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
       if (values.description)
         formData.append("description", values.description);
       if (photo.name) {
-        console.log('originalFile instanceof Blob', photo instanceof Blob)
-        const compressedPhoto = await imageCompression(photo, options)
-        formData.append("automaticPromoImage", compressedPhoto);
+        formData.append("automaticPromoImage", photo);
       }
 
       try {
         enableLoading();
         await axios.put(
-          `${API_URL}/api/v1/automatic-promo/${promoId}`,
+          `${API_URL}/api/v1/automatic-promo/update-development/${promoId}`,
           formData
         );
         disableLoading();
@@ -384,15 +378,21 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
     let img;
 
     if (file.length) {
-      preview = URL.createObjectURL(file[0]);
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          console.log("reader.result", reader.result)
+          setPhotoPreview(reader.result);
+        }
+      }
+      reader.readAsDataURL(file[0])
       img = file[0];
+      console.log("img", img)
+      setPhoto(img)
     } else {
       preview = "";
       setAlertPhoto("file is too large or not supported");
     }
-
-    setPhotoPreview(preview);
-    setPhoto(img);
   };
 
   const handlePromoStartDate = (date) => {

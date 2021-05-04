@@ -112,10 +112,8 @@ export const DetailCustomerPage = ({ match }) => {
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("email", values.email);
-      if (image.name) {
-        console.log('originalFile instanceof Blob', image instanceof Blob)
-        const commpressedImage = await imageCompression(image, options)
-        formData.append("profilePicture", commpressedImage);
+      if (image) {
+        formData.append("profilePicture", image);
       }
       formData.append("phone_number", values.phone_number);
       formData.append("address", values.address);
@@ -123,7 +121,7 @@ export const DetailCustomerPage = ({ match }) => {
 
       try {
         enableLoading();
-        await axios.put(`${API_URL}/api/v1/customer/${customerId}`, formData);
+        await axios.put(`${API_URL}/api/v1/customer/update-development/${customerId}`, formData);
         handleRefresh();
         disableLoading();
         setAlert("");
@@ -262,14 +260,20 @@ export const DetailCustomerPage = ({ match }) => {
     let img;
 
     if (e.target.files && e.target.files[0]) {
-      preview = URL.createObjectURL(e.target.files[0]);
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          console.log("reader.result", reader.result)
+          setPreview(reader.result);
+        }
+      }
+      reader.readAsDataURL(e.target.files[0])
       img = e.target.files[0];
+      console.log("img", img)
+      setImage(img)
     } else {
       preview = "";
     }
-
-    setImage(img);
-    setPreview(preview);
   };
 
   const formatDate = (date) => dayjs(date).format("DD/MM/YYYY");

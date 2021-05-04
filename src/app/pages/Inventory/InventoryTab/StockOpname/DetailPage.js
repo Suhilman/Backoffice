@@ -2,15 +2,25 @@ import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
-import rupiahFormat from "rupiah-format";
+import { useTranslation } from "react-i18next";
+
+import Pdf from "react-to-pdf";
+import beetposLogo from '../../../../../images/396 PPI-06 1.png'
 import NumberFormat from 'react-number-format'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+
+import rupiahFormat from "rupiah-format";
 
 import { Paper } from "@material-ui/core";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 
 export const DetailStockOpnamePage = ({ match }) => {
+  dayjs.extend(localizedFormat)
+  const { t } = useTranslation();
+  const ref = React.createRef()
   const { stockId } = match.params;
+  const [dateTime, setDateTime] = React.useState("")
   const [currency, setCurrency] = React.useState("")
   const handleCurrency = async () => {
       const API_URL = process.env.REACT_APP_API_URL;
@@ -41,6 +51,14 @@ export const DetailStockOpnamePage = ({ match }) => {
 
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/stock-opname/${id}`);
+      const dt = new Date();
+      setDateTime(`${
+        (dt.getMonth()+1).toString().padStart(2, '0')}-${
+        dt.getDate().toString().padStart(2, '0')}-${
+        dt.getFullYear().toString().padStart(4, '0')}_${
+        dt.getHours().toString().padStart(2, '0')}-${
+        dt.getMinutes().toString().padStart(2, '0')}-${
+        dt.getSeconds().toString().padStart(2, '0')}`)
       setOpnameStock(data.data);
     } catch (err) {
       console.log(err);
@@ -103,7 +121,90 @@ export const DetailStockOpnamePage = ({ match }) => {
       })
     : [];
 
+  const options = {
+    orientation: 'landscape'
+  };
+
+  console.log("list stock", dataStock)
+  console.log("stockOpname", stockOpname)
+  const setFileName = () => {
+    if(stockOpname) {
+      // Stock-Opname-Business.name-Outlet.name-[DD/MM/YYYY]-[HH:MM]
+      return `Stock-Opname_${stockOpname.Business.name}_${stockOpname.Outlet.name}_${dateTime}`
+    }
+  }
+  const fileName = setFileName()
+  console.log("fileName", fileName)
+
   return (
+    <>
+      <div className="style-pdf" style={{width: 1100, height: "fit-content", color: "black solid"}} ref={ref}>
+        <div className="container">
+          <div className="row justify-content-between mb-5">
+            <div className="col-md-4">
+              <h1 className="mb-4 font-bold">{t("stockOpname")}</h1>
+              <div className="d-flex justify-content-between report-date">
+                <h4 className="font-bold">{t("reportDate")}</h4>
+                <p className="font-bold">{dayjs(stockOpname.date).format("LLLL")}</p>
+              </div>
+              <div className="d-flex justify-content-between stock-id">
+                <h4 className="font-bold">{t("stockId")}</h4>
+                <p className="font-bold">{stockOpname.code}</p>
+              </div>
+              <div className="d-flex wrap-content-opname">
+                <div className="content-opname-left">
+                  <h4 class="font-bold">{stockOpname.Outlet?.name}</h4>
+                  <h4>-</h4>
+                  <h4>{stockOpname.Outlet?.phone_number}</h4>
+                </div>
+                <div className="bulkhead"></div>
+                <div className="content-opname-left">
+                  <h4>{t("notes")}</h4>
+                  <p className="text-mute">{stockOpname.notes}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-8 d-flex flex-column align-items-end">
+              <div className="logo-wrapper">
+                <img src={beetposLogo} alt="Logo BeetPOS"/>
+              </div>
+              <h5 className="text-mute">PT Lifetech Tanpa Batas</h5>
+            </div>
+          </div>
+          <div className="row mt-5">
+            <div className="col-md-12">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">{t("products")}</th>
+                    <th scope="col">{t("quantitySystem")}</th>
+                    <th scope="col">{t("quantityActual")}</th>
+                    <th scope="col">{t("unit")}</th>
+                    <th scope="col">{t("difference")}</th>
+                    <th scope="col">{t("priceSystem")}</th>
+                    <th scope="col">{t("priceNew")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dataStock ? (
+                    dataStock.map(item => 
+                      <tr>
+                      <td>{item.product_name}</td>
+                      <td>{item.quantity_system}</td>
+                      <td>{item.quantity_actual}</td>
+                      <td>{item.unit}</td>
+                      <td>{item.difference}</td>
+                      <td>{item.price_new.props.value}</td>
+                      <td>{item.price_system.props.value}</td>
+                    </tr>
+                    )
+                  ) : null }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
     <Row>
       <Col>
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
@@ -117,6 +218,9 @@ export const DetailStockOpnamePage = ({ match }) => {
                   pathname: "/inventory/stock-opname"
                 }}
               >
+              <Pdf targetRef={ref} filename={fileName} options={options} scale={1}>
+                {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>Export to PDF</Button>}
+              </Pdf>
                 <Button variant="outline-secondary">Back</Button>
               </Link>
 
@@ -186,5 +290,6 @@ export const DetailStockOpnamePage = ({ match }) => {
         </Paper>
       </Col>
     </Row>
+    </>
   );
 };

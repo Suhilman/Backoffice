@@ -444,15 +444,21 @@ export const LoyaltyPromoPage = () => {
     let img;
 
     if (file.length) {
-      preview = URL.createObjectURL(file[0]);
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          console.log("reader.result", reader.result)
+          setPhotoPreview(reader.result);
+        }
+      }
+      reader.readAsDataURL(file[0])
       img = file[0];
+      console.log("img", img)
+      setPhoto(img)
     } else {
       preview = "";
       setAlertPhoto("file is too large or not supported");
     }
-
-    setPhotoPreview(preview);
-    setPhoto(img);
   };
 
   const handleDeletePromo = async () => {

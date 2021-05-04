@@ -475,18 +475,7 @@ export const AddIncomingStockPage = ({ location }) => {
                                         />
                                       </Form.Group>
                                     </Col>
-                                  ) : (
-                                    <Col>
-                                      <Form.Group>
-                                        <Form.Control
-                                          type="text"
-                                          value="Unit"
-                                          disabled
-                                          name={`materials[${index}].unit_id`}
-                                        />
-                                      </Form.Group>
-                                    </Col>
-                                  )}
+                                  ) : ("")}
 
                                   <Col>
                                     <Form.Group>

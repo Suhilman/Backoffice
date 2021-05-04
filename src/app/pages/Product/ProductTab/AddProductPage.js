@@ -152,6 +152,7 @@ export const AddProductPage = ({ location }) => {
     initialValues: initialValueProduct,
     validationSchema: ProductSchema,
     onSubmit: async (values) => {
+      console.log("Data sebelum dikirim", values)
       const options = {
         maxSizeMB: 0.5,
         maxWidthOrHeight: 1920,
@@ -178,12 +179,13 @@ export const AddProductPage = ({ location }) => {
         formData.append("description", values.description);
       if (values.product_category_id)
         formData.append("product_category_id", values.product_category_id);
-
-      if (photo && photoPreview) {
-        console.log("jika photo dan photo previewnya ada")
-        console.log('originalFile instanceof Blob', photo instanceof Blob)
-        const compressedPhoto = await imageCompression(photo, options)
-        formData.append("productImage", compressedPhoto);
+      if (photo) {
+        // dihapus
+        // console.log("jika photo dan photo previewnya ada", photo)
+        // console.log('originalFile instanceof Blob', photo instanceof Blob)
+        // const compressedPhoto = await imageCompression(photo, options)
+        // console.log("compressedPhoto", compressedPhoto)
+        formData.append("productImage", photo);
       }
 
       if (values.has_raw_material)
@@ -200,7 +202,7 @@ export const AddProductPage = ({ location }) => {
 
       try {
         enableLoading();
-        await axios.post(`${API_URL}/api/v1/product`, formData);
+        await axios.post(`${API_URL}/api/v1/product/create-development`, formData);
         disableLoading();
         history.push("/product");
       } catch (err) {
@@ -252,17 +254,23 @@ export const AddProductPage = ({ location }) => {
 
     let preview;
     let img;
-
+    console.log("gambarnya", file[0])
     if (file.length) {
-      preview = URL.createObjectURL(file[0]);
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          console.log("reader.result", reader.result)
+          setPhotoPreview(reader.result);
+        }
+      }
+      reader.readAsDataURL(file[0])
       img = file[0];
+      console.log("img", img)
+      setPhoto(img)
     } else {
       preview = "";
       setAlertPhoto("file is too large or not supported");
     }
-
-    setPhotoPreview(preview);
-    setPhoto(img);
   };
 
   const handleDeletePhoto = () => {

@@ -187,9 +187,9 @@ export const EditProductPage = ({ match, location }) => {
       if (values.product_category_id)
         formData.append("product_category_id", values.product_category_id);
       if (photo.name) {
-        console.log('originalFile instanceof File', photo instanceof Blob)
-        const compressedPhoto = await imageCompression(photo, options)
-        formData.append("productImage", compressedPhoto);
+        // console.log('originalFile instanceof File', photo instanceof Blob)
+        // const compressedPhoto = await imageCompression(photo, options)
+        formData.append("productImage", photo);
       }
       if (deletePhoto) formData.append("deletePhoto", deletePhoto);
 
@@ -207,7 +207,7 @@ export const EditProductPage = ({ match, location }) => {
 
       try {
         enableLoading();
-        await axios.put(`${API_URL}/api/v1/product/${product_id}`, formData);
+        await axios.put(`${API_URL}/api/v1/product/update-development/${product_id}`, formData);
         disableLoading();
         history.push("/product");
       } catch (err) {
@@ -254,15 +254,21 @@ export const EditProductPage = ({ match, location }) => {
     let img;
 
     if (file.length) {
-      preview = URL.createObjectURL(file[0]);
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          console.log("reader.result", reader.result)
+          setPhotoPreview(reader.result);
+        }
+      }
+      reader.readAsDataURL(file[0])
       img = file[0];
+      console.log("img", img)
+      setPhoto(img)
     } else {
       preview = "";
       setAlertPhoto("file is too large or not supported");
     }
-
-    setPhotoPreview(preview);
-    setPhoto(img);
   };
 
   const handleDeletePhoto = () => {

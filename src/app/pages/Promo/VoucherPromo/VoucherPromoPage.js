@@ -131,16 +131,14 @@ export const VoucherPromoPage = () => {
       promoData.append("quota", values.quota);
       promoData.append("promo_date_start", startDate);
       promoData.append("promo_date_end", endDate);
-      if (photo && photoPreview) {
-        console.log('originalFile instanceof Blob', photo instanceof Blob)
-        const compressedPhoto = await imageCompression(photo, options)
-        promoData.append("voucherPromoImage", compressedPhoto);
+      if (photo) {
+        promoData.append("voucherPromoImage", photo);
       }
 
       const API_URL = process.env.REACT_APP_API_URL;
       try {
         enableLoading();
-        await axios.post(`${API_URL}/api/v1/voucher-promo`, promoData);
+        await axios.post(`${API_URL}/api/v1/voucher-promo/create-development`, promoData);
         handleRefresh();
         disableLoading();
         closeAddModal();
@@ -185,16 +183,14 @@ export const VoucherPromoPage = () => {
       promoData.append("promo_date_start", startDate);
       promoData.append("promo_date_end", endDate);
       if (photo.name) {
-        console.log('originalFile instanceof Blob', photo instanceof Blob)
-        const compressedPhoto = await imageCompression(photo, options)
-        promoData.append("voucherPromoImage", compressedPhoto);
+        promoData.append("voucherPromoImage", photo);
       }
 
       const API_URL = process.env.REACT_APP_API_URL;
       try {
         enableLoading();
         await axios.put(
-          `${API_URL}/api/v1/voucher-promo/${values.id}`,
+          `${API_URL}/api/v1/voucher-promo/update-development/${values.id}`,
           promoData
         );
         handleRefresh();
@@ -339,15 +335,21 @@ export const VoucherPromoPage = () => {
     let img;
 
     if (file.length) {
-      preview = URL.createObjectURL(file[0]);
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          console.log("reader.result", reader.result)
+          setPhotoPreview(reader.result);
+        }
+      }
+      reader.readAsDataURL(file[0])
       img = file[0];
+      console.log("img", img)
+      setPhoto(img)
     } else {
       preview = "";
       setAlertPhoto("file is too large or not supported");
     }
-
-    setPhotoPreview(preview);
-    setPhoto(img);
   };
 
   const handleDeletePromo = async () => {

@@ -80,10 +80,8 @@ export const CustomerPage = () => {
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("email", values.email);
-      if (photo && photoPreview) {
-        console.log('originalFile instanceof Blob', photo instanceof Blob)
-        const compressedPhoto = await imageCompression(photo, options)
-        formData.append("profilePicture", compressedPhoto);
+      if (photo) {
+        formData.append("profilePicture", photo);
       }
       formData.append("phone_number", values.phone_number);
       formData.append("address", values.address);
@@ -91,7 +89,7 @@ export const CustomerPage = () => {
 
       try {
         enableLoading();
-        await axios.post(`${API_URL}/api/v1/customer`, formData);
+        await axios.post(`${API_URL}/api/v1/customer/create-development`, formData);
         handleRefresh();
         disableLoading();
         setAlert("");
@@ -188,15 +186,21 @@ export const CustomerPage = () => {
     let img;
 
     if (e.target.files && e.target.files[0]) {
-      preview = URL.createObjectURL(e.target.files[0]);
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          console.log("reader.result", reader.result)
+          setPhotoPreview(reader.result);
+        }
+      }
+      reader.readAsDataURL(e.target.files[0])
       img = e.target.files[0];
+      console.log("img", img)
+      setPhoto(img)
     } else {
       preview = "";
       setAlertPhoto("file is too large or not supported");
     }
-
-    setPhoto(img);
-    setPhotoPreview(preview);
   };
 
   const columns = [

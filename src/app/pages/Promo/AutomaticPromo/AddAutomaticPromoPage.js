@@ -165,11 +165,6 @@ export const AddAutomaticPromoPage = ({ location }) => {
     enableReinitialize: true,
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
-      const options = {
-        maxSizeMB: 0.5,
-        maxWidthOrHeight: 1920,
-        useWebWorker: true
-      }
       const formData = new FormData();
 
       formData.append("name", values.name);
@@ -187,15 +182,13 @@ export const AddAutomaticPromoPage = ({ location }) => {
       formData.append("quantity_amount", values.quantity_amount);
 
       if (values.description) formData.append("description", values.description);
-      if (photo && photoPreview) {
-        console.log('originalFile instanceof Blob', photo instanceof Blob)
-        const compressedPhoto = await imageCompression(photo, options)
-        formData.append("automaticPromoImage", compressedPhoto);
+      if (photo) {
+        formData.append("automaticPromoImage", photo);
       }
 
       try {
         enableLoading();
-        await axios.post(`${API_URL}/api/v1/automatic-promo`, formData);
+        await axios.post(`${API_URL}/api/v1/automatic-promo/create-development`, formData);
         disableLoading();
         history.push("/promo/automatic-promo");
       } catch (err) {
@@ -209,11 +202,6 @@ export const AddAutomaticPromoPage = ({ location }) => {
     initialValues: initialValuePromoTransaction,
     validationSchema: PromoTransactionSchema,
     onSubmit: async (values) => {
-      const options = {
-        maxSizeMB: 0.5,
-        maxWidthOrHeight: 1920,
-        useWebWorker: true
-      }
       const API_URL = process.env.REACT_APP_API_URL;
       const formData = new FormData();
 
@@ -231,15 +219,13 @@ export const AddAutomaticPromoPage = ({ location }) => {
       formData.append("transaction_amount", values.transaction_amount);
 
       if (values.description) formData.append("description", values.description);
-      if (photo && photoPreview) {
-        console.log('originalFile instanceof Blob', photo instanceof Blob)
-        const compressedPhoto = await imageCompression(photo, options)
-        formData.append("automaticPromoImage", compressedPhoto);
+      if (photo) {
+        formData.append("automaticPromoImage", photo);
       }
 
       try {
         enableLoading();
-        await axios.post(`${API_URL}/api/v1/automatic-promo`, formData);
+        await axios.post(`${API_URL}/api/v1/automatic-promo/create-development`, formData);
         disableLoading();
         history.push("/promo/automatic-promo");
       } catch (err) {
@@ -285,15 +271,13 @@ export const AddAutomaticPromoPage = ({ location }) => {
 
       if (values.description)
         formData.append("description", values.description);
-      if (photo && photoPreview) {
-        console.log('originalFile instanceof Blob', photo instanceof Blob)
-        const compressedPhoto = await imageCompression(photo, options)
-        formData.append("automaticPromoImage", compressedPhoto);
+      if (photo) {
+        formData.append("automaticPromoImage", photo);
       }
 
       try {
         enableLoading();
-        await axios.post(`${API_URL}/api/v1/automatic-promo`, formData);
+        await axios.post(`${API_URL}/api/v1/automatic-promo/create-development`, formData);
         disableLoading();
         history.push("/promo/automatic-promo");
       } catch (err) {
@@ -361,15 +345,21 @@ export const AddAutomaticPromoPage = ({ location }) => {
     let img;
 
     if (file.length) {
-      preview = URL.createObjectURL(file[0]);
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          console.log("reader.result", reader.result)
+          setPhotoPreview(reader.result);
+        }
+      }
+      reader.readAsDataURL(file[0])
       img = file[0];
+      console.log("img", img)
+      setPhoto(img)
     } else {
       preview = "";
       setAlertPhoto("file is too large or not supported");
     }
-
-    setPhotoPreview(preview);
-    setPhoto(img);
   };
 
   const handlePromoStartDate = (date) => {

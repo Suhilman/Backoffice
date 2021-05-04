@@ -307,13 +307,13 @@ export function MixedWidget1({
                   {t("sales")}
                 </a>
                 <p>
-                  (<NumberFormat value={yesterdaySales} displayType={'text'} thousandSeparator={true} prefix={currency} />{t("yesterdaySales")}<br />
+                  (<NumberFormat value={yesterdaySales} displayType={'text'} thousandSeparator={true} prefix={currency} />) {t("yesterdaySales")}<br />
                   {yesterdaySales && todaySales ? (
                     <>+{calcPercentage(todaySales, yesterdaySales) + "%"}</>
                   ) : (
                     ""
                   )}{" "}
-                  (<NumberFormat value={todaySales} displayType={'text'} thousandSeparator={true} prefix={currency} />{t("todaySales")}
+                  (<NumberFormat value={todaySales} displayType={'text'} thousandSeparator={true} prefix={currency} />) {t("todaySales")}
                 </p>
               </div>
               <div className="col bg-light-primary px-6 py-8 rounded-xl mb-7">
