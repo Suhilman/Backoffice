@@ -749,5 +749,13 @@
     "pleaseInputCity": "Silakan Masukkan Kota",
     "pleaseInputLocation": "Silakan Masukkan Lokasi",
     "reportDate": "Tanggal Laporan",
-    "stockId": "ID Stok"
+    "stockId": "ID Stok",
+    "exportStockOpnameResult": "Ekspor Hasil Stok Opname",
+    "theProductMustHaveAUnit": "Produk Harus Memiliki Satuan",
+    "exportToExcel": "Export To Excel",
+    "exportIncomingStockResult": "Ekspor Hasil Stok Masuk",
+    "exportPurchaseOrderResult": "Ekspor Hasil Pesanan Pembelian",
+    "exportTransferStockResult": "Ekspor Hasil Stok Transfer",
+    "editRawMaterial": "Edit Raw Material",
+    "exportRawMaterialResult": "Ekspor Hasil Bahan Baku"
   }

@@ -138,6 +138,17 @@ export const AddTransferStockPage = ({ location }) => {
     return { value: item.id, label: item.name };
   });
 
+  const defaultValueUnit = (index) => {
+    console.log("ini unit nya", formikStock.values.items[index])
+    let result;
+    optionsUnit.map(item => {
+      if(item.value === formikStock.values.items[index].unit_id){
+        result = item.label
+      }
+    })
+    return result
+  }
+
   const optionsProducts = allProducts
     .map((item) => {
       if (item.outlet_id === formikStock.values.outlet_from_id) {
@@ -188,6 +199,8 @@ export const AddTransferStockPage = ({ location }) => {
       <span style={groupBadgeStyles}>{data.options.length}</span>
     </div>
   );
+
+  console.log("allUnits", allUnits)
 
   return (
     <Row>
@@ -359,9 +372,20 @@ export const AddTransferStockPage = ({ location }) => {
                                           `items[${index}].stock_id`,
                                           value.value
                                         );
+                                        formikStock.setFieldValue(
+                                          `items[${index}].unit_id`,
+                                          value.Unit
+                                        );
+                                        formikStock.setFieldValue(
+                                          `items[${index}].quantity`,
+                                          1
+                                        );
+
                                         if (value.Unit) {
                                           setHasUnit(true);
+                                          setAlert("")
                                         } else {
+                                          setAlert(t("theProductMustHaveAUnit"))
                                           setHasUnit(false);
                                         }
                                       }}
@@ -403,7 +427,7 @@ export const AddTransferStockPage = ({ location }) => {
                                   </Form.Group>
                                 </Col>
 
-                                {hasUnit ? (
+                                {/* {hasUnit ? (
                                   <Col>
                                     <Form.Group>
                                       <Select
@@ -433,7 +457,20 @@ export const AddTransferStockPage = ({ location }) => {
                                   </Col>
                                 ) : (
                                   ""
-                                )}
+                                )} */}
+
+                                {hasUnit ? (
+                                  <Col>
+                                    <Form.Group>
+                                      <Form.Control
+                                        type="text"
+                                        value={defaultValueUnit(index)}
+                                        disabled
+                                        name={`items[${index}].unit_id`}
+                                      />
+                                    </Form.Group>
+                                  </Col>
+                                ) : ("")}
 
                                 <Col sm={1}>
                                   <Button

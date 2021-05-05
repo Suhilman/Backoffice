@@ -749,5 +749,13 @@
     "pleaseInputCity": "Please Input City",
     "pleaseInputLocation": "Please Input Location",
     "reportDate": "Report Date",
-    "stockId": "Stock ID"
+    "stockId": "Stock ID",
+    "exportStockOpnameResult": "Export Stock Opname Result",
+    "theProductMustHaveAUnit": "The Product Must Have a Unit",
+    "exportToExcel": "Export To Excel",
+    "exportIncomingStockResult": "Export Incoming Stock Result",
+    "exportPurchaseOrderResult": "Export Purchase Order Result",
+    "exportTransferStockResult": "Export Transfer Stock Result",
+    "editRawMaterial": "Ubah Bahan Baku",
+    "exportRawMaterialResult": "Export Raw Material Result"
 }

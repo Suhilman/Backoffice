@@ -414,8 +414,10 @@ export const AddIncomingStockPage = ({ location }) => {
                                             setHasExpiredDate(false);
                                           }
                                           if (value.Unit) {
+                                            setAlert("")
                                             setHasUnit(true);
                                           } else {
+                                            setAlert(t("theProductMustHaveAUnit"))
                                             setHasUnit(false);
                                           }
                                         }}

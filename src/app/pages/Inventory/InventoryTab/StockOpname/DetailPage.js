@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
+import ExportExcel from "react-html-table-to-excel";
 
 import Pdf from "react-to-pdf";
 import beetposLogo from '../../../../../images/396 PPI-06 1.png'
@@ -141,7 +142,7 @@ export const DetailStockOpnamePage = ({ match }) => {
       <div className="style-pdf" style={{width: 1100, height: "fit-content", color: "black solid"}} ref={ref}>
         <div className="container">
           <div className="row justify-content-between mb-5">
-            <div className="col-md-4">
+            <div className="col-md-6">
               <h1 className="mb-4 font-bold">{t("stockOpname")}</h1>
               <div className="d-flex justify-content-between report-date">
                 <h4 className="font-bold">{t("reportDate")}</h4>
@@ -160,11 +161,11 @@ export const DetailStockOpnamePage = ({ match }) => {
                 <div className="bulkhead"></div>
                 <div className="content-opname-left">
                   <h4>{t("notes")}</h4>
-                  <p className="text-mute">{stockOpname.notes}</p>
+                  <p className="text-mute">{stockOpname.notes || '-'}</p>
                 </div>
               </div>
             </div>
-            <div className="col-md-8 d-flex flex-column align-items-end">
+            <div className="col-md-6 d-flex flex-column align-items-end">
               <div className="logo-wrapper">
                 <img src={beetposLogo} alt="Logo BeetPOS"/>
               </div>
@@ -218,8 +219,45 @@ export const DetailStockOpnamePage = ({ match }) => {
                   pathname: "/inventory/stock-opname"
                 }}
               >
+              <ExportExcel
+                id="test-table-xls-button"
+                className="btn btn-outline-info mx-2"
+                table="table-to-xls"
+                filename={fileName}
+                sheet="tablexls"
+                buttonText={t("exportToExcel")}
+              />
+              <div style={{ display: "none" }}>
+                <table id="table-to-xls">
+                  <tr>
+                    <th>{t("exportStockOpnameResult")}</th>
+                  </tr>
+                  <tr>
+                    <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("productName")}</th>
+                    <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("quantitySystem")}</th>
+                    <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("quantityActual")}</th>
+                    <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("unit")}</th>
+                    <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("difference")}</th>
+                    <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("priceSystem")}</th>
+                    <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("priceNew")}</th>
+                  </tr>
+                  {dataStock ? (
+                    dataStock.map(item => 
+                      <tr>
+                      <td>{item.product_name}</td>
+                      <td>{item.quantity_system}</td>
+                      <td>{item.quantity_actual}</td>
+                      <td>{item.unit}</td>
+                      <td>{item.difference}</td>
+                      <td>{item.price_new.props.value}</td>
+                      <td>{item.price_system.props.value}</td>
+                    </tr>
+                    )
+                  ) : null }
+                </table>
+              </div>
               <Pdf targetRef={ref} filename={fileName} options={options} scale={1}>
-                {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>Export to PDF</Button>}
+                {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>Export To PDF</Button>}
               </Pdf>
                 <Button variant="outline-secondary">Back</Button>
               </Link>

@@ -1,7 +1,7 @@
 /* start styling pdf Purchase Order */
 .style-pdf{
   position: absolute;
-  margin-left: -100%;
+  margin-left: -200vw;
   width: 100%;
   padding: 15px 25px;
 }
@@ -28,7 +28,7 @@
 }
 .bulkhead{
   width: .5px;
-  height: 80px;
+  height: 120px;
   background-color: black;
   margin: 0 25px;
 }

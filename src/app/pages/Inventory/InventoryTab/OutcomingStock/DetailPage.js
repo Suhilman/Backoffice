@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
+import ExportExcel from "react-html-table-to-excel";
 
 import Pdf from "react-to-pdf";
 import beetposLogo from '../../../../../images/396 PPI-06 1.png'
@@ -70,6 +71,9 @@ export const DetailOutcomingStockPage = ({ match }) => {
     }
   ];
 
+  console.log("dataStock", dataStock)
+  console.log("outcomingStock", outcomingStock)
+
   const dataStock = outcomingStock
     ? outcomingStock.Outcoming_Stock_Products.map((item) => {
         return {
@@ -83,8 +87,6 @@ export const DetailOutcomingStockPage = ({ match }) => {
       })
     : [];
 
-  console.log("dataStock", dataStock)
-  console.log("outcomingStock", outcomingStock)
   const options = {
     orientation: 'landscape'
   };
@@ -119,7 +121,7 @@ export const DetailOutcomingStockPage = ({ match }) => {
                 <div className="bulkhead"></div>
                 <div className="content-opname-left">
                   <h4>{t("notes")}</h4>
-                  <p className="text-mute">{outcomingStock.notes}</p>
+                  <p className="text-mute">{outcomingStock.notes || '-'}</p>
                 </div>
               </div>
             </div>
@@ -189,8 +191,39 @@ export const DetailOutcomingStockPage = ({ match }) => {
                     pathname: "/inventory/outcoming-stock"
                   }}
                 >
+                <ExportExcel
+                  id="test-table-xls-button"
+                  className="btn btn-outline-info mx-2"
+                  table="table-to-xls"
+                  filename={fileName}
+                  sheet="tablexls"
+                  buttonText={t("exportToExcel")}
+                />
+                <div style={{ display: "none" }}>
+                  <table id="table-to-xls">
+                    <tr>
+                      <th>{t("exportIncomingStockResult")}</th>
+                    </tr>
+                    <tr>
+                      <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("products")}</th>
+                      <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("quantity")}</th>
+                      <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("unit")}</th>
+                      <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("expiredDate")}</th>
+                    </tr>
+                    {dataStock ? (
+                    dataStock.map(item => 
+                      <tr>
+                        <td>{item.product_name}</td>
+                        <td>{item.quantity}</td>
+                        <td>{item.unit}</td>
+                        <td>{item.expired_date}</td>
+                    </tr>
+                    )
+                  ) : null }
+                  </table>
+                </div>
                 <Pdf targetRef={ref} filename={fileName} options={options} scale={1}>
-                  {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>Export to PDF</Button>}
+                  {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>Export To PDF</Button>}
                 </Pdf>
                   <Button variant="outline-secondary">Back</Button>
                 </Link>

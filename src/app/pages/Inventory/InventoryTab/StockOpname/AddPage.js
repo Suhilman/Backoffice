@@ -191,6 +191,17 @@ export const AddStockOpnamePage = ({ location }) => {
     return { value: item.id, label: item.name };
   });
 
+  const defaultValueUnit = (index) => {
+    console.log("ini unit nya", formikStock.values.items[index])
+    let result;
+    optionsUnit.map(item => {
+      if(item.value === formikStock.values.items[index].unit_id){
+        result = item.label
+      }
+    })
+    return result
+  }
+  
   const optionsProducts = allProducts
     .map((item) => {
       if (item.outlet_id === formikStock.values.outlet_id) {
@@ -402,9 +413,23 @@ export const AddStockOpnamePage = ({ location }) => {
                                       name={`items[${index}].stock_id`}
                                       // className="basic-single"
                                       // classNamePrefix="select"
-                                      onChange={(value) =>
+                                      onChange={(value) => {
                                         handleSelectProduct(value, index)
-                                      }
+                                        
+                                        formikStock.setFieldValue(
+                                          `items[${index}].unit_id`,
+                                          value.Unit
+                                        );
+
+                                        if (value.Unit) {
+                                          setHasUnit(true);
+                                          setAlert("")
+                                        } else {
+                                          setAlert(t("theProductMustHaveAUnit"))
+                                          setHasUnit(false);
+                                        }
+
+                                      }}
                                     />
                                     {formikStock.touched.items &&
                                     formikStock.errors.items ? (
@@ -473,7 +498,7 @@ export const AddStockOpnamePage = ({ location }) => {
                                   </Form.Group>
                                 </Col>
 
-                                {hasUnit ? (
+                                {/* {hasUnit ? (
                                   <Col>
                                     <Form.Group>
                                       <Select
@@ -503,7 +528,20 @@ export const AddStockOpnamePage = ({ location }) => {
                                   </Col>
                                 ) : (
                                   ""
-                                )}
+                                )} */}
+
+                                {hasUnit ? (
+                                  <Col>
+                                    <Form.Group>
+                                      <Form.Control
+                                        type="text"
+                                        value={defaultValueUnit(index)}
+                                        disabled
+                                        name={`items[${index}].unit_id`}
+                                      />
+                                    </Form.Group>
+                                  </Col>
+                                ) : ("")}
 
                                 <Col>
                                   <Form.Group>

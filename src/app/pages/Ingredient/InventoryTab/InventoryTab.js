@@ -15,6 +15,7 @@ import {
   ListGroup
 } from "react-bootstrap";
 import DataTable from "react-data-table-component";
+import ExportExcel from "./ModalExportExcel";
 
 import { Search, MoreHoriz } from "@material-ui/icons";
 import useDebounce from "../../../hooks/useDebounce";
@@ -36,6 +37,8 @@ const InventoryIngredientTab = ({
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
+  const [stateExport, setStateExportExcel] = React.useState(false);
+  const [dataExport, setDataExport] = React.useState([])
 
   const [search, setSearch] = React.useState("");
   const debouncedSearch = useDebounce(search, 1000);
@@ -264,7 +267,10 @@ const InventoryIngredientTab = ({
     formikEditMaterial.resetForm();
     setStateEditModal(false);
   };
-
+  const handleCloseExportExcel = () => {
+    setDataExport([])
+    setStateExportExcel(false)
+  }
   const showDeleteModal = (data) => {
     setCurrMaterial({
       id: data.id,
@@ -368,6 +374,31 @@ const InventoryIngredientTab = ({
     };
   });
 
+  console.log("rawMaterial asli", rawMaterial)
+  console.log("dataRawMaterial sudah di looping", dataRawMaterial)
+
+  const optionsOutlet = allOutlets.map((item) => {
+    return { value: item.id, label: item.name };
+  });
+
+  const handleExports = (data) => {
+    if (data) {
+      const result = []
+      rawMaterial.map((value) => {
+        data.map(value2 => {
+          if (value.Outlet.name === value2.label) {
+            result.push(value)
+          }
+        })
+      })
+      console.log("data export", result)
+      setDataExport(result)
+    } else {
+      setDataExport([])
+    }
+  }
+
+  console.log("optionsOutlet", optionsOutlet)
   const ExpandableComponent = ({ data }) => {
     const stockData = data.stocks.map((item) => {
       return {
@@ -458,6 +489,15 @@ const InventoryIngredientTab = ({
         handleClick={() => handleDeleteMaterial(currMaterial.id)}
       />
 
+      <ExportExcel 
+        loading={loading}
+        state={stateExport}
+        optionsOutlet={optionsOutlet}
+        closeModal={handleCloseExportExcel}
+        handleExports={handleExports}
+        dataExport={dataExport}
+      />
+
       <Row>
         <Col>
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
@@ -466,6 +506,9 @@ const InventoryIngredientTab = ({
                 <h3>{t("rawMaterial")}</h3>
               </div>
               <div className="headerEnd" style={{ display: "flex" }}>
+                <Button style={{ marginRight: "0.5rem" }} variant="secondary" onClick={() => setStateExportExcel(true)}>
+                  {t("export")}
+                </Button>
                 <div style={{ marginRight: "0.5rem" }}>
                   <Button variant="primary" onClick={showAddModal}>
                     {t("addRawMaterial")}

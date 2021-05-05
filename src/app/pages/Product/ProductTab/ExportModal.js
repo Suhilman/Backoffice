@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 const ExportModal = ({state, closeModal, optionsOutlet, handleExports, loading, dataProduct}) => {
   const { t } = useTranslation();
   const [currency, setCurrency] = React.useState("")
-const handleCurrency = async () => {
+  const handleCurrency = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     const userInfo = JSON.parse(localStorage.getItem("user_info"));
 
@@ -64,19 +64,19 @@ const handleCurrency = async () => {
                     <tr>
                       <th>{t("exportProductResult")}</th>
                     </tr>
-                    <tr style={{ backgroundColor: "yellow", fontWeight: "700"}}>
-                      <th>{t("productName")}</th>
-                      <th>{t("description")}</th>
-                      <th>{t("barcode")}</th>
-                      <th>{t("sku")}</th>
-                      <th>{t("price")}</th>
-                      <th>{t("purchasePrice")}</th>
-                      <th>{t("favorite")}</th>
-                      <th>{t("category")}</th>
-                      <th>{t("withRecipe")}</th>
-                      <th>{t("stock")}</th>
-                      <th>{t("unit")}</th>
-                      <th>{t("expiredDate")}</th>
+                    <tr>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("productName")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("description")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("barcode")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("sku")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("price")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("purchasePrice")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("favorite")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("category")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("withRecipe")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("stock")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("unit")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("expiredDate")}</th>
                     </tr>
                     {dataProduct.map((value, index) =>
                       <tr key={index}>

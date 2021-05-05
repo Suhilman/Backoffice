@@ -2,6 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import ExportExcel from "react-html-table-to-excel";
+
 import dayjs from "dayjs";
 import { jsPDF } from "jspdf"
 import Pdf from "react-to-pdf";
@@ -253,8 +255,39 @@ export const DetailPurchaseOrderPage = ({ match }) => {
                     pathname: "/inventory"
                   }}
                 >
+                  <ExportExcel
+                    id="test-table-xls-button"
+                    className="btn btn-outline-info mx-2"
+                    table="table-to-xls"
+                    filename={fileName}
+                    sheet="tablexls"
+                    buttonText={t("exportToExcel")}
+                  />
+                  <div style={{ display: "none" }}>
+                    <table id="table-to-xls">
+                      <tr>
+                        <th>{t("exportPurchaseOrderResult")}</th>
+                      </tr>
+                      <tr>
+                        <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("products")}</th>
+                        <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("quantity")}</th>
+                        <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("price")} {currency}</th>
+                        <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("priceTotal")} {currency}</th>
+                      </tr>
+                      {purchaseOrder ? (
+                      purchaseOrder.map(item => 
+                        <tr>
+                          <td>{item.Product.name}</td>
+                          <td>{item.quantity}</td>
+                          <td><NumberFormat value={item.price} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
+                          <td><NumberFormat value={item.total_price} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
+                        </tr>
+                      )
+                    ) : null }
+                    </table>
+                  </div>
                   <Pdf targetRef={ref} filename={fileName} options={options} scale={1}>
-                    {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>Export to PDF</Button>}
+                    {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>Export To PDF</Button>}
                   </Pdf>
                   {/* <Button variant="btn btn-outline-primary mr-2" onClick={handleExportPdf}>Export</Button> */}
                   <Button variant="outline-secondary">Back</Button>
