@@ -93,7 +93,7 @@ const TransactionTab = ({
                 <Row>
                   <Col sm={6}>
                     <Form.Group>
-                      <Form.Label>{t("minimumTransaction:(inRupiah)")}</Form.Label>
+                      <Form.Label>{t("minimumTransaction:(nominalMinimum)")}</Form.Label>
                       <Form.Control
                         type="number"
                         name="transaction_amount"

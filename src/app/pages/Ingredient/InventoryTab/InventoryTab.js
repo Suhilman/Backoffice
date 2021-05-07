@@ -377,7 +377,27 @@ const InventoryIngredientTab = ({
   console.log("rawMaterial asli", rawMaterial)
   console.log("dataRawMaterial sudah di looping", dataRawMaterial)
 
-  const optionsOutlet = allOutlets.map((item) => {
+  const handleOptionsOutlet = () => {
+    const uniqueArray = [];
+    rawMaterial.map(value => {
+      if(uniqueArray.indexOf(value.Outlet.name) === -1) {
+        uniqueArray.push(value.Outlet.name);
+      }
+    })
+    const result = []
+    allOutlets.map(value => {
+      uniqueArray.map(value2 => {
+        if(value.name === value2) {
+          result.push(value)
+        }
+      })
+    })
+    return result
+  }
+  const tempOptionOutlet = handleOptionsOutlet()
+  console.log("handleOptionsOutlet", tempOptionOutlet)
+
+  const optionsOutlet = tempOptionOutlet.map((item) => {
     return { value: item.id, label: item.name };
   });
 

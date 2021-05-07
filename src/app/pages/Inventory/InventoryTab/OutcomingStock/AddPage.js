@@ -73,7 +73,7 @@ export const AddOutcomingStockPage = ({ location }) => {
     validationSchema: StockSchema,
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
-
+      console.log("values stock", values)
       const stockData = {
         outlet_id: values.outlet_id,
         notes: values.notes,
@@ -159,7 +159,6 @@ export const AddOutcomingStockPage = ({ location }) => {
   });
 
   const defaultValueUnit = (index) => {
-    console.log("ini unit nya", formikStock.values.items[index])
     let result;
     optionsUnit.map(item => {
       if(item.value === formikStock.values.items[index].unit_id){
@@ -366,18 +365,16 @@ export const AddOutcomingStockPage = ({ location }) => {
                                             value.value
                                           );
                                           formikStock.setFieldValue(
-                                            `items[${index}].unit_id`,
-                                            value.Unit
-                                          );
-                                          formikStock.setFieldValue(
                                             `items[${index}].quantity`,
                                             1
                                           );
                                           if (value.Unit) {
                                             setHasUnit(true);
-                                            setAlert("")
+                                            formikStock.setFieldValue(
+                                              `items[${index}].unit_id`,
+                                              value.Unit
+                                            );
                                           } else {
-                                            setAlert(t("theProductMustHaveAUnit"))
                                             setHasUnit(false);
                                           }
                                         }}
@@ -462,7 +459,7 @@ export const AddOutcomingStockPage = ({ location }) => {
                                       />
                                     </Form.Group>
                                   </Col>
-                                ) : ("")}
+                                ) : null }
 
                                   <Col sm={1}>
                                     <Button

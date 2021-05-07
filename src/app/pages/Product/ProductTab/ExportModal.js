@@ -9,21 +9,51 @@ import Moment from 'react-moment';
 import { useTranslation } from "react-i18next";
 const ExportModal = ({state, closeModal, optionsOutlet, handleExports, loading, dataProduct}) => {
   const { t } = useTranslation();
+
+  const [fileName, setFileName] = React.useState("")
   const [currency, setCurrency] = React.useState("")
+
   const handleCurrency = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     const userInfo = JSON.parse(localStorage.getItem("user_info"));
 
     const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
 
-    console.log("currency nya brpw", data.data.Currency.name)
-     
-
     setCurrency(data.data.Currency.name)
   }
+
+  const handleFilename = () => {
+    const uniqueArray = [];
+    dataProduct.map(value => {
+      if(uniqueArray.indexOf(value.Outlet.name) === -1) {
+        uniqueArray.push(value.Outlet.name);
+      }
+    })
+
+    const dt = new Date();
+    const dateTime = `${
+      (dt.getMonth()+1).toString().padStart(2, '0')}-${
+      dt.getDate().toString().padStart(2, '0')}-${
+      dt.getFullYear().toString().padStart(4, '0')}_${
+      dt.getHours().toString().padStart(2, '0')}-${
+      dt.getMinutes().toString().padStart(2, '0')}-${
+      dt.getSeconds().toString().padStart(2, '0')}`
+
+    const FileName = () => {
+      if(dataProduct) {
+        return `List-Product_${dataProduct[0]?.Business.name}_${uniqueArray.join("_")}_${dateTime}`
+      }
+    }
+    setFileName(FileName)
+  }
+
   React.useEffect(() => {
     handleCurrency()
   }, [])
+
+  React.useEffect(() => {
+    handleFilename()
+  }, [dataProduct])
 
   return (
     <div>
@@ -55,7 +85,7 @@ const ExportModal = ({state, closeModal, optionsOutlet, handleExports, loading, 
                   id="test-table-xls-button"
                   className="btn btn-outline-primary mx-2"
                   table="table-to-xls"
-                  filename="tablexls"
+                  filename={fileName}
                   sheet="tablexls"
                   buttonText={t("export")}
                 />

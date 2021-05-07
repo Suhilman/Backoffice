@@ -298,7 +298,27 @@ const ProductTab = ({
       };
     });
   };
-  const optionsOutlet = allOutlets.map((item) => {
+  const handleOptionsOutlet = () => {
+    const uniqueArray = [];
+    allProducts.map(value => {
+      if(uniqueArray.indexOf(value.Outlet.name) === -1) {
+        uniqueArray.push(value.Outlet.name);
+      }
+    })
+    const result = []
+    allOutlets.map(value => {
+      uniqueArray.map(value2 => {
+        if(value.name === value2) {
+          result.push(value)
+        }
+      })
+    })
+    return result
+  }
+  const tempOptionOutlet = handleOptionsOutlet()
+  console.log("handleOptionsOutlet", tempOptionOutlet)
+
+  const optionsOutlet = tempOptionOutlet.map((item) => {
     return { value: item.id, label: item.name };
   });
   const columns = [
@@ -306,37 +326,46 @@ const ProductTab = ({
       name: "No.",
       selector: "no",
       sortable: true,
-      width: "50px"
+      width: "50px",
+      grow: 1
     },
     {
       name: `${t("titleTabProduct")}`,
       selector: "name",
-      sortable: true
+      sortable: true,
+      wrap: true,
+      grow: 5
     },
     {
       name: `${t("category")}`,
       selector: "category",
-      sortable: true
+      sortable: true,
+      grow: 2
     },
     {
       name: `${t("price")}`,
       selector: "price",
-      sortable: true
+      sortable: true,
+      grow: 1
     },
     {
       name: `${t("outlet")}`,
       selector: "outlet",
-      sortable: true
+      sortable: true,
+      wrap: true,
+      grow: 4
     },
     {
       name: `${t("stock")}`,
       selector: "stock",
-      sortable: true
+      sortable: true,
+      grow: 1
     },
     {
       name: `${t("unit")}`,
       selector: "unit",
-      sortable: true
+      sortable: true,
+      grow: 2
     },
     {
       name: `${t("status")}`,
@@ -828,7 +857,10 @@ const ProductTab = ({
 
           <DataTable
             noHeader
+            pointerOnHover
+            highlightOnHover
             pagination
+            responsive
             columns={columns}
             data={productData(allProducts)}
             expandableRows

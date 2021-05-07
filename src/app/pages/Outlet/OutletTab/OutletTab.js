@@ -22,6 +22,7 @@ import { Search, MoreHoriz } from "@material-ui/icons";
 import ModalOutlet from "./ModalOutlet";
 import ShowConfirmModal from "../../../components/ConfirmModal";
 import useDebounce from "../../../hooks/useDebounce";
+import AlertOutletLimit from "./AlertOutletLimit";
 
 import "../../style.css";
 
@@ -35,6 +36,7 @@ export const OutletTab = ({
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
+  const [alertOutletLimit, setAlertOutletLimit] = React.useState(false);
 
   const [search, setSearch] = React.useState("");
   const [filter, setFilter] = React.useState({
@@ -240,7 +242,27 @@ export const OutletTab = ({
     return "";
   };
 
-  const showAddModalOutlet = () => setStateAddModal(true);
+  const showAddModalOutlet = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const dataSubscription = await axios.get(`${API_URL}/api/v1/subscription`)
+    const userInfo = JSON.parse(localStorage.getItem("user_info"))
+    const subscription = dataSubscription.data.data.find(item => {
+      return item.business_id === userInfo.business_id
+    })
+    if (subscription) {
+      console.log("sisa outlet", subscription.outlet_limit - dataOutlets().length)
+      if (subscription.outlet_limit === 0) {
+        console.log("unlimited outlet")
+        setStateAddModal(true)
+      } else if (subscription.outlet_limit - dataOutlets().length <= 0) {
+        console.log("sudah habis")
+        setAlertOutletLimit(true)
+      } else {
+        console.log("kuota outlet masin", subscription.outlet_limit - dataOutlets().length)
+        setStateAddModal(true)
+      }
+    }
+  };
   const cancelAddModalOutlet = () => {
     formikOutlet.resetForm();
     setStateAddModal(false);
@@ -314,6 +336,11 @@ export const OutletTab = ({
     localStorage.removeItem("addLocation")
     localStorage.removeItem("location")
   };
+
+  const cancelAlertOutletLimit = () => {
+    setAlertOutletLimit(false)
+  };
+
   const showDeleteModalOutlet = (data) => {
     formikOutlet.setFieldValue("id", data.id);
     formikOutlet.setFieldValue("name", data.name);
@@ -619,6 +646,13 @@ export const OutletTab = ({
         photoPreview={photoPreview}
         photo={photo}
         handlePreviewPhoto={handlePreviewPhoto}
+      />
+
+      <AlertOutletLimit
+        t={t}
+        stateModal={alertOutletLimit}
+        cancelModal={cancelAlertOutletLimit}
+        title={`${t("outletLimit")}`}
       />
 
       <ShowConfirmModal

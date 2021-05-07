@@ -1,5 +1,6 @@
 import React from "react";
 import axios from 'axios'
+import Select from "react-select";
 
 import {
   Button,
@@ -29,10 +30,13 @@ const ModalPayment = ({
   photoPreview,
   photo,
   t,
-  idMethod
+  idMethod,
+  allOutlets,
+  handleSelectOutlet,
+  state
 }) => {
   const API_URL = process.env.REACT_APP_API_URL;
-
+  console.log("state apaan nih", state)
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
     maxSize: 2 * 1000 * 1000,
@@ -49,6 +53,23 @@ const ModalPayment = ({
       console.log(error)
     }
   }
+  
+  const optionsOutlet = allOutlets.map((item) => {
+    return { value: item.id, label: item.name };
+  });
+  const defaultValue = optionsOutlet.find(
+    (item) => item.value === formikPayment.values.outlet_id
+  );
+  // const defaultValue = optionsOutlet.find(
+  //   (val) => val.value === formikRecipe.values.outlet_id
+  // );
+  
+  console.log("formikPayment.getFieldProps.outlet_id", formikPayment.values.outlet_id)
+  console.log("defaultValue", defaultValue)
+  console.log("optionsOutlet", optionsOutlet)
+  console.log("allOutlets", allOutlets)
+  // console.log("defaultValue", defaultValue)
+
   return (
     <Modal show={stateModal} onHide={cancelModal} size="sm">
       <Modal.Header closeButton>
@@ -56,6 +77,54 @@ const ModalPayment = ({
       </Modal.Header>
       <Form onSubmit={formikPayment.handleSubmit}>
         <Modal.Body>
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>{t("outlet")}:</Form.Label>
+                {
+                  state === "Create" ? (
+                    <Select
+                      options={optionsOutlet}
+                      isMulti
+                      name="outlet_id"
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      onChange={(value) => handleSelectOutlet(value, formikPayment)}
+                      // defaultValue={defaultValue}
+                    />
+                  ) : (
+                    <Form.Control
+                      as="select"
+                      name="outlet_id"
+                      {...formikPayment.getFieldProps("outlet_id")}
+                      className={validationPayment("outlet_id")}
+                      required
+                    >
+                      <option value="" disabled hidden>
+                        {t("chooseAType")}
+                      </option>
+                      {optionsOutlet?.length
+                        ? optionsOutlet.map((item) => {
+                            return (
+                              <option key={item.value} value={item.value}>
+                                {item.label}
+                              </option>
+                            );
+                          })
+                        : ""}
+                    </Form.Control>
+                  )
+                }
+                {formikPayment.touched.outlet_id && formikPayment.errors.outlet_id ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikPayment.errors.outlet_id}
+                    </div>
+                  </div>
+                ) : null}
+              </Form.Group>
+            </Col>
+          </Row>
           <Row>
             <Col>
               <Form.Group>

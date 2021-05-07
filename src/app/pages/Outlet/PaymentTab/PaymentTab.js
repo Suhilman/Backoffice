@@ -23,6 +23,7 @@ import "../../style.css";
 
 export const PaymentTab = ({ handleRefresh, refresh }) => {
   const [loading, setLoading] = React.useState(false);
+  const [state, setState] = React.useState("");
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
@@ -31,6 +32,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
   const [photoPreview, setPhotoPreview] = React.useState("");
   const [alertPhoto, setAlertPhoto] = React.useState("");
   const [idMethod, setIdMethod] = React.useState(null)
+  const [allOutlets, setAllOutlets] = React.useState([]);
 
   const [allPaymentMethods, setAllPaymentMethods] = React.useState([]);
   const [allTypes, setAllTypes] = React.useState([]);
@@ -42,6 +44,27 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
 
   const allStatuses = [`${t("active")}`, `${t("inactive")}`];
   const debouncedSearch = useDebounce(search, 1000);
+
+  const getOutlets = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    try {
+      const { data } = await axios.get(`${API_URL}/api/v1/outlet`);
+      console.log("get outlets", data.data)
+      setAllOutlets(data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleSelectOutlet = (value, formik) => {
+    if (value) {
+      const outlet = value.map((item) => item.value);
+      console.log("outletnya", outlet)
+      formik.setFieldValue("outlet_id", outlet);
+    } else {
+      formik.setFieldValue("outlet_id", []);
+    }
+  };
 
   const getPaymentMethod = async (search, filter) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -79,6 +102,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
 
   React.useEffect(() => {
     getPaymentMethodTypes();
+    getOutlets()
   }, []);
 
   const handleSearch = (e) => setSearch(e.target.value);
@@ -89,14 +113,15 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
     setFilter(filterData);
   };
 
-  const initialValuePayment = {
+  const initialValuePaymentCreate = {
     name: "",
     payment_method_type_id: "",
     mdr: "",
-    status: "active"
+    status: "active",
+    outlet_id: []
   };
 
-  const PaymentSchema = Yup.object().shape({
+  const PaymentSchemaCreate = Yup.object().shape({
     name: Yup.string()
       .min(3, `${t("minimum3Character ")}`)
       .max(50, `${t("maximum50Character")}`)
@@ -111,14 +136,16 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       .required(`${t("pleaseInputAMdr")}`),
     status: Yup.string()
       .matches(/(active|inactive)/)
-      .required(`${t("pleaseInputAStatus")}`)
+      .required(`${t("pleaseInputAStatus")}`),
+    outlet_id: Yup.array().of(Yup.number().min(1))
   });
 
   const formikPayment = useFormik({
     enableReinitialize: true,
-    initialValues: initialValuePayment,
-    validationSchema: PaymentSchema,
+    initialValues: initialValuePaymentCreate,
+    validationSchema: PaymentSchemaCreate,
     onSubmit: async (values) => {
+      console.log("values tambah", values)
       const paymentMethodData = new FormData();
       paymentMethodData.append("name", values.name);
       paymentMethodData.append(
@@ -127,12 +154,13 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       );
       paymentMethodData.append("mdr", values.mdr);
       paymentMethodData.append("status", values.status);
+      paymentMethodData.append("outlet_id", JSON.stringify(values.outlet_id));
       if (photo) paymentMethodData.append("qrImage", photo);
 
       const API_URL = process.env.REACT_APP_API_URL;
       try {
         enableLoading();
-        await axios.post(`${API_URL}/api/v1/payment-method`, paymentMethodData);
+        await axios.post(`${API_URL}/api/v1/payment-method/create-development`, paymentMethodData);
         handleRefresh();
         disableLoading();
         cancelAddModalPayment();
@@ -142,10 +170,39 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
     }
   });
 
+  const initialValuePaymentEdit = {
+    name: "",
+    payment_method_type_id: "",
+    mdr: "",
+    status: "active",
+    outlet_id: 0
+  };
+
+  const PaymentSchemaEdit = Yup.object().shape({
+    name: Yup.string()
+      .min(3, `${t("minimum3Character ")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputAName")}`),
+    payment_method_type_id: Yup.number()
+      .integer()
+      .min(1)
+      .required(`${t("pleaseInputAPaymentMethodType")}`),
+    mdr: Yup.number()
+      .integer()
+      .min(0)
+      .required(`${t("pleaseInputAMdr")}`),
+    status: Yup.string()
+      .matches(/(active|inactive)/)
+      .required(`${t("pleaseInputAStatus")}`),
+    outlet_id: Yup.number()
+      .integer()
+      .min(1)
+  });
+
   const formikPaymentEdit = useFormik({
     enableReinitialize: true,
-    initialValues: initialValuePayment,
-    validationSchema: PaymentSchema,
+    initialValues: initialValuePaymentEdit,
+    validationSchema: PaymentSchemaEdit,
     onSubmit: async (values) => {
       const paymentMethodData = new FormData();
       paymentMethodData.append("name", values.name);
@@ -155,13 +212,14 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       );
       paymentMethodData.append("mdr", values.mdr);
       paymentMethodData.append("status", values.status);
+      paymentMethodData.append("outlet_id", values.outlet_id)
       if (photo) paymentMethodData.append("qrImage", photo);
 
       const API_URL = process.env.REACT_APP_API_URL;
       try {
         enableLoading();
         await axios.put(
-          `${API_URL}/api/v1/payment-method/${values.id}`,
+          `${API_URL}/api/v1/payment-method/create-development/${values.id}`,
           paymentMethodData
         );
         handleRefresh();
@@ -203,22 +261,28 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
     return "";
   };
 
-  const showAddModalPayment = (data) => setStateAddModal(true);
+  const showAddModalPayment = (data) => {
+    setStateAddModal(true)
+    setState("Create")
+  };
   const cancelAddModalPayment = () => {
     formikPayment.resetForm();
     setPhoto("");
     setPhotoPreview("");
     setStateAddModal(false);
+    setState("")
   };
 
   const showEditModalPayment = (data) => {
     console.log("data yang mau di edit", data)
+    setState("Edit")
     formikPaymentEdit.setValues({
       id: data.id,
       name: data.name,
       payment_method_type_id: data.type_id,
       mdr: parseInt(data.mdr.slice(0, -1)),
-      status: data.status
+      status: data.status,
+      outlet_id: data.outlet_id
     });
 
     if (data.qr_image) {
@@ -235,6 +299,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
     setPhoto("");
     setPhotoPreview("");
     setStateEditModal(false);
+    setState("")
   };
   const showDeleteModalPayment = (data) => {
     formikPayment.setFieldValue("id", data.id);
@@ -292,15 +357,21 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
     let img;
 
     if (file.length) {
-      preview = URL.createObjectURL(file[0]);
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          console.log("reader.result", reader.result)
+          setPhotoPreview(reader.result);
+        }
+      }
+      reader.readAsDataURL(file[0])
       img = file[0];
+      console.log("img", img)
+      setPhoto(img)
     } else {
       preview = "";
       setAlertPhoto("file is too large or not supported");
     }
-
-    setPhotoPreview(preview);
-    setPhoto(img);
   };
 
   const enableLoading = () => setLoading(true);
@@ -389,7 +460,8 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
         type_id: item.payment_method_type_id,
         mdr: item.mdr + "%",
         qr_image: item.qr_image,
-        status: item.status
+        status: item.status,
+        outlet_id: item.outlet_id
       };
     });
   };
@@ -398,9 +470,12 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
     <Row>
       <ModalPayment
         t={t}
+        state={state}
         stateModal={stateAddModal}
         cancelModal={cancelAddModalPayment}
         title={t("addNewPaymentMethod")}
+        allOutlets={allOutlets}
+        handleSelectOutlet={handleSelectOutlet}
         loading={loading}
         formikPayment={formikPayment}
         validationPayment={validationPayment}
@@ -413,12 +488,15 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
 
       <ModalPayment
         t={t}
+        state={state}
         stateModal={stateEditModal}
         cancelModal={cancelEditModalPayment}
         title={`${t("editPaymentMethod")} - ${
           formikPaymentEdit.getFieldProps("name").value
         }`}
         refreshDelete={refreshDelete}
+        allOutlets={allOutlets}
+        handleSelectOutlet={handleSelectOutlet}
         idMethod={idMethod}
         loading={loading}
         formikPayment={formikPaymentEdit}

@@ -275,7 +275,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
                         <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("priceTotal")} {currency}</th>
                       </tr>
                       {purchaseOrder ? (
-                      purchaseOrder.map(item => 
+                      purchaseOrder.Purchase_Order_Products.map(item => 
                         <tr>
                           <td>{item.Product.name}</td>
                           <td>{item.quantity}</td>

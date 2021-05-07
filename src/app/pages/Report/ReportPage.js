@@ -120,7 +120,7 @@ export const ReportPage = () => {
     },
     {
       no: 10,
-      title: `${t("costOfGoldSold")}`,
+      title: `${t("costOfGoodSold")}`,
       table: "table-cogs",
       filename: `laporan-COGS_${startDate}-${endDate}`,
       Component: COGSReport

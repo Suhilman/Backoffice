@@ -24,6 +24,8 @@ const ModalTax = ({
     return optionsOutlet.find((val) => val.value === item);
   });
 
+  console.log("defaultValue", defaultValue)
+
   return (
     <Modal show={stateModal} onHide={cancelModal} size="sm">
       <Modal.Header closeButton>

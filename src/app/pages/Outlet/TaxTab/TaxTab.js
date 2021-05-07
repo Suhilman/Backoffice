@@ -44,6 +44,7 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/tax-type`);
+      console.log("get types tax", data.data)
       setAllTypes(data.data);
     } catch (err) {
       console.log(err);
@@ -54,6 +55,7 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/outlet`);
+      console.log("get outlets", data.data)
       setAllOutlets(data.data);
     } catch (err) {
       console.log(err);
@@ -66,6 +68,7 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
 
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/tax${filterTaxType}`);
+      console.log("get taxes", data.data)
       setAllTaxTypes(data.data);
     } catch (err) {
       setAllTaxTypes([]);
@@ -148,7 +151,8 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
         tax_type_id: values.tax_type_id,
         outlet_id: values.outlet_id
       };
-
+      console.log("values", values)
+      console.log("data yang mau diedit", taxData)
       const API_URL = process.env.REACT_APP_API_URL;
       try {
         enableLoading();
@@ -235,6 +239,7 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
   const handleSelectOutlet = (value, formik) => {
     if (value) {
       const outlet = value.map((item) => item.value);
+      console.log("outletnya", outlet)
       formik.setFieldValue("outlet_id", outlet);
     } else {
       formik.setFieldValue("outlet_id", []);

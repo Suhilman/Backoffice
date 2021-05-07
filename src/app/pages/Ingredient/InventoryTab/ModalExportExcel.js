@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ExportExcel from "react-html-table-to-excel";
 import { Button, Modal, Spinner, Alert, Form, Row, Col } from "react-bootstrap";
 import Select from "react-select";
@@ -14,18 +14,42 @@ const ModalExportExcel = ({state, closeModal, optionsOutlet, handleExports, data
   dayjs.extend(localizedFormat)
   const { t } = useTranslation();
   const ref = React.createRef()
-
-  console.log("yang mau di export", dataExport)
+  const [fileName, setFileName] = React.useState("")
 
   const options = {
     orientation: 'landscape'
   };
-  // const setFileName = () => {
-  //   if(outcomingStock) {
-  //     return `Outcoming-Stock_${outcomingStock.Business.name}_${outcomingStock.Outlet.name}_${dateTime}`
-  //   }
-  // }
-  // const fileName = setFileName()
+
+  const handleFilename = () => {
+    const uniqueArray = [];
+    dataExport.map(value => {
+      if(uniqueArray.indexOf(value.Outlet.name) === -1) {
+        uniqueArray.push(value.Outlet.name);
+      }
+    })
+
+    const dt = new Date();
+    const dateTime = `${
+      (dt.getMonth()+1).toString().padStart(2, '0')}-${
+      dt.getDate().toString().padStart(2, '0')}-${
+      dt.getFullYear().toString().padStart(4, '0')}_${
+      dt.getHours().toString().padStart(2, '0')}-${
+      dt.getMinutes().toString().padStart(2, '0')}-${
+      dt.getSeconds().toString().padStart(2, '0')}`
+
+    const FileName = () => {
+      if(dataExport) {
+        return `Raw-Material_${dataExport[0]?.Business.name}_${uniqueArray.join("_")}_${dateTime}`
+      }
+    }
+    setFileName(FileName)
+  }
+
+  console.log("fileName", fileName)
+
+  useEffect(() => {
+    handleFilename()
+  }, [dataExport])
 
   return (
     <div>
@@ -106,7 +130,7 @@ const ModalExportExcel = ({state, closeModal, optionsOutlet, handleExports, data
                     id="test-table-xls-button"
                     className="btn btn-outline-info mx-2"
                     table="table-to-xls"
-                    filename="tablexls"
+                    filename={fileName}
                     sheet="tablexls"
                     buttonText={t("Export To Excel")}
                   />
@@ -141,7 +165,7 @@ const ModalExportExcel = ({state, closeModal, optionsOutlet, handleExports, data
                       )}
                     </table>
                   </div>
-                  <Pdf targetRef={ref} filename="Baksoww" options={options} scale={1}>
+                  <Pdf targetRef={ref} filename={fileName} options={options} scale={1}>
                     {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>Export To PDF</Button>}
                   </Pdf>
                 </div>

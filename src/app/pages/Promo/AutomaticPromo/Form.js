@@ -165,7 +165,7 @@ const FormTemplate = ({
                     <Form.Check
                       type="checkbox"
                       name="thursday"
-                      label={t("thuesday")}
+                      label={t("thursday")}
                       disabled={weekdays.everyday.checked}
                       checked={weekdays.thursday.checked}
                       onChange={handlePromoDays}

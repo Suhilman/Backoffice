@@ -544,7 +544,7 @@ export const AddAutomaticPromoPage = ({ location }) => {
 
   return (
     <Tabs activeKey={tabs} onSelect={handleTabs}>
-      <Tab eventKey="quantity" title={t("promoWithMinimumQuality")}>
+      <Tab eventKey="quantity" title={t("promoWithMinimumQuantity")}>
         <QuantityTab
           t={t}
           title={t("addNewAutomaticPromo")}

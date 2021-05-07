@@ -34,6 +34,17 @@
 }
 /* end styling pdf Purchase Order */
 
+.title-outlet-limit{
+  font-size: 22px;
+}
+
+.alert-outlet-limit{
+  text-align: center;
+  width: fit-content;
+  font-size: 14px;
+  font-weight: 600;
+}
+
 /* start styling notification */
 .wrapper-notification{
   background-color: rgb(224, 224, 111);

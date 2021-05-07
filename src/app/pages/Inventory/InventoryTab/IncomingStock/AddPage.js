@@ -399,11 +399,6 @@ export const AddIncomingStockPage = ({ location }) => {
                                           formikStock.setFieldValue(`items[${index}].total_price`, value.price);
 
                                           console.log("total quantity", formikStock.getFieldProps(`items[${index}].quantity`).value)
-                                          
-                                          formikStock.setFieldValue(
-                                            `items[${index}].unit_id`,
-                                            value.Unit
-                                          );
 
                                           const currStock = value.Stocks.find(
                                             (val) => val.is_initial
@@ -414,10 +409,12 @@ export const AddIncomingStockPage = ({ location }) => {
                                             setHasExpiredDate(false);
                                           }
                                           if (value.Unit) {
-                                            setAlert("")
+                                            formikStock.setFieldValue(
+                                              `items[${index}].unit_id`,
+                                              value.Unit
+                                            );
                                             setHasUnit(true);
                                           } else {
-                                            setAlert(t("theProductMustHaveAUnit"))
                                             setHasUnit(false);
                                           }
                                         }}
@@ -477,7 +474,7 @@ export const AddIncomingStockPage = ({ location }) => {
                                         />
                                       </Form.Group>
                                     </Col>
-                                  ) : ("")}
+                                  ) : null }
 
                                   <Col>
                                     <Form.Group>
