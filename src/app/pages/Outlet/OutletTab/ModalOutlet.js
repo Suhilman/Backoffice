@@ -38,7 +38,7 @@ const ModalOutlet = ({
     }
   });
   console.log("photoPreview", photoPreview)
-  console.log("photo", photo)
+  console.log("photo outlet", photo)
   const handleShowModal = () => setShowModalMap(true);
   const cancelDeleteModalOutlet = () => {
     setShowModalMap(false);

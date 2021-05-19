@@ -54,6 +54,9 @@ import { AddOpnameMaterialPage } from "./pages/Ingredient/InventoryTab/StockOpna
 import { DetailOpnameMaterialPage } from "./pages/Ingredient/InventoryTab/StockOpname/DetailPage";
 import { AddBundlePage } from "./pages/Product/ProductTab/AddBundle";
 import { EditBundlePage } from "./pages/Product/ProductTab/EditBundle";
+import Commission from "./pages/Commission/CommissionPage"
+import AddGroupCommission from "./pages/Commission/AddGroupCommission"
+import EditGroupCommission from "./pages/Commission/EditGroupCommission"
 import NotificationExpired from "./components/NotificationExpired"
 
 export default function BasePage() {
@@ -67,7 +70,8 @@ export default function BasePage() {
     promo_management: false,
     customer_management: false,
     inventory_management: false,
-    kitchen_management: false
+    kitchen_management: false,
+    commission_management: false
   });
 
   const localData = JSON.parse(localStorage.getItem("user_info"));
@@ -91,6 +95,8 @@ export default function BasePage() {
 
     setCurrPrivileges(priv);
   }, []);
+
+  console.log("currPrivileges", currPrivileges)
 
   return (
     <Suspense fallback={<LayoutSplashScreen />}>
@@ -465,6 +471,30 @@ export default function BasePage() {
           exact={false}
           path="/customer/:customerId"
           component={DetailCustomerPage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.commission_management}
+          isRoute={false}
+          exact={true}
+          path="/commission" 
+          component={Commission}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.commission_management}
+          isRoute={true}
+          exact={false}
+          path="/commission/add-group-commission"
+          component={AddGroupCommission}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.commission_management}
+          isRoute={true}
+          exact={false}
+          path="/commission/group-commission/:commissionId"
+          component={EditGroupCommission}
         />
 
         <ContentRoute path="/account" component={AccountPage} />

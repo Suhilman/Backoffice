@@ -29,6 +29,9 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
     const API_URL = process.env.REACT_APP_API_URL;
     const outlet_id = id ? `?outlet_id=${id}&` : "?";
 
+    console.log("startDate", start_range)
+    console.log("endDate", end_range)
+
     if (start_range === end_range) {
       end_range = dayjs(end_range)
         .add(1, "day")

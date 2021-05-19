@@ -373,19 +373,17 @@ export const AddTransferStockPage = ({ location }) => {
                                           value.value
                                         );
                                         formikStock.setFieldValue(
-                                          `items[${index}].unit_id`,
-                                          value.Unit
-                                        );
-                                        formikStock.setFieldValue(
                                           `items[${index}].quantity`,
                                           1
                                         );
 
                                         if (value.Unit) {
                                           setHasUnit(true);
-                                          setAlert("")
+                                          formikStock.setFieldValue(
+                                            `items[${index}].unit_id`,
+                                            value.Unit
+                                          );
                                         } else {
-                                          setAlert(t("theProductMustHaveAUnit"))
                                           setHasUnit(false);
                                         }
                                       }}
@@ -470,7 +468,7 @@ export const AddTransferStockPage = ({ location }) => {
                                       />
                                     </Form.Group>
                                   </Col>
-                                ) : ("")}
+                                ) : null }
 
                                 <Col sm={1}>
                                   <Button

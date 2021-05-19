@@ -24,7 +24,8 @@ const ModalTax = ({
     return optionsOutlet.find((val) => val.value === item);
   });
 
-  console.log("defaultValue", defaultValue)
+  console.log("optionsOutlet modaltax", optionsOutlet)
+  console.log("defaultValue modaltax", defaultValue)
 
   return (
     <Modal show={stateModal} onHide={cancelModal} size="sm">

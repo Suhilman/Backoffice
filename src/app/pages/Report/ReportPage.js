@@ -31,6 +31,8 @@ import ExportExcel from "react-html-table-to-excel";
 import SalesPerHour from "./SalesPerHour";
 import StockReport from "./StockReport";
 import LoyaltiReport from "./LoyaltiReport";
+import RawMaterial from "./RawMaterialTab"
+import CommissionReport from "./CommissionReport";
 
 export const ReportPage = () => {
   const [tabs, setTabs] = React.useState(1);
@@ -159,6 +161,20 @@ export const ReportPage = () => {
       table: "table-stock",
       filename: `laporan-stock-barang_${startDate}-${endDate}`,
       Component: StockReport
+    },
+    {
+      no: 16,
+      title: `${t("rawMaterial")}`,
+      table: "table-raw-material-report",
+      filename: `raw_material_report_${startDate}-${endDate}`,
+      Component: RawMaterial
+    },
+    {
+      no: 17,
+      title: `${t("commissionReport")}`,
+      table: "table-commission-report",
+      filename: `commission_report${startDate}-${endDate}`,
+      Component: CommissionReport
     },
     // {
     //   no: 16,

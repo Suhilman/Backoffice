@@ -284,6 +284,9 @@ export const EditProductPage = ({ match, location }) => {
     (val) => val.value === formikProduct.values.outlet_id
   );
 
+  console.log("optionsOutlet product", optionsOutlet)
+  console.log("defaultValueOutlet product", defaultValueOutlet)
+
   const optionsCategory = allCategories.map((item) => {
     return { value: item.id, label: item.name };
   });

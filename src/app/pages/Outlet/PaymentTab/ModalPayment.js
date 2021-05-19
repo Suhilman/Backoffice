@@ -64,9 +64,11 @@ const ModalPayment = ({
   //   (val) => val.value === formikRecipe.values.outlet_id
   // );
   
-  console.log("formikPayment.getFieldProps.outlet_id", formikPayment.values.outlet_id)
+  console.log("formikPayment.getFieldProps.outlet_id", formikPayment.values.outlet_id === 0)
   console.log("defaultValue", defaultValue)
-  console.log("optionsOutlet", optionsOutlet)
+  console.log("sebelum optionsOutlet", optionsOutlet)
+  optionsOutlet.unshift({value: 1, label: 'All Outlets'})
+  console.log("sesudah optionsOutlet", optionsOutlet)
   console.log("allOutlets", allOutlets)
   // console.log("defaultValue", defaultValue)
 
@@ -82,17 +84,7 @@ const ModalPayment = ({
               <Form.Group>
                 <Form.Label>{t("outlet")}:</Form.Label>
                 {
-                  state === "Create" ? (
-                    <Select
-                      options={optionsOutlet}
-                      isMulti
-                      name="outlet_id"
-                      className="basic-multi-select"
-                      classNamePrefix="select"
-                      onChange={(value) => handleSelectOutlet(value, formikPayment)}
-                      // defaultValue={defaultValue}
-                    />
-                  ) : (
+                  state === "Edit" || formikPayment.values.outlet_id === 0 ? (
                     <Form.Control
                       as="select"
                       name="outlet_id"
@@ -113,6 +105,16 @@ const ModalPayment = ({
                           })
                         : ""}
                     </Form.Control>
+                  ) : (
+                    <Select
+                      options={optionsOutlet}
+                      isMulti
+                      name="outlet_id"
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      onChange={(value) => handleSelectOutlet(value, formikPayment)}
+                      // defaultValue={defaultValue}
+                    />
                   )
                 }
                 {formikPayment.touched.outlet_id && formikPayment.errors.outlet_id ? (

@@ -174,8 +174,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
     name: "",
     payment_method_type_id: "",
     mdr: "",
-    status: "active",
-    outlet_id: 0
+    status: "active"
   };
 
   const PaymentSchemaEdit = Yup.object().shape({
@@ -193,10 +192,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       .required(`${t("pleaseInputAMdr")}`),
     status: Yup.string()
       .matches(/(active|inactive)/)
-      .required(`${t("pleaseInputAStatus")}`),
-    outlet_id: Yup.number()
-      .integer()
-      .min(1)
+      .required(`${t("pleaseInputAStatus")}`)
   });
 
   const formikPaymentEdit = useFormik({
@@ -395,6 +391,11 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       sortable: true
     },
     {
+      name: `${t("outlet")}`,
+      selector: "outlet",
+      sortable: true
+    },
+    {
       name: `${t("mdr")}`,
       selector: "mdr",
       sortable: true
@@ -459,12 +460,15 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
         type: item.Payment_Method_Type.name,
         type_id: item.payment_method_type_id,
         mdr: item.mdr + "%",
+        outlet: item.Outlet ? item.Outlet.name : "All Outlet",
         qr_image: item.qr_image,
         status: item.status,
         outlet_id: item.outlet_id
       };
     });
   };
+
+  console.log("allPaymentMethods", allPaymentMethods)
 
   return (
     <Row>

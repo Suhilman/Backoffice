@@ -129,10 +129,10 @@ const ModalPayment = ({
             </Col>
           </Row>
           <Row>
-            <Col md="auto">
+            <Col className="wrapper-qrcode">
               <Form.Group>
                 {formikTable.getFieldProps("name").value ? (
-                  <div className="">
+                  <div className="d-flex flex-column align-items-center">
                     <QRCode 
                       id="qrcode"
                       value={dataObj} 

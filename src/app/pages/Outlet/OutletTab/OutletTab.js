@@ -271,13 +271,17 @@ export const OutletTab = ({
   };
 
   const showEditModalOutlet = (data) => {
+    const API_URL = process.env.REACT_APP_API_URL;
     console.log('ini adalah data yang mau di edit', data)
+    setPhoto(data.image ? `${API_URL}/${data.image}` : "")
+    setPhotoPreview(data.image ? `${API_URL}/${data.image}` : "")
     if(data.location_id) {
       formikOutletEdit.setValues({
         id: data.id,
         name: data.name,
         phone_number: data.phone_number,
         address: data.address,
+        image: data.image,
         payment_description: data.payment_description,
         postcode: data.postcode,
         province_id: data.province_id,
@@ -311,6 +315,7 @@ export const OutletTab = ({
         name: data.name,
         phone_number: data.phone_number,
         address: data.address,
+        image: data.image,
         payment_description: data.payment_description,
         postcode: data.postcode,
         province: data.province,

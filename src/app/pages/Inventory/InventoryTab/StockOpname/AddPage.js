@@ -84,7 +84,7 @@ export const AddStockOpnamePage = ({ location }) => {
     validationSchema: StockSchema,
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
-
+      console.log("data yang akan dikirim", values)
       const stockData = {
         outlet_id: values.outlet_id,
         notes: values.notes,
@@ -415,17 +415,14 @@ export const AddStockOpnamePage = ({ location }) => {
                                       // classNamePrefix="select"
                                       onChange={(value) => {
                                         handleSelectProduct(value, index)
-                                        
-                                        formikStock.setFieldValue(
-                                          `items[${index}].unit_id`,
-                                          value.Unit
-                                        );
 
                                         if (value.Unit) {
                                           setHasUnit(true);
-                                          setAlert("")
+                                          formikStock.setFieldValue(
+                                            `items[${index}].unit_id`,
+                                            value.Unit
+                                          );
                                         } else {
-                                          setAlert(t("theProductMustHaveAUnit"))
                                           setHasUnit(false);
                                         }
 
@@ -541,7 +538,7 @@ export const AddStockOpnamePage = ({ location }) => {
                                       />
                                     </Form.Group>
                                   </Col>
-                                ) : ("")}
+                                ) : null }
 
                                 <Col>
                                   <Form.Group>

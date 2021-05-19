@@ -216,6 +216,7 @@ const InventoryIngredientTab = ({
       const { data } = await axios.get(
         `${API_URL}/api/v1/raw-material${filter}`
       );
+      console.log("get raw material", data.data)
       setRawMaterial(data.data);
     } catch (err) {
       setRawMaterial([]);

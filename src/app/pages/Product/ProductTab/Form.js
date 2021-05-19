@@ -60,7 +60,8 @@ const FormTemplate = ({
       handlePreviewPhoto(file);
     }
   });
-  console.log("optionsUnit", optionsUnit)
+  console.log("photo product", photo)
+  console.log("defaultValueOutlet product tab", defaultValueOutlet)
   const CustomInputDate = ({ value, onClick }) => {
     return (
       <Form.Control
@@ -170,13 +171,13 @@ const FormTemplate = ({
                 }
               />
               {formikProduct.touched.product_category_id &&
-              formikProduct.errors.product_category_id ? (
-                <div className="fv-plugins-message-container">
-                  <div className="fv-help-block">
-                    {formikProduct.errors.product_category_id}
+                formikProduct.errors.product_category_id ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikProduct.errors.product_category_id}
+                    </div>
                   </div>
-                </div>
-              ) : null}
+                ) : null}
             </Form.Group>
             <Form.Group>
               <Form.Label>{t("price")}*</Form.Label>

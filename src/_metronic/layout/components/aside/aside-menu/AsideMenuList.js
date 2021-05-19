@@ -17,6 +17,7 @@ import staffIcon from "../../../../../images/icons8-staff-100.png"
 import roleIcon from "../../../../../images/icons8-confirm-96.png"
 import customerIcon from "../../../../../images/icons8-customer-insight-64.png"
 import accountIcon from "../../../../../images/icons8-search-account-256.png"
+import commissionIcon from "../../../../../images/icons8-sales-performance-52.png"
 
 import './style.css'
 // TODO: ambil privileges dari store
@@ -105,12 +106,14 @@ function AsideMenuList(props) {
     const checkStaff = findPrivilege("staff_management");
     const checkRole = findPrivilege("role_management");
     const checkCustomer = findPrivilege("customer_management");
+    const checkCommission = findPrivilege("commission");
 
     if (checkOutlet) ms.push("outlet_management");
     if (checkPromo) ms.push("promo_management");
     if (checkStaff) ms.push("staff_management");
     if (checkRole) ms.push("role_management");
     if (checkCustomer) ms.push("customer_management");
+    if (checkCommission) ms.push("commission");
 
     if (user === "owner") {
       ms.push("outlet_management");
@@ -118,6 +121,7 @@ function AsideMenuList(props) {
       ms.push("staff_management");
       ms.push("role_management");
       ms.push("customer_management");
+      ms.push("commission");
     }
 
     setManagementSections(ms);
@@ -417,6 +421,31 @@ function AsideMenuList(props) {
                         <img src={customerIcon} alt="Icon Customer"/>
                       </div>
                       <span className="menu-text">{t("customer")}</span>
+                    </NavLink>
+                  </li>
+                );
+              }
+              if (section === "commission") {
+                return (
+                  <li
+                    key={index}
+                    className={`menu-item ${getMenuItemActive(
+                      "/commission",
+                      false
+                    )}`}
+                  >
+                    <NavLink className="menu-link" to="/commission">
+                      {/* <span className="svg-icon menu-icon">
+                        <SVG
+                          src={toAbsoluteUrl(
+                            "/media/svg/icons/Shopping/Bag2.svg"
+                          )}
+                        />
+                      </span> */}
+                      <div className="wrapper-icon">
+                        <img src={commissionIcon} alt="Icon Commission"/>
+                      </div>
+                      <span className="menu-text">{t("Commission")}</span>
                     </NavLink>
                   </li>
                 );

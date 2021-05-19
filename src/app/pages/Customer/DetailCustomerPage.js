@@ -464,7 +464,7 @@ export const DetailCustomerPage = ({ match }) => {
 
                   {statePage === "edit" ? (
                     <p className="text-muted mt-1">
-                      {t("allowdFileTypes")}
+                      {t("allowedFileTypes")}: .png, .jpg, .jpeg | {t("fileSizeLimit")}: 2MB
                     </p>
                   ) : (
                     ""

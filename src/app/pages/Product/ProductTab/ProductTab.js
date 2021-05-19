@@ -392,6 +392,8 @@ const ProductTab = ({
     {
       name: `${t("actions")}`,
       cell: (rows) => {
+        console.log("ini rows apa hayooo", rows)
+        console.log("ini rows apa hayooo", rows.currProduct)
         return (
           <Dropdown>
             <Dropdown.Toggle variant="secondary">
@@ -399,6 +401,7 @@ const ProductTab = ({
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
+
               <Link
                 to={{
                   pathname: rows.currProduct.is_bundle

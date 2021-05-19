@@ -105,6 +105,12 @@
 }
 /* end Styling Map */
 
+.wrapper-qrcode{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .headerPage {
   padding: 1rem;
   display: flex;
@@ -122,6 +128,10 @@
 
 .headerEnd {
   align-content: flex-end;
+}
+
+.total-commission{
+  margin-top: 25px;
 }
 
 .box {
