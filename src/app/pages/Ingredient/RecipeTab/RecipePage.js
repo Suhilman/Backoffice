@@ -157,26 +157,28 @@ const RecipeTab = ({
     }
   ];
 
+  console.log("allRecipes", allRecipes)
+
   const dataUnit = allRecipes.map((item, index) => {
     const total_nutrition = item.Recipe_Materials?.reduce(
       (init, curr) => (init += curr.calorie_per_unit || 0),
       0
     );
-    const total_recipe_price = item.Recipe_Materials?.reduce(
-      (init, curr) => (init += curr.ingredient_price || 0),
-      0
-    );
+    // const total_recipe_price = item.Recipe_Materials?.reduce(
+    //   (init, curr) => (init += curr.ingredient_price || 0),
+    //   0
+    // );
     return {
       id: item.id,
       no: index + 1,
       name: item.Product?.name || "-",
       raw_material: item.Recipe_Materials?.length || 0,
       total_nutrition: total_nutrition || 0,
-      total_recipe_price: total_recipe_price || 0,
+      total_recipe_price: item.total_ingredient_price,
       outlet_id: item.outlet_id,
       product_id: item.product_id,
       total_calorie: item.total_calorie || 0,
-      total_cogs: item.total_cogs || 0,
+      total_ingredient_price: item.total_ingredient_price,
       notes: item.notes,
       materials: item.Recipe_Materials.map((val) => {
         return {

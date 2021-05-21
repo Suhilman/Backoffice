@@ -40,51 +40,79 @@ const RawMaterialTab = ({selectedOutlet,
       sortable: true
     }
   ];
-  const getRecipe = async () => {
+  const getRecipe = async (id, start_range, end_range) => {
+    if (start_range === end_range) {
+      end_range = dayjs(end_range)
+        .add(1, "day")
+        .format("YYYY-MM-DD");
+    }
+    if (new Date(start_range) > new Date(end_range)) {
+      start_range = dayjs(start_range)
+        .subtract(1, "day")
+        .format("YYYY-MM-DD");
+      end_range = dayjs(end_range)
+        .add(1, "day")
+        .format("YYYY-MM-DD");
+    }
+
+    console.log("id outlet raw material report", id)
+    console.log("start_range raw material report", start_range)
+    console.log("end_range raw material report", end_range)
+
     const API_URL = process.env.REACT_APP_API_URL;
+    const outlet_id = id ? `outlet_id=${id}` : "";
+
     try {
+      const transaction = await axios.get(`${API_URL}/api/v1/transaction?${outlet_id}&date_start=${start_range}&date_end=${end_range}`)
       const { data } = await axios.get(`${API_URL}/api/v1/recipe`);
       const rawMaterials = await axios.get(`${API_URL}/api/v1/raw-material`);
-      const result = []
+
+      console.log("recipe data data", data.data)
+      console.log("transaction.data.data", transaction.data.data)
+      console.log("rawMaterials.data.data", rawMaterials.data.data)
+      const idProductTransaction = []
+      transaction.data.data.map(value => {
+        value.Transaction_Items.map(value2 => {
+          idProductTransaction.push({product_id: value2.product_id, quantity: value2.quantity})
+        })
+      })
+
+      const recipeMaterials = []
       data.data.map(value => {
-        value.Recipe_Materials.map(value2 => {
-          if(selectedOutlet.id){
-            if(selectedOutlet.id == value2.Raw_Material.outlet_id) {
-              // if(new Date(startDate) < new Date(endDate))
-              result.push(value2)
+        idProductTransaction.map(value2 => {
+          if(value.product_id === value2.product_id) {
+            console.log("value recipe bismillah", value.Recipe_Materials)
+            console.log("value2.quantity", value2.quantity)
+            if(value.Recipe_Materials.length > 0) {
+              console.log("value.Recipe_Materials.quantity", value.Recipe_Materials[0].quantity)
+              value.Recipe_Materials[0].salto = value.Recipe_Materials[0].quantity * value2.quantity
+              console.log("value aslinya", value.Recipe_Materials)
+              recipeMaterials.push(value.Recipe_Materials[0])
             }
-          } else {
-            result.push(value2)
           }
         })
       })
-      
-      // console.log("ini id dan jumlah quantity yang kan mengurangi stock", result)
-      // console.log("ini id dan jumlah quantity yang kan dikurangi stock", rawMaterials.data.data)
-      result.map(value => {
-        rawMaterials.data.data.map(value2 => {
-          if(value.raw_material_id === value2.id) {
-            value.remainingAmount = value2.stock - value.quantity
-          }
-        })
-      })
-      setDataExport(result)
+
+      console.log("idProductTransaction", idProductTransaction)
+      console.log("recipeMaterials", recipeMaterials)
+
+      setDataExport(recipeMaterials)
     } catch (err) {
-      console.log(err)
+      setDataExport([])
+      console.error(err)
     }
   };
 
   useEffect(() => {
-    getRecipe()
-  }, [selectedOutlet, endDate, startDate, startTime, endTime])
-  console.log("dataExport", dataExport)
+    getRecipe(selectedOutlet.id, startDate, endDate)
+  }, [selectedOutlet, startDate, endDate])
 
   const rawMaterialReport = dataExport.map(value => {
     return {
-      raw_material: value.Raw_Material.name,
-      used_amount: value.quantity,
-      remaining_amount: value.remainingAmount,
-      unit: value.Unit.name
+      raw_material: value.Raw_Material?.name,
+      used_amount: value.salto,
+      remaining_amount: value.Raw_Material?.stock,
+      unit: value.Unit?.name
     }
   })
 
@@ -105,8 +133,8 @@ const RawMaterialTab = ({selectedOutlet,
             dataExport.map(item => 
               <tr>
                 <td>{item.Raw_Material?.name}</td>
-                <td>{item.quantity}</td>
-                <td>{item.remainingAmount}</td>
+                <td>{item.salto}</td>
+                <td>{item.Raw_Material?.stock}</td>
                 <td>{item.Unit?.name}</td>
             </tr>
             )

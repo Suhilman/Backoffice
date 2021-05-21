@@ -296,6 +296,7 @@ const EditGroupCommission = ({location, match}) => {
     console.log("pertama di render", resultListStaff)
     setListStaffCommission(resultListStaff)
   }
+  console.log("defaultValueProduct", defaultValueProduct)
 
   const handleListProduct = () => {
     const resultListProduct = []

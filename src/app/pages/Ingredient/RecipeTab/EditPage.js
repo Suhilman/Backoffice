@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
 import * as Yup from "yup";
@@ -24,7 +24,7 @@ export const EditRecipePage = ({ location, match }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
-
+  console.log("currRecipe", currRecipe)
   const [currTotalPrice, setCurrTotalPrice] = React.useState(0);
   const [currTotalCalorie, setCurrTotalCalorie] = React.useState(0);
 
@@ -32,11 +32,14 @@ export const EditRecipePage = ({ location, match }) => {
 
   const [stateCustom, setStateCustom] = React.useState(false);
 
+  console.log("currRecipe", currRecipe)
+
   const initialValueRecipe = {
     outlet_id: currRecipe.outlet_id,
     product_id: currRecipe.product_id,
     total_calorie: currRecipe.total_calorie,
-    total_cogs: 0,
+    total_cogs: currRecipe.total_cogs,
+    total_ingredient_price: currRecipe.total_ingredient_price,
     notes: currRecipe.notes,
     materials: currRecipe.materials
   };
@@ -103,11 +106,13 @@ export const EditRecipePage = ({ location, match }) => {
     initialValues: initialValueRecipe,
     validationSchema: RecipeSchema,
     onSubmit: async (values) => {
+      console.log("muantuelll", values)
       const recipeData = {
         outlet_id: values.outlet_id,
         product_id: values.product_id,
         total_calorie: values.total_calorie,
-        total_cogs: values.total_cogs,
+        total_cogs: values.total_ingredient_price,
+        total_ingredient_price: values.total_ingredient_price,
         notes: values.notes || "",
         materials: values.materials
       };
@@ -247,6 +252,15 @@ export const EditRecipePage = ({ location, match }) => {
     })
     return result
   }
+
+  const total_cogs = formikRecipe.values.materials.reduce(
+    (init, curr) => (init += curr.ingredient_price),
+    0
+  )
+
+  console.log("initialValueRecipe", initialValueRecipe.total_cogs)
+  console.log("total cogs", total_cogs)
+
   return (
     <>
       <CustomModal
@@ -840,11 +854,7 @@ export const EditRecipePage = ({ location, match }) => {
                   <Form.Control
                     type="number"
                     name="total_cogs"
-                    {...formikRecipe.getFieldProps("total_cogs")}
-                    value={formikRecipe.values.materials.reduce(
-                      (init, curr) => (init += curr.ingredient_price),
-                      formikRecipe.values.total_cogs
-                    )}
+                    {...formikRecipe.getFieldProps("total_ingredient_price")}
                   />
                 </Col>
                 <Col sm={1}></Col>

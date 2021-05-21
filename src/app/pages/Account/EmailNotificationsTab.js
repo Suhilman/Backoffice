@@ -52,7 +52,7 @@ export const EmailNotifications = () => {
       data.data.map(async value => {
         const message = {
           title: `Transaction Recap At ${value.Outlet.name}`,
-          message: `${value.createdAt.split("T")[0]} - ${value.createdAt.split("T")[1]} \n Recap By ${value.User.User_Profile.name}` 
+          message: `${value.createdAt.split("T")[0]} - ${value.createdAt.split("T")[1]} \n Recap By ${value.User?.User_Profile.name}` 
         }
         console.log("ini messagenya", message)
         await axios.post(`${API_URL}/api/v1/business-notification`, message)
