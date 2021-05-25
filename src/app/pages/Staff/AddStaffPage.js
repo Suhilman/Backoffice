@@ -110,7 +110,8 @@ export const AddStaffPage = ({ location }) => {
         disableLoading();
         history.push("/staff");
       } catch (err) {
-        setAlert(err.response?.message);
+        console.error(err.response.data.message)
+        setAlert(err.response?.data.message);
         disableLoading();
       }
     }
@@ -175,10 +176,8 @@ export const AddStaffPage = ({ location }) => {
                   </Button>
                 </div>
               </div>
-
+              {alert ? <Row><Col><Alert variant="danger">{alert}</Alert></Col></Row> : ""}
               <Row style={{ padding: "1rem" }}>
-                {alert ? <Alert variant="danger">{alert}</Alert> : ""}
-
                 <Col>
                   <Form.Group>
                     <Form.Label>{t("outlet")}*</Form.Label>

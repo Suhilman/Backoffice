@@ -136,6 +136,7 @@ const CommissionPage = () => {
   }, [refresh, debouncedSearch, filter])
   
   const dataCommission = allCommission.map(value => {
+    console.log("value allcommission", value)
     return {
       id: value.id,
       groupName: value.name,
@@ -149,7 +150,8 @@ const CommissionPage = () => {
       product: value.product_name,
       nominal: value.nominal,
       outlet_id: value.outlet_id,
-      type_total: value.type_total
+      type_total: value.type_total,
+      commission_type: value.commission_type
     }
   })
 
@@ -161,7 +163,7 @@ const CommissionPage = () => {
         value: "staff"
       }
     ]
-    if(data.product.length > 0 ){
+    if(data.commission_type === "product" ){
       keys.push({
         key: "Product",
         value: "product"

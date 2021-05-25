@@ -115,8 +115,12 @@ export const DetailStaffPage = ({ match, location }) => {
       formData.append("email", values.email);
       formData.append("role_id", values.role_id);
       formData.append("type", values.type);
-      formData.append("password", values.password)
-      formData.append("pin", values.pin)
+      if(values.password){
+        formData.append("password", values.password)
+      }
+      if(values.pin) {
+        formData.append("pin", values.pin)
+      }
       if (image.name) {
         formData.append("profile_picture", image);
       }
@@ -156,7 +160,7 @@ export const DetailStaffPage = ({ match, location }) => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/staff/${id}`);
-
+      console.log("data staff", data.data)
       setStaff({
         outlet_id: data.data.outlet_id,
         staff_id: data.data.User.staff_id,

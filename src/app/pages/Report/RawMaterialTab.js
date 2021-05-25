@@ -64,8 +64,8 @@ const RawMaterialTab = ({selectedOutlet,
 
     try {
       const transaction = await axios.get(`${API_URL}/api/v1/transaction?${outlet_id}&date_start=${start_range}&date_end=${end_range}`)
-      const { data } = await axios.get(`${API_URL}/api/v1/recipe`);
-      const rawMaterials = await axios.get(`${API_URL}/api/v1/raw-material`);
+      const { data } = await axios.get(`${API_URL}/api/v1/recipe`)
+      const rawMaterials = await axios.get(`${API_URL}/api/v1/raw-material`)
 
       console.log("recipe data data", data.data)
       console.log("transaction.data.data", transaction.data.data)
@@ -73,9 +73,36 @@ const RawMaterialTab = ({selectedOutlet,
       const idProductTransaction = []
       transaction.data.data.map(value => {
         value.Transaction_Items.map(value2 => {
-          idProductTransaction.push({product_id: value2.product_id, quantity: value2.quantity})
+          console.log("looping transaction", value2)
+          idProductTransaction.push({product_id: value2.product_id, quantity: value2.quantity, recipe_id: value2.Product?.recipe_id})
         })
       })
+
+      console.log("idProductTransaction", idProductTransaction)
+      const resultRecipeMaterials = []
+      const separetedRawMaterials = []
+
+      for ( const value of idProductTransaction) {
+        const recipeMaterials = await axios.get(`${API_URL}/api/v1/recipe-materials?recipe_id=${value.recipe_id}`)
+        for (const value2 of recipeMaterials.data.data) {
+          if(value.recipe_id === value2.recipe_id) {
+            console.log("sebelum mantul", value2)
+            value2.salto = value2.quantity * value.quantity
+            console.log("sesudah mantul", value2)
+            separetedRawMaterials.push(value2)
+          }
+        }
+        // if(recipeMaterials.data.data.Raw_Material.length > 0) {
+        //   for (const value2 of recipeMaterials.data.data.Raw_Material) {
+        //     resultRecipeMaterials.push({stock: value2.stock, name: value2.name})
+        //   }
+        // } else {
+        //   resultRecipeMaterials.push({stock: recipeMaterials.data.data.Raw_Material.stock, name: recipeMaterials.data.data.Raw_Material.name})
+        // }
+      }
+
+      console.log("resultRecipeMaterials", resultRecipeMaterials)
+      console.log("separetedRawMaterials", separetedRawMaterials)
 
       const recipeMaterials = []
       data.data.map(value => {
@@ -96,7 +123,7 @@ const RawMaterialTab = ({selectedOutlet,
       console.log("idProductTransaction", idProductTransaction)
       console.log("recipeMaterials", recipeMaterials)
 
-      setDataExport(recipeMaterials)
+      setDataExport(separetedRawMaterials)
     } catch (err) {
       setDataExport([])
       console.error(err)
