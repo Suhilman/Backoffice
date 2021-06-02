@@ -781,5 +781,6 @@
     "pleaseInputGroupCommission": "Silahkan Masukkan Grup Komisi",
     "pleaseInputTypeCommission": "Silahkan Masukkan Jenis Komisi",
     "pleaseChooseStaff": "Silahkan Pilih Staff",
-    "editGroupCommission": "Ubah Grup Komisi"
+    "editGroupCommission": "Ubah Grup Komisi",
+    "exportCommissionReport": "Ekspor Laporan Komisi"
   }

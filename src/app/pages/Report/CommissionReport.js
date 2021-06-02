@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import axios from 'axios'
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
+import dayjs from "dayjs";
 
 import {
   Button,
@@ -25,7 +26,11 @@ const CommissionReport = () => {
     const resultStaffIdCommission = []
     const resultStaffIdTransaction = []
     const resultAllStaffId = []
-    const bismillah = []
+    const resultCommission = []
+    const resultCommissionClone = []
+
+    const resultTuingtuing = []
+    const resultTuingtuingClone = []
 
     dataCommission.data.data.map(value => {
       const result = JSON.parse(value.staff_id)
@@ -40,18 +45,63 @@ const CommissionReport = () => {
         staffId.map(value3 => {
           console.log("value3", value3)
           if (value.user_id === value3) {
-            value.totalCommission = value2.total
-            value.groupCommissionName = value2.name
-            value.commisisonDateTime = value2.createdAt
-            value.dateCommission = value.createdAt.split("T")[0]
-            value.timeCommission = value.createdAt.split("T")[1]
-            bismillah.push(value)
+            resultCommissionClone.push(value)
+            resultTuingtuingClone.push(value2)
+            if (value2.commission_type === 'nominal') {
+              if(value2.nominal < value.Payment.amount){
+                value.totalCommission = value2.total
+                value.groupCommissionName = value2.name
+                value.commisisonDateTime = value2.createdAt
+                value.dateCommission = dayjs(value2.createdAt).format('DD/MM/YYYY')
+                value.timeCommission = dayjs(value2.createdAt).format('HH:mm:ss')
+                resultCommission.push(value)
+                resultTuingtuing.push(value2)
+              }
+            }
           }
         })
       })
     })
-    setCommissionReport(bismillah)
-    console.log("bismillah", bismillah)
+
+    console.log("resultTuingtuing", resultTuingtuing)
+    console.log("resultTuingtuingClone", resultTuingtuingClone)
+
+    console.log("dataTransaction", dataTransaction.data.data)
+    console.log("dataCommission", dataCommission)
+    console.log("resultCommission", resultCommission)
+
+    // fungsi untuk 
+    resultCommission.map((value, index) => {
+      resultCommission[index].jumlah = 1
+    })
+
+    const resultDeret = []
+    const sumDeret = []
+    const deretClone = []
+    resultCommission.map(value => {
+      if (resultDeret.indexOf(value.user_id) === -1) {
+        resultDeret.push(value.user_id)
+        deretClone.push({...value, jumlah: 1})
+        console.log("element doesn't exist");
+      }
+      else {
+        if(deretClone.length > 0) {
+          deretClone.map((value2, index) => {
+            if(value.user_id === value2.user_id) {
+              const resultSum = value.totalCommission + value2.totalCommission
+              const resultJumlah = value.jumlah + value2.jumlah
+              deretClone[index].totalAllCommission = resultSum
+              deretClone[index].jumlah = resultJumlah
+            }
+          })
+        }
+        console.log("element found");
+      }
+    })
+    // end fungsi untuk
+
+    setCommissionReport(deretClone)
+    console.log("deretClone", deretClone)
     } catch (error) {
       console.error(error)
     }
@@ -104,8 +154,12 @@ const CommissionReport = () => {
     return {
       employees_name: value.User?.User_Profile.name,
       outlet: value.Outlet?.name,
-      commission_transaction: 3,
-      total_commission: value.totalCommission
+      commission_transaction: value.jumlah,
+      total_commission: value.totalCommission,
+      total_all_commission: value.totalAllCommission,
+      group_name: value.groupCommissionName,
+      date_commission: value.dateCommission,
+      time_commission: value.timeCommission
     }
   })
 
@@ -124,10 +178,10 @@ const CommissionReport = () => {
           </ListGroup.Item>
             <ListGroup.Item>
               <Row>
-                <Col>Cleaner</Col>
-                <Col>10/05/2021</Col>
-                <Col>14:01</Col>
-                <Col>5000</Col>
+                <Col>{data.group_name}</Col>
+                <Col>{data.date_commission}</Col>
+                <Col>{data.time_commission}</Col>
+                <Col>{data.total_all_commission}</Col>
               </Row>
             </ListGroup.Item>
         </ListGroup>
@@ -152,8 +206,8 @@ const CommissionReport = () => {
             commissionReport.map(item => 
               <tr>
                 <td>{item.User?.User_Profile.name}</td>
-                <td>{item.Outlet?.name}</td>
-                <td>3</td>
+                <td>{item.dateCommission}</td>
+                <td>{item.timeCommission}</td>
                 <td>{item.totalCommission}</td>
             </tr>
             )

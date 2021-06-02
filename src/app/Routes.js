@@ -13,6 +13,10 @@ import BasePage from "./BasePage";
 import { Logout, AuthPage } from "./modules/Auth";
 import ErrorsPage from "./modules/ErrorsExamples/ErrorsPage";
 import { ChangePassword } from "./pages/Auth/ChangePassword";
+import PaymentDoku from "./pages/Payment/PaymentDoku";
+import RedirectDoku from "./pages/Payment/RedirectDoku";
+import CheckStatusDoku from "./pages/Payment/CheckStatusDoku";
+import RefundDoku from "./pages/Payment/RefundDoku";
 
 export function Routes() {
   const { isAuthorized } = useSelector(
@@ -25,6 +29,9 @@ export function Routes() {
   return (
     <Switch>
       <Route path="/auth/change-password" component={ChangePassword} />
+      <Route path="/payment/doku" component={PaymentDoku} />
+      <Route path="/payment/check-payment" component={CheckStatusDoku} />
+      <Route path="/payment/refund-doku" component={RefundDoku} />
 
       {!isAuthorized ? (
         /*Render auth page when user at `/auth` and not authorized.*/

@@ -782,5 +782,6 @@
     "pleaseInputGroupCommission": "Please Input Group Commission",
     "pleaseInputTypeCommission": "Please Input Type Commission",
     "pleaseChooseStaff": "Please Choose Staff",
-    "editGroupCommission": "Edit Group Commission"
+    "editGroupCommission": "Edit Group Commission",
+    "exportCommissionReport": "Export Commission Report"
 }
