@@ -35,10 +35,12 @@ const NotificationExpired = () => {
           setCountExpired(expired)
           console.log("ini tahuun | ada berapa hari", expired)
         }
+        console.log("Bulan dimulai dari 0 (Januari), 1 (Februari) . . . .")
         if (dateExpired.getFullYear() - dateNow.getFullYear() < 1) {
-          if (dateExpired.getMonth() - dateNow.getMonth() === 0) {
+          if (dateExpired.getMonth() - dateNow.getMonth() <= 0) {
             countDate = dateExpired.getDate() - dateNow.getDate()
             setCountExpired(countDate)
+            console.log("Masukk 2")
             console.log("ini hari | ada berapa hari", countDate)
             if (countDate < 1) {
               history.push('/logout');
