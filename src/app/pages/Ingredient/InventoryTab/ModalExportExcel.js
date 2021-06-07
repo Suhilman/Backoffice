@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 
 import dayjs from "dayjs";
 import Pdf from "react-to-pdf";
-import beetposLogo from '../../../../images/396 PPI-06 1.png'
+import beetposLogo from '../../../../images/logo beetPOS new.png'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 
 const ModalExportExcel = ({state, closeModal, optionsOutlet, handleExports, dataExport}) => {  

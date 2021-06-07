@@ -262,6 +262,7 @@ const PaymentDoku = () => {
                     id="PAYMENTTYPE"
                     type="text"
                     name="PAYMENTTYPE"
+                    defaultValue="SALE"
                   />
                 </Form.Group>
               </Col>
@@ -383,7 +384,6 @@ const PaymentDoku = () => {
                       name="REQUESTDATETIME"
                       required
                     />
-                    (YYYYMMDDHHMMSS)
                   </div>
                 </Form.Group>
               </Col>
@@ -409,6 +409,7 @@ const PaymentDoku = () => {
                     id="PAYMENTCHANNEL"
                     type="text"
                     name="PAYMENTCHANNEL"
+                    disabled
                   />
                 </Form.Group>
               </Col>
@@ -582,7 +583,7 @@ const PaymentDoku = () => {
               <td class="field_input" colspan="2">&nbsp;</td>
             </tr>
 
-            <input name="submit" type="submit" class="bt_submit" id="submit" value="SUBMIT" onClick={() => showModalPayment}/>
+            <input name="submit" type="submit" class="btn btn-primary" id="submit" value="SUBMIT" onClick={() => showModalPayment}/>
           </form>
           </div>
         </div>

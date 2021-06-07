@@ -43,6 +43,9 @@ export function UserProfileDropdown() {
       const { data } = await axios.get(
         `${API_URL}/api/v1/product`
       );
+      
+      setEmailNotification(settingsNotification.data.data)
+      console.log("settingsNotification", settingsNotification.data.data)
 
       const dateSettings = new Date(settingsNotification.data.data.timeState[2].time)
       const dateNow = new Date()
@@ -156,6 +159,7 @@ export function UserProfileDropdown() {
       }
     })
     console.log("esAlpukat", esAlpukat)
+    console.log("esBuah", esBuah)
     setFilterWeeklyReport(esBuah)
     setFilterDailyReport(esAlpukat)
   }
@@ -285,7 +289,7 @@ export function UserProfileDropdown() {
           {/* Start Notification Email */}
 
           <div className="low-stock-alert px-8">
-            {notifStockAlert.length > 0 ? (
+            {notifStockAlert.length > 0 && emailNotification.emailNotification.stok_habis_harian ? (
               <>
                 <h5 style={{ fontWeight: 700 }}>Low Stock Alert</h5>
                 <div className="content-notif mt-5">
@@ -302,87 +306,98 @@ export function UserProfileDropdown() {
                 </div>
               </>
             ) : 
-              <h5 style={{ fontWeight: 700 }}>Low Stock Alert (empty)</h5>
+              // <h5 style={{ fontWeight: 700 }}>Low Stock Alert (empty)</h5>
+              null
             }
           </div>
-          <hr/>
-          {notifRecapTransaction.length > 0 ? (
+          {notifRecapTransaction.length > 0 && emailNotification.emailNotification.rekap_kas ? (
             <>
+              <div>
+                <hr/>
+                <div className="low-stock-alert px-8">
+                  {notifRecapTransaction.map(value => 
+                  <>
+                    <h5 className="mt-4" style={{ fontWeight: 700 }}>{value.title}</h5>
+                    <div className="content-notif mt-2">
+                      <div className="content-left">
+                        <p>{value.message}</p>
+                      </div>
+                      <div className="content-right">
+                        <div className="wrap-image" onClick={() => handleDeleteRecap(value.id)}>
+                          <img src={iconTrash} alt="Icon Trash"/>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                  )}
+                  <div className="button-download">
+                    Download Report
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            /* <div className="low-stock-alert px-8">
+              <h5 className="mt-4" style={{ fontWeight: 700 }}>Transaction Recap (empty)</h5>
+            </div> */
+            null
+          )}
+          {filterWeeklyReport.length > 0 && emailNotification.emailNotification.penjualan_produk_mingguan ? (
+            <div>
+              <hr/>
               <div className="low-stock-alert px-8">
-                {notifRecapTransaction.map(value => 
-                <>
-                  <h5 className="mt-4" style={{ fontWeight: 700 }}>{value.title}</h5>
-                  <div className="content-notif mt-2">
+                <h5 style={{ fontWeight: 700 }}>Weekly Report has been sent</h5>
+                {filterWeeklyReport.map(value => 
+                  <div className="content-notif mt-5">
                     <div className="content-left">
-                      <p>{value.message}</p>
+                      <p>{value.createdAt.split("T")[0]} - {value.createdAt.split("T")[1]}</p>
                     </div>
                     <div className="content-right">
-                      <div className="wrap-image" onClick={() => handleDeleteRecap(value.id)}>
+                      <div className="wrap-image">
                         <img src={iconTrash} alt="Icon Trash"/>
                       </div>
                     </div>
                   </div>
-                </>
                 )}
                 <div className="button-download">
                   Download Report
                 </div>
               </div>
-            </>
-          ) : (
-            <div className="low-stock-alert px-8">
-              <h5 className="mt-4" style={{ fontWeight: 700 }}>Transaction Recap (empty)</h5>
-            </div>
-          )}
-          <hr/>
-          {filterWeeklyReport.length > 0 ? (
-            <div className="low-stock-alert px-8">
-              <h5 style={{ fontWeight: 700 }}>Weekly Report has been sent</h5>
-              {filterWeeklyReport.map(value => 
-                <div className="content-notif mt-5">
-                  <div className="content-left">
-                    <p>{value.createdAt.split("T")[0]} - {value.createdAt.split("T")[1]}</p>
-                  </div>
-                  <div className="content-right">
-                    <div className="wrap-image">
-                      <img src={iconTrash} alt="Icon Trash"/>
-                    </div>
-                  </div>
-                </div>
-              )}
-              <div className="button-download">
-                Download Report
-              </div>
             </div>
           ) : (
-            <div className="low-stock-alert px-8">
-              <h5 style={{ fontWeight: 700 }}>Weekly Report (empty)</h5>
-            </div>
+            // <div className="low-stock-alert px-8">
+            //   <h5 style={{ fontWeight: 700 }}>Weekly Report (empty)</h5>
+            // </div>
+            null
           ) }
-          <hr/>
-          {filterDailyReport.length > 0 ? (
-            <div className="low-stock-alert px-8">
-              <h5 style={{ fontWeight: 700 }}>Daily Report has been sent</h5>
-              {filterDailyReport.map(value => 
-                <div className="content-notif mt-5">
-                  <div className="content-left">
-                    <p>{value.createdAt.split("T")[0]} - {value.createdAt.split("T")[1]}</p>
-                  </div>
-                  <div className="content-right">
-                    <div className="wrap-image">
-                      <img src={iconTrash} alt="Icon Trash"/>
+          {filterDailyReport.length > 0 && emailNotification.emailNotification.penjualan_produk_harian ? (
+            <div>
+              <hr/>
+              <div className="low-stock-alert px-8">
+                <h5 style={{ fontWeight: 700 }}>Daily Report has been sent</h5>
+                {filterDailyReport.map(value => 
+                  <div className="content-notif mt-5">
+                    <div className="content-left">
+                      <p>{value.createdAt.split("T")[0]} - {value.createdAt.split("T")[1]}</p>
+                    </div>
+                    <div className="content-right">
+                      <div className="wrap-image">
+                        <img src={iconTrash} alt="Icon Trash"/>
+                      </div>
                     </div>
                   </div>
+                )}
+                <div className="button-download">
+                  Download Report
                 </div>
-              )}
-              <div className="button-download">
-                Download Report
               </div>
+
             </div>
           ) : (
-            <div className="low-stock-alert px-8">
+            /* <div className="low-stock-alert px-8">
               <h5 style={{ fontWeight: 700 }}>Daily Report (empty)</h5>
-            </div>
+            </div> */
+            null
           ) }
           {/* End Notification Email */}
 

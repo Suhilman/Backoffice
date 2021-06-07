@@ -30,7 +30,7 @@ export function Routes() {
     <Switch>
       <Route path="/auth/change-password" component={ChangePassword} />
       <Route path="/payment/doku" component={PaymentDoku} />
-      <Route path="/payment/check-payment" component={CheckStatusDoku} />
+      <Route path="/payment/check-status" component={CheckStatusDoku} />
       <Route path="/payment/refund-doku" component={RefundDoku} />
 
       {!isAuthorized ? (

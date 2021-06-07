@@ -44,7 +44,8 @@ const CheckStatusDoku = () => {
       }
       const result = await axios.post("https://staging.doku.com/Suite/CheckStatus", data, option)
       console.log("result", result)
-      // action="https://staging.doku.com/Suite/CheckStatus" 
+      // action="https://staging.doku.com/Suite/CheckStatus"
+      // action="https://staging.doku.com/Suite/CheckStatus" method="POST" 
     } catch (error) {
       console.log(error)
     }
@@ -164,8 +165,8 @@ const CheckStatusDoku = () => {
             <tr>
               <td class="field_input" colspan="2">&nbsp;</td>
             </tr>
-
-            <input name="submit" type="submit" class="bt_submit" id="submit" value="SUBMIT" onClick={handleSubmit}/>
+            {/* <input name="submit" type="submit" class="bt_submit" id="submit" value="SUBMIT"/> */}
+            <div className="btn btn-primary" onClick={handleSubmit}>Submit</div>
           </form>
         </div>
       </div>
