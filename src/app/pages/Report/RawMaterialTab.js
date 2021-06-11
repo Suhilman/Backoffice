@@ -123,7 +123,7 @@ const RawMaterialTab = ({selectedOutlet,
       // console.log("idProductTransaction", idProductTransaction)
       // console.log("recipeMaterials", recipeMaterials)
       
-      const resultRawMaterialReport = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/raw-material-report`)
+      const resultRawMaterialReport = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/raw-material-report?${outlet_id}&date_start=${start_range}&date_end=${end_range}`)
       console.log("resultRawMaterialReport", resultRawMaterialReport)
 
       const deret_raw_materials = []
