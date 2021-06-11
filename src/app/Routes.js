@@ -17,6 +17,7 @@ import PaymentDoku from "./pages/Payment/PaymentDoku";
 import RedirectDoku from "./pages/Payment/RedirectDoku";
 import CheckStatusDoku from "./pages/Payment/CheckStatusDoku";
 import RefundDoku from "./pages/Payment/RefundDoku";
+import OtherPaymentDoku from "./pages/Payment/OtherPaymentDoku";
 
 export function Routes() {
   const { isAuthorized } = useSelector(
@@ -30,6 +31,7 @@ export function Routes() {
     <Switch>
       <Route path="/auth/change-password" component={ChangePassword} />
       <Route path="/payment/doku" component={PaymentDoku} />
+      <Route path="/payment/other-doku" component={OtherPaymentDoku} />
       <Route path="/payment/check-status" component={CheckStatusDoku} />
       <Route path="/payment/refund-doku" component={RefundDoku} />
 

@@ -1,0 +1,42 @@
+#MerchatPaymentPage{
+  width: 50%;
+}
+.payment-detail{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.payment-detail h4 {
+  font-size: 27px;
+}
+.wrapper-button{
+  display: flex;
+  justify-content: flex-end;
+}
+.title-payment{
+  font-size: 28px;
+}
+.payment-method{
+  font-size: 18px;
+}
+
+@media screen and (max-width: 495px) {
+  #MerchatPaymentPage{
+    width: 100%;
+  }
+  .payment-detail{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+  }
+  .title-payment{
+    font-size: 24px;
+  }
+  .payment-method{
+    width: 50%;
+    font-size: 12px;
+  }
+  .payment-detail h4 {
+    font-size: 22px;
+  }
+}

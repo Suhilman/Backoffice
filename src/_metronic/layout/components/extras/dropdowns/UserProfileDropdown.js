@@ -45,7 +45,6 @@ export function UserProfileDropdown() {
       );
       
       setEmailNotification(settingsNotification.data.data)
-      console.log("settingsNotification", settingsNotification.data.data)
 
       const dateSettings = new Date(settingsNotification.data.data.timeState[2].time)
       const dateNow = new Date()
@@ -60,14 +59,14 @@ export function UserProfileDropdown() {
                     title: "Stock Alert",
                     message: `${value.name} ${value.stock} ${value.Unit.name}` 
                   }
-                  await axios.post(`${API_URL}/api/v1/business-notification`, message)
+                  // await axios.post(`${API_URL}/api/v1/business-notification`, message)
                   console.log("ini data yang akan di push notification", `${value.name} ${value.stock} ${value.Unit.name}`)
                 } else {
                   const message = {
                     title: "Stock Alert",
                     message: `${value.name} ${value.stock} unit` 
                   }
-                  await axios.post(`${API_URL}/api/v1/business-notification`, message)
+                  // await axios.post(`${API_URL}/api/v1/business-notification`, message)
                   console.log("ini data yang akan di push notification", `${value.name} ${value.stock} unit`)
                 }
               }
@@ -77,6 +76,7 @@ export function UserProfileDropdown() {
           }
         }
       })
+      console.log("settingsNotification.data.data", settingsNotification.data.data)
       return settingsNotification.data.data
     } catch (error) {
       console.log(error)

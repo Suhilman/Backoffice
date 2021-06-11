@@ -63,67 +63,92 @@ const RawMaterialTab = ({selectedOutlet,
     const outlet_id = id ? `outlet_id=${id}` : "";
 
     try {
-      const transaction = await axios.get(`${API_URL}/api/v1/transaction?${outlet_id}&date_start=${start_range}&date_end=${end_range}`)
-      const { data } = await axios.get(`${API_URL}/api/v1/recipe`)
-      const rawMaterials = await axios.get(`${API_URL}/api/v1/raw-material`)
+      // const transaction = await axios.get(`${API_URL}/api/v1/transaction?${outlet_id}&date_start=${start_range}&date_end=${end_range}`)
+      // const { data } = await axios.get(`${API_URL}/api/v1/recipe`)
+      // const rawMaterials = await axios.get(`${API_URL}/api/v1/raw-material`)
 
-      console.log("recipe data data", data.data)
-      console.log("transaction.data.data", transaction.data.data)
-      console.log("rawMaterials.data.data", rawMaterials.data.data)
-      const idProductTransaction = []
-      transaction.data.data.map(value => {
-        value.Transaction_Items.map(value2 => {
-          console.log("looping transaction", value2)
-          idProductTransaction.push({product_id: value2.product_id, quantity: value2.quantity, recipe_id: value2.Product?.recipe_id})
-        })
-      })
+      // console.log("recipe data data", data.data)
+      // console.log("transaction.data.data", transaction.data.data)
+      // console.log("rawMaterials.data.data", rawMaterials.data.data)
+      // const idProductTransaction = []
+      // transaction.data.data.map(value => {
+      //   value.Transaction_Items.map(value2 => {
+      //     console.log("looping transaction", value2)
+      //     idProductTransaction.push({product_id: value2.product_id, quantity: value2.quantity, recipe_id: value2.Product?.recipe_id})
+      //   })
+      // })
 
-      console.log("idProductTransaction", idProductTransaction)
-      const resultRecipeMaterials = []
-      const separetedRawMaterials = []
+      // console.log("idProductTransaction", idProductTransaction)
+      // const resultRecipeMaterials = []
+      // const separetedRawMaterials = []
 
-      for ( const value of idProductTransaction) {
-        const recipeMaterials = await axios.get(`${API_URL}/api/v1/recipe-materials?recipe_id=${value.recipe_id}`)
-        for (const value2 of recipeMaterials.data.data) {
-          if(value.recipe_id === value2.recipe_id) {
-            console.log("sebelum mantul", value2)
-            value2.salto = value2.quantity * value.quantity
-            console.log("sesudah mantul", value2)
-            separetedRawMaterials.push(value2)
+      // for ( const value of idProductTransaction) {
+      //   const recipeMaterials = await axios.get(`${API_URL}/api/v1/recipe-materials?recipe_id=${value.recipe_id}`)
+      //   for (const value2 of recipeMaterials.data.data) {
+      //     if(value.recipe_id === value2.recipe_id) {
+      //       console.log("sebelum mantul", value2)
+      //       value2.salto = value2.quantity * value.quantity
+      //       console.log("sesudah mantul", value2)
+      //       separetedRawMaterials.push(value2)
+      //     }
+      //   }
+      //   if(recipeMaterials.data.data.Raw_Material.length > 0) {
+      //     for (const value2 of recipeMaterials.data.data.Raw_Material) {
+      //       resultRecipeMaterials.push({stock: value2.stock, name: value2.name})
+      //     }
+      //   } else {
+      //     resultRecipeMaterials.push({stock: recipeMaterials.data.data.Raw_Material.stock, name: recipeMaterials.data.data.Raw_Material.name})
+      //   }
+      // }
+
+      // console.log("resultRecipeMaterials", resultRecipeMaterials)
+      // console.log("separetedRawMaterials", separetedRawMaterials)
+
+      // const recipeMaterials = []
+      // data.data.map(value => {
+      //   idProductTransaction.map(value2 => {
+      //     if(value.product_id === value2.product_id) {
+      //       console.log("value recipe bismillah", value.Recipe_Materials)
+      //       console.log("value2.quantity", value2.quantity)
+      //       if(value.Recipe_Materials.length > 0) {
+      //         console.log("value.Recipe_Materials.quantity", value.Recipe_Materials[0].quantity)
+      //         value.Recipe_Materials[0].salto = value.Recipe_Materials[0].quantity * value2.quantity
+      //         console.log("value aslinya", value.Recipe_Materials)
+      //         recipeMaterials.push(value.Recipe_Materials[0])
+      //       }
+      //     }
+      //   })
+      // })
+
+      // console.log("idProductTransaction", idProductTransaction)
+      // console.log("recipeMaterials", recipeMaterials)
+      
+      const resultRawMaterialReport = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/raw-material-report`)
+      console.log("resultRawMaterialReport", resultRawMaterialReport)
+
+      const deret_raw_materials = []
+      const sum_raw_materials_amount = []
+
+      resultRawMaterialReport.data.data.map(value => {
+        if (deret_raw_materials.indexOf(value.raw_material_id) === -1) {
+          deret_raw_materials.push(value.raw_material_id)
+          sum_raw_materials_amount.push({raw_material_id: value.raw_material_id, used_amount: value.used_amount, raw_material_name: value.raw_material_name, remaining_amount: value.remaining_amount, unit: value.Unit?.name})
+        }
+        else {
+          if(sum_raw_materials_amount.length > 0) {
+            sum_raw_materials_amount.map((value2, index) => {
+              if(value.raw_material_id === value2.raw_material_id) {
+                const resultSum = value.used_amount + value2.used_amount
+                console.log("value result raw material report", value)
+                sum_raw_materials_amount[index].used_amount = resultSum
+              }
+            })
           }
         }
-        // if(recipeMaterials.data.data.Raw_Material.length > 0) {
-        //   for (const value2 of recipeMaterials.data.data.Raw_Material) {
-        //     resultRecipeMaterials.push({stock: value2.stock, name: value2.name})
-        //   }
-        // } else {
-        //   resultRecipeMaterials.push({stock: recipeMaterials.data.data.Raw_Material.stock, name: recipeMaterials.data.data.Raw_Material.name})
-        // }
-      }
-
-      console.log("resultRecipeMaterials", resultRecipeMaterials)
-      console.log("separetedRawMaterials", separetedRawMaterials)
-
-      const recipeMaterials = []
-      data.data.map(value => {
-        idProductTransaction.map(value2 => {
-          if(value.product_id === value2.product_id) {
-            console.log("value recipe bismillah", value.Recipe_Materials)
-            console.log("value2.quantity", value2.quantity)
-            if(value.Recipe_Materials.length > 0) {
-              console.log("value.Recipe_Materials.quantity", value.Recipe_Materials[0].quantity)
-              value.Recipe_Materials[0].salto = value.Recipe_Materials[0].quantity * value2.quantity
-              console.log("value aslinya", value.Recipe_Materials)
-              recipeMaterials.push(value.Recipe_Materials[0])
-            }
-          }
-        })
       })
 
-      console.log("idProductTransaction", idProductTransaction)
-      console.log("recipeMaterials", recipeMaterials)
-
-      setDataExport(separetedRawMaterials)
+      console.log("sum_raw_materials_amount", sum_raw_materials_amount)
+      setDataExport(sum_raw_materials_amount)
     } catch (err) {
       setDataExport([])
       console.error(err)
@@ -136,10 +161,10 @@ const RawMaterialTab = ({selectedOutlet,
 
   const rawMaterialReport = dataExport.map(value => {
     return {
-      raw_material: value.Raw_Material?.name,
-      used_amount: value.salto,
-      remaining_amount: value.Raw_Material?.stock,
-      unit: value.Unit?.name
+      raw_material: value.raw_material_name,
+      used_amount: value.used_amount,
+      remaining_amount: value.remaining_amount,
+      unit: value.unit
     }
   })
 
@@ -159,10 +184,10 @@ const RawMaterialTab = ({selectedOutlet,
           {dataExport ? (
             dataExport.map(item => 
               <tr>
-                <td>{item.Raw_Material?.name}</td>
-                <td>{item.salto}</td>
-                <td>{item.Raw_Material?.stock}</td>
-                <td>{item.Unit?.name}</td>
+                <td>{item.raw_material_name}</td>
+                <td>{item.used_amount}</td>
+                <td>{item.remaining_amount}</td>
+                <td>{item.unit}</td>
             </tr>
             )
           ) : null }

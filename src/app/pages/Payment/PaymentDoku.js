@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import { useLocation } from "react-router";
 import { useFormik } from "formik";
 import SHA1 from 'sha1';
+import "./style.css"
+import NumberFormat from 'react-number-format'
 
 import {
   Row,
@@ -25,7 +27,12 @@ import { constant } from 'lodash-es';
 const PaymentDoku = () => {
   const location = useLocation();
   const [stateShowModal, setStateShowModal] = React.useState(false);
-
+  const [detailPayment, setDetailPayment] = React.useState({
+    subTotal: null,
+    tax: null,
+    grandTotal: null
+  })
+  
   const showModalPayment = () => setStateShowModal(true);
   const cancleShowModalPayment = () => {
     setStateShowModal(false);
@@ -149,6 +156,15 @@ const PaymentDoku = () => {
   useEffect(() => {
     const result = JSON.parse('{"' + location.search.substring(1).replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
     console.log("bismillah result", result)
+    if(result.TAXSERVICE || result.SUBTOTAL) {
+      console.log("result.TAXSERVICE", result.TAXSERVICE)
+      setDetailPayment({
+        subTotal: result.SUBTOTAL,
+        tax: result.TAXSERVICE,
+        grandTotal: parseInt(result.SUBTOTAL) + parseInt(result.TAXSERVICE),
+        paymentMethod: result.PAYMENTMETHOD
+      })
+    }
     if(!result.TRANSIDMERCHANT) {
       genInvoice()
     } else {
@@ -181,7 +197,7 @@ const PaymentDoku = () => {
     // document.MerchatPaymentPage.EXPIRYDATE.value = result.EXPIRYDATE;
     // document.MerchatPaymentPage.CVV2.value = result.CVV2;
     // document.MerchatPaymentPage.CC_NAME.value = result.CC_NAME;
-    // document.MerchatPaymentPage.PAYMENTCHANNEL.value = result.PAYMENTCHANNEL
+    document.MerchatPaymentPage.PAYMENTCHANNEL.value = result.PAYMENTCHANNEL
     if(!result.WORDS) {
       if(document.MerchatPaymentPage.AMOUNT.value && document.MerchatPaymentPage.MALLID.value && document.MerchatPaymentPage.TRANSIDMERCHANT.value) {
         getWords()
@@ -241,179 +257,267 @@ const PaymentDoku = () => {
         <div className="row my-5">
           <div className="col-md-12">
           <form action="https://staging.doku.com/Suite/Receive" id="MerchatPaymentPage" name="MerchatPaymentPage" method="post" >
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>BASKET</Form.Label>
-                  <Form.Control
-                    id="basket"
-                    type="text"
-                    name="BASKET"
-                    required
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>PAYMENT TYPE</Form.Label>
-                  <Form.Control
-                    id="PAYMENTTYPE"
-                    type="text"
-                    name="PAYMENTTYPE"
-                    defaultValue="SALE"
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>MALLID</Form.Label>
-                  <Form.Control
-                    id="MALLID"
-                    type="text"
-                    name="MALLID"
-                    required
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>CHAINMERCHANT</Form.Label>
-                  <Form.Control
-                    id="CHAINMERCHANT"
-                    type="text"
-                    name="CHAINMERCHANT"
-                    required
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>CURRENCY</Form.Label>
-                  <Form.Control
-                    id="CURRENCY"
-                    type="text"
-                    name="CURRENCY"
-                    required
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>PURCHASE CURRENCY</Form.Label>
-                  <Form.Control
-                    id="PURCHASECURRENCY"
-                    type="text"
-                    name="PURCHASECURRENCY"
-                    required
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>AMOUNT</Form.Label>
-                  <Form.Control
-                    id="AMOUNT"
-                    type="text"
-                    name="AMOUNT"
-                    required
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>PURCHASEAMOUNT</Form.Label>
-                  <Form.Control
-                    id="PURCHASEAMOUNT"
-                    type="text"
-                    name="PURCHASEAMOUNT"
-                    required
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>TRANSIDMERCHANT</Form.Label>
-                  <Form.Control
-                    id="TRANSIDMERCHANT"
-                    type="text"
-                    name="TRANSIDMERCHANT"
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>WORDS</Form.Label>
-                  <div className="d-flex align-items-center justify-content-between">
+            <div style={{display: 'none'}}>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>BASKET</Form.Label>
                     <Form.Control
-                      id="WORDS"
+                      id="basket"
                       type="text"
-                      name="WORDS"
-                      required
+                      name="BASKET"
+                      
                     />
-                    <div className="btn btn-primary" style={{width: '120px'}} onClick={getWords}>Generate Words</div>
-                  </div>
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>REQUEST DATE & TIME</Form.Label>
-                  <div className="d-flex align-items-center justify-content-between">
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>PAYMENT TYPE</Form.Label>
                     <Form.Control
-                      id="REQUESTDATETIME"
+                      id="PAYMENTTYPE"
                       type="text"
-                      name="REQUESTDATETIME"
-                      required
+                      name="PAYMENTTYPE"
+                      defaultValue="SALE"
                     />
-                  </div>
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>SESSION ID</Form.Label>
-                  <Form.Control
-                    id="SESSIONID"
-                    type="text"
-                    name="SESSIONID"
-                    required
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>PAYMENT CHANNEL</Form.Label>
-                  <Form.Control
-                    id="PAYMENTCHANNEL"
-                    type="text"
-                    name="PAYMENTCHANNEL"
-                    disabled
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>MALLID</Form.Label>
+                    <Form.Control
+                      id="MALLID"
+                      type="text"
+                      name="MALLID"
+                      
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>CHAINMERCHANT</Form.Label>
+                    <Form.Control
+                      id="CHAINMERCHANT"
+                      type="text"
+                      name="CHAINMERCHANT"
+                      
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>CURRENCY</Form.Label>
+                    <Form.Control
+                      id="CURRENCY"
+                      type="text"
+                      name="CURRENCY"
+                      
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>PURCHASE CURRENCY</Form.Label>
+                    <Form.Control
+                      id="PURCHASECURRENCY"
+                      type="text"
+                      name="PURCHASECURRENCY"
+                      
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>AMOUNT</Form.Label>
+                    <Form.Control
+                      id="AMOUNT"
+                      type="text"
+                      name="AMOUNT"
+                      
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>PURCHASEAMOUNT</Form.Label>
+                    <Form.Control
+                      id="PURCHASEAMOUNT"
+                      type="text"
+                      name="PURCHASEAMOUNT"
+                      
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>WORDS</Form.Label>
+                    <div className="d-flex align-items-center justify-content-between">
+                      <Form.Control
+                        id="WORDS"
+                        type="text"
+                        name="WORDS"
+                        
+                      />
+                      <div className="btn btn-primary" style={{width: '120px'}} onClick={getWords}>Generate Words</div>
+                    </div>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>REQUEST DATE & TIME</Form.Label>
+                    <div className="d-flex align-items-center justify-content-between">
+                      <Form.Control
+                        id="REQUESTDATETIME"
+                        type="text"
+                        name="REQUESTDATETIME"
+                        
+                      />
+                    </div>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>SESSION ID</Form.Label>
+                    <Form.Control
+                      id="SESSIONID"
+                      type="text"
+                      name="SESSIONID"
+                      
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>ADDRESS</Form.Label>
+                    <Form.Control
+                      id="ADDRESS"
+                      type="text"
+                      name="ADDRESS"
+                      
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>COUNTRY</Form.Label>
+                    <Form.Control
+                      id="COUNTRY"
+                      type="text"
+                      name="COUNTRY"
+                      
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>STATE</Form.Label>
+                    <Form.Control
+                      id="STATE"
+                      type="text"
+                      name="STATE"
+                      
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>CITY</Form.Label>
+                    <Form.Control
+                      id="CITY"
+                      type="text"
+                      name="CITY"
+                      
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>PROVINCE</Form.Label>
+                    <Form.Control
+                      id="PROVINCE"
+                      type="text"
+                      name="PROVINCE"
+                      
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>ZIPCODE</Form.Label>
+                    <Form.Control
+                      id="ZIPCODE"
+                      type="text"
+                      name="ZIPCODE"
+                      
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>HOMEPHONE</Form.Label>
+                    <Form.Control
+                      id="HOMEPHONE"
+                      type="text"
+                      name="HOMEPHONE"
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+            </div>
+            <div className="d-flex justify-content-between align-items-end">
+              <div className="title-payment">Payment</div>
+              <div className="payment-method">{detailPayment.paymentMethod}</div>
+            </div>
+            <hr />
+            <div className="payment-detail">
+              <div className="sub-total">
+                <h6>Sub Total</h6>
+                <h4><NumberFormat value={detailPayment.subTotal} displayType={'text'} thousandSeparator={true} prefix="Rp. " /></h4>
+              </div>
+              <div className="tax my-1">
+                <h6>Tax</h6>
+                <h4><NumberFormat value={detailPayment.tax} displayType={'text'} thousandSeparator={true} prefix="Rp. " /></h4>
+              </div>
+              <div className="grand-total">
+                <h6>Grand Total</h6>
+                <h4><NumberFormat value={detailPayment.grandTotal} displayType={'text'} thousandSeparator={true} prefix="Rp. " /></h4>
+              </div>
+            </div>
+            <hr />
+            <p style={{fontSize: '10px'}}>Please fill in the form *</p>
             <Row>
               <Col>
                 <Form.Group>
@@ -443,96 +547,6 @@ const PaymentDoku = () => {
             <Row>
               <Col>
                 <Form.Group>
-                  <Form.Label>ADDRESS</Form.Label>
-                  <Form.Control
-                    id="ADDRESS"
-                    type="text"
-                    name="ADDRESS"
-                    required
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>COUNTRY</Form.Label>
-                  <Form.Control
-                    id="COUNTRY"
-                    type="text"
-                    name="COUNTRY"
-                    required
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>STATE</Form.Label>
-                  <Form.Control
-                    id="STATE"
-                    type="text"
-                    name="STATE"
-                    required
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>CITY</Form.Label>
-                  <Form.Control
-                    id="CITY"
-                    type="text"
-                    name="CITY"
-                    required
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>PROVINCE</Form.Label>
-                  <Form.Control
-                    id="PROVINCE"
-                    type="text"
-                    name="PROVINCE"
-                    required
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>ZIPCODE</Form.Label>
-                  <Form.Control
-                    id="ZIPCODE"
-                    type="text"
-                    name="ZIPCODE"
-                    required
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>HOMEPHONE</Form.Label>
-                  <Form.Control
-                    id="HOMEPHONE"
-                    type="text"
-                    name="HOMEPHONE"
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
                   <Form.Label>MOBILEPHONE</Form.Label>
                   <Form.Control
                     id="MOBILEPHONE"
@@ -543,6 +557,30 @@ const PaymentDoku = () => {
                 </Form.Group>
               </Col>
             </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>PAYMENT CHANNEL</Form.Label>
+                    <Form.Control
+                      id="PAYMENTCHANNEL"
+                      type="text"
+                      name="PAYMENTCHANNEL"
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>TRANSIDMERCHANT</Form.Label>
+                    <Form.Control
+                      id="TRANSIDMERCHANT"
+                      type="text"
+                      name="TRANSIDMERCHANT"
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
             {/* <tr>
               <td class="field_label">ADDITIONAL DATA</td>
               <td class="field_input"><input name="ADDITIONALDATA" type="text" id="ADDITIONALDATA" value="yogi bagas;2;Cuca Jimbaran - Bali;" size="12" maxlength="20" /></td>
@@ -582,8 +620,9 @@ const PaymentDoku = () => {
             <tr>
               <td class="field_input" colspan="2">&nbsp;</td>
             </tr>
-
-            <input name="submit" type="submit" class="btn btn-primary" id="submit" value="SUBMIT" onClick={() => showModalPayment}/>
+            <div className="wrapper-button">
+              <input name="submit" type="submit" class="btn btn-primary" id="submit" value="SUBMIT" onClick={() => showModalPayment}/>
+            </div>
           </form>
           </div>
         </div>

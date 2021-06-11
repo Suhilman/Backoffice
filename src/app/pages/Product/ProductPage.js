@@ -76,14 +76,14 @@ export const ProductPage = () => {
                     title: "Stock Alert",
                     message: `${value.name} ${value.stock} ${value.Unit.name}` 
                   }
-                  await axios.post(`${API_URL}/api/v1/business-notification`, message)
+                  // await axios.post(`${API_URL}/api/v1/business-notification`, message)
                   console.log("ini data yang akan di push notification", `${value.name} ${value.stock} ${value.Unit.name}`)
                 } else {
                   const message = {
                     title: "Stock Alert",
                     message: `${value.name} ${value.stock} unit` 
                   }
-                  await axios.post(`${API_URL}/api/v1/business-notification`, message)
+                  // await axios.post(`${API_URL}/api/v1/business-notification`, message)
                   console.log("ini data yang akan di push notification", `${value.name} ${value.stock} unit`)
                 }
               }
