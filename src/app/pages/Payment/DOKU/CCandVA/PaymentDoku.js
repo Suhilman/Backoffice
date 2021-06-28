@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { useLocation } from "react-router";
 import { useFormik } from "formik";
 import SHA1 from 'sha1';
-import "./style.css"
+import "../style.css"
 import NumberFormat from 'react-number-format'
 
 import {
@@ -32,7 +32,7 @@ const PaymentDoku = () => {
     tax: null,
     grandTotal: null
   })
-  
+
   const showModalPayment = () => setStateShowModal(true);
   const cancleShowModalPayment = () => {
     setStateShowModal(false);
@@ -108,7 +108,6 @@ const PaymentDoku = () => {
         PAYMENTCHANNEL: values.PAYMENTCHANNEL
       }
       console.log("Data sebelum dikirim sebelum kirim", dataSend)
-      // https://cors-anywhere.herokuapp.com/
       try {
       
         const config = {
@@ -134,9 +133,7 @@ const PaymentDoku = () => {
       var rnum = Math.floor(Math.random() * chars.length);
       randomstring += chars.substring(rnum,rnum+1);
     }
-  
     return randomstring;
-  
   }
  
   const getWords = () => {
@@ -183,8 +180,6 @@ const PaymentDoku = () => {
     document.MerchatPaymentPage.REQUESTDATETIME.value = result.REQUESTDATETIME;
     document.MerchatPaymentPage.CURRENCY.value = result.CURRENCY;
     document.MerchatPaymentPage.PURCHASECURRENCY.value = result.PURCHASECURRENCY;
-    document.MerchatPaymentPage.NAME.value = result.NAME;
-    document.MerchatPaymentPage.EMAIL.value = result.EMAIL;
     document.MerchatPaymentPage.BASKET.value = result.BASKET;
     document.MerchatPaymentPage.COUNTRY.value = result.COUNTRY;
     document.MerchatPaymentPage.ADDRESS.value = result.ADDRESS;
@@ -193,10 +188,14 @@ const PaymentDoku = () => {
     document.MerchatPaymentPage.PROVINCE.value = result.PROVINCE;
     document.MerchatPaymentPage.MOBILEPHONE.value = result.MOBILEPHONE;
     document.MerchatPaymentPage.ZIPCODE.value = result.ZIPCODE;
-    // document.MerchatPaymentPage.CARDNUMBER.value = result.CARDNUMBER;
-    // document.MerchatPaymentPage.EXPIRYDATE.value = result.EXPIRYDATE;
-    // document.MerchatPaymentPage.CVV2.value = result.CVV2;
-    // document.MerchatPaymentPage.CC_NAME.value = result.CC_NAME;
+    document.MerchatPaymentPage.EMAIL.value = result.EMAIL;
+    if(result.PHONENUMBER !== "null") {
+      document.MerchatPaymentPage.MOBILEPHONE.value = result.PHONENUMBER;
+    }
+    if(result.NAME !== "null") {
+      document.MerchatPaymentPage.NAME.value = result.NAME;
+    }
+
     document.MerchatPaymentPage.PAYMENTCHANNEL.value = result.PAYMENTCHANNEL
     if(!result.WORDS) {
       if(document.MerchatPaymentPage.AMOUNT.value && document.MerchatPaymentPage.MALLID.value && document.MerchatPaymentPage.TRANSIDMERCHANT.value) {
@@ -205,58 +204,14 @@ const PaymentDoku = () => {
     } else {
       document.MerchatPaymentPage.WORDS.value = result.WORDS;
     }
-    // initialValuePayment.MALLID = result.MALLID
-    // initialValuePayment.CHAINMERCHANT = result.CHAINMERCHANT
-    // initialValuePayment.AMOUNT = result.AMOUNT
-    // initialValuePayment.PURCHASEAMOUNT = result.PURCHASEAMOUNT
-    // initialValuePayment.TRANSIDMERCHANT = result.TRANSIDMERCHANT
-    // initialValuePayment.WORDS = result.WORDS
-    // initialValuePayment.REQUESTDATETIME = result.REQUESTDATETIME
-    // initialValuePayment.CURRENCY = result.CURRENCY
-    // initialValuePayment.PURCHASECURRENCY = result.PURCHASECURRENCY
-    // initialValuePayment.SESSIONID = result.SESSIONID
-    // initialValuePayment.NAME = result.NAME
-    // initialValuePayment.EMAIL = result.EMAIL
-    // initialValuePayment.BASKET = result.BASKET
-    // initialValuePayment.CARDNUMBER = result.CARDNUMBER
-    // initialValuePayment.EXPIRYDATE = result.EXPIRYDATE
-    // initialValuePayment.CVV2 = result.CVV2
-    // initialValuePayment.CC_NAME = result.CC_NAME
-    // initialValuePayment.PAYMENTCHANNEL = result.PAYMENTCHANNEL
-
-    setDefaultValue({
-      MALLID: result.MALLID,
-      CHAINMERCHANT: result.CHAINMERCHANT,
-      AMOUNT: result.AMOUNT,
-      PURCHASEAMOUNT: result.PURCHASEAMOUNT,
-      TRANSIDMERCHANT: result.TRANSIDMERCHANT,
-      WORDS: result.WORDS,
-      REQUESTDATETIME: result.REQUESTDATETIME,
-      CURRENCY: result.CURRENCY,
-      PURCHASECURRENCY: result.PURCHASECURRENCY,
-      SESSIONID: result.SESSIONID,
-      NAME: result.NAME,
-      EMAIL: result.EMAIL,
-      BASKET: result.BASKET,
-      CARDNUMBER: result.CARDNUMBER,
-      EXPIRYDATE: result.EXPIRYDATE,
-      CVV2: result.CVV2,
-      CC_NAME: result.CC_NAME,
-      PAYMENTCHANNEL: result.PAYMENTCHANNEL
-    })
   }, [])
-  console.log("defaultValue lurr", defaultValue)
-  const handleForm = () => {
-    console.log("hellow broww")
-    console.log("miracles", defaultValue)
-  }
-  console.log("formikPayment.getFieldProps", formikPayment.getFieldProps("MALLID"))
+
   return (
     <div>
       <div className="container">
         <div className="row my-5">
           <div className="col-md-12">
-          <form action="https://staging.doku.com/Suite/Receive" id="MerchatPaymentPage" name="MerchatPaymentPage" method="post" >
+          <form action={process.env.REACT_APP_PAYMENT_DOKU} id="MerchatPaymentPage" name="MerchatPaymentPage" method="post" >
             <div style={{display: 'none'}}>
               <Row>
                 <Col>
@@ -496,10 +451,34 @@ const PaymentDoku = () => {
                   </Form.Group>
                 </Col>
               </Row>
-            </div>
+            <Row>
+              <Col>
+                <Form.Group>
+                  <Form.Label>PAYMENT CHANNEL</Form.Label>
+                  <Form.Control
+                    id="PAYMENTCHANNEL"
+                    type="text"
+                    name="PAYMENTCHANNEL"
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Form.Group>
+                  <Form.Label>TRANSIDMERCHANT</Form.Label>
+                  <Form.Control
+                    id="TRANSIDMERCHANT"
+                    type="text"
+                    name="TRANSIDMERCHANT"
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+          </div>
             <div className="d-flex justify-content-between align-items-end">
               <div className="title-payment">Payment</div>
-              <div className="payment-method">{detailPayment.paymentMethod}</div>
+              <div className="payment-method d-flex justify-content-end">{detailPayment.paymentMethod}</div>
             </div>
             <hr />
             <div className="payment-detail">
@@ -557,30 +536,6 @@ const PaymentDoku = () => {
                 </Form.Group>
               </Col>
             </Row>
-              <Row>
-                <Col>
-                  <Form.Group>
-                    <Form.Label>PAYMENT CHANNEL</Form.Label>
-                    <Form.Control
-                      id="PAYMENTCHANNEL"
-                      type="text"
-                      name="PAYMENTCHANNEL"
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Form.Group>
-                    <Form.Label>TRANSIDMERCHANT</Form.Label>
-                    <Form.Control
-                      id="TRANSIDMERCHANT"
-                      type="text"
-                      name="TRANSIDMERCHANT"
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
             {/* <tr>
               <td class="field_label">ADDITIONAL DATA</td>
               <td class="field_input"><input name="ADDITIONALDATA" type="text" id="ADDITIONALDATA" value="yogi bagas;2;Cuca Jimbaran - Bali;" size="12" maxlength="20" /></td>

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { useLocation } from "react-router";
 import { useFormik } from "formik";
 import SHA1 from 'sha1';
-import "./style.css"
+import "../style.css"
 import NumberFormat from 'react-number-format'
 
 import {

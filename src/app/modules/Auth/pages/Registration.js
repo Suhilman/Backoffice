@@ -336,6 +336,16 @@ function Registration(props) {
           setToken(`Bearer ${accessToken}`);
           setVerificationCode(owner.verification_code);
 
+          console.log("ownernye", owner)
+
+          const sendWhatsapp = await axios.get(`${API_URL}/api/v1/send-whatsapp/send-message?phone=${values.phone_number.toString()}&code=${owner.verification_code}`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`
+            }
+          })
+
+          console.log("response send whatsapp ==>", sendWhatsapp)
+
           // Handle Check Country || jika diluar indonesia, ketika membuat outlet bisa select addres. Jika luar indonesia select diubah menjadi text
 
           const options = {
@@ -343,7 +353,7 @@ function Registration(props) {
             timeout: 5000,
             maximumAge: 0
           };
-          
+
           const success = async (pos) =>  {
             try {
               const crd = pos.coords;
@@ -386,7 +396,8 @@ function Registration(props) {
         .catch((err) => {
           console.log('ini error formik', err)
           setSubmitting(false);
-          setStatus(err.response.data.message);
+          console.log("err.response", err.response)
+          // setStatus(err.response.data.message);
           disableLoading();
         });
     }

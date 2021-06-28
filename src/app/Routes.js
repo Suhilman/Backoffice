@@ -13,11 +13,10 @@ import BasePage from "./BasePage";
 import { Logout, AuthPage } from "./modules/Auth";
 import ErrorsPage from "./modules/ErrorsExamples/ErrorsPage";
 import { ChangePassword } from "./pages/Auth/ChangePassword";
-import PaymentDoku from "./pages/Payment/PaymentDoku";
-import RedirectDoku from "./pages/Payment/RedirectDoku";
-import CheckStatusDoku from "./pages/Payment/CheckStatusDoku";
-import RefundDoku from "./pages/Payment/RefundDoku";
-import OtherPaymentDoku from "./pages/Payment/OtherPaymentDoku";
+import PaymentDoku from "./pages/Payment/DOKU/CCandVA/PaymentDoku";
+import SignOn from "./pages/Payment/DOKU/QRIS/SignOn"
+import GenerateQRString from "./pages/Payment/DOKU/QRIS/GenerateQRString"
+import ShowQRCode from "./pages/Payment/DOKU/QRIS/ShowQRCode";
 
 export function Routes() {
   const { isAuthorized } = useSelector(
@@ -31,9 +30,9 @@ export function Routes() {
     <Switch>
       <Route path="/auth/change-password" component={ChangePassword} />
       <Route path="/payment/doku" component={PaymentDoku} />
-      <Route path="/payment/other-doku" component={OtherPaymentDoku} />
-      <Route path="/payment/check-status" component={CheckStatusDoku} />
-      <Route path="/payment/refund-doku" component={RefundDoku} />
+      <Route path="/payment/sign-on" component={SignOn} />
+      <Route path="/payment/generate-qr-string" component={GenerateQRString} />
+      <Route path="/payment/show-qrcode" component={ShowQRCode} />
 
       {!isAuthorized ? (
         /*Render auth page when user at `/auth` and not authorized.*/

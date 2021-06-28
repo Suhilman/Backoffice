@@ -169,7 +169,7 @@ export const DetailStaffPage = ({ match, location }) => {
         phone_number: data.data.phone_number,
         type: data.data.User.type,
         role_id: data.data.User.role_id,
-        location_name: data.data.Outlet.Location.name
+        location_name: data.data.Outlet?.name
       });
       setStaffInitial({
         outlet_id: data.data.outlet_id,
@@ -179,7 +179,7 @@ export const DetailStaffPage = ({ match, location }) => {
         phone_number: data.data.phone_number,
         type: data.data.User.type,
         role_id: data.data.User.role_id,
-        location_name: data.data.Outlet.Location.name
+        location_name: data.data.Outlet.Location?.name
       });
 
       setImage(
@@ -655,7 +655,7 @@ export const DetailStaffPage = ({ match, location }) => {
                         {allOutlets.map((item) => {
                           return (
                             <option key={item.id} value={item.id}>
-                              {item.Location.name}
+                              {item.Location?.name}
                             </option>
                           );
                         })}

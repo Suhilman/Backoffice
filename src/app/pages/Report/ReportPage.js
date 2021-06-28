@@ -226,7 +226,7 @@ export const ReportPage = () => {
 
     setSelectedOutlet({
       id: value,
-      name: outlet ? outlet.Location.name : "All Outlet"
+      name: outlet ? outlet.Location?.name : "All Outlet"
     });
   };
 

@@ -3,8 +3,11 @@ import React, { useEffect, useState } from "react";
 import { Button, Modal, Spinner, Form, Row, Col } from "react-bootstrap";
 
 import "../../style.css";
+import LogoBeetpos from '../../../../images/logo beetPOS small new.png' 
 
 import QRCode from 'qrcode.react'
+
+// import { QRCode } from 'react-qrcode-logo';
 
 const ModalPayment = ({
   stateModal,
@@ -30,6 +33,7 @@ const ModalPayment = ({
   console.log(dataObj)
 
   const downloadQR = () => {
+    console.log("download")
     const canvas = document.getElementById("qrcode");
     const pngUrl = canvas
       .toDataURL("image/png")
@@ -134,11 +138,15 @@ const ModalPayment = ({
                 {formikTable.getFieldProps("name").value ? (
                   <div className="d-flex flex-column align-items-center">
                     <QRCode 
+                      onClick={downloadQR}
                       id="qrcode"
                       value={dataObj} 
+                      // ecLevel={"L"}
                       level={"L"}
+                      // logoImage={LogoBeetpos}
+                      // logoWidth={50}
+                      // logoHeigth={60}
                       includeMargin={true}
-                      onClick={downloadQR}
                     />
                     <p>{t("pleaseClickQrcodeForDownload")}</p>
                   </div>

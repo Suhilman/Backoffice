@@ -189,9 +189,9 @@ export const StaffPage = () => {
       id: item.id,
       no: index + 1,
       name: item.name,
-      location: item.Outlet.Location.name,
+      location: item.Outlet.Location?.name,
       // type: item.User.type
-      role: item.User.Role.name
+      role: item.User.Role?.name
     };
   });
 
@@ -289,7 +289,7 @@ export const StaffPage = () => {
                         {allOutlets.map((item) => {
                           return (
                             <option key={item.id} value={item.id}>
-                              {item.Location.name}
+                              {item.Location?.name}
                             </option>
                           );
                         })}
