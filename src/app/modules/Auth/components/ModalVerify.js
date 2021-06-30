@@ -11,7 +11,8 @@ const ModalVerify = ({
   // loading,
   second,
   handleResendCode,
-  verification_code
+  verification_code,
+  statusWhatsapp
 }) => {
   const hanldeHide = () => {
     console.log('Please insert code')
@@ -34,7 +35,9 @@ const ModalVerify = ({
           <br />
           {phonenumber}
         </p>
-        <p>Verif Code: {verification_code || ""}</p>
+        {!statusWhatsapp ? 
+          (<p>Verif Code: {verification_code || ""}</p>)
+        : "Please check whatsapp for verify code"}
         <div className="row">
           <input
             type="text"

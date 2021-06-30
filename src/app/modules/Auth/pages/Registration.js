@@ -8,6 +8,9 @@ import { injectIntl } from "react-intl";
 import { useTranslation } from "react-i18next";
 import { Form } from "react-bootstrap";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import ReCAPTCHA from "react-google-recaptcha";
 
 import ModalVerify from "../components/ModalVerify";
@@ -15,6 +18,8 @@ import ModalRegister from "../components/ModalRegister";
 
 import * as auth from "../_redux/authRedux";
 import { register, cancelRegistration } from "../_redux/authCrud";
+
+toast.configure()
 
 const initialValues = {
   name: "",
@@ -118,6 +123,7 @@ function Registration(props) {
   const [allCities, setAllCities] = useState([]);
   const [allLocations, setAllLocations] = useState([]);
   const [dataFormik, setDataFormik] = useState({})
+  const [statusWhatsapp, setStatusWhatsapp] = useState(false)
 
   const [code, setCode] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
@@ -338,14 +344,6 @@ function Registration(props) {
 
           console.log("ownernye", owner)
 
-          const sendWhatsapp = await axios.get(`${API_URL}/api/v1/send-whatsapp/send-message?phone=${values.phone_number.toString()}&code=${owner.verification_code}`, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`
-            }
-          })
-
-          console.log("response send whatsapp ==>", sendWhatsapp)
-
           // Handle Check Country || jika diluar indonesia, ketika membuat outlet bisa select addres. Jika luar indonesia select diubah menjadi text
 
           const options = {
@@ -392,6 +390,7 @@ function Registration(props) {
           } else {
             props.login(token);
           }
+          handleSendWhatsapp(values.phone_number.toString(), owner.verification_code, accessToken)
         })
         .catch((err) => {
           console.log('ini error formik', err)
@@ -402,6 +401,47 @@ function Registration(props) {
         });
     }
   });
+
+  const handleSendWhatsapp = async (phone, verifyCode, token) => {
+    console.log("oke breee")
+    try {
+      const sendWhatsapp = await axios.get(`${API_URL}/api/v1/send-whatsapp/send-message?phone=${phone}&code=${verifyCode}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      console.log("response send whatsapp ==>", sendWhatsapp)
+
+      // status whatsapp untuk cek response server error tidak
+      setStatusWhatsapp(true)
+      console.log("send whataspp berhasil")
+      toast.success('Verification code sent', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      console.log("send whataspp error")
+      console.log(error)
+
+      // status whatsapp untuk cek response server error tidak
+      setStatusWhatsapp(false)
+
+      toast.info('Verification code not sent', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  }
 
   const handleProvince = (e) => {
     if (!e.target.value) {
@@ -511,6 +551,7 @@ function Registration(props) {
   return (
     <div className="login-form login-signin" style={{ display: "block" }}>
       <ModalVerify
+        statusWhatsapp={statusWhatsapp}
         showVerifyModal={showVerifyModal}
         closeVerifyModal={closeVerifyModal}
         alertModal={alertModal}
