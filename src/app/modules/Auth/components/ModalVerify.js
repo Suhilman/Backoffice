@@ -12,11 +12,16 @@ const ModalVerify = ({
   second,
   handleResendCode,
   verification_code,
-  statusWhatsapp
+  statusWhatsapp,
+  messageNotSent
 }) => {
+  const [showVerifyCode, setShowVerifyCode] = React.useState(false)
+
+  const openVerifyCode = () => setShowVerifyCode(true)
   const hanldeHide = () => {
     console.log('Please insert code')
   }
+
   return (
     <Modal show={showVerifyModal} onHide={hanldeHide}>
       <Modal.Header closeButton>
@@ -35,9 +40,24 @@ const ModalVerify = ({
           <br />
           {phonenumber}
         </p>
-        {!statusWhatsapp ? 
-          (<p>Verif Code: {verification_code || ""}</p>)
-        : "Please check whatsapp for verify code"}
+        {statusWhatsapp ? (
+          <div>
+            <div>
+              Please check whatsapp for verify code
+            </div>
+            {messageNotSent ? (
+              <div className="mb-3">
+                <div className="text-muted">
+                  didn't receive the message? <span className="text-primary" style={{cursor: "pointer"}} onClick={openVerifyCode}>show here</span> 
+                </div>
+                <div>
+                  {showVerifyCode ? verification_code : ""}
+                </div>
+              </div>
+            ) : null }
+          </div>
+        )
+        : (<p>Verif Code: {verification_code || ""}</p>) }
         <div className="row">
           <input
             type="text"

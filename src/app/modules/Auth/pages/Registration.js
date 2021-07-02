@@ -124,6 +124,7 @@ function Registration(props) {
   const [allLocations, setAllLocations] = useState([]);
   const [dataFormik, setDataFormik] = useState({})
   const [statusWhatsapp, setStatusWhatsapp] = useState(false)
+  const [messageNotSent, setMessageNotSent] = React.useState(false)
 
   const [code, setCode] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
@@ -385,12 +386,15 @@ function Registration(props) {
           
           if (!owner.is_verified) {
             setSubmitting(false);
-            openVerifyModal();
             setSecond(60);
+            await handleSendWhatsapp(values.phone_number.toString(), owner.verification_code, accessToken)
+            openVerifyModal();
+            setTimeout(() => {
+              setMessageNotSent(true)
+            }, 10000);
           } else {
             props.login(token);
           }
-          handleSendWhatsapp(values.phone_number.toString(), owner.verification_code, accessToken)
         })
         .catch((err) => {
           console.log('ini error formik', err)
@@ -553,6 +557,7 @@ function Registration(props) {
       <ModalVerify
         statusWhatsapp={statusWhatsapp}
         showVerifyModal={showVerifyModal}
+        messageNotSent={messageNotSent}
         closeVerifyModal={closeVerifyModal}
         alertModal={alertModal}
         phonenumber={phonenumber}
@@ -644,7 +649,7 @@ function Registration(props) {
         <div className="form-group fv-plugins-icon-container">
           <input
             placeholder="Phone number"
-            type="number"
+            type="text"
             className={`form-control py-5 px-6 ${getInputClasses(
               "phone_number"
             )}`}
