@@ -407,7 +407,10 @@ function Registration(props) {
   });
 
   const handleSendWhatsapp = async (phone, verifyCode, token) => {
-    console.log("oke breee")
+    console.log("phone", phone)
+    console.log("verifyCode", verifyCode)
+    console.log("token", token)
+
     try {
       const sendWhatsapp = await axios.get(`${API_URL}/api/v1/send-whatsapp/send-message?phone=${phone}&code=${verifyCode}`, {
         headers: {
