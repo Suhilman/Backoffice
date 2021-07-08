@@ -61,7 +61,7 @@ function Registration(props) {
       ),
     phone_number: Yup.string()
       .min(8, `${t("minimum3Symbols")}`)
-      .max(13, `${t("maximum50Symbols")}`)
+      .max(20, `${t("maximum50Symbols")}`)
       .required(
         intl.formatMessage({
           id: "AUTH.VALIDATION.REQUIRED_FIELD"
@@ -407,10 +407,7 @@ function Registration(props) {
   });
 
   const handleSendWhatsapp = async (phone, verifyCode, token) => {
-    console.log("phone", phone)
-    console.log("verifyCode", verifyCode)
-    console.log("token", token)
-
+    console.log("oke breee")
     try {
       const sendWhatsapp = await axios.get(`${API_URL}/api/v1/send-whatsapp/send-message?phone=${phone}&code=${verifyCode}`, {
         headers: {

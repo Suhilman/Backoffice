@@ -135,9 +135,9 @@ const PaymentDoku = () => {
     }
     return randomstring;
   }
- 
-  const getWords = () => {
-    const msg = document.MerchatPaymentPage.AMOUNT.value + document.MerchatPaymentPage.MALLID.value + "I8w6Qvm0ZTo6" + document.MerchatPaymentPage.TRANSIDMERCHANT.value;
+
+  const getWords = (sharedkey) => {
+    const msg = document.MerchatPaymentPage.AMOUNT.value + document.MerchatPaymentPage.MALLID.value + sharedkey + document.MerchatPaymentPage.TRANSIDMERCHANT.value;
   
     document.MerchatPaymentPage.WORDS.value = SHA1(msg);
   }
@@ -199,7 +199,7 @@ const PaymentDoku = () => {
     document.MerchatPaymentPage.PAYMENTCHANNEL.value = result.PAYMENTCHANNEL
     if(!result.WORDS) {
       if(document.MerchatPaymentPage.AMOUNT.value && document.MerchatPaymentPage.MALLID.value && document.MerchatPaymentPage.TRANSIDMERCHANT.value) {
-        getWords()
+        getWords(result.SHAREDKEY)
       }
     } else {
       document.MerchatPaymentPage.WORDS.value = result.WORDS;
