@@ -19,6 +19,7 @@ import NumberFormat from 'react-number-format'
 import { useHistory } from "react-router-dom";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
+import './style.css'
 
 export function MixedWidget1({
   className,
@@ -42,6 +43,7 @@ export function MixedWidget1({
 }) {
   const uiService = useHtmlClassService();
   const [currency, setCurrency] = React.useState("")
+
   const handleCurrency = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     const userInfo = JSON.parse(localStorage.getItem("user_info"));
@@ -540,31 +542,198 @@ const ModalCustomRange = ({
   ranges
 }) => {
   const { t } = useTranslation();
+  const [showGuide, setShowGuide] = React.useState(null)
+  const API_URL = process.env.REACT_APP_API_URL;
+  const userInfo = JSON.parse(localStorage.getItem("user_info"));
+
+  const checkUserGuideBusiness = async () => {
+    try {
+      const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+      if(!data.data.user_guide) {
+        setShowGuide("dashboard")
+      } else {
+        setShowGuide(null)
+      }
+      console.log("data businessnya", data.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleShowGuide = async (state) => {
+    if (state === 'finish_guide') {
+      await axios.patch(`${API_URL}/api/v1/business/update-guide/${userInfo.business_id}`, {
+        user_guide: 1
+      })
+      setShowGuide(null)
+    } else {
+      setShowGuide(state)
+    }
+  }
+
+  React.useEffect(() => {
+    checkUserGuideBusiness()
+  },[])
+
   return (
-    <Modal show={show} onHide={handleClose}>
-      <DateRangePicker
-        ranges={[
-          {
-            startDate: startRange,
-            endDate: endRange,
-            key: "selection"
-          }
-        ]}
-        onChange={handleStartRange}
-      />
-      <Modal.Footer>
-        <Button
-          onClick={() => {
-            handleSelectRange(ranges.find((item) => item.id === 9));
-            handleClose();
-          }}
-        >
-          {t("save")}
-        </Button>
-        <Button onClick={handleClose} variant="secondary">
-          {t("cancel")}
-        </Button>
-      </Modal.Footer>
-    </Modal>
+    <div>
+      <Modal show={show} onHide={handleClose}>
+        <DateRangePicker
+          ranges={[
+            {
+              startDate: startRange,
+              endDate: endRange,
+              key: "selection"
+            }
+          ]}
+          onChange={handleStartRange}
+        />
+        <Modal.Footer>
+          <Button
+            onClick={() => {
+              handleSelectRange(ranges.find((item) => item.id === 9));
+              handleClose();
+            }}
+          >
+            {t("save")}
+          </Button>
+          <Button onClick={handleClose} variant="secondary">
+            {t("cancel")}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      {showGuide === 'dashboard' ? (
+        <div className="wrapper-guide dashboard">
+          <div onClick={() => handleShowGuide('report')}>
+            <div className="font-weight-bold">Dashboard</div>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+          </div>
+          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
+            <div className="badge badge-danger">Skip All Guide</div>
+          </div>
+        </div>
+      ) : null}
+      {showGuide === 'report' ? (
+        <div className="wrapper-guide report">
+          <div onClick={() => handleShowGuide('product')}>
+            <div className="font-weight-bold">Report</div>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+          </div>
+          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
+            <div className="badge badge-danger">Skip All Guide</div>
+          </div>
+        </div>
+      ) : null}
+      {showGuide === 'product' ? (
+        <div className="wrapper-guide product" >
+          <div onClick={() => handleShowGuide('inventory')}>
+          <div className="font-weight-bold">Product</div>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+          </div>
+          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
+            <div className="badge badge-danger">Skip All Guide</div>
+          </div>
+        </div>
+      ) : null }
+      {showGuide === 'inventory' ? (
+        <div className="wrapper-guide inventory">
+          <div onClick={() => handleShowGuide('kitchen')}>
+            <div className="font-weight-bold">Inventory</div>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+          </div>
+          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
+            <div className="badge badge-danger">Skip All Guide</div>
+          </div>
+        </div>
+      ): null}
+      {showGuide === 'kitchen' ? (
+        <div className="wrapper-guide kitchen">
+          <div  onClick={() => handleShowGuide('outlet')}>
+            <div className="font-weight-bold">Kitchen</div>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+          </div>
+          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
+            <div className="badge badge-danger">Skip All Guide</div>
+          </div>
+        </div>
+      ): null}
+      {showGuide === 'outlet' ? (
+        <div className="wrapper-guide outlet" >
+          <div onClick={() => handleShowGuide('promo')}>
+            <div className="font-weight-bold">Outlet</div>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+          </div>
+          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
+            <div className="badge badge-danger">Skip All Guide</div>
+          </div>
+        </div>
+      ): null}
+      {showGuide === 'promo' ? (
+        <div className="wrapper-guide promo"> 
+          <div onClick={() => handleShowGuide('staff')}>
+            <div className="font-weight-bold">Promo</div>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+          </div>
+          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
+            <div className="badge badge-danger">Skip All Guide</div>
+          </div>
+        </div>
+      ): null}
+      {showGuide === 'staff' ? (
+        <div className="wrapper-guide staff">
+          <div onClick={() => handleShowGuide('role')}>
+            <div className="font-weight-bold">Staff</div>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+          </div>
+          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
+            <div className="badge badge-danger">Skip All Guide</div>
+          </div>
+        </div>
+      ): null}
+      {showGuide === 'role' ? (
+        <div className="wrapper-guide role">
+          <div onClick={() => handleShowGuide('customer')}>
+            <div className="font-weight-bold">Role</div>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+          </div>
+          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
+            <div className="badge badge-danger">Skip All Guide</div>
+          </div>
+        </div>
+      ): null}
+      {showGuide === 'customer' ? (
+        <div className="wrapper-guide customer">
+          <div onClick={() => handleShowGuide('commission')}>
+            <div className="font-weight-bold">Customer</div>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+          </div>
+          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
+            <div className="badge badge-danger">Skip All Guide</div>
+          </div>
+        </div>
+      ): null}
+      {showGuide === 'commission' ? (
+        <div className="wrapper-guide commission">
+          <div onClick={() => handleShowGuide('account')}>
+            <div className="font-weight-bold">Commission</div>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+          </div>
+          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
+            <div className="badge badge-danger">Skip All Guide</div>
+          </div>
+        </div>
+      ): null}
+      {showGuide === 'account' ? (
+        <div className="wrapper-guide account">
+          <div onClick={() => handleShowGuide('finish_guide')}>
+            <div className="font-weight-bold">Account</div>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+          </div>
+          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
+            <div className="badge badge-danger">Skip All Guide</div>
+          </div>
+        </div>
+      ): null}
+    </div>
   );
 };

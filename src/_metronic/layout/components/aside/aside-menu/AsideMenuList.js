@@ -20,6 +20,7 @@ import accountIcon from "../../../../../images/icons8-search-account-256.png"
 import commissionIcon from "../../../../../images/icons8-sales-performance-52.png"
 
 import './style.css'
+
 // TODO: ambil privileges dari store
 const select = (appState) => {
   return {

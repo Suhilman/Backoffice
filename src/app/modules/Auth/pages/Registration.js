@@ -409,12 +409,37 @@ function Registration(props) {
   const handleSendWhatsapp = async (phone, verifyCode, token) => {
     console.log("oke breee")
     try {
-      const sendWhatsapp = await axios.get(`${API_URL}/api/v1/send-whatsapp/send-message?phone=${phone}&code=${verifyCode}`, {
+      // const sendWhatsapp = await axios.get(`${API_URL}/api/v1/send-whatsapp/send-message?phone=${phone}&code=${verifyCode}`, {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`
+      //   }
+      // })
+      // console.log("response send whatsapp ==>", sendWhatsapp)
+
+      const tempSplit = phone.split('')
+      console.log("tempSplit", tempSplit)
+      if (tempSplit[0] == 0 || tempSplit[0].length == 0) {
+        tempSplit[0] = "62"
+      } else if (tempSplit[0] == 8) {
+        tempSplit.unshift(62)
+      }
+      const resultPhone = tempSplit.join('')
+
+      console.log("resultPhone", resultPhone)
+      const dataSend = {
+        message : `
+          Verify Code = ${verifyCode}\nPowered By Beetpos
+        `,
+        phone : resultPhone,
+        device : "backoffice"
+      }
+      const sendMessage = await axios.post('http://139.59.244.237:3001/api/v1/messaging/sendText', dataSend, {
         headers: {
-          Authorization: `Bearer ${token}`
+          "x-api-key" : "1fESFt80P36OfJQiXDuZ"
         }
       })
-      console.log("response send whatsapp ==>", sendWhatsapp)
+
+      console.log("sendMessage =========>", sendMessage)
 
       // status whatsapp untuk cek response server error tidak
       setStatusWhatsapp(true)

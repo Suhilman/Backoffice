@@ -1,0 +1,136 @@
+.wrapper-guide{
+  cursor: pointer;
+  transition: 2s;
+}
+.wrapper-guide.dashboard{
+  left: -70px;
+  position: absolute;
+  padding: 10px 20px;
+  border-radius: 0 25px 25px 25px;
+  z-index: 999;
+  top: -50px;
+  width: 500px;
+  box-shadow: 0 0 3px 1px #a66fa7;
+  background-color: white;
+}
+.wrapper-guide.report{
+  left: -70px;
+  position: absolute;
+  padding: 10px 20px;
+  border-radius: 0 25px 25px 25px;
+  z-index: 999;
+  top: 0;
+  width: 500px;
+  box-shadow: 0 0 3px 1px #a66fa7;
+  background-color: white;
+}
+.wrapper-guide.product{
+  left: -70px;
+  position: absolute;
+  padding: 10px 20px;
+  border-radius: 0 25px 25px 25px;
+  z-index: 999;
+  top: 90px;
+  width: 500px;
+  box-shadow: 0 0 3px 1px #a66fa7;
+  background-color: white;
+}
+.wrapper-guide.inventory{
+  left: -70px;
+  position: absolute;
+  padding: 10px 20px;
+  border-radius: 0 25px 25px 25px;
+  z-index: 999;
+  top: 130px;
+  width: 500px;
+  box-shadow: 0 0 3px 1px #a66fa7;
+  background-color: white;
+}
+.wrapper-guide.kitchen{
+  left: -70px;
+  position: absolute;
+  padding: 10px 20px;
+  border-radius: 0 25px 25px 25px;
+  z-index: 999;
+  top: 170px;
+  width: 500px;
+  box-shadow: 0 0 3px 1px #a66fa7;
+  background-color: white;
+}
+.wrapper-guide.outlet{
+  left: -70px;
+  position: absolute;
+  padding: 10px 20px;
+  border-radius: 0 25px 25px 25px;
+  z-index: 999;
+  top: 262px;
+  width: 500px;
+  box-shadow: 0 0 3px 1px #a66fa7;
+  background-color: white;
+}
+.wrapper-guide.promo{
+  left: -70px;
+  position: absolute;
+  padding: 10px 20px;
+  border-radius: 0 25px 25px 25px;
+  z-index: 999;
+  top: 307px;
+  width: 500px;
+  box-shadow: 0 0 3px 1px #a66fa7;
+  background-color: white;
+}
+.wrapper-guide.staff{
+  left: -70px;
+  position: absolute;
+  padding: 10px 20px;
+  border-radius: 0 25px 25px 25px;
+  z-index: 999;
+  top: 342px;
+  width: 500px;
+  box-shadow: 0 0 3px 1px #a66fa7;
+  background-color: white;
+}
+.wrapper-guide.role{
+  left: -70px;
+  position: absolute;
+  padding: 10px 20px;
+  border-radius: 0 25px 25px 25px;
+  z-index: 999;
+  top: 388px;
+  width: 500px;
+  box-shadow: 0 0 3px 1px #a66fa7;
+  background-color: white;
+}
+.wrapper-guide.customer{
+  left: -70px;
+  position: absolute;
+  padding: 10px 20px;
+  border-radius: 0 25px 25px 25px;
+  z-index: 999;
+  top: 434px;
+  width: 500px;
+  box-shadow: 0 0 3px 1px #a66fa7;
+  background-color: white;
+}
+.wrapper-guide.commission{
+  left: -70px;
+  position: absolute;
+  padding: 10px 20px;
+  border-radius: 25px 25px 25px 0;
+  z-index: 999;
+  top: 330px;
+  width: 500px;
+  box-shadow: 0 0 3px 1px #a66fa7;
+  background-color: white;
+}
+.wrapper-guide.account{
+  left: -70px;
+  position: absolute;
+  padding: 10px 20px;
+  border-radius: 25px 25px 25px 0;
+  z-index: 999;
+  top: 410px;
+  width: 500px;
+  box-shadow: 0 0 3px 1px #a66fa7;
+  background-color: white;
+}
