@@ -14,6 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ReCAPTCHA from "react-google-recaptcha";
 
 import ModalVerify from "../components/ModalVerify";
+import ModalPersonal from "../components/ModalPersonal";
 import ModalRegister from "../components/ModalRegister";
 
 import * as auth from "../_redux/authRedux";
@@ -125,6 +126,7 @@ function Registration(props) {
   const [dataFormik, setDataFormik] = useState({})
   const [statusWhatsapp, setStatusWhatsapp] = useState(false)
   const [messageNotSent, setMessageNotSent] = React.useState(false)
+  const [showModalPersonal, setShowModalPersonal] = React.useState(false)
 
   const [code, setCode] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
@@ -206,11 +208,17 @@ function Registration(props) {
         });
         verifyAccount();
         // disableLoading();
-        props.register(accessToken.split(" ")[1]);
+        console.log("Setelah verify code")
+        // props.register(token.split(" ")[1]);
+        setShowModalPersonal(true)
       } catch (err) {
         setAlertModal(err.response.data.message);
         disableLoading();
       }
+  }
+
+  const redirectToDashboard = () => {
+    props.register(token.split(" ")[1]);
   }
 
   const formikBusiness = useFormik({
@@ -588,6 +596,23 @@ function Registration(props) {
         phonenumber={phonenumber}
         handleVerifyModal={handleVerifyModal}
         code={code}
+        checkCode={checkCode}
+        loading={loading}
+        second={second}
+        handleResendCode={handleResendCode}
+        verification_code={verificationCode}
+      />
+
+      <ModalPersonal
+        statusWhatsapp={statusWhatsapp}
+        redirectToDashboard={redirectToDashboard}
+        showModalPersonal={showModalPersonal}
+        messageNotSent={messageNotSent}
+        closeVerifyModal={closeVerifyModal}
+        alertModal={alertModal}
+        phonenumber={phonenumber}
+        handleVerifyModal={handleVerifyModal}
+        token={token}
         checkCode={checkCode}
         loading={loading}
         second={second}
