@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from "react";
+import dayjs from "dayjs";
+import SelectReact from "react-select";
+import { KeyboardTimePicker } from "@material-ui/pickers";
 
-import { Button, Modal, Spinner, Form, Row, Col, Alert } from "react-bootstrap";
+import { Button, Modal, Spinner, Form, Row, Col, Alert} from "react-bootstrap";
+
+import {
+  FormControl,
+  InputLabel,
+  Select,
+} from "@material-ui/core";
 import { useDropzone } from "react-dropzone";
 import { Editor } from '@tinymce/tinymce-react'; 
 import ModalMap from './ModalMap'
@@ -24,8 +33,77 @@ const ModalOutlet = ({
   photo,
   handlePreviewPhoto,
   latitudeLongitude,
-  t
+  t,
+  handleSetStartHour,
+  handleSetEndHour,
+  timingState
 }) => {
+
+  React.useEffect(() => {
+    console.log("useEffect timingState", timingState)
+    // const resStartHour = dayjs(timingState.start_hour).format()
+    // const resEndHour = dayjs(timingState.end_hour).format()
+    formikOutlet.setFieldValue("open_hour", timingState.start_hour);
+    formikOutlet.setFieldValue("close_hour", timingState.end_hour);
+  }, [timingState])
+
+  const handleStartHour = (e) => handleSetStartHour(e)
+
+  const handleEndHour = (e) => handleSetEndHour(e)
+
+  const date = new Date()
+  console.log("Sekarang hari ke berapa", dayjs(date).format('d'))
+
+  const handleDayChange = (e) => {
+    console.log("handle day change ==>", e.target.value)
+  }
+  
+  const optionDay = [
+      {
+        value: 0,
+        label: "Sunday"
+      },
+      {
+        value: 1,
+        label: "Monday"
+      },
+      {
+        value: 2,
+        label: "Tuesday"
+      },
+      {
+        value: 3,
+        label: "Wednesday"
+      },
+      {
+        value: 4,
+        label: "Thursday"
+      },
+      {
+        value: 5,
+        label: "Friday"
+      },
+      {
+        value: 6,
+        label: "Saturday"
+      }
+    ];
+
+  const defaultOptionDays = formikOutlet.values.open_days.map((item) => {
+    console.log("item", item)
+    return optionDay.find((val) => val.value === item);
+  });
+    
+  const handleSelectDays = (value, formik) => {
+    if (value) {
+      console.log("handleSelectDays", value)
+      const openDays = value.map((item) => item.value);
+      formikOutlet.setFieldValue("open_days", openDays);
+    } else {
+      formikOutlet.setFieldValue("open_days", []);
+    }
+  };
+
   const API_URL = process.env.REACT_APP_API_URL;
   const [conditionCountry, setConditionCountry] = useState("")
   const [paymentDescription, setPaymentDescription] = useState("")
@@ -384,51 +462,7 @@ const ModalOutlet = ({
             </Row>
             <Row>
               <Col>
-                <div className="btn btn-danger" onClick={handleShowModal}>Pick Location</div>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  {/* <Form.Label>{t("paymentInstruction")}:</Form.Label> */}
-                  {/* <Editor
-                    // initialValue={!formikOutlet.getFieldProps("payment_description").value ? "please describe to make a payment at your outlet" : formikOutlet.getFieldProps("payment_description").value }
-                    init={{
-                      selector: {paymentDescription},
-                      menubar: 'file',
-                      toolbar: 'fullpage',
-                      height: 500,
-                      menubar: false,
-                      plugins: [
-                        'fullpage',
-                        'advlist autolink lists link image', 
-                        'charmap print preview anchor help',
-                        'searchreplace visualblocks code',
-                        'insertdatetime media table paste wordcount'
-                      ],
-                      toolbar:
-                        'undo redo | formatselect | bold italic | \
-                        alignleft aligncenter alignright | \
-                        bullist numlist outdent indent | help'
-                    }}
-                    outputFormat='text'
-                    apiKey="0eeusytyrfgdlkvifhuqjn88hwz7n7zar8qcc3s5dazfhkvl"
-                    onChange={handleEditorChange}
-                  />
-                  {formikOutlet.touched.payment_description && formikOutlet.errors.payment_description ? (
-                    <div className="fv-plugins-message-container">
-                      <div className="fv-help-block">
-                        {formikOutlet.errors.payment_description}
-                      </div>
-                    </div>
-                  ) : null} */}
-
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col>
+                <div className="btn btn-danger mb-2" onClick={handleShowModal}>{t("pickLocation")}</div>
                 <Form.Group as={Row} style={{ padding: "0 1rem" }}>
                   <Form.Label>{t("outletStatus")}:</Form.Label>
                   <Col>
@@ -468,7 +502,102 @@ const ModalOutlet = ({
                   ) : null}
                 </Form.Group>
               </Col>
+              <Col>
+                <Form.Label>Select Open Day:</Form.Label>
+                <FormControl style={{ width: "100%" }}>
+                  <InputLabel>Day</InputLabel>
+                  <SelectReact
+                    isMulti
+                    options={optionDay}
+                    name="open_days"
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    onChange={(value) =>
+                      handleSelectDays(value, formikOutlet)
+                    }
+                    defaultValue={defaultOptionDays}
+                  />
+                  {formikOutlet.touched.open_days &&
+                  formikOutlet.errors.open_days ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikOutlet.errors.open_days}
+                      </div>
+                    </div>
+                  ) : null}
+                </FormControl>
+                <div className="d-flex justify-content-between align-items-end">
+                  <div style={{width: "45%"}}>
+                    <KeyboardTimePicker
+                      margin="normal"
+                      id="open-hour"
+                      label="Open"
+                      ampm={false}
+                      name="open_hour"
+                      value={timingState.start_hour}
+                      onChange={handleStartHour}
+                      KeyboardButtonProps={{
+                        "aria-label": "change time"
+                      }}
+                    />
+                  </div>
+                  <span className="mb-3">-</span>
+                  <div style={{width: "45%"}}>
+                    <KeyboardTimePicker
+                      margin="normal"
+                      id="open-hour"
+                      label="Close"
+                      ampm={false}
+                      name="open_hour"
+                      value={timingState.end_hour}
+                      onChange={handleEndHour}
+                      KeyboardButtonProps={{
+                        "aria-label": "change time"
+                      }}
+                    />
+                  </div>
+                </div>
+              </Col>
             </Row>
+            {/* <Row>
+              <Col>
+                <Form.Group>
+                  <Form.Label>{t("paymentInstruction")}:</Form.Label>
+                  <Editor
+                    // initialValue={!formikOutlet.getFieldProps("payment_description").value ? "please describe to make a payment at your outlet" : formikOutlet.getFieldProps("payment_description").value }
+                    init={{
+                      selector: {paymentDescription},
+                      menubar: 'file',
+                      toolbar: 'fullpage',
+                      height: 500,
+                      menubar: false,
+                      plugins: [
+                        'fullpage',
+                        'advlist autolink lists link image', 
+                        'charmap print preview anchor help',
+                        'searchreplace visualblocks code',
+                        'insertdatetime media table paste wordcount'
+                      ],
+                      toolbar:
+                        'undo redo | formatselect | bold italic | \
+                        alignleft aligncenter alignright | \
+                        bullist numlist outdent indent | help'
+                    }}
+                    outputFormat='text'
+                    apiKey="0eeusytyrfgdlkvifhuqjn88hwz7n7zar8qcc3s5dazfhkvl"
+                    onChange={handleEditorChange}
+                  />
+                  {formikOutlet.touched.payment_description && formikOutlet.errors.payment_description ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikOutlet.errors.payment_description}
+                      </div>
+                    </div>
+                  ) : null}
+
+                </Form.Group>
+              </Col>
+            </Row> */}
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={cancelModal}>

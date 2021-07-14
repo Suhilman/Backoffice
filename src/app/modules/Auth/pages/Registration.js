@@ -378,6 +378,7 @@ function Registration(props) {
                 localStorage.setItem("checkCountry", false);
               }
             } catch (error) {
+              localStorage.setItem("checkCountry", true);
               console.error(error)
             }
           }
@@ -439,11 +440,11 @@ function Registration(props) {
           Verify Code = ${verifyCode}\nPowered By Beetpos
         `,
         phone : resultPhone,
-        device : "backoffice"
+        device : "backoffice_test3"
       }
-      const sendMessage = await axios.post('http://139.59.244.237:3001/api/v1/messaging/sendText', dataSend, {
+      const sendMessage = await axios.post('https://cors-anywhere.herokuapp.com/http://139.59.244.237:3001/api/v1/messaging/sendText', dataSend, {
         headers: {
-          "x-api-key" : "1fESFt80P36OfJQiXDuZ"
+          "x-api-key" : "EalYHzTieQVwZ83XnrPv"
         }
       })
 

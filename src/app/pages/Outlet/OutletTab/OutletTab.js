@@ -4,6 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import imageCompression from 'browser-image-compression';
 import { useTranslation } from "react-i18next";
+import dayjs from "dayjs";
 
 import {
   Row,
@@ -37,6 +38,10 @@ export const OutletTab = ({
   const [stateEditModal, setStateEditModal] = React.useState(false);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
   const [alertOutletLimit, setAlertOutletLimit] = React.useState(false);
+  const [timingState, setTimingState] = React.useState({
+    start_hour: new Date(),
+    end_hour: new Date()
+  });
 
   const [search, setSearch] = React.useState("");
   const [filter, setFilter] = React.useState({
@@ -70,7 +75,10 @@ export const OutletTab = ({
     longitude: "",
     city_id: "",
     location_id: "",
-    status: "active"
+    status: "active",
+    open_days: [],
+    open_hour: "",
+    close_hour: ""
   };
 
   const OutletSchema = Yup.object().shape({
@@ -148,7 +156,16 @@ export const OutletTab = ({
       const API_URL = process.env.REACT_APP_API_URL;
       try {
         enableLoading();
-        await axios.post(`${API_URL}/api/v1/outlet/create-development`, formData);
+        const {data} = await axios.post(`${API_URL}/api/v1/outlet/create-development`, formData);
+        console.log("data create outlet", data.data)
+        if (values.open_days || values.open_hour || values.close_hour) {
+          const time = {}
+          if(values.open_days) time.open_days = values.open_days
+          if(values.open_hour) time.open_hour = values.open_hour
+          if(values.close_hour) time.close_hour = values.close_hour
+          console.log("masuk ketika open days dan open hour true", time)
+          await axios.patch(`${API_URL}/api/v1/outlet/open-time/${data.data.id}`, time);
+        }
         handleRefresh();
         disableLoading();
         cancelAddModalOutlet();
@@ -202,6 +219,14 @@ export const OutletTab = ({
       try {
         enableLoading();
         await axios.put(`${API_URL}/api/v1/outlet/update-development/${values.id}`, formData);
+        if (values.open_days || values.open_hour || values.close_hour) {
+          const time = {}
+          if(values.open_days) time.open_days = values.open_days
+          if(values.open_hour) time.open_hour = values.open_hour
+          if(values.close_hour) time.close_hour = values.close_hour
+          console.log("masuk ketika open days dan open hour true", time)
+          await axios.patch(`${API_URL}/api/v1/outlet/open-time/${values.id}`, time);
+        }
         handleRefresh();
         disableLoading();
         cancelEditModalOutlet();
@@ -275,7 +300,12 @@ export const OutletTab = ({
     console.log('ini adalah data yang mau di edit', data)
     setPhoto(data.image ? `${API_URL}/${data.image}` : "")
     setPhotoPreview(data.image ? `${API_URL}/${data.image}` : "")
+    setTimingState({
+      start_hour: data?.open_hour,
+      end_hour: data?.close_hour
+    })
     if(data.location_id) {
+      console.log("ketika data.location_id nya masuk")
       formikOutletEdit.setValues({
         id: data.id,
         name: data.name,
@@ -287,9 +317,11 @@ export const OutletTab = ({
         province_id: data.province_id,
         city_id: data.city_id,
         location_id: data.location_id,
-        status: data.status
+        status: data.status,
+        open_days: data.open_days ? JSON.parse(data.open_days) : [],
+        open_hour: data?.open_hour, 
+        close_hour: data?.close_hour
       });
-
       const province_id = data.province_id;
       const city_id = data.city_id;
   
@@ -310,6 +342,7 @@ export const OutletTab = ({
   
       setStateEditModal(true);
     } else {
+      console.log("ketika data.location_id nya TIDAK masuk")
       formikOutletEdit.setValues({
         id: data.id,
         name: data.name,
@@ -321,7 +354,10 @@ export const OutletTab = ({
         province: data.province,
         city: data.city,
         location: data.location,
-        status: data.status
+        status: data.status,
+        open_days: data.open_days ? JSON.parse(data.open_days) : [],
+        open_hour: data?.open_hour, 
+        close_hour: data?.close_hour
       });
       setStateEditModal(true);
     }
@@ -447,6 +483,23 @@ export const OutletTab = ({
       setAllOutlets([]);
     }
   };
+
+  const handleSetStartHour = (e) => {
+    setTimingState({
+      ...e,
+      start_hour: dayjs(e).format(),
+      end_hour: timingState.end_hour,
+    })
+  }
+
+  const handleSetEndHour = (e) => {
+    setTimingState({
+      ...e,
+      start_hour: timingState.start_hour,
+      end_hour: dayjs(e).format(),
+    })
+  }
+
   React.useEffect(() => {
     getOutlets(debouncedSearch, filter);
   }, [refresh, debouncedSearch, filter]);
@@ -536,6 +589,9 @@ export const OutletTab = ({
           image: item.image,
           phone_number: item.phone_number || "",
           status: item.status,
+          open_days: item.open_days,
+          open_hour: item.open_hour,
+          close_hour: item.close_hour,
           tax: item.Outlet_Taxes.length ? "Taxable" : "No Tax",
           allTaxes: item.Outlet_Taxes.map((item) => item.Tax.name).join(", ")
         };
@@ -556,11 +612,13 @@ export const OutletTab = ({
           image: item.image,
           phone_number: item.phone_number || "",
           status: item.status,
+          open_days: item.open_days,
+          open_hour: item.open_hour,
+          close_hour: item.close_hour,
           tax: item.Outlet_Taxes.length ? "Taxable" : "No Tax",
           allTaxes: item.Outlet_Taxes.map((item) => item.Tax.name).join(", ")
         };
       }
-      
     });
   };
 
@@ -613,6 +671,9 @@ export const OutletTab = ({
   return (
     <>
       <ModalOutlet
+        handleSetStartHour={handleSetStartHour}
+        handleSetEndHour={handleSetEndHour}
+        timingState={timingState}
         t={t}
         stateModal={stateAddModal}
         cancelModal={cancelAddModalOutlet}
@@ -633,6 +694,9 @@ export const OutletTab = ({
       />
 
       <ModalOutlet
+        handleSetStartHour={handleSetStartHour}
+        handleSetEndHour={handleSetEndHour}
+        timingState={timingState}
         t={t}
         latitudeLongitude={latitudeLongitude}
         stateModal={stateEditModal}

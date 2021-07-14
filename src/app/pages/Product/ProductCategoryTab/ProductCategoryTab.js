@@ -302,7 +302,7 @@ const ProductCategoryTab = ({ refresh, handleRefresh}) => {
       sortable: true
     },
     {
-      name: `${t("numberOfProject")}`,
+      name: `${t("numberOfProduct")}`,
       selector: "products",
       sortable: true
     },

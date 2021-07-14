@@ -316,6 +316,7 @@ function Login(props) {
               console.log(`Latitude : ${crd.latitude}`);
               console.log(`Longitude: ${crd.longitude}`);
               console.log(`More or less ${crd.accuracy} meters.`);
+              console.log("sebelum get request")
               const result = await axios.get(`${API_URL}/api/v1/outlet/get-address?latitude=${parseFloat(crd.latitude)}&longitude=${parseFloat(crd.longitude)}`)
               console.log("country address", result.data.resultAddress.address)
               const checkCountry = result.data.resultAddress.address.includes("Indonesia");
@@ -326,7 +327,9 @@ function Login(props) {
                 localStorage.setItem("checkCountry", false);
               }
             } catch (error) {
+              localStorage.setItem("checkCountry", true);
               console.error(error)
+              console.log("catch check country")
             }
           }
           

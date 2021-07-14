@@ -152,7 +152,7 @@
     "categoryTitle": "Product Category List",
     "addNewProductCategory":"Add New Product Category",
     "categoryName": "Category Name",
-    "numberOfProject": "Number of Project",
+    "numberOfProduct": "Number of Product",
     "productStatus": "Product Status",
     "productFavorite": "Product Favorite",
     "productTitle": "Product Title",
@@ -783,5 +783,6 @@
     "pleaseInputTypeCommission": "Please Input Type Commission",
     "pleaseChooseStaff": "Please Choose Staff",
     "editGroupCommission": "Edit Group Commission",
-    "exportCommissionReport": "Export Commission Report"
+    "exportCommissionReport": "Export Commission Report",
+    "pickLocation": "Pick Location"
 }
