@@ -1,5 +1,7 @@
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
+import IconEdit from '../../../../images/icons8-edit-50.png'
+import './style.css'
 
 const ModalVerify = ({
   showVerifyModal,
@@ -8,6 +10,8 @@ const ModalVerify = ({
   handleVerifyModal,
   code,
   checkCode,
+  handleSendWhatsapp,
+  changePhoneNumber,
   // loading,
   second,
   handleResendCode,
@@ -16,10 +20,25 @@ const ModalVerify = ({
   messageNotSent
 }) => {
   const [showVerifyCode, setShowVerifyCode] = React.useState(false)
+  const [editPhoneNumber, setEditPhoneNumber] = React.useState(false)
 
   const openVerifyCode = () => setShowVerifyCode(true)
+
   const hanldeHide = () => {
-    console.log('Please insert code')
+    console.log("Handle Hide")
+  }
+
+  const editStateTempPhoneNumber = () => {
+    setEditPhoneNumber(!editPhoneNumber)
+  }
+
+  const submitChangePhoneNumber = () => {
+    handleSendWhatsapp(phonenumber, verification_code)
+    setEditPhoneNumber(!editPhoneNumber)
+  }
+
+  const handleChangePhoneNumber = (phone) => {
+    changePhoneNumber(phone)
   }
 
   return (
@@ -38,7 +57,26 @@ const ModalVerify = ({
         <p>
           Enter Verification Code We're Just Send to:
           <br />
-          {phonenumber}
+          <div className="d-flex align-items-center">
+            <div className="mr-2">
+              {editPhoneNumber ? (
+                <input 
+                  type="text" 
+                  defaultValue={phonenumber}
+                  onChange={(e) => handleChangePhoneNumber(e.target.value)}
+                />
+              ) : phonenumber }
+            </div>
+            <div className="d-flex">
+              {!editPhoneNumber ? (
+                <div className=" text-primary edit mr-2" onClick={editStateTempPhoneNumber}>edit</div>
+              ) : (
+                <div className="text-primary submit" onClick={submitChangePhoneNumber}>submit</div>
+              ) }
+            </div>
+            {/* <div className="submit">Submit</div> */}
+            {/* <img src={IconEdit} alt="Edit"/> */}
+          </div>
         </p>
         {statusWhatsapp ? (
           <div>
@@ -76,7 +114,7 @@ const ModalVerify = ({
           <Button
             className="px-9 py-4"
             variant="secondary"
-            onClick={handleResendCode}
+            onClick={() => handleResendCode(phonenumber, verification_code)}
           >
             Resend Code
           </Button>

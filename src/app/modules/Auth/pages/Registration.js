@@ -131,6 +131,8 @@ function Registration(props) {
   const [code, setCode] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
 
+  const changePhoneNumber = (number) => setPhonenumber(number)
+
   const initialValueBusiness = {
     business_type_id: "",
     business_province_id: "",
@@ -315,8 +317,9 @@ function Registration(props) {
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
-  const handleResendCode = () => {
-    setSecond(60);
+  const handleResendCode = (phone, verify_code) => {
+    handleSendWhatsapp(phone, verify_code)
+    setSecond(15);
   };
 
   const getInputClasses = (fieldname) => {
@@ -395,12 +398,12 @@ function Registration(props) {
           
           if (!owner.is_verified) {
             setSubmitting(false);
-            setSecond(60);
+            setSecond(15);
             await handleSendWhatsapp(values.phone_number.toString(), owner.verification_code, accessToken)
             openVerifyModal();
             setTimeout(() => {
               setMessageNotSent(true)
-            }, 10000);
+            }, 50000);
           } else {
             props.login(token);
           }
@@ -415,7 +418,7 @@ function Registration(props) {
     }
   });
 
-  const handleSendWhatsapp = async (phone, verifyCode, token) => {
+  const handleSendWhatsapp = async (phone, verifyCode) => {
     console.log("oke breee")
     try {
       // const sendWhatsapp = await axios.get(`${API_URL}/api/v1/send-whatsapp/send-message?phone=${phone}&code=${verifyCode}`, {
@@ -442,11 +445,21 @@ function Registration(props) {
         phone : resultPhone,
         device : "backoffice_test3"
       }
-      const sendMessage = await axios.post('https://cors-anywhere.herokuapp.com/http://139.59.244.237:3001/api/v1/messaging/sendText', dataSend, {
+
+      // https://nordicapis.com/10-free-to-use-cors-proxies/
+      // Menggunakan proxy thinsproxy agar melewati cors origin
+      const sendMessage = await axios.post('https://thingproxy.freeboard.io/fetch/http://139.59.244.237:3001/api/v1/messaging/sendText', dataSend, {
         headers: {
           "x-api-key" : "EalYHzTieQVwZ83XnrPv"
         }
       })
+
+      // Menggunakan proxy cors-anywhere agar melewati cors origin
+      // const sendMessage = await axios.post('https://cors-anywhere.herokuapp.com/http://139.59.244.237:3001/api/v1/messaging/sendText', dataSend, {
+      //   headers: {
+      //     "x-api-key" : "EalYHzTieQVwZ83XnrPv"
+      //   }
+      // })
 
       console.log("sendMessage =========>", sendMessage)
 
@@ -589,6 +602,8 @@ function Registration(props) {
   return (
     <div className="login-form login-signin" style={{ display: "block" }}>
       <ModalVerify
+        handleSendWhatsapp={handleSendWhatsapp}
+        changePhoneNumber={changePhoneNumber}
         statusWhatsapp={statusWhatsapp}
         showVerifyModal={showVerifyModal}
         messageNotSent={messageNotSent}

@@ -1,0 +1,7 @@
+.edit, .submit{
+  font-size: 11px;
+  cursor: pointer;
+}
+.edit:hover, .submit:hover{
+  transform: scale(1.07);
+}
