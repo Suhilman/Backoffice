@@ -784,5 +784,6 @@
     "pleaseChooseStaff": "Please Choose Staff",
     "editGroupCommission": "Edit Group Commission",
     "exportCommissionReport": "Export Commission Report",
-    "pickLocation": "Pick Location"
+    "pickLocation": "Pick Location",
+    "nameOnKtp": "Name on KTP"
 }

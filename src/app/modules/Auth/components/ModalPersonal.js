@@ -39,7 +39,7 @@ const ModalPersonal = ({
   }
 
   const [personal, setPersonal] = React.useState({
-    ktp_owner: "",
+    name_on_ktp: "",
     name_on_bank: "",
     bank_name: "",
     ktp_number: "",
@@ -48,6 +48,7 @@ const ModalPersonal = ({
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
+  
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
@@ -59,7 +60,7 @@ const ModalPersonal = ({
   console.log("show modal personal", showModalPersonal)
 
   const PersonalSchema = Yup.object().shape({
-    ktp_owner: Yup.string()
+    name_on_ktp: Yup.string()
       .min(3, `Minimum 3 Character`)
       .max(50, `Maximum 50 Character`)
       .required("Please input a ktp name."),
@@ -94,10 +95,10 @@ const ModalPersonal = ({
       console.log('ini valie ap aaja', values)
       
       const formData = new FormData();
-      formData.append("ktp_owner", values.ktp_owner);
+      formData.append("ktp_owner", values.ktp_number);
       formData.append("name_on_bank", values.name_on_bank);
       formData.append("bank_name", values.bank_name);
-      formData.append("ktp_number", values.ktp_number);
+      formData.append("name_on_ktp", values.name_on_ktp);
       formData.append("account_number", values.account_number);
       if (imageKtp.name) {
         formData.append("ktp_picture", imageKtp);
@@ -226,16 +227,16 @@ const ModalPersonal = ({
               <Form.Label>Name on ID Card (KTP)</Form.Label>
               <Form.Control
                 type="text"
-                name="ktp_owner"
+                name="name_on_ktp"
                 placeholder="Enter Name on KTP"
-                {...formikPersonal.getFieldProps("ktp_owner")}
-                className={validationPersonal("ktp_owner")}
+                {...formikPersonal.getFieldProps("name_on_ktp")}
+                className={validationPersonal("name_on_ktp")}
                 required
               />
-              {formikPersonal.touched.ktp_owner && formikPersonal.errors.ktp_owner ? (
+              {formikPersonal.touched.name_on_ktp && formikPersonal.errors.name_on_ktp ? (
                 <div className="fv-plugins-message-container">
                   <div className="fv-help-block">
-                    {formikPersonal.errors.ktp_owner}
+                    {formikPersonal.errors.name_on_ktp}
                   </div>
                 </div>
               ) : null}
@@ -335,7 +336,7 @@ const ModalPersonal = ({
               <Form.Control
                 type="text"
                 name="account_number"
-                placeholder="Enter KTP Number"
+                placeholder="Enter Account Number"
                 {...formikPersonal.getFieldProps("account_number")}
                 className={validationPersonal("account_number")}
                 required

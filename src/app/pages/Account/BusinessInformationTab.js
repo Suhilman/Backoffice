@@ -41,6 +41,7 @@ export const BusinessInformation = () => {
     business_location: "",
     business_address: "",
     business_phone_number: "",
+    name_on_ktp: "",
     ktp_number: "",
     npwp_number: "",
     business_type: "",
@@ -58,6 +59,10 @@ export const BusinessInformation = () => {
       .min(3, `${t("minimum3Character")}`)
       .max(50, `${t("maximum50Character")}`)
       .required("Please input a business name."),
+    name_on_ktp: Yup.string()
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required("Please input a name on ktp."),
     business_address: Yup.string()
       .min(3, `${t("minimum3Character")}`)
       .max(50, `${t("maximum50Character")}`)
@@ -143,6 +148,7 @@ export const BusinessInformation = () => {
       formData.append("currency_id", values.currency_id);
       formData.append("phone_number", values.business_phone_number);
       formData.append("location_id", values.location_id);
+      formData.append("name_on_ktp", values.name_on_ktp);
       formData.append("ktp_owner", values.ktp_number);
       formData.append("npwp_business", values.npwp_number);
       formData.append("business_type_id", values.business_type_id);
@@ -206,6 +212,8 @@ export const BusinessInformation = () => {
         `${API_URL}/api/v1/business/${userInfo.business_id}`
       );
 
+      console.log("getBusinessInfo", data.data)
+
       setBusiness({
         name: data.data.name,
         province_name: data.data.Location.City.Province.name,
@@ -214,6 +222,7 @@ export const BusinessInformation = () => {
         business_type: data.data.Business_Type.name,
         business_address: data.data.address || "",
         business_phone_number: data.data.phone_number,
+        name_on_ktp: data.data.name_on_ktp,
         ktp_number: data.data.ktp_owner || "",
         npwp_number: data.data.npwp_business || "",
         payment_method: "",
@@ -344,6 +353,10 @@ export const BusinessInformation = () => {
     {
       field: `${t("businessPhoneNumber")}`,
       value: business.business_phone_number
+    },
+    {
+      field: `${t("nameOnKtp")}`,
+      value: business.name_on_ktp
     },
     {
       field: `${t("ktpNumber")}`,
@@ -542,6 +555,25 @@ export const BusinessInformation = () => {
                           <div className="fv-plugins-message-container">
                             <div className="fv-help-block">
                               {formikBusiness.errors.email}
+                            </div>
+                          </div>
+                        ) : null}
+                      </Form.Group>
+
+                      <Form.Group style={{ width: "80%" }}>
+                        <Form.Label>{t("nameOnKtp")}</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="name_on_ktp"
+                          {...formikBusiness.getFieldProps("name_on_ktp")}
+                          className={validationBusiness("name_on_ktp")}
+                          required
+                        />
+                        {formikBusiness.touched.name_on_ktp &&
+                        formikBusiness.errors.name_on_ktp ? (
+                          <div className="fv-plugins-message-container">
+                            <div className="fv-help-block">
+                              {formikBusiness.errors.name_on_ktp}
                             </div>
                           </div>
                         ) : null}
