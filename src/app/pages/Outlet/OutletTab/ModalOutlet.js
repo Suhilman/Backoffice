@@ -3,6 +3,12 @@ import dayjs from "dayjs";
 import SelectReact from "react-select";
 import { KeyboardTimePicker } from "@material-ui/pickers";
 
+import {
+  FormControlLabel,
+  Switch,
+  FormGroup
+} from "@material-ui/core";
+
 import { Button, Modal, Spinner, Form, Row, Col, Alert} from "react-bootstrap";
 
 import {
@@ -16,6 +22,8 @@ import ModalMap from './ModalMap'
 import axios from 'axios'
 
 const ModalOutlet = ({
+  handleSetVacation,
+  stateVacation,
   stateModal,
   cancelModal,
   title,
@@ -38,6 +46,8 @@ const ModalOutlet = ({
   handleSetEndHour,
   timingState
 }) => {
+
+  console.log("bismillah", formikOutlet.values.vacation)
 
   React.useEffect(() => {
     console.log("useEffect timingState", timingState)
@@ -134,7 +144,9 @@ const ModalOutlet = ({
     setPaymentDescription(formikOutlet.getFieldProps("payment_description").value)
   }, [])
   // Start Map
-  
+
+  console.log("stateVacation", stateVacation)
+
   return (
     <>
       <ModalMap 
@@ -559,6 +571,40 @@ const ModalOutlet = ({
                 </div>
               </Col>
             </Row>
+            <Row>
+              <Col>
+              </Col>
+              <Col>
+                <Form.Group style={{ margin: 0 }}>
+                  <Form.Label style={{ alignSelf: "center", marginRight: "1rem" }}>
+                    {t("Vacation")}
+                  </Form.Label>
+                  <FormControlLabel
+                    value={stateVacation}
+                    name="vacation"
+                    control={
+                      <Switch
+                        color="primary"
+                        checked={stateVacation === "Active" ? true : false}
+                        onChange={(e) => {
+                          console.log("switch vacation", e.target.value)
+                          if (stateVacation === e.target.value) {
+                            if (stateVacation === "Active") {
+                              handleSetVacation("Inactive");
+                              formikOutlet.setFieldValue("vacation", "Inactive")
+                            } else {
+                              handleSetVacation("Active");
+                              formikOutlet.setFieldValue("vacation", "Active")
+                            }
+                          }
+                        }}
+                        name=""
+                      />
+                    }
+                  />
+                </Form.Group>
+              </Col>
+              </Row>
             {/* <Row>
               <Col>
                 <Form.Group>

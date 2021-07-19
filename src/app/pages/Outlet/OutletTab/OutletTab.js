@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -42,6 +42,7 @@ export const OutletTab = ({
     start_hour: new Date(),
     end_hour: new Date()
   });
+  const [stateVacation, setStateVacation] = useState("Inactive")
 
   const [search, setSearch] = React.useState("");
   const [filter, setFilter] = React.useState({
@@ -78,7 +79,8 @@ export const OutletTab = ({
     status: "active",
     open_days: [],
     open_hour: "",
-    close_hour: ""
+    close_hour: "",
+    vacation: ""
   };
 
   const OutletSchema = Yup.object().shape({
@@ -163,6 +165,8 @@ export const OutletTab = ({
           if(values.open_days) time.open_days = values.open_days
           if(values.open_hour) time.open_hour = values.open_hour
           if(values.close_hour) time.close_hour = values.close_hour
+          if(values.vacation)  time.vacation = values.vacation
+
           console.log("masuk ketika open days dan open hour true", time)
           await axios.patch(`${API_URL}/api/v1/outlet/open-time/${data.data.id}`, time);
         }
@@ -224,6 +228,7 @@ export const OutletTab = ({
           if(values.open_days) time.open_days = values.open_days
           if(values.open_hour) time.open_hour = values.open_hour
           if(values.close_hour) time.close_hour = values.close_hour
+          if(values.vacation)  time.vacation = values.vacation
           console.log("masuk ketika open days dan open hour true", time)
           await axios.patch(`${API_URL}/api/v1/outlet/open-time/${values.id}`, time);
         }
@@ -304,6 +309,8 @@ export const OutletTab = ({
       start_hour: data?.open_hour,
       end_hour: data?.close_hour
     })
+    setStateVacation(data?.vacation)
+
     if(data.location_id) {
       console.log("ketika data.location_id nya masuk")
       formikOutletEdit.setValues({
@@ -320,7 +327,8 @@ export const OutletTab = ({
         status: data.status,
         open_days: data.open_days ? JSON.parse(data.open_days) : [],
         open_hour: data?.open_hour, 
-        close_hour: data?.close_hour
+        close_hour: data?.close_hour,
+        vacation: data?.vacation
       });
       const province_id = data.province_id;
       const city_id = data.city_id;
@@ -357,7 +365,8 @@ export const OutletTab = ({
         status: data.status,
         open_days: data.open_days ? JSON.parse(data.open_days) : [],
         open_hour: data?.open_hour, 
-        close_hour: data?.close_hour
+        close_hour: data?.close_hour,
+        vacation: data?.vacation
       });
       setStateEditModal(true);
     }
@@ -500,6 +509,11 @@ export const OutletTab = ({
     })
   }
 
+  const handleSetVacation = (status) => {
+    console.log("set vacation", status)
+    setStateVacation(status)
+  }
+
   React.useEffect(() => {
     getOutlets(debouncedSearch, filter);
   }, [refresh, debouncedSearch, filter]);
@@ -593,7 +607,8 @@ export const OutletTab = ({
           open_hour: item.open_hour,
           close_hour: item.close_hour,
           tax: item.Outlet_Taxes.length ? "Taxable" : "No Tax",
-          allTaxes: item.Outlet_Taxes.map((item) => item.Tax.name).join(", ")
+          allTaxes: item.Outlet_Taxes.map((item) => item.Tax.name).join(", "),
+          vacation: item?.vacation
         };
       } else {
         console.log("jika tidak ada")
@@ -616,7 +631,8 @@ export const OutletTab = ({
           open_hour: item.open_hour,
           close_hour: item.close_hour,
           tax: item.Outlet_Taxes.length ? "Taxable" : "No Tax",
-          allTaxes: item.Outlet_Taxes.map((item) => item.Tax.name).join(", ")
+          allTaxes: item.Outlet_Taxes.map((item) => item.Tax.name).join(", "),
+          vacation: item?.vacation
         };
       }
     });
@@ -671,6 +687,8 @@ export const OutletTab = ({
   return (
     <>
       <ModalOutlet
+        handleSetVacation={handleSetVacation}
+        stateVacation={stateVacation}
         handleSetStartHour={handleSetStartHour}
         handleSetEndHour={handleSetEndHour}
         timingState={timingState}
@@ -694,6 +712,8 @@ export const OutletTab = ({
       />
 
       <ModalOutlet
+        handleSetVacation={handleSetVacation}
+        stateVacation={stateVacation}
         handleSetStartHour={handleSetStartHour}
         handleSetEndHour={handleSetEndHour}
         timingState={timingState}

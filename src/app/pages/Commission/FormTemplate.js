@@ -26,8 +26,7 @@ import DatePicker from "react-datepicker";
 import "../style.css";
 import { FormikConsumer } from 'formik';
 
-const FormTemplate = ({title, loading, formikCommission, alert, t, optionsOutlet, optionsStaff, optionsTypeTotalCommission, listStaffCommission, listProduct, optionsProduct, handleSelectOutlet, handleSelectProduct, validationCommission, defaultValueStaff, defaultCommissionType, defaultValueProduct}) => {
-  const [statusGroup, setStatusGroup] = React.useState("Active")
+const FormTemplate = ({title, loading, formikCommission, alert, t, optionsOutlet, optionsStaff, optionsTypeTotalCommission, listStaffCommission, listProduct, optionsProduct, handleSelectOutlet, handleSelectProduct, validationCommission, defaultValueStaff, defaultCommissionType, defaultValueProduct, handleStatusGroup, statusGroup}) => {
 
   console.log("optionsOutlet", optionsOutlet)
 
@@ -155,13 +154,13 @@ const FormTemplate = ({title, loading, formikCommission, alert, t, optionsOutlet
                           color="primary"
                           checked={statusGroup === "Active" ? true : false}
                           onChange={(e) => {
-                            console.log("apa ini brow?", e.target.value)
+                            console.log("switch status", e.target.value)
                             if (statusGroup === e.target.value) {
                               if (statusGroup === "Active") {
-                                setStatusGroup("Inactive");
+                                handleStatusGroup("Inactive");
                                 formikCommission.setFieldValue("status", "Inactive")
                               } else {
-                                setStatusGroup("Active");
+                                handleStatusGroup("Active");
                                 formikCommission.setFieldValue("status", "Active")
                               }
                             }
@@ -183,7 +182,6 @@ const FormTemplate = ({title, loading, formikCommission, alert, t, optionsOutlet
                     return (
                       <Form.Check
                         key={index}
-                        inline
                         type="radio"
                         name="commission_type"
                         value={formikCommission.values.commission_type}

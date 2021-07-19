@@ -16,6 +16,11 @@ const AddGroupCommission = ({location}) => {
   const [loading, setLoading] = React.useState(false);
   const [listStaffCommission, setListStaffCommission] = React.useState([])
   const [listProduct, setListProduct] = React.useState([])
+  const [statusGroup, setStatusGroup] = React.useState("Active")
+
+  const handleStatusGroup = (status) => {
+    setStatusGroup(status)
+  }
   const { t } = useTranslation();
   const history = useHistory();
 
@@ -212,6 +217,8 @@ const AddGroupCommission = ({location}) => {
       <Row>
         <Col>
           <FormTemplate
+            statusGroup={statusGroup}
+            handleStatusGroup={handleStatusGroup}
             title={t("addGroupCommission")}
             loading={loading}
             validationCommission={validationCommission}

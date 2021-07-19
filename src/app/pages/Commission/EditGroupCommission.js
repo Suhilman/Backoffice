@@ -23,7 +23,11 @@ const EditGroupCommission = ({location, match}) => {
   const [listProduct, setListProduct] = React.useState([])
   const { t } = useTranslation();
   const history = useHistory();
+  const [statusGroup, setStatusGroup] = React.useState("Active")
 
+  const handleStatusGroup = (status) => {
+    setStatusGroup(status)
+  }
   const {
     product_id,
     staff_id,
@@ -43,6 +47,7 @@ const EditGroupCommission = ({location, match}) => {
     try {
       const {data} = await axios.get(`${API_URL}/api/v1/commission/${commission_id}`)
       console.log("curr Commission", data.data)
+      setStatusGroup(data.data.status)
       setCurrCommission(data.data)
     } catch (error) {
       console.log(error)
@@ -97,7 +102,7 @@ const EditGroupCommission = ({location, match}) => {
     outlet_id,
     name_group_commission: currCommission.name,
     type_commission_total: type_total, //Rupiah atau persentase
-    staff_id: JSON.parse(staff_id) ,
+    staff_id: JSON.parse(staff_id),
     status: currCommission.status,
     commission_type: type, //Produk atau Nominal
     total_commission: currCommission.total,
@@ -325,6 +330,8 @@ const EditGroupCommission = ({location, match}) => {
       <Row>
         <Col>
           <FormTemplate
+            statusGroup={statusGroup}
+            handleStatusGroup={handleStatusGroup}
             title={t("editGroupCommission")}
             loading={loading}
             validationCommission={validationCommission}

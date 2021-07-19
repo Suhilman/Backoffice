@@ -448,18 +448,18 @@ function Registration(props) {
 
       // https://nordicapis.com/10-free-to-use-cors-proxies/
       // Menggunakan proxy thinsproxy agar melewati cors origin
-      const sendMessage = await axios.post('https://thingproxy.freeboard.io/fetch/http://139.59.244.237:3001/api/v1/messaging/sendText', dataSend, {
-        headers: {
-          "x-api-key" : "EalYHzTieQVwZ83XnrPv"
-        }
-      })
-
-      // Menggunakan proxy cors-anywhere agar melewati cors origin
-      // const sendMessage = await axios.post('https://cors-anywhere.herokuapp.com/http://139.59.244.237:3001/api/v1/messaging/sendText', dataSend, {
+      // const sendMessage = await axios.post('https://thingproxy.freeboard.io/fetch/http://139.59.244.237:3001/api/v1/messaging/sendText', dataSend, {
       //   headers: {
       //     "x-api-key" : "EalYHzTieQVwZ83XnrPv"
       //   }
       // })
+
+      // Menggunakan proxy cors-anywhere agar melewati cors origin
+      const sendMessage = await axios.post('https://cors-anywhere.herokuapp.com/http://139.59.244.237:3001/api/v1/messaging/sendText', dataSend, {
+        headers: {
+          "x-api-key" : "EalYHzTieQVwZ83XnrPv"
+        }
+      })
 
       console.log("sendMessage =========>", sendMessage)
 
