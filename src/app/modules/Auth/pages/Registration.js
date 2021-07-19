@@ -16,6 +16,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import ModalVerify from "../components/ModalVerify";
 import ModalPersonal from "../components/ModalPersonal";
 import ModalRegister from "../components/ModalRegister";
+import ModalSendOTP from '../components/ModalSendOTP';
 
 import * as auth from "../_redux/authRedux";
 import { register, cancelRegistration } from "../_redux/authCrud";
@@ -112,6 +113,8 @@ function Registration(props) {
     acceptTerms: Yup.bool().required("You must accept the terms and conditions")
   });
 
+  const [dataSentOTP, setDataSentOTP] = useState({})
+  const [showOTPModal, setShowOTPModal] = useState(false);
   const [showVerifyModal, setShowVerifyModal] = useState(false);
   const [showBusinessModal, setShowBusinessModal] = useState(false);
   const [alertModal, setAlertModal] = useState("");
@@ -292,6 +295,9 @@ function Registration(props) {
   const openVerifyModal = () => setShowVerifyModal(true);
   const handleVerifyModal = (e) => setCode(e.target.value);
 
+  const closeOTPModal = () => setShowOTPModal(false);
+  const openOTPModal = () => setShowOTPModal(true);
+
   const handleCaptcha = (value) => setCaptchaToken(value);
 
   React.useEffect(() => {
@@ -333,6 +339,22 @@ function Registration(props) {
 
     return "";
   };
+
+  const handleMethodSentOTP = async (param) => {
+    console.log("dataSentOTP", dataSentOTP)
+    if(param === 'whatsapp') {
+      console.log("jika methodnya whatsapp")
+      setSecond(15);
+      await handleSendWhatsapp(dataSentOTP.phoneNumber, dataSentOTP.verifyCode)
+      openVerifyModal();
+      setTimeout(() => {
+        setMessageNotSent(true)
+      }, 50000);
+    } else {
+      console.log("jika methodnya gmail")
+    }
+    console.log("param", param)
+  }
 
   const formik = useFormik({
     initialValues,
@@ -397,13 +419,23 @@ function Registration(props) {
           localStorage.setItem("user_info", JSON.stringify(owner));
           
           if (!owner.is_verified) {
-            setSubmitting(false);
-            setSecond(15);
-            await handleSendWhatsapp(values.phone_number.toString(), owner.verification_code, accessToken)
-            openVerifyModal();
-            setTimeout(() => {
-              setMessageNotSent(true)
-            }, 50000);
+            // pilih sent otp via gmail atau whatsapp
+            setDataSentOTP(
+              {
+                phoneNumber: values.phone_number.toString(),
+                verifyCode: owner.verification_code
+              }
+            )
+            openOTPModal(true)
+
+            // console.log("", )
+            // setSubmitting(false);
+            // setSecond(15);
+            // await handleSendWhatsapp(values.phone_number.toString(), owner.verification_code, accessToken)
+            // openVerifyModal();
+            // setTimeout(() => {
+            //   setMessageNotSent(true)
+            // }, 50000);
           } else {
             props.login(token);
           }
@@ -634,6 +666,14 @@ function Registration(props) {
         second={second}
         handleResendCode={handleResendCode}
         verification_code={verificationCode}
+      />
+
+      <ModalSendOTP
+        loading={loading}
+        closeOTPModal={closeOTPModal}
+        openOTPModal={openOTPModal}
+        showOTPModal={showOTPModal}
+        handleMethodSentOTP={handleMethodSentOTP}
       />
 
       <ModalRegister

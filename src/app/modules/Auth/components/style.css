@@ -5,3 +5,17 @@
 .edit:hover, .submit:hover{
   transform: scale(1.07);
 }
+.wrapper-method-sent-otp{
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.wrapper-method-sent-otp:hover{
+  transform: scale(1.05);
+}
+.whatsapp{
+  box-shadow: 0 0 3px 0.2px green;
+}
+.gmail{
+  box-shadow: 0 0 3px 0.2px red;
+}
