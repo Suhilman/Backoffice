@@ -128,13 +128,17 @@ function Registration(props) {
   const [allLocations, setAllLocations] = useState([]);
   const [dataFormik, setDataFormik] = useState({})
   const [statusWhatsapp, setStatusWhatsapp] = useState(false)
+  const [statusEmail, setStatusEmail] = useState(false)
   const [messageNotSent, setMessageNotSent] = React.useState(false)
   const [showModalPersonal, setShowModalPersonal] = React.useState(false)
+  const [methodSendOTP, setMethodSendOTP] = React.useState("")
 
   const [code, setCode] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
+  const [sentEmail, setSentEmail] = useState("")
 
   const changePhoneNumber = (number) => setPhonenumber(number)
+  const changeEmail = (email) => setSentEmail(email)
 
   const initialValueBusiness = {
     business_type_id: "",
@@ -323,9 +327,15 @@ function Registration(props) {
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
-  const handleResendCode = (phone, verify_code) => {
-    handleSendWhatsapp(phone, verify_code)
-    setSecond(15);
+  const handleResendCode = (phone, verify_code, email) => {
+    if(methodSendOTP === 'whatsapp') {
+      handleSendWhatsapp(phone, verify_code)
+      setSecond(15);
+    }
+    if(methodSendOTP === 'gmail') {
+      handleSendEmail(email, verify_code)
+      setSecond(15);
+    }
   };
 
   const getInputClasses = (fieldname) => {
@@ -341,6 +351,7 @@ function Registration(props) {
   };
 
   const handleMethodSentOTP = async (param) => {
+    setMethodSendOTP(param)
     console.log("dataSentOTP", dataSentOTP)
     if(param === 'whatsapp') {
       console.log("jika methodnya whatsapp")
@@ -350,8 +361,15 @@ function Registration(props) {
       setTimeout(() => {
         setMessageNotSent(true)
       }, 50000);
-    } else {
+    }
+    if (param === 'gmail') {
+      setSentEmail(formik.values.email)
       console.log("jika methodnya gmail")
+      await handleSendEmail(formik.values.email, dataSentOTP.verifyCode)
+      openVerifyModal();
+      setTimeout(() => {
+        setMessageNotSent(true)
+      }, 50000);
     }
     console.log("param", param)
   }
@@ -376,6 +394,7 @@ function Registration(props) {
           setToken(`Bearer ${accessToken}`);
           setVerificationCode(owner.verification_code);
 
+          console.log("Data setelah berhasil registrasi", data.data)
           console.log("ownernye", owner)
 
           // Handle Check Country || jika diluar indonesia, ketika membuat outlet bisa select addres. Jika luar indonesia select diubah menjadi text
@@ -526,6 +545,35 @@ function Registration(props) {
     }
   }
 
+  const handleSendEmail = async (email, verifyCode) => {
+    try {
+      await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/send-email/verify-otp?email=${email}&verifyCode=${verifyCode}`)
+      setStatusEmail(true)
+      toast.success('Verification code sent', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      setStatusEmail(false)
+      toast.info('Verification code not sent', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      console.log("send email error")
+      console.log(error)
+    }
+  }
+
   const handleProvince = (e) => {
     if (!e.target.value) {
       return;
@@ -635,13 +683,16 @@ function Registration(props) {
     <div className="login-form login-signin" style={{ display: "block" }}>
       <ModalVerify
         handleSendWhatsapp={handleSendWhatsapp}
+        handleSendEmail={handleSendEmail}
         changePhoneNumber={changePhoneNumber}
         statusWhatsapp={statusWhatsapp}
+        statusEmail={statusEmail}
         showVerifyModal={showVerifyModal}
         messageNotSent={messageNotSent}
         closeVerifyModal={closeVerifyModal}
         alertModal={alertModal}
         phonenumber={phonenumber}
+        sentEmail={sentEmail}
         handleVerifyModal={handleVerifyModal}
         code={code}
         checkCode={checkCode}
@@ -649,6 +700,8 @@ function Registration(props) {
         second={second}
         handleResendCode={handleResendCode}
         verification_code={verificationCode}
+        changeEmail={changeEmail}
+        methodSendOTP={methodSendOTP}
       />
 
       <ModalPersonal

@@ -7,20 +7,27 @@ const ModalVerify = ({
   showVerifyModal,
   alertModal,
   phonenumber,
+  sentEmail,
   handleVerifyModal,
   code,
   checkCode,
   handleSendWhatsapp,
+  changeEmail,
+  handleSendEmail,
   changePhoneNumber,
   // loading,
   second,
   handleResendCode,
   verification_code,
   statusWhatsapp,
-  messageNotSent
+  statusEmail,
+  messageNotSent,
+  methodSendOTP
 }) => {
   const [showVerifyCode, setShowVerifyCode] = React.useState(false)
   const [editPhoneNumber, setEditPhoneNumber] = React.useState(false)
+  const [editEmail, setEditEmail] = React.useState(false)
+  const [tempEmail, setTempEmail] = React.useState("")
 
   const openVerifyCode = () => setShowVerifyCode(true)
 
@@ -37,9 +44,25 @@ const ModalVerify = ({
     setEditPhoneNumber(!editPhoneNumber)
   }
 
+  const editStateTempEmail = () => {
+    setEditEmail(!editEmail)
+  }
+
+  const submitChangeEmail = () => {
+    handleSendEmail(tempEmail, verification_code)
+    setEditEmail(!editEmail)
+  }
+
   const handleChangePhoneNumber = (phone) => {
     changePhoneNumber(phone)
   }
+
+  const handleChangeEmail = (email) => {
+    setTempEmail(email)
+    changeEmail(email)
+  }
+  
+  console.log("sentEmail", sentEmail)
 
   return (
     <Modal show={showVerifyModal} onHide={hanldeHide}>
@@ -57,36 +80,59 @@ const ModalVerify = ({
         <p>
           Enter Verification Code We're Just Send to:
           <br />
-          <div className="d-flex align-items-center">
-            <div className="mr-2">
-              {editPhoneNumber ? (
-                <input 
-                  type="text" 
-                  defaultValue={phonenumber}
-                  onChange={(e) => handleChangePhoneNumber(e.target.value)}
-                />
-              ) : phonenumber }
+          {methodSendOTP === 'whatsapp' ? (
+            <div className="d-flex align-items-center">
+              <div className="mr-2">
+                {editPhoneNumber ? (
+                  <input 
+                    type="text" 
+                    defaultValue={phonenumber}
+                    onChange={(e) => handleChangePhoneNumber(e.target.value)}
+                  />
+                ) : phonenumber }
+              </div>
+              <div className="d-flex">
+                {!editPhoneNumber ? (
+                  <div className=" text-primary edit mr-2" onClick={editStateTempPhoneNumber}>edit</div>
+                ) : (
+                  <div className="text-primary submit" onClick={submitChangePhoneNumber}>submit</div>
+                ) }
+              </div>
+              {/* <div className="submit">Submit</div> */}
+              {/* <img src={IconEdit} alt="Edit"/> */}
             </div>
-            <div className="d-flex">
-              {!editPhoneNumber ? (
-                <div className=" text-primary edit mr-2" onClick={editStateTempPhoneNumber}>edit</div>
-              ) : (
-                <div className="text-primary submit" onClick={submitChangePhoneNumber}>submit</div>
-              ) }
+          ) : (
+            <div className="d-flex align-items-center">
+              <div className="mr-2">
+                {editEmail ? (
+                  <input 
+                    type="text" 
+                    defaultValue={sentEmail}
+                    onChange={(e) => handleChangeEmail(e.target.value)}
+                  />
+                ) : sentEmail }
+              </div>
+              <div className="d-flex">
+                {!editEmail ? (
+                  <div className=" text-primary edit mr-2" onClick={editStateTempEmail}>edit</div>
+                ) : (
+                  <div className="text-primary submit" onClick={submitChangeEmail}>submit</div>
+                ) }
+              </div>
+              {/* <div className="submit">Submit</div> */}
+              {/* <img src={IconEdit} alt="Edit"/> */}
             </div>
-            {/* <div className="submit">Submit</div> */}
-            {/* <img src={IconEdit} alt="Edit"/> */}
-          </div>
+          )}
         </p>
-        {statusWhatsapp ? (
+        {statusWhatsapp || statusEmail ? (
           <div>
             <div>
-              Please check whatsapp for verify code
+              Please check {methodSendOTP} for verify code
             </div>
             {messageNotSent ? (
               <div className="mb-3">
                 <div className="text-muted">
-                  didn't receive the message? <span className="text-primary" style={{cursor: "pointer"}} onClick={openVerifyCode}>show here</span> 
+                  didn't receive the verify code? <span className="text-primary" style={{cursor: "pointer"}} onClick={openVerifyCode}>show here</span> 
                 </div>
                 <div>
                   {showVerifyCode ? verification_code : ""}
@@ -114,7 +160,7 @@ const ModalVerify = ({
           <Button
             className="px-9 py-4"
             variant="secondary"
-            onClick={() => handleResendCode(phonenumber, verification_code)}
+            onClick={() => handleResendCode(phonenumber, verification_code, sentEmail)}
           >
             Resend Code
           </Button>
