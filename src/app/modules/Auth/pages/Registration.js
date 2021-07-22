@@ -218,8 +218,8 @@ function Registration(props) {
         verifyAccount();
         // disableLoading();
         console.log("Setelah verify code")
-        // props.register(token.split(" ")[1]);
-        setShowModalPersonal(true)
+        props.register(token.split(" ")[1]);
+        // setShowModalPersonal(true)
       } catch (err) {
         setAlertModal(err.response.data.message);
         disableLoading();
@@ -352,6 +352,7 @@ function Registration(props) {
 
   const handleMethodSentOTP = async (param) => {
     setMethodSendOTP(param)
+    closeOTPModal()
     console.log("dataSentOTP", dataSentOTP)
     if(param === 'whatsapp') {
       console.log("jika methodnya whatsapp")
@@ -547,7 +548,9 @@ function Registration(props) {
 
   const handleSendEmail = async (email, verifyCode) => {
     try {
-      await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/send-email/verify-otp?email=${email}&verifyCode=${verifyCode}`)
+      await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/send-email/verify-otp?email=${email}&verifyCode=${verifyCode}`, 
+        { headers: { Authorization: token } }
+      )
       setStatusEmail(true)
       toast.success('Verification code sent', {
         position: "top-right",
@@ -705,20 +708,10 @@ function Registration(props) {
       />
 
       <ModalPersonal
-        statusWhatsapp={statusWhatsapp}
         redirectToDashboard={redirectToDashboard}
         showModalPersonal={showModalPersonal}
-        messageNotSent={messageNotSent}
         closeVerifyModal={closeVerifyModal}
         alertModal={alertModal}
-        phonenumber={phonenumber}
-        handleVerifyModal={handleVerifyModal}
-        token={token}
-        checkCode={checkCode}
-        loading={loading}
-        second={second}
-        handleResendCode={handleResendCode}
-        verification_code={verificationCode}
       />
 
       <ModalSendOTP

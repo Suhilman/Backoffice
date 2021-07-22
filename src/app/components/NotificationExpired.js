@@ -13,6 +13,12 @@ const NotificationExpired = () => {
     const dataSubscription = await axios.get(`${API_URL}/api/v1/subscription`,
       { headers: { Authorization: localStorage.getItem("token") } })
     if (dataSubscription.data.data.length > 0) {
+      const dt = new Date()
+      const month = dt.getMonth() + 1
+      const year = dt.getFullYear()
+
+      const daysInMonth = new Date(year, month, 0).getDate()
+      console.log(`satu bulan ada ${daysInMonth} hari`)
       console.log("dataSubscription", dataSubscription.data.data)
       const userInfo = JSON.parse(localStorage.getItem("user_info"))
       const subscription = dataSubscription.data.data.find(item => {
@@ -31,7 +37,7 @@ const NotificationExpired = () => {
         if (dateExpired.getFullYear() - dateNow.getFullYear() > 0) {
           const resultMonth = 12 - dateNow.getMonth()
           const resultMonth2 = dateExpired.getMonth() + resultMonth
-          const expired = Math.floor(resultMonth2 * 30.5 +  dateExpired.getDate())
+          const expired = Math.floor(resultMonth2 * daysInMonth +  dateExpired.getDate())
           setCountExpired(expired)
           console.log("ini tahuun | ada berapa hari", expired)
         }
@@ -47,17 +53,16 @@ const NotificationExpired = () => {
               Swal.fire(`Masa uji coba sudah habis`, "", "warning")
             }
           } else if (dateExpired.getMonth() - dateNow.getMonth() === 1) {
-            const expired = 30 - dateNow.getDate() + dateExpired.getDate()
+            const expired = daysInMonth - dateNow.getDate() + dateExpired.getDate()
             console.log("dateNow", dateNow.getDate())
             console.log("dateExpired", dateExpired.getDate())
-            console.log("Man Jadda Wajada")
             setCountExpired(expired)
           } else {
             const resultMonth = dateExpired.getMonth() - dateNow.getMonth()
             console.log("dateExpired.getMonth()", dateExpired.getMonth())
             console.log("resultMonth", resultMonth)
             console.log("ini ketika kurang dari 1 tahun dan lebih dari 1 bulan", resultMonth )
-            const expired = Math.floor(resultMonth * 30.5 + dateExpired.getDate())
+            const expired = Math.floor(resultMonth * daysInMonth + dateExpired.getDate())
             console.log("ini bulan | ada berapa hari", expired)
             setCountExpired(expired)
           }
@@ -89,8 +94,11 @@ const NotificationExpired = () => {
   return (
     <div>
       {countExpired <= 14 && typeof countExpired === "number" ? (
-        <div className="wrapper-notification">
+        <div className="wrapper-notification d-flex justify-content-between">
           <p>{t("yourBeetPOSTrialWillEndIn")}<span className="text-danger mx-2">{countExpired}</span>{t("day(s)")}</p>
+          <div className="badge badge-info" style={{cursor: 'pointer'}}>
+            Upgrade
+          </div>
         </div>
       ) : (<div></div>) }
     </div>

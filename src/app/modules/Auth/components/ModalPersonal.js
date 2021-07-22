@@ -10,15 +10,7 @@ const ModalPersonal = ({
   showModalPersonal,
   alertModal,
   redirectToDashboard,
-  phonenumber,
-  handleVerifyModal,
-  token,
-  checkCode,
-  second,
-  handleResendCode,
-  verification_code,
-  statusWhatsapp,
-  messageNotSent
+  token
 }) => {
   const [alertPhoto, setAlertPhoto] = React.useState("");
   const [photo, setPhoto] = React.useState("");
