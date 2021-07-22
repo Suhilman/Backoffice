@@ -134,3 +134,15 @@
   box-shadow: 0 0 3px 1px #a66fa7;
   background-color: white;
 }
+.font-weight-bold{
+  font-size: 17px;
+}
+.background-black{
+  z-index: 99;
+  position: absolute;
+  right: -5%;
+  bottom: -230%;
+  left: -100%;
+  top: -50%;
+  background-color: rgba(128, 128, 128, 0.281);
+}

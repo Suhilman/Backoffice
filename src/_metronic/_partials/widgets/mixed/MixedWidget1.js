@@ -562,9 +562,9 @@ const ModalCustomRange = ({
 
   const handleShowGuide = async (state) => {
     if (state === 'finish_guide') {
-      await axios.patch(`${API_URL}/api/v1/business/update-guide/${userInfo.business_id}`, {
-        user_guide: 1
-      })
+      // await axios.patch(`${API_URL}/api/v1/business/update-guide/${userInfo.business_id}`, {
+      //   user_guide: 1
+      // })
       setShowGuide(null)
     } else {
       setShowGuide(state)
@@ -602,91 +602,118 @@ const ModalCustomRange = ({
           </Button>
         </Modal.Footer>
       </Modal>
+      {showGuide ? (
+        <div className="background-black" />
+      ) : null}
       {showGuide === 'dashboard' ? (
         <div className="wrapper-guide dashboard">
-          <div onClick={() => handleShowGuide('report')}>
-            <div className="font-weight-bold">Dashboard</div>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
-          </div>
-          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
-            <div className="badge badge-danger">Skip All Guide</div>
+          <div className="font-weight-bold">Dashboard</div>
+          Pada Submenu Dashboard, akan terlihat grafik penjualan beserta dengan detail sales dan detail transactions. Anda dapat menggunakan filter waktu dan outlet untuk mengubah grafik sesuai dengan yang diinginkan
+          <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('report')}>
+              <div className="badge badge-info">Skip Guide</div>
+            </div>
+            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
+              <div className="badge badge-danger">Skip All Guide</div>
+            </div>
           </div>
         </div>
       ) : null}
       {showGuide === 'report' ? (
         <div className="wrapper-guide report">
-          <div onClick={() => handleShowGuide('product')}>
-            <div className="font-weight-bold">Report</div>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
-          </div>
-          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
-            <div className="badge badge-danger">Skip All Guide</div>
+          <div className="font-weight-bold">Report</div>
+          Pada menu utama laporan, anda dapat melihat Sales Summary dari bisnis anda. Sales summary yang ditampilkan dapat diatur menggunakan filter waktu dan tempat yang tersedia pada bagian kanan menu. Terdapat juga tombol export yang memungkinkan anda untuk melihat data Sales Summary dalam bentuk .xls.
+          <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('product')}>
+              <div className="badge badge-info">Skip Guide</div>
+            </div>
+            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
+              <div className="badge badge-danger">Skip All Guide</div>
+            </div>
           </div>
         </div>
       ) : null}
       {showGuide === 'product' ? (
         <div className="wrapper-guide product" >
-          <div onClick={() => handleShowGuide('inventory')}>
           <div className="font-weight-bold">Product</div>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
-          </div>
-          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
-            <div className="badge badge-danger">Skip All Guide</div>
+            Pada menu utama modul product, akan terlihat Product List dari bisnis anda. Anda dapat melihat data produk yang telah dibuat pada bisnis anda, beserta dengan stock serta status produk tersebut. Status produk dapat diubah menjadi non aktif maupun aktif, yang dapat digunakan untuk menghilangkan produk dari product list pada aplikasi BeetPOS (jika non-aktif). Anda dapat melakukan edit maupun delete produk pada masing-masing produk
+          <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('inventory')}>
+              <div className="badge badge-info">Skip Guide</div>
+            </div>
+            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
+              <div className="badge badge-danger">Skip All Guide</div>
+            </div>
           </div>
         </div>
       ) : null }
       {showGuide === 'inventory' ? (
         <div className="wrapper-guide inventory">
-          <div onClick={() => handleShowGuide('kitchen')}>
-            <div className="font-weight-bold">Inventory</div>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
-          </div>
-          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
-            <div className="badge badge-danger">Skip All Guide</div>
+          <div className="font-weight-bold">Inventory</div>
+          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+          <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('kitchen')}>
+              <div className="badge badge-info">Skip Guide</div>
+            </div>
+            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
+              <div className="badge badge-danger">Skip All Guide</div>
+            </div>
           </div>
         </div>
       ): null}
       {showGuide === 'kitchen' ? (
         <div className="wrapper-guide kitchen">
-          <div  onClick={() => handleShowGuide('outlet')}>
-            <div className="font-weight-bold">Kitchen</div>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
-          </div>
-          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
-            <div className="badge badge-danger">Skip All Guide</div>
+          <div className="font-weight-bold">Kitchen</div>
+          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+          <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('outlet')}>
+              <div className="badge badge-info">Skip Guide</div>
+            </div>
+            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
+              <div className="badge badge-danger">Skip All Guide</div>
+            </div>
           </div>
         </div>
       ): null}
       {showGuide === 'outlet' ? (
         <div className="wrapper-guide outlet" >
-          <div onClick={() => handleShowGuide('promo')}>
-            <div className="font-weight-bold">Outlet</div>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
-          </div>
-          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
-            <div className="badge badge-danger">Skip All Guide</div>
+          <div className="font-weight-bold">Outlet</div>
+          Pada menu utama Outlet, terdapat tampilan Outlet yang sudah dibuat pada bisnis anda. Pada setiap outlet, terdapat juga dropdown yang dapat digunakan untuk melihat data outlet secara cepat (quickview). Anda dapat memilih opsi edit outlet pada setiap outlet untuk mengubah data pada popup edit outlet. Menambah Outlet baru
+          <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('promo')}>
+              <div className="badge badge-info">Skip Guide</div>
+            </div>
+            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
+              <div className="badge badge-danger">Skip All Guide</div>
+            </div>
           </div>
         </div>
       ): null}
       {showGuide === 'promo' ? (
         <div className="wrapper-guide promo"> 
-          <div onClick={() => handleShowGuide('staff')}>
-            <div className="font-weight-bold">Promo</div>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
-          </div>
-          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
-            <div className="badge badge-danger">Skip All Guide</div>
+          <div className="font-weight-bold">Promo</div>
+          Pada menu special promo, anda dapat membuat promo yang dapat diaktifkan saat customer akan melakukan pembayaran. Diskon ini dapat diaktifkan secara manual setelah customer memenuhi kriteria yang anda berikan (Ex. Diskon Mahasiswa, Diskon Ulang Tahun, dsb.). Promo ini dapat memberikan potongan harga menggunakan rupiah ataupun persentase.
+          <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('staff')}>
+              <div className="badge badge-info">Skip Guide</div>
+            </div>
+            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
+              <div className="badge badge-danger">Skip All Guide</div>
+            </div>
           </div>
         </div>
       ): null}
       {showGuide === 'staff' ? (
         <div className="wrapper-guide staff">
-          <div onClick={() => handleShowGuide('role')}>
-            <div className="font-weight-bold">Staff</div>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
-          </div>
-          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
-            <div className="badge badge-danger">Skip All Guide</div>
+          <div className="font-weight-bold">Staff</div>
+          Pada menu Staff, akan ditampilkan staff yang sedang aktif dalam bisnis anda. Setiap Staff akan memiliki data pribadi beserta dengan data Role dari Staff tersebut. Data role pada staff akan menentukan hak akses dari staff tersebut, baik dari sisi aplikasi kasir BeetPOS maupun Backoffice BeetPOS.
+          <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('role')}>
+              <div className="badge badge-info">Skip Guide</div>
+            </div>
+            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
+              <div className="badge badge-danger">Skip All Guide</div>
+            </div>
           </div>
         </div>
       ): null}
@@ -694,10 +721,15 @@ const ModalCustomRange = ({
         <div className="wrapper-guide role">
           <div onClick={() => handleShowGuide('customer')}>
             <div className="font-weight-bold">Role</div>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+            Menu utama role akan menunjukan role yang ada pada bisnis anda. Pada menu ini, akan ditampilkan tipe akses yang telah diberikan untuk masing-masing role pada kolom Access.
           </div>
-          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
-            <div className="badge badge-danger">Skip All Guide</div>
+          <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('customer')}>
+              <div className="badge badge-info">Skip Guide</div>
+            </div>
+            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
+              <div className="badge badge-danger">Skip All Guide</div>
+            </div>
           </div>
         </div>
       ): null}
@@ -705,10 +737,15 @@ const ModalCustomRange = ({
         <div className="wrapper-guide customer">
           <div onClick={() => handleShowGuide('commission')}>
             <div className="font-weight-bold">Customer</div>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+            Pada menu utama customer management, customer yang sudah terdaftar pada bisnis anda akan ditampilkan disini. Anda dapat melihat detail setiap customer dengan memilih menu customer detail pada kolom Actions. Pada menu customer detail, akan ditampilkan info lengkap mengenai customer tersebut, beserta dengan statisitik pembelian dan riwayat transaksi dari customer tersebut.
           </div>
-          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
-            <div className="badge badge-danger">Skip All Guide</div>
+          <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('commission')}>
+              <div className="badge badge-info">Skip Guide</div>
+            </div>
+            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
+              <div className="badge badge-danger">Skip All Guide</div>
+            </div>
           </div>
         </div>
       ): null}
@@ -718,8 +755,13 @@ const ModalCustomRange = ({
             <div className="font-weight-bold">Commission</div>
             Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
           </div>
-          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
-            <div className="badge badge-danger">Skip All Guide</div>
+          <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('account')}>
+              <div className="badge badge-info">Skip Guide</div>
+            </div>
+            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
+              <div className="badge badge-danger">Skip All Guide</div>
+            </div>
           </div>
         </div>
       ): null}
@@ -727,10 +769,15 @@ const ModalCustomRange = ({
         <div className="wrapper-guide account">
           <div onClick={() => handleShowGuide('finish_guide')}>
             <div className="font-weight-bold">Account</div>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+            Pada menu Account Information, akan ditampilkan data mengenai akun anda sesuai dengan data yang anda isi. Untuk mengubah data Account Information, anda dapat memilih Change Account Information, dan memasukan data yang ingin diganti. Untuk perubahan password dan PIN staff, dapat dilakukan juga pada menu Change Account Information.
           </div>
-          <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
-            <div className="badge badge-danger">Skip All Guide</div>
+          <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
+              <div className="badge badge-info">Skip Guide</div>
+            </div>
+            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
+              <div className="badge badge-danger">Skip All Guide</div>
+            </div>
           </div>
         </div>
       ): null}
