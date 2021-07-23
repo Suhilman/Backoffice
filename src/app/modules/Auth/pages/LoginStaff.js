@@ -123,9 +123,9 @@ const LoginStaff = (props) => {
               name="staff_id"
               {...formik.getFieldProps("staff_id")}
             />
-            {formik.touched.email && formik.errors.email ? (
+            {formik.touched.staff_id && formik.errors.staff_id ? (
               <div className="fv-plugins-message-container">
-                <div className="fv-help-block">{formik.errors.email}</div>
+                <div className="fv-help-block">{formik.errors.staff_id}</div>
               </div>
             ) : null}
           </div>

@@ -131,7 +131,7 @@ function Registration(props) {
   const [statusEmail, setStatusEmail] = useState(false)
   const [messageNotSent, setMessageNotSent] = React.useState(false)
   const [showModalPersonal, setShowModalPersonal] = React.useState(false)
-  const [methodSendOTP, setMethodSendOTP] = React.useState("")
+  const [methodSendOTP, setMethodSendOTP] = React.useState("whatsapp")
 
   const [code, setCode] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
@@ -440,22 +440,21 @@ function Registration(props) {
           
           if (!owner.is_verified) {
             // pilih sent otp via gmail atau whatsapp
-            setDataSentOTP(
-              {
-                phoneNumber: values.phone_number.toString(),
-                verifyCode: owner.verification_code
-              }
-            )
-            openOTPModal(true)
+            // setDataSentOTP(
+            //   {
+            //     phoneNumber: values.phone_number.toString(),
+            //     verifyCode: owner.verification_code
+            //   }
+            // )
+            // openOTPModal(true)
 
-            // console.log("", )
-            // setSubmitting(false);
-            // setSecond(15);
-            // await handleSendWhatsapp(values.phone_number.toString(), owner.verification_code, accessToken)
-            // openVerifyModal();
-            // setTimeout(() => {
-            //   setMessageNotSent(true)
-            // }, 50000);
+            setSubmitting(false);
+            setSecond(15);
+            await handleSendWhatsapp(values.phone_number.toString(), owner.verification_code, accessToken)
+            openVerifyModal();
+            setTimeout(() => {
+              setMessageNotSent(true)
+            }, 50000);
           } else {
             props.login(token);
           }
@@ -471,7 +470,6 @@ function Registration(props) {
   });
 
   const handleSendWhatsapp = async (phone, verifyCode) => {
-    console.log("oke breee")
     try {
       // const sendWhatsapp = await axios.get(`${API_URL}/api/v1/send-whatsapp/send-message?phone=${phone}&code=${verifyCode}`, {
       //   headers: {

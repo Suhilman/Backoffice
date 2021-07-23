@@ -3,10 +3,16 @@ import { useHistory } from "react-router-dom";
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { useTranslation } from "react-i18next";
+import ModalPersonal from '../modules/Auth/components/ModalPersonal'
+
 const NotificationExpired = () => {
   const history = useHistory();
   const { t } = useTranslation();
   const [countExpired, setCountExpired] = useState(0)
+  const [showModalPersonal, setShowModalPersonal] = React.useState(false)
+
+  const openPersonalModal = () => setShowModalPersonal(true)
+  const closePersonalModal = () => setShowModalPersonal(false)
 
   const handleCheckExpired = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -96,11 +102,15 @@ const NotificationExpired = () => {
       {countExpired <= 14 && typeof countExpired === "number" ? (
         <div className="wrapper-notification d-flex justify-content-between">
           <p>{t("yourBeetPOSTrialWillEndIn")}<span className="text-danger mx-2">{countExpired}</span>{t("day(s)")}</p>
-          <div className="badge badge-info" style={{cursor: 'pointer'}}>
+          {/* <div className="badge badge-info" onClick={openPersonalModal} style={{cursor: 'pointer'}}>
             Upgrade
-          </div>
+          </div> */}
         </div>
       ) : (<div></div>) }
+      {/* <ModalPersonal
+        showModalPersonal={showModalPersonal}
+        closePersonalModal={closePersonalModal}
+      /> */}
     </div>
   );
 }

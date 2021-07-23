@@ -56,7 +56,7 @@ const ModalRole = ({
           <Form.Group>
             <Form.Label>{t("privilege")}:</Form.Label>
             {
-              console.log(formikRole.getFieldProps("privileges").value)
+              console.log("ini previlagenya", formikRole.getFieldProps("privileges").value)
             }
             <Row>
               {formikRole.getFieldProps("privileges").value.length

@@ -8,8 +8,7 @@ import * as Yup from "yup";
 
 const ModalPersonal = ({
   showModalPersonal,
-  alertModal,
-  redirectToDashboard,
+  closePersonalModal,
   token
 }) => {
   const [alertPhoto, setAlertPhoto] = React.useState("");
@@ -108,7 +107,7 @@ const ModalPersonal = ({
         );
         disableLoading();
         console.log("imageKtp", imageKtp)
-        redirectToDashboard()
+        // redirectToDashboard()
       } catch (err) {
         console.log("error apa", err)
         disableLoading();
@@ -164,19 +163,12 @@ const ModalPersonal = ({
   }, [])
 
   return (
-    <Modal show={showModalPersonal}>
+    <Modal show={showModalPersonal} onHide={closePersonalModal}>
       <Modal.Header closeButton>
         <Modal.Title>Personal Form *</Modal.Title>
       </Modal.Header>
       <Form onSubmit={formikPersonal.handleSubmit}>
         <Modal.Body>
-          {alertModal ? (
-            <div className="mb-10 alert alert-custom alert-light-danger alert-dismissible">
-              <div className="alert-text font-weight-bold">{alertModal}</div>
-            </div>
-          ) : (
-            ""
-          )}
             <Form.Group>
               <Form.Label>Photo KTP</Form.Label>
               {alertPhoto ? <Alert variant="danger">{alertPhoto}</Alert> : ""}
