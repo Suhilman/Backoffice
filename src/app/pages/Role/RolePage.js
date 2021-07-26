@@ -209,19 +209,7 @@ export const RolePage = () => {
   const getPrivileges = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
-      const userInfo = JSON.parse(localStorage.getItem('user_info'))
-      const token = localStorage.getItem('token')
-
-      const resPartition = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${userInfo.business_id}`, {
-        headers: { Authorization: token } 
-       })
-      const subPartitionId = resPartition.data.data[0].subscription_partition_id 
       const { data } = await axios.get(`${API_URL}/api/v1/privilege`);
-      const resSubsPartitionPrivileges = await axios.get(`${API_URL}/api/v1/subscription-partition-privilege?subscription_partition_id=${subPartitionId}`, {
-        headers: {
-          Authorization: token
-        }
-      });
       const accesses = [...new Set(data.data.map((item) => item.Access.name))];
 
       console.log("accesses", accesses)
@@ -235,24 +223,14 @@ export const RolePage = () => {
           access: item.Access.name
         };
       });
-      const privilegeDataOwner = resSubsPartitionPrivileges.data.data.map((item) => {
-        return {
-          id: item.Privilege.id,
-          allow: false,
-          name: item.Privilege.name,
-          access: item.Privilege.Access.name,
-          allowHide: item.allow
-        };
-      });
 
       console.log("privilegeData", privilegeData)
-      console.log("privilegeDataOwner", privilegeDataOwner)
       // output => {id: 1, allow: false, name: "Cashier Transaction", access: "Cashier"}
 
-      formikAddRole.setFieldValue("privileges", privilegeDataOwner);
+      formikAddRole.setFieldValue("privileges", privilegeData);
 
       setAllAccessLists(accesses);
-      setAllPrivileges(privilegeDataOwner);
+      setAllPrivileges(privilegeData);
     } catch (err) {
       setAllPrivileges([]);
     }
