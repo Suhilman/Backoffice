@@ -240,7 +240,8 @@ export const RolePage = () => {
           id: item.Privilege.id,
           allow: false,
           name: item.Privilege.name,
-          access: item.Privilege.Access.name
+          access: item.Privilege.Access.name,
+          allowHide: item.allow
         };
       });
 

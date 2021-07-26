@@ -70,25 +70,21 @@ export const ProductPage = () => {
           if(value.stock <= settingsNotification.data.data.timeState[2].minimum_stock) {
             if(dateSettings.getHours() - dateNow.getHours() <= 0){
               if(dateSettings.getMinutes() - dateNow.getMinutes() <= 0 && dateSettings.getMinutes() - dateNow.getMinutes() >= -10) {
-                console.log("sudah waktunya kirim notif")
                 if(value.unit_id) {
                   const message = {
                     title: "Stock Alert",
                     message: `${value.name} ${value.stock} ${value.Unit.name}` 
                   }
                   // await axios.post(`${API_URL}/api/v1/business-notification`, message)
-                  console.log("ini data yang akan di push notification", `${value.name} ${value.stock} ${value.Unit.name}`)
                 } else {
                   const message = {
                     title: "Stock Alert",
                     message: `${value.name} ${value.stock} unit` 
                   }
                   // await axios.post(`${API_URL}/api/v1/business-notification`, message)
-                  console.log("ini data yang akan di push notification", `${value.name} ${value.stock} unit`)
                 }
               }
             } else {
-              console.log("belum waktunya kirim notif")
             }
           }
         }

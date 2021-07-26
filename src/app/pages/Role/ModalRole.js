@@ -74,6 +74,7 @@ const ModalRole = ({
                               {formikRole
                                 .getFieldProps("privileges")
                                 .value.map((privilege, index) => {
+                                  console.log("privilege privilege privilege", privilege)
                                   if (access === privilege.access) {
                                     return (
                                       <Row

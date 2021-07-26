@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { injectIntl } from "react-intl";
 import { useTranslation } from "react-i18next";
 import { Form } from "react-bootstrap";
-
+import { useHistory } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -38,6 +38,8 @@ const initialValues = {
 };
 
 function Registration(props) {
+  const history = useHistory()
+
   const API_URL = process.env.REACT_APP_API_URL;
   const { intl } = props;
   const [loading, setLoading] = useState(false);
@@ -227,7 +229,17 @@ function Registration(props) {
         verifyAccount();
         // disableLoading();
         console.log("Setelah verify code")
-        props.register(token.split(" ")[1]);
+        toast.success('Register Success, Please Login', {
+          position: "top-right",
+          autoClose: 8000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        history.push("/auth/login")
+        // props.register(token.split(" ")[1]);
         // setShowModalPersonal(true)
       } catch (err) {
         setAlertModal(err.response.data.message);
@@ -235,7 +247,7 @@ function Registration(props) {
       }
   }
 
-  const redirectToDashboard = () => {
+  const registerSuccess = () => {
     props.register(token.split(" ")[1]);
   }
 
@@ -715,7 +727,7 @@ function Registration(props) {
       />
 
       <ModalPersonal
-        redirectToDashboard={redirectToDashboard}
+        registerSuccess={registerSuccess}
         showModalPersonal={showModalPersonal}
         closeVerifyModal={closeVerifyModal}
         alertModal={alertModal}

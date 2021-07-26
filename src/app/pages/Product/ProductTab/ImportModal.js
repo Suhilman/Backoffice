@@ -15,7 +15,6 @@ const ConfirmModal = ({
 }) => {
   const handleSelectOutlet = (value) => {
     if (value) {
-      console.log("ini valuenya", value)
       const outlet = value.map((item) => item.value);
       formikImportProduct.setFieldValue("outlet_id", outlet);
     } else {

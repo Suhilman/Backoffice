@@ -69,6 +69,7 @@ function AsideMenuList(props) {
   };
 
   const findPrivilege = (name) => {
+    console.log("currPrivileges", currPrivileges)
     if (currPrivileges.length) {
       const find = currPrivileges.find(
         (item) => item.name === name && item.access === "Backend"
@@ -122,6 +123,7 @@ function AsideMenuList(props) {
 
     // management sections
     const ms = [...managementSections];
+    console.log("findPrivilege", findPrivilege("outlet_management"))
     const checkOutlet = findPrivilege("outlet_management");
     const checkPromo = findPrivilege("promo_management");
     const checkStaff = findPrivilege("staff_management");
@@ -145,6 +147,7 @@ function AsideMenuList(props) {
       ms.push("commission");
     }
 
+    console.log("ms apa aja yaaa", ms)
     setManagementSections(ms);
   };
 

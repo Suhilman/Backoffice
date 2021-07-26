@@ -316,7 +316,6 @@ const ProductTab = ({
     return result
   }
   const tempOptionOutlet = handleOptionsOutlet()
-  console.log("handleOptionsOutlet", tempOptionOutlet)
 
   const optionsOutlet = tempOptionOutlet.map((item) => {
     return { value: item.id, label: item.name };
@@ -392,8 +391,6 @@ const ProductTab = ({
     {
       name: `${t("actions")}`,
       cell: (rows) => {
-        console.log("ini rows apa hayooo", rows)
-        console.log("ini rows apa hayooo", rows.currProduct)
         return (
           <Dropdown>
             <Dropdown.Toggle variant="secondary">
@@ -480,7 +477,7 @@ const ProductTab = ({
         const merged = values.outlet_id.map((item) => {
           const output = [];
           for (const val of values.products) {
-            if(val.name && val.sku && val.price)
+            if(val.name && val.sku)
             {
             const obj = {
               ...val,
