@@ -316,11 +316,8 @@ function Login(props) {
               console.log(`Latitude : ${crd.latitude}`);
               console.log(`Longitude: ${crd.longitude}`);
               console.log(`More or less ${crd.accuracy} meters.`);
-              console.log("sebelum get request")
               const result = await axios.get(`${API_URL}/api/v1/outlet/get-address?latitude=${parseFloat(crd.latitude)}&longitude=${parseFloat(crd.longitude)}`)
-              console.log("country address", result.data.resultAddress.address)
               const checkCountry = result.data.resultAddress.address.includes("Indonesia");
-              console.log("true kah", checkCountry)
               if(checkCountry) {
                 localStorage.setItem("checkCountry", true);
               } else {

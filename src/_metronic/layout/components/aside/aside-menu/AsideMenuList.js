@@ -50,7 +50,6 @@ function AsideMenuList(props) {
     const {data} = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${localData.business_id}`)
     // {{local-api}}/api/v1/subscription-partition-privilege?subscription_partition_id=2
     const resultSubscriptionPrivileges = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription-partition-privilege?subscription_partition_id=${data.data[0].subscription_partition_id}`)
-    console.log("resultSubscriptionPrivileges", resultSubscriptionPrivileges)
     setSubscriptionPartitionId(data.data[0].subscription_partition_id)
   }
 
@@ -62,14 +61,11 @@ function AsideMenuList(props) {
     const localData = JSON.parse(localStorage.getItem("user_info"));
     const privileges = localData?.privileges ? localData.privileges : [];
     const currUser = privileges.length ? "staff" : "owner";
-    console.log("privileges", privileges)
-    console.log("currUser", currUser)
     setCurrPrivileges(privileges);
     setUser(currUser);
   };
 
   const findPrivilege = (name) => {
-    console.log("currPrivileges", currPrivileges)
     if (currPrivileges.length) {
       const find = currPrivileges.find(
         (item) => item.name === name && item.access === "Backend"
@@ -89,8 +85,6 @@ function AsideMenuList(props) {
     const ds = [...dashboardSections];
     const checkDashboard = findPrivilege("view_dashboard");
     const checkReport = findPrivilege("view_report");
-    console.log("checkDashboard", checkDashboard)
-    console.log("checkDashboard", checkDashboard)
 
     if (checkDashboard) ds.push("view_dashboard");
     if (checkReport) ds.push("view_report");
@@ -100,7 +94,6 @@ function AsideMenuList(props) {
       ds.push("view_report");
     }
 
-    console.log("ds", ds)
     setDashboardSections(ds);
 
     // product sections
@@ -123,7 +116,6 @@ function AsideMenuList(props) {
 
     // management sections
     const ms = [...managementSections];
-    console.log("findPrivilege", findPrivilege("outlet_management"))
     const checkOutlet = findPrivilege("outlet_management");
     const checkPromo = findPrivilege("promo_management");
     const checkStaff = findPrivilege("staff_management");
@@ -147,7 +139,6 @@ function AsideMenuList(props) {
       ms.push("commission");
     }
 
-    console.log("ms apa aja yaaa", ms)
     setManagementSections(ms);
   };
 

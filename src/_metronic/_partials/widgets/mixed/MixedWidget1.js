@@ -50,7 +50,6 @@ export function MixedWidget1({
 
     const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
 
-    console.log("currency nya brpw", data.data.Currency.name)
      
 
     setCurrency(data.data.Currency.name)
@@ -549,12 +548,11 @@ const ModalCustomRange = ({
   const checkUserGuideBusiness = async () => {
     try {
       const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
-      if(!data.data.user_guide) {
-        setShowGuide("dashboard")
-      } else {
-        setShowGuide(null)
-      }
-      console.log("data businessnya", data.data)
+      // if(!data.data.user_guide) {
+      //   setShowGuide("dashboard")
+      // } else {
+      //   setShowGuide(null)
+      // }
     } catch (error) {
       console.log(error)
     }
