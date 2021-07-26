@@ -189,6 +189,7 @@ export const RolePage = () => {
 
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/role${filter}`);
+      console.log("data all roles", data.data)
       setAllRoles(data.data);
     } catch (err) {
       setAllRoles([]);
@@ -208,8 +209,23 @@ export const RolePage = () => {
   const getPrivileges = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
+      const userInfo = JSON.parse(localStorage.getItem('user_info'))
+      const token = localStorage.getItem('token')
+
+      const resPartition = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${userInfo.business_id}`, {
+        headers: { Authorization: token } 
+       })
+      const subPartitionId = resPartition.data.data[0].subscription_partition_id 
       const { data } = await axios.get(`${API_URL}/api/v1/privilege`);
+      const resSubsPartitionPrivileges = await axios.get(`${API_URL}/api/v1/subscription-partition-privilege?subscription_partition_id=${subPartitionId}`, {
+        headers: {
+          Authorization: token
+        }
+      });
       const accesses = [...new Set(data.data.map((item) => item.Access.name))];
+
+      console.log("accesses", accesses)
+      // output => ["Cashier", "Backend"]
 
       const privilegeData = data.data.map((item) => {
         return {
@@ -219,11 +235,23 @@ export const RolePage = () => {
           access: item.Access.name
         };
       });
+      const privilegeDataOwner = resSubsPartitionPrivileges.data.data.map((item) => {
+        return {
+          id: item.Privilege.id,
+          allow: false,
+          name: item.Privilege.name,
+          access: item.Privilege.Access.name
+        };
+      });
 
-      formikAddRole.setFieldValue("privileges", privilegeData);
+      console.log("privilegeData", privilegeData)
+      console.log("privilegeDataOwner", privilegeDataOwner)
+      // output => {id: 1, allow: false, name: "Cashier Transaction", access: "Cashier"}
+
+      formikAddRole.setFieldValue("privileges", privilegeDataOwner);
 
       setAllAccessLists(accesses);
-      setAllPrivileges(privilegeData);
+      setAllPrivileges(privilegeDataOwner);
     } catch (err) {
       setAllPrivileges([]);
     }
@@ -270,15 +298,15 @@ export const RolePage = () => {
   const dataRole = () => {
     return allRoles.map((item, index) => {
       const access = item.Role_Privileges.filter((item) => item.allow).map(
-        (item) => item.Privilege.Access.name
+        (item) => item.Privilege?.Access.name
       );
       const filterAccess = [...new Set(access)];
       const privilegeData = item.Role_Privileges.map((val) => {
         return {
           id: val.privilege_id,
-          name: val.Privilege.name,
+          name: val.Privilege?.name,
           allow: val.allow,
-          access: val.Privilege.Access.name
+          access: val.Privilege?.Access.name
         };
       });
 

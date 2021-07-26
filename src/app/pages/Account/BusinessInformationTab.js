@@ -682,7 +682,7 @@ export const BusinessInformation = () => {
                         <Col>
                           <div
                             style={{
-                              width: "120px",
+                              width: "180px",
                               height: "120px",
                               overflow: "hidden",
                               backgroundSize: "cover",

@@ -131,7 +131,7 @@ function Registration(props) {
   const [statusEmail, setStatusEmail] = useState(false)
   const [messageNotSent, setMessageNotSent] = React.useState(false)
   const [showModalPersonal, setShowModalPersonal] = React.useState(false)
-  const [methodSendOTP, setMethodSendOTP] = React.useState("whatsapp")
+  const [methodSendOTP, setMethodSendOTP] = React.useState("")
 
   const [code, setCode] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
@@ -175,7 +175,7 @@ function Registration(props) {
     const API_URL = process.env.REACT_APP_API_URL;
       try {
         setAlertModal("");
-        const { business_id } = JSON.parse(localStorage.getItem("user_info"));
+        const userInfo = JSON.parse(localStorage.getItem("user_info"));
 
         const { data } = await axios.get(`${API_URL}/api/v1/outlet`, {
           headers: { Authorization: accessToken }
@@ -196,7 +196,7 @@ function Registration(props) {
         };
 
         await axios.patch(
-          `${API_URL}/api/v1/business/${business_id}`,
+          `${API_URL}/api/v1/business/${userInfo.business_id}`,
           businessData,
           { headers: { Authorization: accessToken } }
         );
@@ -211,6 +211,15 @@ function Registration(props) {
           dataSubscription,
           { headers: { Authorization: accessToken } }
         )
+        
+
+        const resPartition = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${userInfo.business_id}`, {
+          headers: { Authorization: accessToken } 
+        })
+
+        userInfo.subscription_partition_id = resPartition.data.data[0].subscription_partition_id
+
+        localStorage.setItem("user_info", JSON.stringify(userInfo));
 
         await axios.patch(`${API_URL}/api/v1/outlet/${outlet_id}`, outletData, {
           headers: { Authorization: accessToken }
@@ -440,21 +449,21 @@ function Registration(props) {
           
           if (!owner.is_verified) {
             // pilih sent otp via gmail atau whatsapp
-            // setDataSentOTP(
-            //   {
-            //     phoneNumber: values.phone_number.toString(),
-            //     verifyCode: owner.verification_code
-            //   }
-            // )
-            // openOTPModal(true)
+            setDataSentOTP(
+              {
+                phoneNumber: values.phone_number.toString(),
+                verifyCode: owner.verification_code
+              }
+            )
+            openOTPModal()
 
-            setSubmitting(false);
-            setSecond(15);
-            await handleSendWhatsapp(values.phone_number.toString(), owner.verification_code, accessToken)
-            openVerifyModal();
-            setTimeout(() => {
-              setMessageNotSent(true)
-            }, 50000);
+            // setSubmitting(false);
+            // setSecond(15);
+            // await handleSendWhatsapp(values.phone_number.toString(), owner.verification_code, accessToken)
+            // openVerifyModal();
+            // setTimeout(() => {
+            //   setMessageNotSent(true)
+            // }, 50000);
           } else {
             props.login(token);
           }

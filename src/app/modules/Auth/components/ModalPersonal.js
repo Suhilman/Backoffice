@@ -84,22 +84,29 @@ const ModalPersonal = ({
       const API_URL = process.env.REACT_APP_API_URL;
       const userInfo = JSON.parse(localStorage.getItem("user_info"));
       console.log('ini valie ap aaja', values)
-      
-      const formData = new FormData();
-      formData.append("ktp_owner", values.ktp_number);
-      formData.append("name_on_bank", values.name_on_bank);
-      formData.append("bank_name", values.bank_name);
-      formData.append("name_on_ktp", values.name_on_ktp);
-      formData.append("account_number", values.account_number);
-      if (imageKtp.name) {
-        formData.append("ktp_picture", imageKtp);
+      const data = {
+        ktp_owner: values.ktp_number,
+        name_on_bank: values.name_on_bank,
+        bank_name: values.bank_name,
+        name_on_ktp: values.name_on_ktp,
+        account_number: values.account_number
       }
+
+      // const formData = new FormData();
+      // formData.append("ktp_owner", values.ktp_number);
+      // formData.append("name_on_bank", values.name_on_bank);
+      // formData.append("bank_name", values.bank_name);
+      // formData.append("name_on_ktp", values.name_on_ktp);
+      // formData.append("account_number", values.account_number);
+      // if (imageKtp.name) {
+      //   console.log("imageKtp.name", imageKtp.name)
+      //   formData.append("ktp_picture", imageKtp);
+      // }
       try {
-        console.log('ini append', formData)
         enableLoading();
         await axios.patch(
           `${API_URL}/api/v1/business/update-personal/${userInfo.business_id}`,
-          formData, {
+          data, {
             headers: {
               Authorization: token
             }
@@ -115,10 +122,12 @@ const ModalPersonal = ({
     }
   });
 
-  const handlePreviewPhoto = (file) => {
+  const handlePreviewPhoto = async (file) => {
     setAlertPhoto("");
     let preview;
     let img;
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
 
     if (file.length) {
       const reader = new FileReader();
@@ -131,7 +140,20 @@ const ModalPersonal = ({
       reader.readAsDataURL(file[0])
       img = file[0];
       console.log("img", img)
-      setImageKtp(img)
+      const formData = new FormData()
+      formData.append("ktp_picture", img);
+      const {data} = await axios.patch(`${API_URL}/api/v1/business/ocr-ktp/${userInfo.business_id}`, formData,
+        {
+          headers: {
+            Authorization: token
+          }
+        }
+      )
+      console.log("data qr nya", data.data)
+      if (data.data[0].length > 15) {
+        formikPersonal.setFieldValue("ktp_number", data.data[0]);
+      }
+      // setImageKtp(img)
     } else {
       preview = "";
       setAlertPhoto("file is too large or not supported");
@@ -190,7 +212,7 @@ const ModalPersonal = ({
                     <div
                       style={{
                         margin: "auto",
-                        width: "120px",
+                        width: "180px",
                         height: "120px",
                         overflow: "hidden",
                         backgroundSize: "cover",

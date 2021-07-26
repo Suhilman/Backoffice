@@ -18,6 +18,7 @@ import roleIcon from "../../../../../images/icons8-confirm-96.png"
 import customerIcon from "../../../../../images/icons8-customer-insight-64.png"
 import accountIcon from "../../../../../images/icons8-search-account-256.png"
 import commissionIcon from "../../../../../images/icons8-sales-performance-52.png"
+import axios from 'axios'
 
 import './style.css'
 
@@ -35,6 +36,7 @@ function AsideMenuList(props) {
   const [dashboardSections, setDashboardSections] = React.useState([]);
   const [productSections, setProductSections] = React.useState([]);
   const [managementSections, setManagementSections] = React.useState([]);
+  const [subscriptionPartitionId, setSubscriptionPartitionId] = React.useState(null)
 
   const location = useLocation();
   const getMenuItemActive = (url, hasSubmenu = false) => {
@@ -43,10 +45,25 @@ function AsideMenuList(props) {
       : "";
   };
 
+  const handleSubscriptionPartitionId = async () => {
+    const localData = JSON.parse(localStorage.getItem("user_info"));
+    const {data} = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${localData.business_id}`)
+    // {{local-api}}/api/v1/subscription-partition-privilege?subscription_partition_id=2
+    const resultSubscriptionPrivileges = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription-partition-privilege?subscription_partition_id=${data.data[0].subscription_partition_id}`)
+    console.log("resultSubscriptionPrivileges", resultSubscriptionPrivileges)
+    setSubscriptionPartitionId(data.data[0].subscription_partition_id)
+  }
+
+  React.useEffect(() => {
+    handleSubscriptionPartitionId()
+  }, [])
+
   const handleSetPrivileges = () => {
     const localData = JSON.parse(localStorage.getItem("user_info"));
     const privileges = localData?.privileges ? localData.privileges : [];
     const currUser = privileges.length ? "staff" : "owner";
+    console.log("privileges", privileges)
+    console.log("currUser", currUser)
     setCurrPrivileges(privileges);
     setUser(currUser);
   };
@@ -71,6 +88,8 @@ function AsideMenuList(props) {
     const ds = [...dashboardSections];
     const checkDashboard = findPrivilege("view_dashboard");
     const checkReport = findPrivilege("view_report");
+    console.log("checkDashboard", checkDashboard)
+    console.log("checkDashboard", checkDashboard)
 
     if (checkDashboard) ds.push("view_dashboard");
     if (checkReport) ds.push("view_report");
@@ -80,6 +99,7 @@ function AsideMenuList(props) {
       ds.push("view_report");
     }
 
+    console.log("ds", ds)
     setDashboardSections(ds);
 
     // product sections

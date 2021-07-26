@@ -341,6 +341,12 @@ function Login(props) {
 
           // End Check Country
 
+          const resPartition = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${user.business_id}`, {
+           headers: { Authorization: `Bearer ${token}` } 
+          })
+
+          user.subscription_partition_id = resPartition.data.data[0].subscription_partition_id
+
           localStorage.setItem("user_info", JSON.stringify(user));
           disableLoading();
           if (!user.is_verified) {

@@ -548,13 +548,13 @@ const ModalCustomRange = ({
 
   const checkUserGuideBusiness = async () => {
     try {
-      // const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
-      // if(!data.data.user_guide) {
-      //   setShowGuide("dashboard")
-      // } else {
-      //   setShowGuide(null)
-      // }
-      // console.log("data businessnya", data.data)
+      const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+      if(!data.data.user_guide) {
+        setShowGuide("dashboard")
+      } else {
+        setShowGuide(null)
+      }
+      console.log("data businessnya", data.data)
     } catch (error) {
       console.log(error)
     }
@@ -562,9 +562,9 @@ const ModalCustomRange = ({
 
   const handleShowGuide = async (state) => {
     if (state === 'finish_guide') {
-      // await axios.patch(`${API_URL}/api/v1/business/update-guide/${userInfo.business_id}`, {
-      //   user_guide: 1
-      // })
+      await axios.patch(`${API_URL}/api/v1/business/update-guide/${userInfo.business_id}`, {
+        user_guide: 1
+      })
       setShowGuide(null)
     } else {
       setShowGuide(state)
