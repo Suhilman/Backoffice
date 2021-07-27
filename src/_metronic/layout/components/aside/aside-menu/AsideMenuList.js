@@ -49,20 +49,33 @@ function AsideMenuList(props) {
     const localData = JSON.parse(localStorage.getItem("user_info"));
     const {data} = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${localData.business_id}`)
     // {{local-api}}/api/v1/subscription-partition-privilege?subscription_partition_id=2
+    setSubscriptionPartitionId(data.data[0].subscription_partition_id)
     const resultSubscriptionPrivileges = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription-partition-privilege?subscription_partition_id=${data.data[0].subscription_partition_id}`)
     console.log("resultSubscriptionPrivileges", resultSubscriptionPrivileges)
-    setSubscriptionPartitionId(data.data[0].subscription_partition_id)
+    const resLocalData = resultSubscriptionPrivileges.data.data.map(value => {
+      const tempData = {
+        id: value.privilege_id,
+        allow: value.allow,
+        name: value.Privilege.name.toLowerCase().split(' ').join('_'),
+        access: value.Privilege.Access.name
+      }
+      console.log("tempData", tempData)
+      return tempData
+    })
+    return resLocalData
   }
 
   React.useEffect(() => {
     handleSubscriptionPartitionId()
   }, [])
 
-  const handleSetPrivileges = () => {
+  const handleSetPrivileges = async () => {
+    const localDataOwner = await handleSubscriptionPartitionId()
+    console.log("localDataOwner", localDataOwner)
     const localData = JSON.parse(localStorage.getItem("user_info"));
-    const privileges = localData?.privileges ? localData.privileges : [];
+    const privileges = localData?.privileges ? localData.privileges : localDataOwner;
     const currUser = privileges.length ? "staff" : "owner";
-    console.log("privileges", privileges)
+    console.log("privileges1", privileges)
     console.log("currUser", currUser)
     setCurrPrivileges(privileges);
     setUser(currUser);

@@ -217,7 +217,7 @@ export const RolePage = () => {
        })
       const subPartitionId = resPartition.data.data[0].subscription_partition_id 
       const { data } = await axios.get(`${API_URL}/api/v1/privilege`);
-      const resSubsPartitionPrivileges = await axios.get(`${API_URL}/api/v1/subscription-partition-privilege?subscription_partition_id=${subPartitionId}`, {
+      const resSubsPartitionPrivileges = await axios.get(`${API_URL}/api/v1/subscription-partition-privilege?subscription_partition_id=${subPartitionId}&allow=1`, {
         headers: {
           Authorization: token
         }
