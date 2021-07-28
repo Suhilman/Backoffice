@@ -36,7 +36,6 @@ function AsideMenuList(props) {
   const [dashboardSections, setDashboardSections] = React.useState([]);
   const [productSections, setProductSections] = React.useState([]);
   const [managementSections, setManagementSections] = React.useState([]);
-  const [subscriptionPartitionId, setSubscriptionPartitionId] = React.useState(null)
 
   const location = useLocation();
   const getMenuItemActive = (url, hasSubmenu = false) => {
@@ -49,7 +48,6 @@ function AsideMenuList(props) {
     const localData = JSON.parse(localStorage.getItem("user_info"));
     const {data} = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${localData.business_id}`)
     // {{local-api}}/api/v1/subscription-partition-privilege?subscription_partition_id=2
-    setSubscriptionPartitionId(data.data[0].subscription_partition_id)
     const resultSubscriptionPrivileges = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription-partition-privilege?subscription_partition_id=${data.data[0].subscription_partition_id}`)
     console.log("resultSubscriptionPrivileges", resultSubscriptionPrivileges)
     const resLocalData = resultSubscriptionPrivileges.data.data.map(value => {
@@ -64,10 +62,6 @@ function AsideMenuList(props) {
     })
     return resLocalData
   }
-
-  React.useEffect(() => {
-    handleSubscriptionPartitionId()
-  }, [])
 
   const handleSetPrivileges = async () => {
     const localDataOwner = await handleSubscriptionPartitionId()
@@ -142,14 +136,14 @@ function AsideMenuList(props) {
     const checkStaff = findPrivilege("staff_management");
     const checkRole = findPrivilege("role_management");
     const checkCustomer = findPrivilege("customer_management");
-    const checkCommission = findPrivilege("commission");
+    const checkCommission = findPrivilege("commission_management");
 
     if (checkOutlet) ms.push("outlet_management");
     if (checkPromo) ms.push("promo_management");
     if (checkStaff) ms.push("staff_management");
     if (checkRole) ms.push("role_management");
     if (checkCustomer) ms.push("customer_management");
-    if (checkCommission) ms.push("commission");
+    if (checkCommission) ms.push("commission_management");
 
     if (user === "owner") {
       ms.push("outlet_management");
@@ -157,7 +151,7 @@ function AsideMenuList(props) {
       ms.push("staff_management");
       ms.push("role_management");
       ms.push("customer_management");
-      ms.push("commission");
+      ms.push("commission_management");
     }
 
     console.log("ms apa aja yaaa", ms)
@@ -462,7 +456,7 @@ function AsideMenuList(props) {
                   </li>
                 );
               }
-              if (section === "commission") {
+              if (section === "commission_management") {
                 return (
                   <li
                     key={index}

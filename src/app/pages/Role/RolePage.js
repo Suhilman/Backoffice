@@ -226,7 +226,7 @@ export const RolePage = () => {
       }
       console.log("array 1 sebelum", array1)
 
-      data.data.map((value, index) => {
+      for (const [index, value] of data.data.entries()) {
         privilegeDataOwner.map(value2 => {
           value.Role_Privileges.map(async value3 => {
             if(value2.id === value3.privilege_id && value2.allowShow) {
@@ -241,7 +241,7 @@ export const RolePage = () => {
             }
           })
         })
-      })
+      }
 
       console.log("array 1 sesudah", array1)
 
