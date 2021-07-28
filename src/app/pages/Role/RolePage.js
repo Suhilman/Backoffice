@@ -115,11 +115,13 @@ export const RolePage = () => {
     enableReinitialize: true,
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
+      console.log("values role yang akan di edit", values)
 
       try {
         setAlert("");
         enableLoading();
         await axios.put(`${API_URL}/api/v1/role/${values.id}`, values);
+
 
         const localPrivileges = values.privileges.map((item) => {
           const lowerName = item.name
@@ -145,6 +147,7 @@ export const RolePage = () => {
           closeEditModal();
         }
       } catch (err) {
+        console.log("error edit rolePage", err)
         setAlert(err.response?.data.message || err.message);
         disableLoading();
       }
@@ -188,8 +191,69 @@ export const RolePage = () => {
     const filter = search ? `?name=${search}` : "";
 
     try {
+      const userInfo = JSON.parse(localStorage.getItem('user_info'))
+      const token = localStorage.getItem('token')
+
+      const resPartition = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${userInfo.business_id}`, {
+        headers: { Authorization: token } 
+       })
+      const subPartitionId = resPartition.data.data[0].subscription_partition_id 
+      const resSubsPartitionPrivileges = await axios.get(`${API_URL}/api/v1/subscription-partition-privilege?subscription_partition_id=${subPartitionId}`, {
+        headers: {
+          Authorization: token
+        }
+      });
+      const privilegeDataOwner = resSubsPartitionPrivileges.data.data.map((item) => {
+        return {
+          id: item.Privilege.id,
+          allow: false,
+          name: item.Privilege.name,
+          access: item.Privilege.Access.name,
+          allowShow: item.allow
+        };
+      });
+
+      console.log("data compare", privilegeDataOwner)
+
       const { data } = await axios.get(`${API_URL}/api/v1/role${filter}`);
       console.log("data all roles", data.data)
+      // data.data[0].Role_Privileges[0].privilege_id
+      // iniPrivilegenya[0].id && iniPrivilegenya[0].allowShow
+      const array1 = []
+      for (const data of data.data) {
+        const cobi = data.Role_Privileges.slice(0, 0)
+        array1.push(cobi)
+      }
+      console.log("array 1 sebelum", array1)
+
+      data.data.map((value, index) => {
+        privilegeDataOwner.map(value2 => {
+          value.Role_Privileges.map(async value3 => {
+            if(value2.id === value3.privilege_id && value2.allowShow) {
+              array1[index].push(value3)
+            } 
+            if(value2.id === value3.privilege_id && !value2.allowShow) {
+              console.log("yang tidak masuk pengkondisian", value3)
+              await axios.put(`${API_URL}/api/v1/role/update-privilege`, {
+                id: value3.id,
+                allow: false
+              })
+            }
+          })
+        })
+      })
+
+      console.log("array 1 sesudah", array1)
+
+      const array2 = []
+      data.data.map(value => {
+        value.Role_Privileges = []
+        array2.push(value)
+      })
+      array2.map((value, index) => {
+        value.Role_Privileges = array1[index]
+      })
+      console.log("data akhir", data.data)
       setAllRoles(data.data);
     } catch (err) {
       setAllRoles([]);
@@ -216,12 +280,13 @@ export const RolePage = () => {
         headers: { Authorization: token } 
        })
       const subPartitionId = resPartition.data.data[0].subscription_partition_id 
-      const { data } = await axios.get(`${API_URL}/api/v1/privilege`);
       const resSubsPartitionPrivileges = await axios.get(`${API_URL}/api/v1/subscription-partition-privilege?subscription_partition_id=${subPartitionId}&allow=1`, {
         headers: {
           Authorization: token
         }
       });
+      const { data } = await axios.get(`${API_URL}/api/v1/privilege`);
+
       const accesses = [...new Set(data.data.map((item) => item.Access.name))];
 
       console.log("accesses", accesses)
@@ -241,7 +306,7 @@ export const RolePage = () => {
           allow: false,
           name: item.Privilege.name,
           access: item.Privilege.Access.name,
-          allowHide: item.allow
+          allowShow: item.allow
         };
       });
 
@@ -258,13 +323,14 @@ export const RolePage = () => {
     }
   };
 
-  React.useEffect(() => {
-    getRoles(debouncedSearch);
-  }, [debouncedSearch, refresh]);
 
   React.useEffect(() => {
     getPrivileges();
   }, []);
+
+  React.useEffect(() => {
+    getRoles(debouncedSearch);
+  }, [debouncedSearch, refresh]);
 
   const handleRefresh = () => setRefresh(refresh + 1);
 
