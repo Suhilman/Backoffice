@@ -285,7 +285,7 @@ export function UserProfileDropdown() {
               null
             }
           </div>
-          {notifRecapTransaction.length > 0 && emailNotification.emailNotification.rekap_kas ? (
+          {notifRecapTransaction.length > 0 && emailNotification.emailNotification?.rekap_kas ? (
             <>
               <div>
                 <hr/>

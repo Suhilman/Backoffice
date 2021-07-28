@@ -36,7 +36,6 @@ function AsideMenuList(props) {
   const [dashboardSections, setDashboardSections] = React.useState([]);
   const [productSections, setProductSections] = React.useState([]);
   const [managementSections, setManagementSections] = React.useState([]);
-  const [subscriptionPartitionId, setSubscriptionPartitionId] = React.useState(null)
 
   const location = useLocation();
   const getMenuItemActive = (url, hasSubmenu = false) => {
@@ -44,19 +43,7 @@ function AsideMenuList(props) {
       ? ` ${!hasSubmenu && "menu-item-active"} menu-item-open `
       : "";
   };
-
-  const handleSubscriptionPartitionId = async () => {
-    const localData = JSON.parse(localStorage.getItem("user_info"));
-    const {data} = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${localData.business_id}`)
-    // {{local-api}}/api/v1/subscription-partition-privilege?subscription_partition_id=2
-    const resultSubscriptionPrivileges = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription-partition-privilege?subscription_partition_id=${data.data[0].subscription_partition_id}`)
-    setSubscriptionPartitionId(data.data[0].subscription_partition_id)
-  }
-
-  React.useEffect(() => {
-    handleSubscriptionPartitionId()
-  }, [])
-
+  
   const handleSetPrivileges = () => {
     const localData = JSON.parse(localStorage.getItem("user_info"));
     const privileges = localData?.privileges ? localData.privileges : [];
