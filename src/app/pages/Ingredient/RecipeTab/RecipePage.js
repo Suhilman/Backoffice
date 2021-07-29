@@ -44,7 +44,7 @@ const RecipeTab = ({
 
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/recipe${filter}`);
-      console.log('ini all recipe', data.data)
+      // console.log('ini all recipe', data.data)
       setAllRecipes(data.data);
     } catch (err) {
       setAllRecipes([]);

@@ -126,7 +126,7 @@ const InventoryIngredientTab = ({
       };
 
       try {
-        console.log('ini data materialnya', materialData)
+        // console.log('ini data materialnya', materialData)
         const API_URL = process.env.REACT_APP_API_URL;
         enableLoading();
         await axios.post(`${API_URL}/api/v1/raw-material`, materialData);
@@ -172,7 +172,7 @@ const InventoryIngredientTab = ({
         stock_id: values.stock_id,
         is_sold: values.is_sold
       };
-      console.log('data edit', materialData)
+      // console.log('data edit', materialData)
       try {
         const API_URL = process.env.REACT_APP_API_URL;
         enableLoading();
@@ -246,7 +246,7 @@ const InventoryIngredientTab = ({
   };
 
   const showEditModal = (data) => {
-    console.log('data show edit modal', data)
+    // console.log('data show edit modal', data)
     formikEditMaterial.setValues({
       id: data.id,
       outlet_id: data.outlet_id,

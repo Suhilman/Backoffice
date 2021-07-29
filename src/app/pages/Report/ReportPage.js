@@ -203,7 +203,7 @@ export const ReportPage = () => {
   const handleSelectTab = (e) => {
     const { value } = e.target;
     setTabs(value);
-    console.log('ini apa hyo', value)
+    // console.log('ini apa hyo', value)
     setSelectedOutlet({
       id: "",
       name: "All Outlet"

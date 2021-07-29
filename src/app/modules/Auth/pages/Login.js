@@ -312,10 +312,10 @@ function Login(props) {
           const success = async (pos) =>  {
             try {
               const crd = pos.coords;
-              console.log('Your current position is:');
-              console.log(`Latitude : ${crd.latitude}`);
-              console.log(`Longitude: ${crd.longitude}`);
-              console.log(`More or less ${crd.accuracy} meters.`);
+              // console.log('Your current position is:');
+              // console.log(`Latitude : ${crd.latitude}`);
+              // console.log(`Longitude: ${crd.longitude}`);
+              // console.log(`More or less ${crd.accuracy} meters.`);
               const result = await axios.get(`${API_URL}/api/v1/outlet/get-address?latitude=${parseFloat(crd.latitude)}&longitude=${parseFloat(crd.longitude)}`)
               const checkCountry = result.data.resultAddress.address.includes("Indonesia");
               if(checkCountry) {

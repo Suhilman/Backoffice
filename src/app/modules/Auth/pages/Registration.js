@@ -404,10 +404,10 @@ function Registration(props) {
           const success = async (pos) =>  {
             try {
               const crd = pos.coords;
-              console.log('Your current position is:');
-              console.log(`Latitude : ${crd.latitude}`);
-              console.log(`Longitude: ${crd.longitude}`);
-              console.log(`More or less ${crd.accuracy} meters.`);
+              // console.log('Your current position is:');
+              // console.log(`Latitude : ${crd.latitude}`);
+              // console.log(`Longitude: ${crd.longitude}`);
+              // console.log(`More or less ${crd.accuracy} meters.`);
               const result = await axios.get(`${API_URL}/api/v1/outlet/get-address?latitude=${parseFloat(crd.latitude)}&longitude=${parseFloat(crd.longitude)}`)
               console.log("country address", result.data.resultAddress.address)
               const checkCountry = result.data.resultAddress.address.includes("Indonesia");
@@ -448,7 +448,7 @@ function Registration(props) {
           }
         })
         .catch((err) => {
-          console.log('ini error formik', err)
+          // console.log('ini error formik', err)
           setSubmitting(false);
           console.log("err.response", err.response)
           // setStatus(err.response.data.message);

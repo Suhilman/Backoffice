@@ -115,7 +115,7 @@ export function UserProfileDropdown() {
           dateWeekly = now.getDate() - 7
         }
         if(dateRecap.getDate() >= dateWeekly) {
-          console.log("value", value)
+          // console.log("value", value)
         }
         if(dateRecap.getDate() >= dateWeekly && dateRecap.getDate() <= now.getDate()) {
           esBuah.push(value)
@@ -173,7 +173,7 @@ export function UserProfileDropdown() {
     if (idStock) {
       idStock.map(async (value) => {
         const result = await axios.delete(`${API_URL}/api/v1/business-notification/${value}`)
-        console.log("thenNotification", result.data.data)
+        // console.log("thenNotification", result.data.data)
         setNotifStockAlert(result.data.data)
       })
     } 

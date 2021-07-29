@@ -136,7 +136,7 @@ export const BusinessInformation = () => {
       console.log("formikBusiness values", values)
       const API_URL = process.env.REACT_APP_API_URL;
       const userInfo = JSON.parse(localStorage.getItem("user_info"));
-      console.log('ini valie ap aaja', values)
+      // console.log('ini valie ap aaja', values)
       const options = {
         maxSizeMB: 0.5,
         maxWidthOrHeight: 1920,
@@ -164,7 +164,7 @@ export const BusinessInformation = () => {
         formData.append("image", businessImage);
       }
       try {
-        console.log('ini append', formData)
+        // console.log('ini append', formData)
         enableLoading();
         await axios.put(
           `${API_URL}/api/v1/business/update-development/${userInfo.business_id}`,
