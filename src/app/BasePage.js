@@ -1,4 +1,5 @@
 import React, { Suspense } from "react";
+import axios from 'axios'
 import { Redirect, Switch, Route } from "react-router-dom";
 import { LayoutSplashScreen, ContentRoute } from "../_metronic/layout";
 
@@ -77,23 +78,39 @@ export default function BasePage() {
   const localData = JSON.parse(localStorage.getItem("user_info"));
   const privileges = localData?.privileges ? localData.privileges : "";
   const user = privileges ? "staff" : "owner";
+  
+  const handleCurrPrivileges = async () => {
+    try {
+      const priv = { ...currPrivileges };
+      if (user === "staff") {
+        const {data} = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/staff/${localData.user_id}`)
+        const rolePrivileges = data.data.User.Role.Role_Privileges
+        const resultPrivileges = rolePrivileges.map(value => {
+          return {
+            name: value.Privilege.name.toLowerCase().split(' ').join('_'),
+            access: value.Privilege.Access.name,
+            allow: value.allow
+          }
+        })
+        const curr = resultPrivileges.filter((item) => item.access === "Backend");
+        curr.forEach((section) => {
+          priv[section.name] = section.allow;
+        });
+      } else {
+        const curr = Object.keys(priv);
+        curr.forEach((section) => {
+          priv[section] = true;
+        });
+      }
+
+      setCurrPrivileges(priv);
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   React.useEffect(() => {
-    const priv = { ...currPrivileges };
-
-    if (user === "staff") {
-      const curr = privileges.filter((item) => item.access === "Backend");
-      curr.forEach((section) => {
-        priv[section.name] = section.allow;
-      });
-    } else {
-      const curr = Object.keys(priv);
-      curr.forEach((section) => {
-        priv[section] = true;
-      });
-    }
-
-    setCurrPrivileges(priv);
+    handleCurrPrivileges()
   }, []);
 
   console.log("currPrivileges", currPrivileges)

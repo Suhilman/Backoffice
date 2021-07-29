@@ -67,7 +67,29 @@ function AsideMenuList(props) {
     const localDataOwner = await handleSubscriptionPartitionId()
     console.log("localDataOwner", localDataOwner)
     const localData = JSON.parse(localStorage.getItem("user_info"));
-    const privileges = localData?.privileges ? localData.privileges : localDataOwner;
+    console.log("localData user-id", localData.user_id)
+    let privileges;
+    // const privileges = localData?.privileges ? localData.privileges : localDataOwner;
+
+    if(localData.user_id) {
+      const {data} = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/staff/${localData.user_id}`)
+      const rolePrivileges = data.data.User.Role.Role_Privileges
+      const resultPrivileges = rolePrivileges.map(value => {
+        return {
+          name: value.Privilege.name.toLowerCase().split(' ').join('_'),
+          access: value.Privilege.Access.name,
+          allow: value.allow
+        }
+      })
+      privileges = resultPrivileges
+      localData.privileges = resultPrivileges
+      console.log("localstorage privilege", localData)
+      localStorage.setItem("user_info", JSON.stringify(localData))
+      console.log("resultPrivileges", resultPrivileges)
+    } else {
+      privileges = localDataOwner
+    }
+
     const currUser = privileges.length ? "staff" : "owner";
     console.log("privileges1", privileges)
     console.log("currUser", currUser)
@@ -126,6 +148,7 @@ function AsideMenuList(props) {
       ps.push("kitchen_management");
     }
 
+    console.log("productSections", ps)
     setProductSections(ps);
 
     // management sections
