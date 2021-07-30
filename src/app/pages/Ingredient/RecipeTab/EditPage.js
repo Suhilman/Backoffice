@@ -106,11 +106,11 @@ export const EditRecipePage = ({ location, match }) => {
     initialValues: initialValueRecipe,
     validationSchema: RecipeSchema,
     onSubmit: async (values) => {
-      console.log("muantuelll", values)
+      const resultCalorie = handleTotalCalorie()
       const recipeData = {
         outlet_id: values.outlet_id,
         product_id: values.product_id,
-        total_calorie: values.total_calorie,
+        total_calorie: resultCalorie,
         total_cogs: values.total_ingredient_price,
         total_ingredient_price: values.total_ingredient_price,
         notes: values.notes || "",
@@ -129,6 +129,14 @@ export const EditRecipePage = ({ location, match }) => {
       }
     }
   });
+
+  const handleTotalCalorie = () => {
+    const resultCalorie = formikRecipe.values.materials.reduce(
+      (init, curr) => (init += curr.calorie_per_unit),
+      formikRecipe.values.total_calorie
+    )
+    return resultCalorie
+  }
 
   const validationRecipe = (fieldname) => {
     if (formikRecipe.touched[fieldname] && formikRecipe.errors[fieldname]) {

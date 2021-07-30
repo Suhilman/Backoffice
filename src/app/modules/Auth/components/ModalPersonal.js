@@ -271,16 +271,14 @@ const ModalPersonal = ({
               ) : null}
             </Form.Group>
             <Form.Group>
-              <div className="d-flex flex-row">
-                <div>Tanggal Lahir</div>
-                <div>
-                  <DatePicker
-                    onChange={handleChangeBirthDay}
-                    value={date}
-                    required
-                  />
-                </div>
-              </div>
+              <Form.Label>Date of Birth</Form.Label>
+              <div></div>
+              <DatePicker
+                style={{width: "100%"}}
+                onChange={handleChangeBirthDay}
+                value={date}
+                required
+              />
             </Form.Group>
             <Form.Group>
               <Form.Label>Name on Bank Account</Form.Label>
