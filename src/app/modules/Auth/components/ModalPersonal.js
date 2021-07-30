@@ -2,7 +2,7 @@ import React from "react";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import axios from 'axios'
-
+import DatePicker from 'react-date-picker';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -17,7 +17,7 @@ const ModalPersonal = ({
   const [loading, setLoading] = React.useState(false);
   const [imageKtp, setImageKtp] = React.useState("");
   const [allBank, setAllBank] = React.useState([])
-
+  const [date, setDate] = React.useState(new Date());
 
   const getAllBank = async () => {
     try {
@@ -180,6 +180,11 @@ const ModalPersonal = ({
     formik.setFieldValue("bank_name", bank_name);
   };
 
+  const handleChangeBirthDay = (date) => {
+    setDate(date)
+    console.log("onChange", date)
+  }
+
   React.useEffect(() => {
     getAllBank()
   }, [])
@@ -264,6 +269,18 @@ const ModalPersonal = ({
                   </div>
                 </div>
               ) : null}
+            </Form.Group>
+            <Form.Group>
+              <div className="d-flex flex-row">
+                <div>Tanggal Lahir</div>
+                <div>
+                  <DatePicker
+                    onChange={handleChangeBirthDay}
+                    value={date}
+                    required
+                  />
+                </div>
+              </div>
             </Form.Group>
             <Form.Group>
               <Form.Label>Name on Bank Account</Form.Label>

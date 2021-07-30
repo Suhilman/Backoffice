@@ -134,7 +134,8 @@ const ProductTab = ({
 
     try {
       const { data } = await axios.get(
-        `${API_URL}/api/v1/product${filterProduct}`
+        `${API_URL}/api/v1/product/back-office${filterProduct}`
+        // `${API_URL}/api/v1/product${filterProduct}`
       );
       setAllProducts(data.data);
       handleOutletProduct(data.data)
