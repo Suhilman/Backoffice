@@ -133,7 +133,7 @@ export const EditRecipePage = ({ location, match }) => {
   const handleTotalCalorie = () => {
     const resultCalorie = formikRecipe.values.materials.reduce(
       (init, curr) => (init += curr.calorie_per_unit),
-      formikRecipe.values.total_calorie
+      0
     )
     return resultCalorie
   }
@@ -854,7 +854,7 @@ export const EditRecipePage = ({ location, match }) => {
                     {...formikRecipe.getFieldProps("total_calorie")}
                     value={formikRecipe.values.materials.reduce(
                       (init, curr) => (init += curr.calorie_per_unit),
-                      formikRecipe.values.total_calorie
+                      0
                     )}
                   />
                 </Col>

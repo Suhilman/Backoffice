@@ -17,7 +17,7 @@ const ModalPersonal = ({
   const [loading, setLoading] = React.useState(false);
   const [imageKtp, setImageKtp] = React.useState("");
   const [allBank, setAllBank] = React.useState([])
-  const [date, setDate] = React.useState(new Date());
+  const [date, setDate] = React.useState(new Date())
 
   const getAllBank = async () => {
     try {
@@ -31,6 +31,7 @@ const ModalPersonal = ({
 
   const [personal, setPersonal] = React.useState({
     name_on_ktp: "",
+    birth_date: "",
     name_on_bank: "",
     bank_name: "",
     ktp_number: "",
@@ -86,6 +87,7 @@ const ModalPersonal = ({
       console.log('ini valie ap aaja', values)
       const data = {
         ktp_owner: values.ktp_number,
+        birth_date: values.birth_date,
         name_on_bank: values.name_on_bank,
         bank_name: values.bank_name,
         name_on_ktp: values.name_on_ktp,
@@ -94,6 +96,7 @@ const ModalPersonal = ({
 
       // const formData = new FormData();
       // formData.append("ktp_owner", values.ktp_number);
+      // formData.append("birth_date", values.birth_date);
       // formData.append("name_on_bank", values.name_on_bank);
       // formData.append("bank_name", values.bank_name);
       // formData.append("name_on_ktp", values.name_on_ktp);
@@ -174,19 +177,19 @@ const ModalPersonal = ({
   };
 
   const handleBankName = (e, formik) => {
-    console.log("Check handle Bank name")
     const bank_name = e.target.value;
     console.log("bank_name ", bank_name)
     formik.setFieldValue("bank_name", bank_name);
   };
 
-  const handleChangeBirthDay = (date) => {
-    setDate(date)
-    console.log("onChange", date)
+  const handleChangeBirthDay = (value) => {
+    setDate(value)
+    formikPersonal.setFieldValue("birth_date", value);
   }
 
   React.useEffect(() => {
     getAllBank()
+    console.log("new date", new Date())
   }, [])
 
   return (
@@ -274,7 +277,6 @@ const ModalPersonal = ({
               <Form.Label>Date of Birth</Form.Label>
               <div></div>
               <DatePicker
-                style={{width: "100%"}}
                 onChange={handleChangeBirthDay}
                 value={date}
                 required

@@ -19,3 +19,8 @@
 .gmail{
   box-shadow: 0 0 3px 0.2px red;
 }
+.react-date-picker__wrapper{
+  padding: 3px 25px;
+  border-radius: 6px;
+  border: thin solid rgb(211, 206, 206)
+}
