@@ -56,6 +56,9 @@ export const AddProductPage = ({ location }) => {
     product_category_id: "",
     price: 0,
     price_purchase: 0,
+    mark_up_price: "",
+    max_quantity: "",
+    max_range: "",
     stock: 0,
     product_tax_id: "",
     status: "active",
@@ -170,6 +173,16 @@ export const AddProductPage = ({ location }) => {
       formData.append("status", values.status);
       formData.append("supplier_id", values.supplier_id);
       formData.append("supplier", values.supplier);
+
+      if(values.mark_up_price) {
+        formData.append("mark_up_price", values.mark_up_price);
+      }
+      if(values.max_quantity) {
+        formData.append("max_quantity", values.max_quantity);
+      }
+      if(values.max_range) {
+        formData.append("max_range", values.max_range);
+      }
 
       if (values.groupAddons.length)
         formData.append("groupAddons", JSON.stringify(values.groupAddons));

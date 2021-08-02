@@ -216,6 +216,63 @@ const FormTemplate = ({
               ) : null}
             </Form.Group>
 
+            <Form.Group>
+              <Form.Label>{t("markupPrice")}<span className="text-muted ml-1">(optional)</span></Form.Label>
+              <Form.Control
+                type="number"
+                name="mark_up_price"
+                {...formikProduct.getFieldProps("mark_up_price")}
+                className={validationProduct("mark_up_price")}
+                required
+              />
+              {formikProduct.touched.mark_up_price &&
+              formikProduct.errors.mark_up_price ? (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    {formikProduct.errors.mark_up_price}
+                  </div>
+                </div>
+              ) : null}
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>{t("maxQuantity")}<span className="text-muted ml-1">(optional)</span></Form.Label>
+              <Form.Control
+                type="number"
+                name="max_quantity"
+                {...formikProduct.getFieldProps("max_quantity")}
+                className={validationProduct("max_quantity")}
+                required
+              />
+              {formikProduct.touched.max_quantity &&
+              formikProduct.errors.max_quantity ? (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    {formikProduct.errors.max_quantity}
+                  </div>
+                </div>
+              ) : null}
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>{t("maxRange")}<span className="text-muted ml-1">(optional)</span></Form.Label>
+              <Form.Control
+                type="number"
+                name="max_range"
+                {...formikProduct.getFieldProps("max_range")}
+                className={validationProduct("max_range")}
+                required
+              />
+              {formikProduct.touched.max_range &&
+              formikProduct.errors.max_range ? (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    {formikProduct.errors.max_range}
+                  </div>
+                </div>
+              ) : null}
+            </Form.Group>
+
             {/* <Form.Group>
               <Form.Label>Tax*</Form.Label>
               <Form.Control
@@ -255,7 +312,6 @@ const FormTemplate = ({
                   return (
                     <Form.Check
                       key={index}
-                      inline
                       type="radio"
                       name="status"
                       value={formikProduct.values.status}
@@ -367,7 +423,7 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>{t("supplier")}</Form.Label>
+              <Form.Label>{t("supplier")}<span className="text-muted ml-1">(optional)</span></Form.Label>
               <Select
                 options={optionsSupplier}
                 defaultValue={defaultValueSupplier}

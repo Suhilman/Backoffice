@@ -55,6 +55,9 @@ export const EditProductPage = ({ match, location }) => {
     product_category_id: currProduct.product_category_id || "",
     price: currProduct.price,
     price_purchase: currProduct.price_purchase || 0,
+    mark_up_price: currProduct.mark_up_price,
+    max_quantity: currProduct.max_quantity,
+    max_range: currProduct.maxRange,
     stock: currProduct.stock,
     product_tax_id: currProduct.product_tax_id,
     status: currProduct.status,
@@ -166,6 +169,11 @@ export const EditProductPage = ({ match, location }) => {
       formData.append("name", values.name);
       formData.append("price", values.price);
       formData.append("price_purchase", values.price_purchase);
+
+      formData.append("mark_up_price", values.mark_up_price);
+      formData.append("max_quantity", values.max_quantity);
+      formData.append("max_range", values.max_range);
+
       formData.append("stock", values.stock);
       formData.append("supplier", values.supplier || currProduct.supplier);
       formData.append("supplier_id", values.supplier_id || currProduct.supplier_id);

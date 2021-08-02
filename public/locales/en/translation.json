@@ -785,5 +785,8 @@
     "editGroupCommission": "Edit Group Commission",
     "exportCommissionReport": "Export Commission Report",
     "pickLocation": "Pick Location",
-    "nameOnKtp": "Name on KTP"
+    "nameOnKtp": "Name on KTP",
+    "markupPrice": "Markup Price",
+    "maxQuantity": "Max Quantity",
+    "maxRange": "Max Range"
 }

@@ -784,5 +784,8 @@
     "editGroupCommission": "Ubah Grup Komisi",
     "exportCommissionReport": "Ekspor Laporan Komisi",
     "pickLocation": "Pilih Lokasi",
-    "nameOnKtp": "Nama di KTP"
+    "nameOnKtp": "Nama di KTP",
+    "markupPrice": "Harga Markup",
+    "maxQuantity": "Jumlah Maksimal",
+    "maxRange": "Jangkauan Maksimum"
   }
