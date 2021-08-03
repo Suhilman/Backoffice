@@ -22,13 +22,16 @@ const ModalPayment = ({
   const [imageUrl, setImageUrl] = useState({})
   const businessId = formikTable.getFieldProps("business_id").value
   const tableId = formikTable.getFieldProps("id").value
-  const data = {
-    "application": "beetpos",
-    "outlet_id": formikTable.getFieldProps("outlet_id").value,
-    "business_id": businessId,
-    "table_id": tableId,
-    "url_webview": `${process.env.REACT_APP_FRONTEND_URL}/get-data/${tableId}/${businessId}` 
-  }
+  const data = `${process.env.REACT_APP_FRONTEND_URL}/get-data/${tableId}/${businessId}` 
+
+  // const data = {
+  //   "application": "beetpos",
+  //   "outlet_id": formikTable.getFieldProps("outlet_id").value,
+  //   "business_id": businessId,
+  //   "table_id": tableId,
+  //   "url_webview": `${process.env.REACT_APP_FRONTEND_URL}/get-data/${tableId}/${businessId}` 
+  // }
+
   const dataObj = JSON.stringify(data)
   console.log(dataObj)
 
