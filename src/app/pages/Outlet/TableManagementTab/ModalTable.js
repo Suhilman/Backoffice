@@ -74,17 +74,18 @@ const ModalPayment = ({
 
   const downloadTest = async () => {
     console.log("download")
-    const canvas = await html2canvas(document.getElementById("qrcodeTest"))
-    console.log("qrcodeTest", canvas)
-    const pngUrl = canvas
-      .toDataURL("image/jpeg", 1.0)
-    console.log("pngUrl", pngUrl)
-    let downloadLink = document.createElement("a");
-    downloadLink.href = pngUrl;
-    downloadLink.download = "qrcode-outlet-beetpos.png";
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    html2canvas(document.getElementById("qrcodeTest"), { logging: true, letterRendering: 1, useCORS: true } ).then(canvas => {
+      console.log("qrcodeTest", canvas)
+      const pngUrl = canvas
+        .toDataURL("image/jpeg", 1.0)
+      console.log("pngUrl", pngUrl)
+      let downloadLink = document.createElement("a");
+      downloadLink.href = pngUrl;
+      downloadLink.download = "qrcode-outlet-beetpos.png";
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+     })
   };
 
   // const downloadTest = async () => {
@@ -221,25 +222,28 @@ const ModalPayment = ({
                   <div className="top-lane-qr-outlet" />
                   <div className="bottom-lane-qr-outlet" />
                   
-                  {/* {dataTemplateQr.logoBusiness ? (
+                  {dataTemplateQr.logoBusiness ? (
                     <div className="d-flex justify-content-end">
                       <div className="wrapper-logo-qr-outlet">
                         <img src={dataTemplateQr.logoBusiness} alt="Logo Business" />
                       </div>
                     </div>
                     ) : (
-                      <div className="logo-business-qr-outlet">
-                        [Logo Business]
+                    <div className="d-flex justify-content-end">
+                      <div className="wrapper-logo-qr-outlet">
+                        <img src="https://dummyimage.com/600x400/ffffff/624863.jpg&text=Logo+Business" alt="Logo Business" />
                       </div>
+                    </div>
                     )
-                  } */}
+                  }
                   <div className="qr-outlet-center">
                     <div className="business-name-qr-outle">{dataTemplateQr.businessName}</div>
                     <div className="outlet-name-qr-outlet">{dataTemplateQr.outletName}</div>
                     <QRCode 
                       value={dataObj} 
-                      level={"L"}
+                      level={"H"}
                       includeMargin={true}
+                      size={250}
                     />
                     <div className="table-name-qr-outlet">{dataTemplateQr.tableName}</div>
                     <div className="desc-qr-outlet">
