@@ -600,6 +600,7 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
 
       {promoData.type === "xy" ? (
         <XyTab
+          t={t}
           title={`${t("editAutomaticPromo")} - ${promoData.name}`}
           formikPromo={formikPromoXY}
           validationPromo={validationPromoXY}
