@@ -25,6 +25,7 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
   const { t } = useTranslation();
   const [allTables, setAllTables] = React.useState([]);
   const [allOutlets, setAllOutlets] = React.useState([]);
+  const [editDataTable, setEditDataTable] = React.useState({})
 
   const [search, setSearch] = React.useState("");
   const debouncedSearch = useDebounce(search, 1000);
@@ -181,6 +182,7 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
   };
 
   const showEditModalTable = (data) => {
+    setEditDataTable(data)
     formikTableEdit.setValues({
       id: data.id,
       outlet_id: data.outlet_id,
@@ -305,6 +307,7 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
         formikTable={formikTable}
         validationTable={validationTable}
         allOutlets={allOutlets}
+        editDataTable={editDataTable}
       />
 
       <ModalTable
@@ -316,6 +319,7 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
         formikTable={formikTableEdit}
         validationTable={validationTableEdit}
         allOutlets={allOutlets}
+        editDataTable={editDataTable}
       />
 
       <ShowConfirmModal

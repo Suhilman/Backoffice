@@ -1,3 +1,96 @@
+.container-qr-outlet{
+  position: absolute;
+  bottom: 1748px;
+}
+.wrapper-qr-outlet{
+  width: 1240px;
+  height: 1748px;
+  position: relative;
+}
+canvas {
+  height: auto !important;
+  width: 100% !important;
+  max-width: 700px;
+}
+
+.business-name-qr-outle, .outlet-name-qr-outlet, .table-name-qr-outlet{
+  color: black;
+  font-weight: 700;
+  font-size: 90px;
+}
+.top-lane-qr-outlet{
+  position: absolute;
+  height: 25px;
+  background-color: #623863;
+  /* width: 100%; */
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+.bottom-lane-qr-outlet{
+  position: absolute;
+  height: 25px;
+  background-color: #623863;
+  /* width: 100%; */
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.qr-outlet-center{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.desc-qr-outlet{
+  margin-top: 10px;
+  text-align: center;
+  font-size: 40px;
+  color: black;
+}
+
+.bg-qr-outlet{
+  border: 1px solid white;
+  background-image: url('../../images/2478733 2.png');
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.wrapper-logo-qr-outlet, .logo-business-qr-outlet{
+  margin-top: 20px;
+  margin-right: 15px;
+  width: 400px;
+  /* height: 110px; */
+  object-fit: contain;
+}
+
+.powered-qr-outlet{
+  font-size: 35px;
+  color: black;
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.wrapper-logo-powered-qr-outlet{
+  width: 200px;
+  object-fit: contain;
+  display: inline-block;
+  margin-bottom: 5px;
+}
+
+.wrapper-logo-qr-outlet > img, .wrapper-logo-powered-qr-outlet > img {
+  width: 100%;
+  height: 100%;
+}
+
 /* start styling pdf Purchase Order */
 .style-pdf{
   position: absolute;

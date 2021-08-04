@@ -4,9 +4,10 @@ import { Button, Modal, Spinner, Form, Row, Col } from "react-bootstrap";
 
 import "../../style.css";
 import LogoBeetpos from '../../../../images/logo beetPOS small new.png' 
-
+import html2canvas from 'html2canvas'
+import axios from 'axios'
 import QRCode from 'qrcode.react'
-
+import LogoTextBeetpos from '../../../../images/logo beetPOS new.png'
 // import { QRCode } from 'react-qrcode-logo';
 
 const ModalPayment = ({
@@ -17,12 +18,36 @@ const ModalPayment = ({
   formikTable,
   validationTable,
   allOutlets,
-  t
+  t,
+  editDataTable
 }) => {
   const [imageUrl, setImageUrl] = useState({})
   const businessId = formikTable.getFieldProps("business_id").value
   const tableId = formikTable.getFieldProps("id").value
   const data = `${process.env.REACT_APP_FRONTEND_URL}/get-data/${tableId}/${businessId}` 
+  const [dataTemplateQr, setDataTemplateQr] = useState({})
+
+  const getDataBusinessTable = async () => {
+    try {
+      if(editDataTable) {
+        const dataBusiness = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/business/${editDataTable.business_id}`)
+        const dataTable = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/table-management/${editDataTable.id}`)
+        setDataTemplateQr({
+          logoBusiness: dataBusiness.data.data.image ? `${process.env.REACT_APP_API_URL}/${dataBusiness.data.data.image}` : null,
+          businessName: dataBusiness.data.data.name,
+          outletName: dataTable.data.data.Outlet.name,
+          tableName: dataTable.data.data.name
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  React.useEffect(() => {
+    getDataBusinessTable()
+    console.log("editDataTable", editDataTable)
+  }, [editDataTable])
 
   // const data = {
   //   "application": "beetpos",
@@ -36,17 +61,18 @@ const ModalPayment = ({
   console.log(dataObj)
 
   const downloadQR = () => {
-    console.log("download")
-    const canvas = document.getElementById("qrcode");
-    const pngUrl = canvas
-      .toDataURL("image/png")
-      .replace("image/png", "image/octet-stream");
-    let downloadLink = document.createElement("a");
-    downloadLink.href = pngUrl;
-    downloadLink.download = "qrcode-outlet-beetpos.png";
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    html2canvas(document.getElementById("qrcodeTest"), { logging: true, letterRendering: 1, useCORS: true } ).then(canvas => {
+      console.log("qrcodeTest", canvas)
+      const pngUrl = canvas
+        .toDataURL("image/jpeg", 1.0)
+      console.log("pngUrl", pngUrl)
+      let downloadLink = document.createElement("a");
+      downloadLink.href = pngUrl;
+      downloadLink.download = "qrcode-outlet-beetpos.png";
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+     })
   };
 
   return (
@@ -143,12 +169,9 @@ const ModalPayment = ({
                     <QRCode 
                       onClick={downloadQR}
                       id="qrcode"
-                      value={dataObj} 
-                      // ecLevel={"L"}
+                      value={dataObj}
                       level={"L"}
-                      // logoImage={LogoBeetpos}
-                      // logoWidth={50}
-                      // logoHeigth={60}
+                      size={700}
                       includeMargin={true}
                     />
                     <p>{t("pleaseClickQrcodeForDownload")}</p>
@@ -157,6 +180,54 @@ const ModalPayment = ({
               </Form.Group>
             </Col>
           </Row>
+          <div className="container-qr-outlet">
+            <Row>
+              <div 
+                className="wrapper-qr-outlet" 
+                onClick={downloadQR}
+                id="qrcodeTest"
+              >
+                <div className="bg-qr-outlet">
+                  <div className="top-lane-qr-outlet" />
+                  <div className="bottom-lane-qr-outlet" />
+                  
+                  {dataTemplateQr.logoBusiness ? (
+                    <div className="d-flex justify-content-end">
+                      <div className="wrapper-logo-qr-outlet">
+                        <img src={dataTemplateQr.logoBusiness} alt="Logo Business" />
+                      </div>
+                    </div>
+                    ) : (
+                    <div className="d-flex justify-content-end">
+                      <div className="wrapper-logo-qr-outlet">
+                        <img src="https://dummyimage.com/600x400/ffffff/624863.jpg&text=Logo+Business" alt="Logo Business" />
+                      </div>
+                    </div>
+                    )
+                  }
+                  <div className="qr-outlet-center">
+                    <div className="business-name-qr-outle">{dataTemplateQr.businessName}</div>
+                    <div className="outlet-name-qr-outlet">{dataTemplateQr.outletName}</div>
+                    <QRCode 
+                      value={dataObj} 
+                      level={"H"}
+                      includeMargin={true}
+                      size={1550}
+                    />
+                    <div className="table-name-qr-outlet">{dataTemplateQr.tableName}</div>
+                    <div className="desc-qr-outlet">
+                      Scan to view Beet EMenu (non-member)<br />or BeetCustomer (Member)
+                    </div>
+                    <div className="powered-qr-outlet">
+                      Powered <span className="pl-1"/>by <span className="wrapper-logo-powered-qr-outlet">
+                        <img src={LogoTextBeetpos} alt="Logo Beetpos" />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Row>
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>
