@@ -14,6 +14,7 @@ import {
   Select,
   TextField
 } from "@material-ui/core";
+import ModalRecepientEmail from "./modal/ModalRecepientEmail";
 
 import "../style.css";
 import { map } from "lodash-es";
@@ -42,6 +43,8 @@ export const EmailNotifications = () => {
   });
   const [stateComponent, setStateComponent] = React.useState("show");
   const [loading, setLoading] = React.useState(false);
+  const [showModalRecepient, setShowModalRecepient] = React.useState(false)
+
   const { t } = useTranslation();
 
   const handleNotifTransactionRecap = async () => {
@@ -375,85 +378,100 @@ export const EmailNotifications = () => {
     }
   };
 
+  const openModalRecepient = () => setShowModalRecepient(true)
+  const closeModalRecepient = () => setShowModalRecepient(false)
+
   return (
-    <Row>
-      <Col md={12}>
-        <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
-          <div className="headerPage">
-            <div className="headerStart">
-              <h3>{t("emailNotification")}</h3>
+    <>
+      <ModalRecepientEmail
+        t={t}
+        cancelModal={closeModalRecepient}
+        stateModal={showModalRecepient}
+        title="Modal Recepient Email"
+        loading={loading}
+      />
+      <Row>
+        <Col md={12}>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <div className="headerPage">
+              <div className="headerStart">
+                <h3>{t("emailNotification")}</h3>
+              </div>
+  
+              <div className="headerEnd">
+                <div className="btn btn-primary mr-2" onClick={openModalRecepient}>
+                  Recepient Email
+                </div>
+                {stateComponent === "show" ? (
+                  <Button variant="primary" onClick={handleStateComponent}>
+                    {t("edit")}
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      variant="secondary"
+                      onClick={handleStateComponent}
+                      style={{ marginRight: "1rem" }}
+                    >
+                      {t("cancel")}
+                    </Button>
+                    <Button variant="primary" onClick={sendData}>
+                      {loading ? (
+                        <Spinner animation="border" variant="light" size="sm" />
+                      ) : (
+                        `${t("saveChanges")}`
+                      )}
+                    </Button>
+                  </>
+                )}
+              </div>
             </div>
-
-            <div className="headerEnd">
-              {stateComponent === "show" ? (
-                <Button variant="primary" onClick={handleStateComponent}>
-                  {t("edit")}
-                </Button>
-              ) : (
+  
+            {allFields.map((item, index) => {
+              return (
                 <>
-                  <Button
-                    variant="secondary"
-                    onClick={handleStateComponent}
-                    style={{ marginRight: "1rem" }}
-                  >
-                    {t("cancel")}
-                  </Button>
-                  <Button variant="primary" onClick={sendData}>
-                    {loading ? (
-                      <Spinner animation="border" variant="light" size="sm" />
-                    ) : (
-                      `${t("saveChanges")}`
-                    )}
-                  </Button>
+                  <Row key={index} style={{ padding: "1rem" }}>
+                    <Col md={4}>
+                      {item.field} <br /> {item.description}
+                    </Col>
+                    <Col md={3}>
+                      <FormControl component="fieldset">
+                        <FormGroup aria-label="position" row>
+                          <FormControlLabel
+                            value={item.value}
+                            control={
+                              <Switch
+                                color="primary"
+                                checked={item.value}
+                                onChange={handleSwitch}
+                                name={item.name}
+                                disabled={
+                                  stateComponent === "show" ? true : false
+                                }
+                              />
+                            }
+                            label={item.value ? `${t("active")}` : `${t("inactive")}`}
+                            labelPlacement="start"
+                          />
+                        </FormGroup>
+                      </FormControl>
+                    </Col>
+                    <Col md={2}>
+                      {item.low ? item.low : ""}
+                      {item.text2 ? item.text2 : ""}
+                    </Col>
+                    <Col md={3} style={{ marginTop: "-30px" }}>
+                      {item.component ? item.component : ""}
+                      {item.text ? item.text : ""}
+                    </Col>
+                  </Row>
+                  {index === allFields.length - 1 ? "" : <hr />}
                 </>
-              )}
-            </div>
-          </div>
-
-          {allFields.map((item, index) => {
-            return (
-              <>
-                <Row key={index} style={{ padding: "1rem" }}>
-                  <Col md={4}>
-                    {item.field} <br /> {item.description}
-                  </Col>
-                  <Col md={3}>
-                    <FormControl component="fieldset">
-                      <FormGroup aria-label="position" row>
-                        <FormControlLabel
-                          value={item.value}
-                          control={
-                            <Switch
-                              color="primary"
-                              checked={item.value}
-                              onChange={handleSwitch}
-                              name={item.name}
-                              disabled={
-                                stateComponent === "show" ? true : false
-                              }
-                            />
-                          }
-                          label={item.value ? `${t("active")}` : `${t("inactive")}`}
-                          labelPlacement="start"
-                        />
-                      </FormGroup>
-                    </FormControl>
-                  </Col>
-                  <Col md={2}>
-                    {item.low ? item.low : ""}
-                    {item.text2 ? item.text2 : ""}
-                  </Col>
-                  <Col md={3} style={{ marginTop: "-30px" }}>
-                    {item.component ? item.component : ""}
-                    {item.text ? item.text : ""}
-                  </Col>
-                </Row>
-                {index === allFields.length - 1 ? "" : <hr />}
-              </>
-            );
-          })}
-        </Paper>
-      </Col>
-    </Row>
+              );
+            })}
+          </Paper>
+        </Col>
+      </Row>
+    </>
   );
 };

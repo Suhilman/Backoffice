@@ -785,5 +785,7 @@
     "exportCommissionReport": "Ekspor Laporan Komisi",
     "pickLocation": "Pilih Lokasi",
     "nameOnKtp": "Nama di KTP",
-    "hiddenCategory": "Sembunyikan Kategori"
+    "hiddenCategory": "Sembunyikan Kategori",
+    "addRecepientEmail": "Tambah Penerima Email",
+    "addNewEmail": "Tambah Email Baru "
   }

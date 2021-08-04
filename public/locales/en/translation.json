@@ -786,5 +786,7 @@
     "exportCommissionReport": "Export Commission Report",
     "pickLocation": "Pick Location",
     "nameOnKtp": "Name on KTP",
-    "hiddenCategory": "Hidden Category"
+    "hiddenCategory": "Hidden Category",
+    "addRecepientEmail": "Add Recepient Email",
+    "addNewEmail": "Input New Email"
 }
