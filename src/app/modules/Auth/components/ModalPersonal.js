@@ -127,7 +127,7 @@ const ModalPersonal = ({
       const reader = new FileReader();
       reader.onload = () => {
         if(reader.readyState === 2){
-          console.log("reader.result", reader.result)
+          // console.log("reader.result", reader.result)
           setPhotoPreview(reader.result);
         }
       }

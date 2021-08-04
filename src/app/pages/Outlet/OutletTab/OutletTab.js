@@ -159,7 +159,7 @@ export const OutletTab = ({
       try {
         enableLoading();
         const {data} = await axios.post(`${API_URL}/api/v1/outlet/create-development`, formData);
-        console.log("data create outlet", data.data)
+        // console.log("data create outlet", data.data)
         if (values.open_days || values.open_hour || values.close_hour) {
           const time = {}
           if(values.open_days) time.open_days = values.open_days
@@ -167,7 +167,7 @@ export const OutletTab = ({
           if(values.close_hour) time.close_hour = values.close_hour
           if(values.vacation)  time.vacation = values.vacation
 
-          console.log("masuk ketika open days dan open hour true", time)
+          // console.log("masuk ketika open days dan open hour true", time)
           await axios.patch(`${API_URL}/api/v1/outlet/open-time/${data.data.id}`, time);
         }
         handleRefresh();
@@ -229,7 +229,7 @@ export const OutletTab = ({
           if(values.open_hour) time.open_hour = values.open_hour
           if(values.close_hour) time.close_hour = values.close_hour
           if(values.vacation)  time.vacation = values.vacation
-          console.log("masuk ketika open days dan open hour true", time)
+          // console.log("masuk ketika open days dan open hour true", time)
           await axios.patch(`${API_URL}/api/v1/outlet/open-time/${values.id}`, time);
         }
         handleRefresh();
@@ -486,7 +486,7 @@ export const OutletTab = ({
       setPhoto(
         `${data.data.image ? `${API_URL}/${data.data.image}` : ""}`
       )
-      console.log("ini photonya boeowww", `${API_URL}/${data.data.image}`)
+      // console.log("ini photonya boeowww", `${API_URL}/${data.data.image}`)
       setAllOutlets(data.data);
     } catch (err) {
       setAllOutlets([]);
@@ -576,7 +576,7 @@ export const OutletTab = ({
 
   const dataOutlets = () => {
     return allOutlets.map((item, index) => {
-      console.log("ini item apa", item)
+      // console.log("ini item apa", item)
       if(item.Location) {
         console.log("jika locationnya ada")
         const location = `${item.Location.name}, ${item.Location.City.name}, ${item.Location.City.Province.name}`;

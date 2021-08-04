@@ -16,7 +16,7 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate }) => {
 
     const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
 
-    console.log("currency nya brpw", data.data.Currency.name)
+    // console.log("currency nya brpw", data.data.Currency.name)
      
 
     setCurrency(data.data.Currency.name)

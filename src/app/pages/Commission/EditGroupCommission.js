@@ -38,15 +38,15 @@ const EditGroupCommission = ({location, match}) => {
     allOutlets,
     allProducts
   } = location.state;
-  console.log("bismillah", location.state)
+  // console.log("bismillah", location.state)
   const commission_id = match.params.commissionId;
 
-  console.log("commission_id", commission_id)
+  // console.log("commission_id", commission_id)
 
   const getCurrentCommission = async () => {
     try {
       const {data} = await axios.get(`${API_URL}/api/v1/commission/${commission_id}`)
-      console.log("curr Commission", data.data)
+      // console.log("curr Commission", data.data)
       setStatusGroup(data.data.status)
       setCurrCommission(data.data)
     } catch (error) {
@@ -57,7 +57,7 @@ const EditGroupCommission = ({location, match}) => {
   const getOutlets = async () => {
     try {
       const {data} = await axios.get(`${API_URL}/api/v1/outlet`)
-      console.log("all outlet", data.data)
+      // console.log("all outlet", data.data)
       // setAllOutlets(data.data)
     } catch (error) {
       console.log(error)
@@ -190,7 +190,7 @@ const EditGroupCommission = ({location, match}) => {
   const optionsOutlet = allOutlets.map((item) => {
     return { value: item.id, label: item.name };
   });
-  console.log("outlet id nya bree", formikCommission.values.outlet_id)
+  // console.log("outlet id nya bree", formikCommission.values.outlet_id)
 
 
   const optionsStaff = allStaff.map((value) => {
@@ -298,7 +298,7 @@ const EditGroupCommission = ({location, match}) => {
         }
       })
     })
-    console.log("pertama di render", resultListStaff)
+    // console.log("pertama di render", resultListStaff)
     setListStaffCommission(resultListStaff)
   }
   console.log("defaultValueProduct", defaultValueProduct)
@@ -312,7 +312,7 @@ const EditGroupCommission = ({location, match}) => {
         }
       })
     })
-    console.log("pertama di render product", resultListProduct)
+    // console.log("pertama di render product", resultListProduct)
     setListProduct(resultListProduct)
   }
 

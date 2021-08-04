@@ -41,7 +41,7 @@ export const DetailCustomerPage = ({ match }) => {
 
     const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
 
-    console.log("currency nya brpw", data.data.Currency.name)
+    // console.log("currency nya brpw", data.data.Currency.name)
      
 
     setCurrency(data.data.Currency.name)
@@ -263,7 +263,7 @@ export const DetailCustomerPage = ({ match }) => {
       const reader = new FileReader();
       reader.onload = () =>{
         if(reader.readyState === 2){
-          console.log("reader.result", reader.result)
+          // console.log("reader.result", reader.result)
           setPreview(reader.result);
         }
       }

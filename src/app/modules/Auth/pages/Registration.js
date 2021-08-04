@@ -411,7 +411,7 @@ function Registration(props) {
               const result = await axios.get(`${API_URL}/api/v1/outlet/get-address?latitude=${parseFloat(crd.latitude)}&longitude=${parseFloat(crd.longitude)}`)
               console.log("country address", result.data.resultAddress.address)
               const checkCountry = result.data.resultAddress.address.includes("Indonesia");
-              console.log("true kah", checkCountry)
+              // console.log("true kah", checkCountry)
               if(checkCountry) {
                 localStorage.setItem("checkCountry", true);
               } else {

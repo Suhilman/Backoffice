@@ -152,7 +152,7 @@ const PaymentDoku = () => {
 
   useEffect(() => {
     const result = JSON.parse('{"' + location.search.substring(1).replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
-    console.log("bismillah result", result)
+    // console.log("bismillah result", result)
     if(result.TAXSERVICE || result.SUBTOTAL) {
       console.log("result.TAXSERVICE", result.TAXSERVICE)
       setDetailPayment({

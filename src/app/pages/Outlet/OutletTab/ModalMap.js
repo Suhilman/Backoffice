@@ -54,21 +54,21 @@ const ModalMap = ({cancelModal, stateModal, formikOutlet}) => {
   }
   const handleOnLocation = async (e) => {
     const API_URL = process.env.REACT_APP_API_URL;
-    console.log("latitude", e.latLng.lat())
-    console.log("langitude", e.latLng.lng())
+    // console.log("latitude", e.latLng.lat())
+    // console.log("langitude", e.latLng.lng())
     setFirstAddLocation({lat: e.latLng.lat(), lng: e.latLng.lng()})
     localStorage.setItem("location", JSON.stringify({lat: e.latLng.lat(), lng: e.latLng.lng()}))
     localStorage.setItem("addLocation", JSON.stringify({lat: e.latLng.lat(), lng: e.latLng.lng()}))
     const result = await axios.get(`${API_URL}/api/v1/outlet/get-address?latitude=${e.latLng.lat()}&longitude=${e.latLng.lng()}`)
-    console.log("ini adalah result address", result)
+    // console.log("ini adalah result address", result)
     if (result.data.resultAddress.postcode && result.data.resultAddress.address) {
       formikOutlet.setFieldValue("postcode", result.data.resultAddress.postcode.long_name)
-      console.log("ini postcodenya di modal Map", result.data.resultAddress.postcode.long_name)
-      console.log("ini addressnya di modal Map", result.data.resultAddress.address)
+      // console.log("ini postcodenya di modal Map", result.data.resultAddress.postcode.long_name)
+      // console.log("ini addressnya di modal Map", result.data.resultAddress.address)
       formikOutlet.setFieldValue("address", result.data.resultAddress.address)
     }
   }
-  console.log("firstAddLocation", firstAddLocation)
+  // console.log("firstAddLocation", firstAddLocation)
   return (
     <div>
       <Modal show={stateModal} onHide={cancelModal} size="lg">
@@ -85,7 +85,7 @@ const ModalMap = ({cancelModal, stateModal, formikOutlet}) => {
                   center={JSON.parse(localStorage.getItem("location"))}
                   options={options}
                   onClick={(event) => {
-                    console.log("event apa nih", event)
+                    // console.log("event apa nih", event)
                     setMarkers({
                       lat: event.latLng.lat(),
                       lng: event.latLng.lng()
@@ -118,7 +118,7 @@ const ModalMap = ({cancelModal, stateModal, formikOutlet}) => {
                   center={firstAddLocation ? firstAddLocation : {lat :-6.1753871, lng: 106.8249641}}
                   options={options}
                   onClick={(event) => {
-                    console.log("event apa nih", event)
+                    // console.log("event apa nih", event)
                     setMarkers({
                       lat: event.latLng.lat(),
                       lng: event.latLng.lng()
@@ -171,7 +171,7 @@ function Search () {
     },
     radius: 200 * 1000
   })
-  console.log("search nya sudah ada")
+  // console.log("search nya sudah ada")
 
   return (
     <div className="search">

@@ -22,7 +22,7 @@ const ModalRecepientEmail = ({
     try {
       const {data} = await axios.get(`${API_URL}/api/v1/business-email`)
       setBusinessEmail(data.data)
-      console.log("getBusinessEmail", data.data)
+      // console.log("getBusinessEmail", data.data)
     } catch (error) {
       console.log(error)
     }
@@ -58,7 +58,7 @@ const ModalRecepientEmail = ({
       toastSuccess()
       getBusinessEmail()
       setAddEmail(" ")
-      console.log("addEmail", addEmail)
+      // console.log("addEmail", addEmail)
     } catch (error) {
       setAddEmail("")
       console.log(error)

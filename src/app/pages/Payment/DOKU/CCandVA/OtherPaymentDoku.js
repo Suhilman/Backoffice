@@ -84,7 +84,7 @@ const OtherPaymentDoku = () => {
         CC_NAME: values.CC_NAME,
         PAYMENTCHANNEL: values.PAYMENTCHANNEL
       }
-      console.log("Data sebelum dikirim sebelum kirim", dataSend)
+      // console.log("Data sebelum dikirim sebelum kirim", dataSend)
       // https://cors-anywhere.herokuapp.com/
       try {
       
@@ -95,7 +95,7 @@ const OtherPaymentDoku = () => {
         }
 
         const result = await axios.post("https://staging.doku.com/Suite/Receive", dataSend, config)
-        console.log("response", result.data)
+        // console.log("response", result.data)
 
       } catch (err) {
         console.log("respon errornya", err.response)
@@ -132,7 +132,7 @@ const OtherPaymentDoku = () => {
 
   useEffect(() => {
     const result = JSON.parse('{"' + location.search.substring(1).replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
-    console.log("bismillah result", result)
+    // console.log("bismillah result", result)
     if(!result.TRANSIDMERCHANT) {
       genInvoice()
     } else {

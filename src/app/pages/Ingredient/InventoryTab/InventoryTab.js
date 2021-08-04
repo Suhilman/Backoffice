@@ -375,8 +375,8 @@ const InventoryIngredientTab = ({
     };
   });
 
-  console.log("rawMaterial asli", rawMaterial)
-  console.log("dataRawMaterial sudah di looping", dataRawMaterial)
+  // console.log("rawMaterial asli", rawMaterial)
+  // console.log("dataRawMaterial sudah di looping", dataRawMaterial)
 
   const handleOptionsOutlet = () => {
     const uniqueArray = [];

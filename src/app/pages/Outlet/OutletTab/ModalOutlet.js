@@ -47,7 +47,7 @@ const ModalOutlet = ({
   timingState
 }) => {
 
-  console.log("bismillah", formikOutlet.values.vacation)
+  // console.log("bismillah", formikOutlet.values.vacation)
 
   React.useEffect(() => {
     console.log("useEffect timingState", timingState)
@@ -62,7 +62,7 @@ const ModalOutlet = ({
   const handleEndHour = (e) => handleSetEndHour(e)
 
   const date = new Date()
-  console.log("Sekarang hari ke berapa", dayjs(date).format('d'))
+  // console.log("Sekarang hari ke berapa", dayjs(date).format('d'))
 
   const handleDayChange = (e) => {
     console.log("handle day change ==>", e.target.value)

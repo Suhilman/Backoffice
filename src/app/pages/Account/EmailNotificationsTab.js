@@ -51,15 +51,15 @@ export const EmailNotifications = () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem("user_info"));
       const {data} = await axios.get(`${API_URL}/api/v1/transaction/find-transaction-recap?businessId=${userInfo.business_id}`)
-      console.log("data apaan", data.data)
+      // console.log("data apaan", data.data)
       data.data.map(async value => {
         const message = {
           title: `Transaction Recap At ${value.Outlet.name}`,
           message: `${value.createdAt.split("T")[0]} - ${value.createdAt.split("T")[1]} \n Recap By ${value.User?.User_Profile.name}` 
         }
-        console.log("ini messagenya", message)
+        // console.log("ini messagenya", message)
         await axios.post(`${API_URL}/api/v1/business-notification`, message)
-        console.log("yey berhasill")
+        // console.log("yey berhasill")
       })
     } catch (error) {
       console.log(error)
@@ -77,29 +77,29 @@ export const EmailNotifications = () => {
       );
       const dateSettings = new Date(settingsNotification.data.data.timeState[2].time)
       const dateNow = new Date()
-      console.log("ini data semua", settingsNotification.data.data)
-      console.log("data.data", data.data)
+      // console.log("ini data semua", settingsNotification.data.data)
+      // console.log("data.data", data.data)
       
       data.data.map(async value => {
         if(value.has_stock) {
           if(value.stock <= settingsNotification.data.data.timeState[2].minimum_stock) {
             if(dateSettings.getHours() - dateNow.getHours() <= 0){
               if(dateSettings.getMinutes() - dateNow.getMinutes() <= 0 && dateSettings.getMinutes() - dateNow.getMinutes() >= -10) {
-                console.log("sudah waktunya kirim notif")
+                // console.log("sudah waktunya kirim notif")
                 if(value.unit_id) {
                   const message = {
                     title: "Stock Alert",
                     message: `${value.name} ${value.stock} ${value.Unit.name}` 
                   }
                   // await axios.post(`${API_URL}/api/v1/business-notification`, message)
-                  console.log("ini data yang akan di push notification", `${value.name} ${value.stock} ${value.Unit.name}`)
+                  // console.log("ini data yang akan di push notification", `${value.name} ${value.stock} ${value.Unit.name}`)
                 } else {
                   const message = {
                     title: "Stock Alert",
                     message: `${value.name} ${value.stock} unit` 
                   }
                   // await axios.post(`${API_URL}/api/v1/business-notification`, message)
-                  console.log("ini data yang akan di push notification", `${value.name} ${value.stock} unit`)
+                  // console.log("ini data yang akan di push notification", `${value.name} ${value.stock} unit`)
                 }
               }
             } else {
@@ -114,19 +114,19 @@ export const EmailNotifications = () => {
       const convertWaktu = new Date(milisecond)
       const convertWaktuSekarang = new Date(milisecondSekarang)
 
-      console.log("ini data semua produk", data.data)
-      console.log("ini seting milisecond", milisecond.getTime());
-      console.log("ini milisecond sekarang", milisecondSekarang.getTime());
-      console.log("convert waktu", convertWaktu.toString())
-      console.log("convert waktu sekarang", convertWaktuSekarang.toString())
+      // console.log("ini data semua produk", data.data)
+      // console.log("ini seting milisecond", milisecond.getTime());
+      // console.log("ini milisecond sekarang", milisecondSekarang.getTime());
+      // console.log("convert waktu", convertWaktu.toString())
+      // console.log("convert waktu sekarang", convertWaktuSekarang.toString())
 
-      console.log("hasilnya jam", dateSettings.getHours() - dateNow.getHours())
-      console.log("hasilnya menit", dateSettings.getMinutes() - dateNow.getMinutes())
+      // console.log("hasilnya jam", dateSettings.getHours() - dateNow.getHours())
+      // console.log("hasilnya menit", dateSettings.getMinutes() - dateNow.getMinutes())
 
-      console.log("ini setting Jam", milisecond.getHours())
-      console.log("ini Jam sekarang", milisecondSekarang.getHours())
-      console.log("ini setting Menit", milisecond.getMinutes())
-      console.log("ini Meint sekarang", milisecondSekarang.getMinutes())
+      // console.log("ini setting Jam", milisecond.getHours())
+      // console.log("ini Jam sekarang", milisecondSekarang.getHours())
+      // console.log("ini setting Menit", milisecond.getMinutes())
+      // console.log("ini Meint sekarang", milisecondSekarang.getMinutes())
 
       setSwitchState({
         cashRecap:
@@ -335,7 +335,7 @@ export const EmailNotifications = () => {
       day: day
     };
 
-    console.log("emailData", emailData)
+    // console.log("emailData", emailData)
 
     try {
       enableLoading();

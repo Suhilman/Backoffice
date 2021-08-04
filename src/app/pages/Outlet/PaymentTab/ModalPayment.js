@@ -36,7 +36,7 @@ const ModalPayment = ({
   state
 }) => {
   const API_URL = process.env.REACT_APP_API_URL;
-  console.log("state apaan nih", state)
+  // console.log("state apaan nih", state)
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
     maxSize: 2 * 1000 * 1000,

@@ -86,7 +86,7 @@ const AddGroupCommission = ({location}) => {
     initialValues: initialValueCommission,
     validationSchema: commissionSchema,
     onSubmit: async (values) => {
-      console.log("Data sebelum dikirim", values)
+      // console.log("Data sebelum dikirim", values)
       const API_URL = process.env.REACT_APP_API_URL;
       const data = {
         outlet_id: values.outlet_id,
@@ -101,7 +101,7 @@ const AddGroupCommission = ({location}) => {
       if(values.nominal_commission) {
         data.nominal = values.nominal_commission
       }
-      console.log("persiapan kirim", data)
+      // console.log("persiapan kirim", data)
       try {
         enableLoading();
         await axios.post(`${API_URL}/api/v1/commission`, data);
@@ -170,9 +170,9 @@ const AddGroupCommission = ({location}) => {
   // )
 
   const handleSelectOutlet = (value, formik) => {
-    console.log("valuenya", value)
+    // console.log("valuenya", value)
     if (value) {
-      console.log("handleSelectOutlet", value)
+      // console.log("handleSelectOutlet", value)
       const outlet = value.map((item) => item.value);
       formik.setFieldValue("staff_id", outlet);
       const resultListStaff = []
@@ -192,7 +192,7 @@ const AddGroupCommission = ({location}) => {
 
   const handleSelectProduct = (value, formik) => {
     if (value) {
-      console.log("handleSelectProduct", value)
+      // console.log("handleSelectProduct", value)
       const outlet = value.map((item) => item.value);
       formik.setFieldValue("product_id", outlet);
       const resultListProduct = []
@@ -210,8 +210,8 @@ const AddGroupCommission = ({location}) => {
     }
   };
 
-  console.log("listStaffCommission", listStaffCommission)
-  console.log("listProduct", listProduct)
+  // console.log("listStaffCommission", listStaffCommission)
+  // console.log("listProduct", listProduct)
   return (
     <div>
       <Row>

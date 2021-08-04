@@ -271,7 +271,7 @@ export const ReportPage = () => {
     setTime(`${time_start} - ${end_time}`);
     setShowTimePicker(false);
   };
-  console.log("baksoow", allOutlets)
+  // console.log("baksoow", allOutlets)
   return (
     <>
       <CustomDateRange
