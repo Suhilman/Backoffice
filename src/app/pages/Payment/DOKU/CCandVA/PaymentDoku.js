@@ -503,7 +503,7 @@ const PaymentDoku = () => {
                 <Col>
                   <div className="wrapper-input">
                     <label for="EMAIL">EMAIL</label>
-                    <input id="EMAIL" type="text" name="EMAIL" required/>
+                    <input className="doku" id="EMAIL" type="text" name="EMAIL" required/>
                   </div>
                 </Col>
               </Row>
@@ -511,7 +511,7 @@ const PaymentDoku = () => {
                 <Col>
                 <div className="wrapper-input">
                   <label for="NAME">NAME</label>
-                  <input id="NAME" type="text" name="NAME" required/>
+                  <input className="doku" id="NAME" type="text" name="NAME" required/>
                 </div>
                 </Col>
               </Row>
@@ -519,7 +519,7 @@ const PaymentDoku = () => {
                 <Col>
                   <div className="wrapper-input">
                     <label for="MOBILEPHONE">MOBILEPHONE</label>
-                    <input id="MOBILEPHONE" type="text" name="MOBILEPHONE" required/>
+                    <input className="doku" id="MOBILEPHONE" type="text" name="MOBILEPHONE" required/>
                   </div>
                 </Col>
               </Row>
@@ -563,7 +563,7 @@ const PaymentDoku = () => {
                 <td class="field_input" colspan="2">&nbsp;</td>
               </tr>
               <div className="wrapper-button">
-                <input name="submit" type="submit" class="button-submit-payment" id="submit" value="SUBMIT" onClick={() => showModalPayment}/>
+                <input className="doku" name="submit" type="submit" class="button-submit-payment" id="submit" value="SUBMIT" onClick={() => showModalPayment}/>
               </div>
             </form>
             </div>
