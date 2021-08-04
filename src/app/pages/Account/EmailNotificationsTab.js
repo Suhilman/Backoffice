@@ -387,7 +387,7 @@ export const EmailNotifications = () => {
         t={t}
         cancelModal={closeModalRecepient}
         stateModal={showModalRecepient}
-        title="Modal Recepient Email"
+        title="Modal Recipient Email"
         loading={loading}
       />
       <Row>
@@ -400,7 +400,7 @@ export const EmailNotifications = () => {
   
               <div className="headerEnd">
                 <div className="btn btn-primary mr-2" onClick={openModalRecepient}>
-                  Recepient Email
+                  {t("addRecipientEmail")}
                 </div>
                 {stateComponent === "show" ? (
                   <Button variant="primary" onClick={handleStateComponent}>

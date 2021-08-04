@@ -786,6 +786,7 @@
     "pickLocation": "Pilih Lokasi",
     "nameOnKtp": "Nama di KTP",
     "hiddenCategory": "Sembunyikan Kategori",
-    "addRecepientEmail": "Tambah Penerima Email",
-    "addNewEmail": "Tambah Email Baru "
+    "addRecipientEmail": "Tambah Penerima Email",
+    "addNewEmail": "Tambah Email Baru",
+    "emailRecipientList": "Email Recipient List"
   }

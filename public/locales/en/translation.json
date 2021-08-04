@@ -787,6 +787,7 @@
     "pickLocation": "Pick Location",
     "nameOnKtp": "Name on KTP",
     "hiddenCategory": "Hidden Category",
-    "addRecepientEmail": "Add Recepient Email",
-    "addNewEmail": "Input New Email"
+    "addRecipientEmail": "Add Recipient Email",
+    "addNewEmail": "Input New Email",
+    "emailRecipientList": "Email Recipient List"
 }

@@ -29,7 +29,7 @@ const ModalRecepientEmail = ({
   }
 
   const toastSuccess = () => {
-    return toast.success('Add Email Recepient Success', {
+    return toast.success('Add Email Recipient Success', {
       position: "top-right",
       autoClose: 3000,
       hideProgressBar: false,
@@ -54,11 +54,11 @@ const ModalRecepientEmail = ({
 
   const handleAddBusinessEmail = async () => {
     try {
+      if(addEmail.length < 1) return toastInfo()
       await axios.post(`${API_URL}/api/v1/business-email`, {email: addEmail})
       toastSuccess()
       getBusinessEmail()
       setAddEmail(" ")
-      // console.log("addEmail", addEmail)
     } catch (error) {
       setAddEmail("")
       console.log(error)
@@ -87,47 +87,44 @@ const ModalRecepientEmail = ({
       <Modal.Header closeButton>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
-      <Form >
-        <Modal.Body>
-          <div className="wrapper-form-add-recepient-email">
-            <div className="d-flex justify-content-between align-items-center">
-              <Form.Group className="width-form-group">
-                <Form.Label>{t("addRecepientEmail")}:</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="email"
-                  placeholder={t("addNewEmail")}
-                  required
-                  onChange={(e) => {
-                    setAddEmail(e.target.value)
-                  }}
-                />
-              </Form.Group>
-              <div className="btn btn-primary btn-email-recepient" onClick={handleAddBusinessEmail}>{t("save")}</div>
+      <Modal.Body>
+        <div className="wrapper-form-add-recepient-email">
+          <Form.Group>
+            <Form.Label>{t("addRecipientEmail")}:</Form.Label>
+            <Form.Control
+              type="text"
+              name="email"
+              value={addEmail}
+              placeholder={t("addNewEmail")}
+              required
+              onChange={(e) => {
+                setAddEmail(e.target.value)
+              }}
+            />
+          </Form.Group>
+        </div>
+        <Form.Label>{t("emailRecipientList")}:</Form.Label>
+        {businessEmail.map(value => 
+          <div className="list-business-email-modal-recepient">
+            <div className="business-email-recepient">
+              {value.email}
             </div>
+            <div className="badge badge-danger" onClick={() => handleDeleteBusinessEmail(value.id)}>{t("delete")}</div>
           </div>
-          {businessEmail.map(value => 
-            <div className="list-business-email-modal-recepient">
-              <div className="business-email-recepient">
-                {value.email}
-              </div>
-              <div className="badge badge-danger" onClick={() => handleDeleteBusinessEmail(value.id)}>{t("delete")}</div>
-            </div>
+        )}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={cancelModal}>
+          {t("cancel")}
+        </Button>
+        <Button variant="primary" type="submit" onClick={handleAddBusinessEmail}>
+          {loading ? (
+            <Spinner animation="border" variant="light" size="sm" />
+          ) : (
+            `${t("saveChanges")}`
           )}
-        </Modal.Body>
-        {/* <Modal.Footer>
-          <Button variant="secondary" onClick={cancelModal}>
-            {t("cancel")}
-          </Button>
-          <Button variant="primary" type="submit">
-            {loading ? (
-              <Spinner animation="border" variant="light" size="sm" />
-            ) : (
-              `${t("saveChanges")}`
-            )}
-          </Button>
-        </Modal.Footer> */}
-      </Form>
+        </Button>
+      </Modal.Footer>
     </Modal>
   );
 }
