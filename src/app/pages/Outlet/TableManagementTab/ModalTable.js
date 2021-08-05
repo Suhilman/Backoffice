@@ -7,7 +7,7 @@ import LogoBeetpos from '../../../../images/logo beetPOS small new.png'
 import html2canvas from 'html2canvas'
 import axios from 'axios'
 import QRCode from 'qrcode.react'
-import LogoTextBeetpos from '../../../../images/logo beetPOS new.png'
+import LogoTextBeetpos from '../../../../images/logo putih.png'
 // import { QRCode } from 'react-qrcode-logo';
 
 import IconFacebook from '../../../../images/icons8-facebook-500.png'
@@ -35,12 +35,23 @@ const ModalPayment = ({
     try {
       if(editDataTable) {
         const dataBusiness = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/business/${editDataTable.business_id}`)
+        console.log("dataBusiness data data", dataBusiness.data.data)
         const dataTable = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/table-management/${editDataTable.id}`)
+        const phoneSplit = dataBusiness.data.data.phone_number.split("")
+        if(phoneSplit[0] == 8) {
+          phoneSplit.unshift(0)
+        }
+        phoneSplit.splice(4, 0, " ")
+        phoneSplit.splice(9, 0, " ")
+
+        dataTable.data.data.phone_number = phoneSplit.join("")
+        console.log("dataTable.phone_number", dataTable.data.data.phone_number)
         setDataTemplateQr({
           logoBusiness: dataBusiness.data.data.image ? `${process.env.REACT_APP_API_URL}/${dataBusiness.data.data.image}` : null,
           businessName: dataBusiness.data.data.name,
           outletName: dataTable.data.data.Outlet.name,
-          tableName: dataTable.data.data.name
+          tableName: dataTable.data.data.name,
+          phoneNumber: dataTable.data.data.phone_number
         })
       }
     } catch (error) {
@@ -207,11 +218,29 @@ const ModalPayment = ({
                 id="qrcodeTest"
               >
                 <div className="bg-qr-outlet">
-                  <div className="top-lane-qr-outlet" />
-                  <div className="bottom-lane-qr-outlet" />
+                  <div className="top-lane-qr-outlet"> 
+                    <div className="whatsapp-qr-outlet">
+                      WA | {dataTemplateQr.phoneNumber}
+                    </div>
+                    <div className="wrapper-sosmed-qr-outlet d-flex">
+                      <div className="sosmed-qr-outlet">
+                        FB | IG | TikTok |
+                      </div>
+                      <div className="name-sosmed-qr-outlet ml-2">
+                        drsusiantowvc
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bottom-lane-qr-outlet"> 
+                    <div className="powered-qr-outlet">
+                      Powered <span className="pl-2"/>by <span className="wrapper-logo-powered-qr-outlet">
+                        <img src={LogoTextBeetpos} alt="Logo Beetpos" />
+                      </span>
+                    </div>
+                  </div>
                   
                   {dataTemplateQr.logoBusiness ? (
-                    <div className="d-flex justify-content-center">
+                    <div className="wrapper-content-qr-outlet d-flex justify-content-center">
                       <div className="wrapper-logo-qr-outlet">
                         <img src={dataTemplateQr.logoBusiness} alt="Logo Business" />
                         {/* <img src="https://beetpos.com/wp-content/uploads/apk/logo.png" alt="Logo Business" /> */}
@@ -226,12 +255,6 @@ const ModalPayment = ({
                     )
                   }
                   <div className="qr-outlet-center">
-                    <div className="sosmed-qr-outlet">
-                      FB | IG | TikTok
-                    </div>
-                    <div className="name-sosmed-qr-outlet">
-                      drsusiantowvc
-                    </div>
                     {dataTemplateQr.businessName?.length < 25 ? (
                       <div className="business-name-qr-outlet-min-25">{dataTemplateQr.businessName}</div>
                     ) : (
@@ -246,14 +269,14 @@ const ModalPayment = ({
                       value={dataObj} 
                       level={"H"}
                       includeMargin={true}
-                      size={1300}
+                      size={1100}
                     />
                     {dataTemplateQr.tableName?.length < 25 ? (
                       <div className="table-name-qr-outlet-min-25">{dataTemplateQr.tableName}</div>
                     ) : (
                       <div className="table-name-qr-outlet-plus-25">{dataTemplateQr.tableName}</div>
                     )}
-                    <div className="desc-qr-outlet">
+                    <div className="desc-qr-outlet mt-3">
                       Scan to view Beet EMenu (non-member)<br />or BeetCustomer (Member)
                     </div>
                       {/* <div className="wrapper-icon-sosmed-qr-outlet">
@@ -267,11 +290,6 @@ const ModalPayment = ({
                           <img src={IconTikTok} alt="Icon TikTok" />
                         </div>
                       </div> */}
-                    <div className="powered-qr-outlet">
-                      Powered <span className="pl-1"/>by <span className="wrapper-logo-powered-qr-outlet">
-                        <img src={LogoTextBeetpos} alt="Logo Beetpos" />
-                      </span>
-                    </div>
                   </div>
                 </div>
               </div>
