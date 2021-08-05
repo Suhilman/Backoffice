@@ -1,27 +1,40 @@
 .container-qr-outlet{
   position: absolute;
-  bottom: 1748px;
+  top: -2800px;
+  /* visibility: hidden; */
 }
+
 .wrapper-qr-outlet{
   width: 1240px;
-  height: 1748px;
+  height: 1768px;
   position: relative;
 }
+
 canvas {
   height: auto !important;
   width: 100% !important;
   max-width: 700px;
 }
 
-.business-name-qr-outle, .outlet-name-qr-outlet, .table-name-qr-outlet{
+.business-name-qr-outlet-min-25, .outlet-name-qr-outlet-min-25, .table-name-qr-outlet-min-25 {
+  text-align: center;
   color: black;
   font-weight: 700;
-  font-size: 90px;
+  font-size: 80px;
+  padding: 0 120px;
+}
+
+.business-name-qr-outlet-plus-25, .outlet-name-qr-outlet-plus-25, .table-name-qr-outlet-plus-25{
+  text-align: center;
+  color: black;
+  font-weight: 700;
+  font-size: 50px;
+  padding: 0 120px;
 }
 .top-lane-qr-outlet{
   position: absolute;
   height: 25px;
-  background-color: #623863;
+  background-color: rgba(74,140,66,255);
   /* width: 100%; */
   left: 0;
   right: 0;
@@ -31,7 +44,8 @@ canvas {
 .bottom-lane-qr-outlet{
   position: absolute;
   height: 25px;
-  background-color: #623863;
+  background-color: rgba(74,140,66,255)
+;
   /* width: 100%; */
   left: 0;
   right: 0;
@@ -43,7 +57,7 @@ canvas {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .desc-qr-outlet{
@@ -63,10 +77,14 @@ canvas {
   background-size: cover;
 }
 
-.wrapper-logo-qr-outlet, .logo-business-qr-outlet{
-  margin-top: 20px;
+.logo-business-qr-outlet-empty{
+ margin-top: 310px;
+}
+
+.wrapper-logo-qr-outlet{
+  margin-top: 30px;
   margin-right: 15px;
-  width: 400px;
+  width: 340px;
   /* height: 110px; */
   object-fit: contain;
 }
@@ -91,6 +109,29 @@ canvas {
   height: 100%;
 }
 
+.icon-facebook-qr-outlet, .icon-instagram-qr-outlet, .icon-tiktok-qr-outlet{
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+}
+
+.icon-facebook-qr-outlet >img, .icon-instagram-qr-outlet > img, .icon-tiktok-qr-outlet > img{
+  width: 100%;
+  height: 100%;
+}
+
+.wrapper-icon-sosmed-qr-outlet{
+  display: flex;
+}
+
+.name-sosmed-qr-outlet, .sosmed-qr-outlet{
+  font-weight: 700;
+  font-size: 30px;
+  color: black;
+}
+.sosmed-qr-outlet {
+  margin-top: 20px;
+}
 /* start styling pdf Purchase Order */
 .style-pdf{
   position: absolute;

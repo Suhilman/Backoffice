@@ -10,6 +10,10 @@ import QRCode from 'qrcode.react'
 import LogoTextBeetpos from '../../../../images/logo beetPOS new.png'
 // import { QRCode } from 'react-qrcode-logo';
 
+import IconFacebook from '../../../../images/icons8-facebook-500.png'
+import IconInstagram from '../../../../images/icons8-instagram-logo-500.png'
+import IconTikTok from '../../../../images/icons8-tiktok-500.png'
+
 const ModalPayment = ({
   stateModal,
   cancelModal,
@@ -44,6 +48,14 @@ const ModalPayment = ({
     }
   }
 
+  const topFunction = async () => {
+    const scrollToTopBtn = document.getElementById("kt_scrolltop");
+    if (scrollToTopBtn) {
+      scrollToTopBtn.click();
+      return true
+    }
+  };
+
   React.useEffect(() => {
     getDataBusinessTable()
     console.log("editDataTable", editDataTable)
@@ -60,19 +72,25 @@ const ModalPayment = ({
   const dataObj = JSON.stringify(data)
   console.log(dataObj)
 
-  const downloadQR = () => {
-    html2canvas(document.getElementById("qrcodeTest"), { logging: true, letterRendering: 1, useCORS: true } ).then(canvas => {
-      console.log("qrcodeTest", canvas)
-      const pngUrl = canvas
-        .toDataURL("image/jpeg", 1.0)
-      console.log("pngUrl", pngUrl)
-      let downloadLink = document.createElement("a");
-      downloadLink.href = pngUrl;
-      downloadLink.download = "qrcode-outlet-beetpos.png";
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-     })
+  const downloadQR = async () => {
+
+    const scroll = await topFunction()
+    if(scroll) {
+      setTimeout(() => {
+        html2canvas(document.getElementById("qrcodeTest"), { logging: true, letterRendering: 1, useCORS: true } ).then(canvas => {
+          console.log("qrcodeTest", canvas)
+          const pngUrl = canvas
+            .toDataURL("image/jpeg", 1.0)
+          console.log("pngUrl", pngUrl)
+          let downloadLink = document.createElement("a");
+          downloadLink.href = pngUrl;
+          downloadLink.download = "qrcode-outlet-beetpos.png";
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
+        });
+      }, 1200)
+    }
   };
 
   return (
@@ -180,6 +198,7 @@ const ModalPayment = ({
               </Form.Group>
             </Col>
           </Row>
+          <Row>
           <div className="container-qr-outlet">
             <Row>
               <div 
@@ -192,32 +211,62 @@ const ModalPayment = ({
                   <div className="bottom-lane-qr-outlet" />
                   
                   {dataTemplateQr.logoBusiness ? (
-                    <div className="d-flex justify-content-end">
+                    <div className="d-flex justify-content-center">
                       <div className="wrapper-logo-qr-outlet">
                         <img src={dataTemplateQr.logoBusiness} alt="Logo Business" />
+                        {/* <img src="https://beetpos.com/wp-content/uploads/apk/logo.png" alt="Logo Business" /> */}
                       </div>
                     </div>
                     ) : (
                     <div className="d-flex justify-content-end">
-                      <div className="wrapper-logo-qr-outlet">
-                        <img src="https://dummyimage.com/600x400/ffffff/624863.jpg&text=Logo+Business" alt="Logo Business" />
+                      <div className="logo-business-qr-outlet-empty">
+                        {/* <img src="https://dummyimage.com/600x400/ffffff/624863.jpg&text=Logo+Business" alt="Logo Business" /> */}
                       </div>
                     </div>
                     )
                   }
                   <div className="qr-outlet-center">
-                    <div className="business-name-qr-outle">{dataTemplateQr.businessName}</div>
-                    <div className="outlet-name-qr-outlet">{dataTemplateQr.outletName}</div>
+                    <div className="sosmed-qr-outlet">
+                      FB | IG | TikTok
+                    </div>
+                    <div className="name-sosmed-qr-outlet">
+                      drsusiantowvc
+                    </div>
+                    {dataTemplateQr.businessName?.length < 25 ? (
+                      <div className="business-name-qr-outlet-min-25">{dataTemplateQr.businessName}</div>
+                    ) : (
+                      <div className="business-name-qr-outlet-plus-25">{dataTemplateQr.businessName}</div>
+                    )}
+                    {dataTemplateQr.outletName?.length < 25 ? (
+                      <div className="outlet-name-qr-outlet-min-25">{dataTemplateQr.outletName}</div>
+                    ) : (
+                      <div className="outlet-name-qr-outlet-plus-25">{dataTemplateQr.outletName}</div>
+                    )}
                     <QRCode 
                       value={dataObj} 
                       level={"H"}
                       includeMargin={true}
-                      size={1550}
+                      size={1300}
                     />
-                    <div className="table-name-qr-outlet">{dataTemplateQr.tableName}</div>
+                    {dataTemplateQr.tableName?.length < 25 ? (
+                      <div className="table-name-qr-outlet-min-25">{dataTemplateQr.tableName}</div>
+                    ) : (
+                      <div className="table-name-qr-outlet-plus-25">{dataTemplateQr.tableName}</div>
+                    )}
                     <div className="desc-qr-outlet">
                       Scan to view Beet EMenu (non-member)<br />or BeetCustomer (Member)
                     </div>
+                      {/* <div className="wrapper-icon-sosmed-qr-outlet">
+                        <div className="icon-facebook-qr-outlet">
+                          <img src={IconFacebook} alt="Icon Facebook" />
+                        </div>
+                        <div className="icon-instagram-qr-outlet">
+                          <img src={IconInstagram} alt="Icon Instagram" />
+                        </div>
+                        <div className="icon-tiktok-qr-outlet">
+                          <img src={IconTikTok} alt="Icon TikTok" />
+                        </div>
+                      </div> */}
                     <div className="powered-qr-outlet">
                       Powered <span className="pl-1"/>by <span className="wrapper-logo-powered-qr-outlet">
                         <img src={LogoTextBeetpos} alt="Logo Beetpos" />
@@ -228,6 +277,7 @@ const ModalPayment = ({
               </div>
             </Row>
           </div>
+          </Row>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>

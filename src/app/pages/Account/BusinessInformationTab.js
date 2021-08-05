@@ -55,43 +55,43 @@ export const BusinessInformation = () => {
   });
   const { t } = useTranslation();
   const BusinessSchema = Yup.object().shape({
-    name: Yup.string()
-      .min(3, `${t("minimum3Character")}`)
-      .max(50, `${t("maximum50Character")}`)
-      .required("Please input a business name."),
-    name_on_ktp: Yup.string()
-      .min(3, `${t("minimum3Character")}`)
-      .max(50, `${t("maximum50Character")}`)
-      .required("Please input a name on ktp."),
-    business_address: Yup.string()
-      .min(3, `${t("minimum3Character")}`)
-      .max(50, `${t("maximum50Character")}`)
-      .required("Please input a business address."),
-    business_phone_number: Yup.number()
-      .typeError("Please input a number only")
-      .required("Please input a business phone_number"),
-    ktp_number: Yup.number()
-      .typeError("Please input a number only")
-      .test("ktp_number", "Must exactly 16 digits", (val) =>
-        val ? val.toString().length === 16 : ""
-      )
-      .required("Please input a ktp_number"),
-    npwp_number: Yup.number()
-      .typeError("Please input a number only")
-      .test("npwp_number", "Must exactly 15 digits", (val) =>
-        val ? val.toString().length === 15 : ""
-      )
-      .required("Please input a npwp_number"),
-    business_type_id: Yup.number()
-      .integer()
-      .min(1)
-      .required("Please input a business category"),
-    location_id: Yup.number()
-      .integer()
-      .min(1)
-      .required("Please input a business location"),
-    currency_id: Yup.string()
-      .required("Please choose currency")
+    // name: Yup.string()
+    //   .min(3, `${t("minimum3Character")}`)
+    //   .max(50, `${t("maximum50Character")}`)
+    //   .required("Please input a business name."),
+    // name_on_ktp: Yup.string()
+    //   .min(3, `${t("minimum3Character")}`)
+    //   .max(50, `${t("maximum50Character")}`)
+    //   .required("Please input a name on ktp."),
+    // business_address: Yup.string()
+    //   .min(3, `${t("minimum3Character")}`)
+    //   .max(50, `${t("maximum50Character")}`)
+    //   .required("Please input a business address."),
+    // business_phone_number: Yup.number()
+    //   .typeError("Please input a number only")
+    //   .required("Please input a business phone_number"),
+    // ktp_number: Yup.number()
+    //   .typeError("Please input a number only")
+    //   .test("ktp_number", "Must exactly 16 digits", (val) =>
+    //     val ? val.toString().length === 16 : ""
+    //   )
+    //   .required("Please input a ktp_number"),
+    // npwp_number: Yup.number()
+    //   .typeError("Please input a number only")
+    //   .test("npwp_number", "Must exactly 15 digits", (val) =>
+    //     val ? val.toString().length === 15 : ""
+    //   )
+    //   .required("Please input a npwp_number"),
+    // business_type_id: Yup.number()
+    //   .integer()
+    //   .min(1)
+    //   .required("Please input a business category"),
+    // location_id: Yup.number()
+    //   .integer()
+    //   .min(1)
+    //   .required("Please input a business location"),
+    // currency_id: Yup.string()
+    //   .required("Please choose currency")
   });
   // const handleSelectTab = async (prefix, noCurrency) => {
   //   try {
