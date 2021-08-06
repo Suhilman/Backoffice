@@ -189,11 +189,7 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
   };
 
   const showEditModalTable = (data) => {
-<<<<<<< HEAD
-    console.log("data yang mau diedit", data)
-=======
     topFunction();
->>>>>>> backoffice-development
     setEditDataTable(data)
     formikTableEdit.setValues({
       id: data.id,

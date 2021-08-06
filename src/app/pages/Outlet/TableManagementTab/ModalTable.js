@@ -2,12 +2,10 @@ import React, { useEffect, useState } from "react";
 
 import { Button, Modal, Spinner, Form, Row, Col } from "react-bootstrap";
 
-import html2canvas from 'html2canvas'
 import axios from 'axios'
 import "../../style.css";
 import LogoBeetpos from '../../../../images/logo beetPOS small new.png' 
 import html2canvas from 'html2canvas'
-import axios from 'axios'
 import QRCode from 'qrcode.react'
 import LogoTextBeetpos from '../../../../images/logo putih.png'
 // import { QRCode } from 'react-qrcode-logo';
@@ -32,8 +30,6 @@ const ModalPayment = ({
   const businessId = formikTable.getFieldProps("business_id").value
   const tableId = formikTable.getFieldProps("id").value
   const data = `${process.env.REACT_APP_FRONTEND_URL}/get-data/${tableId}/${businessId}`
-  const data = `${process.env.REACT_APP_FRONTEND_URL}/get-data/${tableId}/${businessId}` 
-  const [dataTemplateQr, setDataTemplateQr] = useState({})
 
   const getDataBusinessTable = async () => {
     try {
@@ -75,45 +71,14 @@ const ModalPayment = ({
     getDataBusinessTable()
     console.log("editDataTable", editDataTable)
   }, [editDataTable])
-
-  // const data = {
-  //   "application": "beetpos",
-  //   "outlet_id": formikTable.getFieldProps("outlet_id").value,
-  //   "business_id": businessId,
-  //   "table_id": tableId,
-  //   "url_webview": `${process.env.REACT_APP_FRONTEND_URL}/get-data/${tableId}/${businessId}` 
-  // }
-
+  
   const dataObj = JSON.stringify(data)
   console.log("data business", businessId)
   console.log("data table management", tableId)
 
   console.log("formikTable.values.business_id", formikTable.values.business_id)
 
-  const getDataBusinessTable = async () => {
-    try {
-      if(editDataTable) {
-        const dataBusiness = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/business/${editDataTable.business_id}`)
-        const dataTable = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/table-management/${editDataTable.id}`)
-        setDataTemplateQr({
-          logoBusiness: dataBusiness.data.data.image ? `${process.env.REACT_APP_API_URL}/${dataBusiness.data.data.image}` : null,
-          businessName: dataBusiness.data.data.name,
-          outletName: dataTable.data.data.Outlet.name,
-          tableName: dataTable.data.data.name
-        })
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  React.useEffect(() => {
-    getDataBusinessTable()
-    console.log("editDataTable", editDataTable)
-  }, [editDataTable])
-
   const downloadQR = async () => {
-
     const scroll = await topFunction()
     if(scroll) {
       setTimeout(() => {
@@ -132,37 +97,6 @@ const ModalPayment = ({
       }, 1200)
     }
   };
-
-  const downloadTest = async () => {
-    console.log("download")
-    html2canvas(document.getElementById("qrcodeTest"), { logging: true, letterRendering: 1, useCORS: true } ).then(canvas => {
-      console.log("qrcodeTest", canvas)
-      const pngUrl = canvas
-        .toDataURL("image/jpeg", 1.0)
-      console.log("pngUrl", pngUrl)
-      let downloadLink = document.createElement("a");
-      downloadLink.href = pngUrl;
-      downloadLink.download = "qrcode-outlet-beetpos.png";
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-     })
-  };
-
-  // const downloadTest = async () => {
-  //   console.log("download")
-  //   const canvas = await html2canvas(document.getElementById("qrcodeTest"))
-  //   console.log("qrcodeTest", canvas)
-  //   const pngUrl = canvas
-  //     .toDataURL("image/jpeg", 1.0)
-  //   console.log("pngUrl", pngUrl)
-  //   let downloadLink = document.createElement("a");
-  //   downloadLink.href = pngUrl;
-  //   downloadLink.download = "qrcode-outlet-beetpos.png";
-  //   document.body.appendChild(downloadLink);
-  //   downloadLink.click();
-  //   document.body.removeChild(downloadLink);
-  // };
 
   return (
     <Modal show={stateModal} onHide={cancelModal} size="sm">
@@ -256,7 +190,7 @@ const ModalPayment = ({
                 {formikTable.getFieldProps("name").value ? (
                   <div className="d-flex flex-column align-items-center">
                     <QRCode 
-                      onClick={downloadTest}
+                      onClick={downloadQR}
                       id="qrcode"
                       value={dataObj}
                       level={"L"}

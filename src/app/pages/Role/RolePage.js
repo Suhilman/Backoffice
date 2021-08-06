@@ -273,7 +273,6 @@ export const RolePage = () => {
   const getPrivileges = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
-<<<<<<< HEAD
       const userInfo = JSON.parse(localStorage.getItem('user_info'))
       const token = localStorage.getItem('token')
 
@@ -288,9 +287,6 @@ export const RolePage = () => {
       });
       const { data } = await axios.get(`${API_URL}/api/v1/privilege`);
 
-=======
-      const { data } = await axios.get(`${API_URL}/api/v1/privilege`);
->>>>>>> backoffice-development
       const accesses = [...new Set(data.data.map((item) => item.Access.name))];
 
       console.log("accesses", accesses)
@@ -304,7 +300,6 @@ export const RolePage = () => {
           access: item.Access.name
         };
       });
-<<<<<<< HEAD
       const privilegeDataOwner = resSubsPartitionPrivileges.data.data.map((item) => {
         return {
           id: item.Privilege.id,
@@ -314,8 +309,6 @@ export const RolePage = () => {
           allowShow: item.allow
         };
       });
-=======
->>>>>>> backoffice-development
 
       console.log("privilegeData", privilegeData)
       // output => {id: 1, allow: false, name: "Cashier Transaction", access: "Cashier"}
