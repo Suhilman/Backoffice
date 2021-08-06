@@ -108,9 +108,9 @@ export const EditProductPage = ({ match, location }) => {
     status: Yup.string()
       .matches(/(active|inactive)/)
       .required(`${t("pleaseInputAStatus")}`),
-    barcode: Yup.string()
-      .min(3, `${t("minimum3Character ")}`)
-      .max(50, `${t("maximum50Character")}`),
+    // barcode: Yup.string()
+    //   .min(3, `${t("minimum3Character ")}`)
+    //   .max(50, `${t("maximum50Character")}`),
     sku: Yup.string()
       .min(1, `${t("minimum1Character")}`)
       .max(50, `${t("maximum50Character")}`)

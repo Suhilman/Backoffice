@@ -14,6 +14,7 @@ import {
   Select,
   TextField
 } from "@material-ui/core";
+import ModalRecepientEmail from "./modal/ModalRecepientEmail";
 
 import "../style.css";
 import { map } from "lodash-es";
@@ -42,21 +43,23 @@ export const EmailNotifications = () => {
   });
   const [stateComponent, setStateComponent] = React.useState("show");
   const [loading, setLoading] = React.useState(false);
+  const [showModalRecepient, setShowModalRecepient] = React.useState(false)
+
   const { t } = useTranslation();
 
   const handleNotifTransactionRecap = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem("user_info"));
       const {data} = await axios.get(`${API_URL}/api/v1/transaction/find-transaction-recap?businessId=${userInfo.business_id}`)
-      console.log("data apaan", data.data)
+      // console.log("data apaan", data.data)
       data.data.map(async value => {
         const message = {
           title: `Transaction Recap At ${value.Outlet.name}`,
           message: `${value.createdAt.split("T")[0]} - ${value.createdAt.split("T")[1]} \n Recap By ${value.User?.User_Profile.name}` 
         }
-        console.log("ini messagenya", message)
+        // console.log("ini messagenya", message)
         await axios.post(`${API_URL}/api/v1/business-notification`, message)
-        console.log("yey berhasill")
+        // console.log("yey berhasill")
       })
     } catch (error) {
       console.log(error)
@@ -74,29 +77,29 @@ export const EmailNotifications = () => {
       );
       const dateSettings = new Date(settingsNotification.data.data.timeState[2].time)
       const dateNow = new Date()
-      console.log("ini data semua", settingsNotification.data.data)
-      console.log("data.data", data.data)
+      // console.log("ini data semua", settingsNotification.data.data)
+      // console.log("data.data", data.data)
       
       data.data.map(async value => {
         if(value.has_stock) {
           if(value.stock <= settingsNotification.data.data.timeState[2].minimum_stock) {
             if(dateSettings.getHours() - dateNow.getHours() <= 0){
               if(dateSettings.getMinutes() - dateNow.getMinutes() <= 0 && dateSettings.getMinutes() - dateNow.getMinutes() >= -10) {
-                console.log("sudah waktunya kirim notif")
+                // console.log("sudah waktunya kirim notif")
                 if(value.unit_id) {
                   const message = {
                     title: "Stock Alert",
                     message: `${value.name} ${value.stock} ${value.Unit.name}` 
                   }
                   // await axios.post(`${API_URL}/api/v1/business-notification`, message)
-                  console.log("ini data yang akan di push notification", `${value.name} ${value.stock} ${value.Unit.name}`)
+                  // console.log("ini data yang akan di push notification", `${value.name} ${value.stock} ${value.Unit.name}`)
                 } else {
                   const message = {
                     title: "Stock Alert",
                     message: `${value.name} ${value.stock} unit` 
                   }
                   // await axios.post(`${API_URL}/api/v1/business-notification`, message)
-                  console.log("ini data yang akan di push notification", `${value.name} ${value.stock} unit`)
+                  // console.log("ini data yang akan di push notification", `${value.name} ${value.stock} unit`)
                 }
               }
             } else {
@@ -111,19 +114,19 @@ export const EmailNotifications = () => {
       const convertWaktu = new Date(milisecond)
       const convertWaktuSekarang = new Date(milisecondSekarang)
 
-      console.log("ini data semua produk", data.data)
-      console.log("ini seting milisecond", milisecond.getTime());
-      console.log("ini milisecond sekarang", milisecondSekarang.getTime());
-      console.log("convert waktu", convertWaktu.toString())
-      console.log("convert waktu sekarang", convertWaktuSekarang.toString())
+      // console.log("ini data semua produk", data.data)
+      // console.log("ini seting milisecond", milisecond.getTime());
+      // console.log("ini milisecond sekarang", milisecondSekarang.getTime());
+      // console.log("convert waktu", convertWaktu.toString())
+      // console.log("convert waktu sekarang", convertWaktuSekarang.toString())
 
-      console.log("hasilnya jam", dateSettings.getHours() - dateNow.getHours())
-      console.log("hasilnya menit", dateSettings.getMinutes() - dateNow.getMinutes())
+      // console.log("hasilnya jam", dateSettings.getHours() - dateNow.getHours())
+      // console.log("hasilnya menit", dateSettings.getMinutes() - dateNow.getMinutes())
 
-      console.log("ini setting Jam", milisecond.getHours())
-      console.log("ini Jam sekarang", milisecondSekarang.getHours())
-      console.log("ini setting Menit", milisecond.getMinutes())
-      console.log("ini Meint sekarang", milisecondSekarang.getMinutes())
+      // console.log("ini setting Jam", milisecond.getHours())
+      // console.log("ini Jam sekarang", milisecondSekarang.getHours())
+      // console.log("ini setting Menit", milisecond.getMinutes())
+      // console.log("ini Meint sekarang", milisecondSekarang.getMinutes())
 
       setSwitchState({
         cashRecap:
@@ -332,7 +335,7 @@ export const EmailNotifications = () => {
       day: day
     };
 
-    console.log("emailData", emailData)
+    // console.log("emailData", emailData)
 
     try {
       enableLoading();
@@ -375,85 +378,100 @@ export const EmailNotifications = () => {
     }
   };
 
+  const openModalRecepient = () => setShowModalRecepient(true)
+  const closeModalRecepient = () => setShowModalRecepient(false)
+
   return (
-    <Row>
-      <Col md={12}>
-        <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
-          <div className="headerPage">
-            <div className="headerStart">
-              <h3>{t("emailNotification")}</h3>
+    <>
+      <ModalRecepientEmail
+        t={t}
+        cancelModal={closeModalRecepient}
+        stateModal={showModalRecepient}
+        title="Modal Recipient Email"
+        loading={loading}
+      />
+      <Row>
+        <Col md={12}>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <div className="headerPage">
+              <div className="headerStart">
+                <h3>{t("emailNotification")}</h3>
+              </div>
+  
+              <div className="headerEnd">
+                <div className="btn btn-primary mr-2" onClick={openModalRecepient}>
+                  {t("addRecipientEmail")}
+                </div>
+                {stateComponent === "show" ? (
+                  <Button variant="primary" onClick={handleStateComponent}>
+                    {t("edit")}
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      variant="secondary"
+                      onClick={handleStateComponent}
+                      style={{ marginRight: "1rem" }}
+                    >
+                      {t("cancel")}
+                    </Button>
+                    <Button variant="primary" onClick={sendData}>
+                      {loading ? (
+                        <Spinner animation="border" variant="light" size="sm" />
+                      ) : (
+                        `${t("saveChanges")}`
+                      )}
+                    </Button>
+                  </>
+                )}
+              </div>
             </div>
-
-            <div className="headerEnd">
-              {stateComponent === "show" ? (
-                <Button variant="primary" onClick={handleStateComponent}>
-                  {t("edit")}
-                </Button>
-              ) : (
+  
+            {allFields.map((item, index) => {
+              return (
                 <>
-                  <Button
-                    variant="secondary"
-                    onClick={handleStateComponent}
-                    style={{ marginRight: "1rem" }}
-                  >
-                    {t("cancel")}
-                  </Button>
-                  <Button variant="primary" onClick={sendData}>
-                    {loading ? (
-                      <Spinner animation="border" variant="light" size="sm" />
-                    ) : (
-                      `${t("saveChanges")}`
-                    )}
-                  </Button>
+                  <Row key={index} style={{ padding: "1rem" }}>
+                    <Col md={4}>
+                      {item.field} <br /> {item.description}
+                    </Col>
+                    <Col md={3}>
+                      <FormControl component="fieldset">
+                        <FormGroup aria-label="position" row>
+                          <FormControlLabel
+                            value={item.value}
+                            control={
+                              <Switch
+                                color="primary"
+                                checked={item.value}
+                                onChange={handleSwitch}
+                                name={item.name}
+                                disabled={
+                                  stateComponent === "show" ? true : false
+                                }
+                              />
+                            }
+                            label={item.value ? `${t("active")}` : `${t("inactive")}`}
+                            labelPlacement="start"
+                          />
+                        </FormGroup>
+                      </FormControl>
+                    </Col>
+                    <Col md={2}>
+                      {item.low ? item.low : ""}
+                      {item.text2 ? item.text2 : ""}
+                    </Col>
+                    <Col md={3} style={{ marginTop: "-30px" }}>
+                      {item.component ? item.component : ""}
+                      {item.text ? item.text : ""}
+                    </Col>
+                  </Row>
+                  {index === allFields.length - 1 ? "" : <hr />}
                 </>
-              )}
-            </div>
-          </div>
-
-          {allFields.map((item, index) => {
-            return (
-              <>
-                <Row key={index} style={{ padding: "1rem" }}>
-                  <Col md={4}>
-                    {item.field} <br /> {item.description}
-                  </Col>
-                  <Col md={3}>
-                    <FormControl component="fieldset">
-                      <FormGroup aria-label="position" row>
-                        <FormControlLabel
-                          value={item.value}
-                          control={
-                            <Switch
-                              color="primary"
-                              checked={item.value}
-                              onChange={handleSwitch}
-                              name={item.name}
-                              disabled={
-                                stateComponent === "show" ? true : false
-                              }
-                            />
-                          }
-                          label={item.value ? `${t("active")}` : `${t("inactive")}`}
-                          labelPlacement="start"
-                        />
-                      </FormGroup>
-                    </FormControl>
-                  </Col>
-                  <Col md={2}>
-                    {item.low ? item.low : ""}
-                    {item.text2 ? item.text2 : ""}
-                  </Col>
-                  <Col md={3} style={{ marginTop: "-30px" }}>
-                    {item.component ? item.component : ""}
-                    {item.text ? item.text : ""}
-                  </Col>
-                </Row>
-                {index === allFields.length - 1 ? "" : <hr />}
-              </>
-            );
-          })}
-        </Paper>
-      </Col>
-    </Row>
+              );
+            })}
+          </Paper>
+        </Col>
+      </Row>
+    </>
   );
 };

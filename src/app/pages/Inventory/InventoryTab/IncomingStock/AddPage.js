@@ -380,7 +380,7 @@ export const AddIncomingStockPage = ({ location }) => {
                                         className="basic-single"
                                         classNamePrefix="select"
                                         onChange={(value) => {
-                                          console.log("opo neh iki ??", value)
+                                          // console.log("opo neh iki ??", value)
                                           formikStock.setFieldValue(
                                             `items[${index}].product_id`,
                                             value.value

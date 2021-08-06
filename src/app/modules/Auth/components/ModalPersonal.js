@@ -22,7 +22,6 @@ const ModalPersonal = ({
   const getAllBank = async () => {
     try {
       const {data} = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/bank`)
-      console.log("get allbank", data.data.rows)
       setAllBank(data.data.rows)
     } catch (error) {
       console.log("Error get all bank", error)
@@ -49,7 +48,6 @@ const ModalPersonal = ({
       handlePreviewPhoto(file);
     }
   });
-  console.log("show modal personal", showModalPersonal)
 
   const PersonalSchema = Yup.object().shape({
     name_on_ktp: Yup.string()
@@ -80,11 +78,8 @@ const ModalPersonal = ({
     initialValues: personal,
     validationSchema: PersonalSchema,
     onSubmit: async (values) => {
-      console.log("Bismillah")
-      console.log("formikPersonal values", values)
       const API_URL = process.env.REACT_APP_API_URL;
       const userInfo = JSON.parse(localStorage.getItem("user_info"));
-      console.log('ini valie ap aaja', values)
       const data = {
         ktp_owner: values.ktp_number,
         birth_date: values.birth_date,
@@ -116,7 +111,6 @@ const ModalPersonal = ({
           }
         );
         disableLoading();
-        console.log("imageKtp", imageKtp)
         // redirectToDashboard()
       } catch (err) {
         console.log("error apa", err)
@@ -136,13 +130,12 @@ const ModalPersonal = ({
       const reader = new FileReader();
       reader.onload = () => {
         if(reader.readyState === 2){
-          console.log("reader.result", reader.result)
+          // console.log("reader.result", reader.result)
           setPhotoPreview(reader.result);
         }
       }
       reader.readAsDataURL(file[0])
       img = file[0];
-      console.log("img", img)
       const formData = new FormData()
       formData.append("ktp_picture", img);
       const {data} = await axios.patch(`${API_URL}/api/v1/business/ocr-ktp/${userInfo.business_id}`, formData,
@@ -152,7 +145,6 @@ const ModalPersonal = ({
           }
         }
       )
-      console.log("data qr nya", data.data)
       if (data.data[0].length > 15) {
         formikPersonal.setFieldValue("ktp_number", data.data[0]);
       }
@@ -178,7 +170,6 @@ const ModalPersonal = ({
 
   const handleBankName = (e, formik) => {
     const bank_name = e.target.value;
-    console.log("bank_name ", bank_name)
     formik.setFieldValue("bank_name", bank_name);
   };
 

@@ -113,7 +113,6 @@ export default function BasePage() {
     handleCurrPrivileges()
   }, []);
 
-  console.log("currPrivileges", currPrivileges)
 
   return (
     <Suspense fallback={<LayoutSplashScreen />}>

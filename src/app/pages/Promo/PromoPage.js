@@ -83,7 +83,7 @@ export const PromoPage = () => {
         if (item.name === "Promo Khusus") {
           item.name = "Special Promo"
         }
-        console.log("ini item apa", item)
+        // console.log("ini item apa", item)
         const link = item.name
           .split(" ")
           .map((val) => val.replace(/[^A-Za-z0-9]/, "-"))

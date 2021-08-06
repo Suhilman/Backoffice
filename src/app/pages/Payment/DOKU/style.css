@@ -14,13 +14,13 @@
   flex-direction: column;
   margin-bottom: 20px;
 }
-input{
+input.doku{
   width: 100%;
   padding: 6px;
   border-radius: 3px;
   border: 1px solid rgb(192, 191, 191);
 }
-input:focus{
+input.doku:focus{
   outline: none;
   border: 1px solid #623863;
   box-shadow: 0 0 5px 0.2px  #623863;

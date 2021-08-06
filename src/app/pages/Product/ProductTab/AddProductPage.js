@@ -110,9 +110,9 @@ export const AddProductPage = ({ location }) => {
       .integer()
       .min(1, `${t("minimum1Character")}`),
     supplier: Yup.string(),
-    barcode: Yup.string()
-      .min(3, `${t("minimum3Character")}`)
-      .max(50, `${t("maximum50Character")}`),
+    // barcode: Yup.string()
+    //   .min(3, `${t("minimum3Character")}`)
+    //   .max(50, `${t("maximum50Character")}`),
     sku: Yup.string()
       .min(1, `${t("minimum1Character")}`)
       .max(50, `${t("maximum50Character")}`)

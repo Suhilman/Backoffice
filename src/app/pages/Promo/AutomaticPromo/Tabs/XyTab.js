@@ -49,6 +49,11 @@ const XyTab = ({
     return { value: item.id, label: item ? item.name: "-" };
   });
 
+  
+  console.log("formikPromo name", formikPromo.values.name)
+  console.log("formikPromo productToBuy", formikPromo.values.productToBuy)
+  console.log("formikPromo xy_apply_multiply", formikPromo.values.xy_apply_multiply)
+
   return (
     <Row>
       <Col>

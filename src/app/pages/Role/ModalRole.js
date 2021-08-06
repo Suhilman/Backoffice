@@ -56,7 +56,7 @@ const ModalRole = ({
           <Form.Group>
             <Form.Label>{t("privilege")}:</Form.Label>
             {
-              console.log("ini previlagenya", formikRole.getFieldProps("privileges").value)
+              // console.log("ini previlagenya", formikRole.getFieldProps("privileges").value)
             }
             <Row>
               {formikRole.getFieldProps("privileges").value.length
@@ -74,7 +74,7 @@ const ModalRole = ({
                               {formikRole
                                 .getFieldProps("privileges")
                                 .value.map((privilege, index) => {
-                                  console.log("privilege privilege privilege", privilege)
+                                  // console.log("privilege privilege privilege", privilege)
                                   if (access === privilege.access) {
                                     return (
                                       <Row

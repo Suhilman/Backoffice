@@ -32,8 +32,8 @@ const CheckStatusDoku = () => {
       PURHCASECURRENCY: document.MerchatPaymentPage.PURHCASECURRENCY.value,
       PAYMENTTYPE: document.MerchatPaymentPage.PAYMENTTYPE.value,
     }
-    console.log("data sebelum dikirim", data)
-    console.log("Bismillah")
+    // console.log("data sebelum dikirim", data)
+    // console.log("Bismillah")
 
     try {
       const option = {

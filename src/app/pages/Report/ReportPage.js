@@ -203,7 +203,7 @@ export const ReportPage = () => {
   const handleSelectTab = (e) => {
     const { value } = e.target;
     setTabs(value);
-    console.log('ini apa hyo', value)
+    // console.log('ini apa hyo', value)
     setSelectedOutlet({
       id: "",
       name: "All Outlet"
@@ -271,7 +271,7 @@ export const ReportPage = () => {
     setTime(`${time_start} - ${end_time}`);
     setShowTimePicker(false);
   };
-  console.log("baksoow", allOutlets)
+  // console.log("baksoow", allOutlets)
   return (
     <>
       <CustomDateRange

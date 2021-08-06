@@ -65,6 +65,13 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
 
   const handleSearch = (e) => setSearch(e.target.value);
 
+  const topFunction = async () => {
+    const scrollToTopBtn = document.getElementById("kt_scrolltop");
+    if (scrollToTopBtn) {
+      scrollToTopBtn.click();
+    }
+  };
+
   const initialValueTable = {
     id: "",
     business_id: "",
@@ -182,7 +189,11 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
   };
 
   const showEditModalTable = (data) => {
+<<<<<<< HEAD
     console.log("data yang mau diedit", data)
+=======
+    topFunction();
+>>>>>>> backoffice-development
     setEditDataTable(data)
     formikTableEdit.setValues({
       id: data.id,

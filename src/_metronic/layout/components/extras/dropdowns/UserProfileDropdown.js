@@ -53,30 +53,25 @@ export function UserProfileDropdown() {
           if(value.stock <= settingsNotification.data.data.timeState[2].minimum_stock) {
             if(dateSettings.getHours() - dateNow.getHours() <= 0){
               if(dateSettings.getMinutes() - dateNow.getMinutes() <= 0 && dateSettings.getMinutes() - dateNow.getMinutes() >= -10) {
-                console.log("sudah waktunya kirim notif")
                 if(value.unit_id) {
                   const message = {
                     title: "Stock Alert",
                     message: `${value.name} ${value.stock} ${value.Unit.name}` 
                   }
                   // await axios.post(`${API_URL}/api/v1/business-notification`, message)
-                  console.log("ini data yang akan di push notification", `${value.name} ${value.stock} ${value.Unit.name}`)
                 } else {
                   const message = {
                     title: "Stock Alert",
                     message: `${value.name} ${value.stock} unit` 
                   }
                   // await axios.post(`${API_URL}/api/v1/business-notification`, message)
-                  console.log("ini data yang akan di push notification", `${value.name} ${value.stock} unit`)
                 }
               }
             } else {
-              console.log("belum waktunya kirim notif")
             }
           }
         }
       })
-      console.log("settingsNotification.data.data", settingsNotification.data.data)
       return settingsNotification.data.data
     } catch (error) {
       console.log(error)
@@ -86,14 +81,12 @@ export function UserProfileDropdown() {
     try {
       await getEmailNotifications()
       const userInfo = JSON.parse(localStorage.getItem("user_info"));
-      console.log("userInfo", userInfo)
       const resultReport = await axios.get(`${API_URL}/api/v1/transaction/find-transaction-recap?businessId=${userInfo.business_id}`)
       setDateReport(resultReport.data.data)
       const result = await axios.get(`${API_URL}/api/v1/business-notification`)
       const stockAlert = []
       const transactionRecap = []
       result.data.data.map(value => {
-        console.log("result.data.data", value)
         if(value.title === "Stock Alert") {
           stockAlert.push(value)
         }
@@ -101,9 +94,6 @@ export function UserProfileDropdown() {
           transactionRecap.push(value)
         }
       })
-      console.log("resultReport", resultReport.data.data)
-      console.log("stockAlert", stockAlert)
-      console.log("transactionRecap", transactionRecap)
       setNotifStockAlert(stockAlert)
       setNotifRecapTransaction(transactionRecap)
       logicDate(resultReport.data.data)
@@ -122,17 +112,12 @@ export function UserProfileDropdown() {
       let dateWeekly = null
       if(now.getMonth() - dateRecap.getMonth() == 0) {
         if(dateRecap.getDay() === result.day) {
-          console.log("wew")
           dateWeekly = now.getDate() - 7
         }
-        console.log("dateRecap diluar kondisi", dateRecap.getDate())
         if(dateRecap.getDate() >= dateWeekly) {
-          console.log("value", value)
+          // console.log("value", value)
         }
         if(dateRecap.getDate() >= dateWeekly && dateRecap.getDate() <= now.getDate()) {
-          console.log("dateRecap didalam kondisi", dateRecap.getDate())
-          console.log("now.getDate()", now.getDate())
-          console.log("dateWeekly", dateWeekly)
           esBuah.push(value)
         }
         // if(now.getDate() - dateRecap.getDate() <= 7) {
@@ -151,22 +136,14 @@ export function UserProfileDropdown() {
           }
         }
       } else if (now.getMonth() - dateRecap.getMonth() == 1) {
-        console.log("jika tidak sama bulannya")
         if(now.getDate() + dateRecap.getDate() - 30 <= 7) {
-          console.log("jika tidak sama bulannya dan kurang dari 8 hari")
           esBuah.push(value)
         }
       }
     })
-    console.log("esAlpukat", esAlpukat)
-    console.log("esBuah", esBuah)
     setFilterWeeklyReport(esBuah)
     setFilterDailyReport(esAlpukat)
   }
-
-  console.log("filterDailyReport", filterDailyReport)
-  console.log("filterWeeklyReport", filterWeeklyReport)
-  console.log("notifRecapTransaction", notifRecapTransaction)
   const chooseLanguages = [
     {
       no: 1,
@@ -196,7 +173,7 @@ export function UserProfileDropdown() {
     if (idStock) {
       idStock.map(async (value) => {
         const result = await axios.delete(`${API_URL}/api/v1/business-notification/${value}`)
-        console.log("thenNotification", result.data.data)
+        // console.log("thenNotification", result.data.data)
         setNotifStockAlert(result.data.data)
       })
     } 
@@ -204,9 +181,7 @@ export function UserProfileDropdown() {
 
   const handleDeleteRecap = async(id) => {
     try {
-      console.log("ini id yang mau dihapus", id)
       const result = await axios.delete(`${API_URL}/api/v1/business-notification/${id}`)
-      console.log("setNotifRecapTransaction", result.data.data)
       handleGetNotification()
     } catch (error) {
       console.log(error)
@@ -310,7 +285,7 @@ export function UserProfileDropdown() {
               null
             }
           </div>
-          {notifRecapTransaction.length > 0 && emailNotification.emailNotification.rekap_kas ? (
+          {notifRecapTransaction.length > 0 && emailNotification.emailNotification?.rekap_kas ? (
             <>
               <div>
                 <hr/>

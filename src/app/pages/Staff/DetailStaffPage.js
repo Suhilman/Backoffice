@@ -218,7 +218,7 @@ export const DetailStaffPage = ({ match, location }) => {
   const handleImage = (e) => {
     let preview;
     let img;
-    console.log('File Gambar', e.target.files[0])
+    // console.log('File Gambar', e.target.files[0])
     if (e.target.files && e.target.files[0]) {
       const reader = new FileReader();
       reader.onload = () =>{

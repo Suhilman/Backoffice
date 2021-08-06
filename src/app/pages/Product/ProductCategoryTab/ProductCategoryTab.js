@@ -49,6 +49,7 @@ const ProductCategoryTab = ({ refresh, handleRefresh}) => {
   const [showConfirm, setShowConfirm] = React.useState(false);
   const [showAddCategory, setShowAddCategory] = React.useState(false);
   const [showEditCategory, setShowEditCategory] = React.useState(false);
+  const [hiddenCategory, setHiddenCategory] = React.useState("Inactive")
 
   const debouncedSearch = useDebounce(search, 1000);
 
@@ -56,8 +57,13 @@ const ProductCategoryTab = ({ refresh, handleRefresh}) => {
 
   const initialCategory = {
     id: "",
-    name: ""
+    name: "",
+    hidden: "Inactive"
   };
+
+  const handleHiddenCategory = (status) => {
+    setHiddenCategory(status)
+  }
 
   const CategorySchema = Yup.object().shape({
     name: Yup.string()
@@ -70,8 +76,12 @@ const ProductCategoryTab = ({ refresh, handleRefresh}) => {
     initialValues: initialCategory,
     validationSchema: CategorySchema,
     onSubmit: async (values) => {
+      console.log("data ditambahkan", values)
       const API_URL = process.env.REACT_APP_API_URL;
       try {
+        if(values.hidden === "Active") values.hidden = true
+        if(values.hidden === "Inactive") values.hidden = false
+        console.log("data yang ditambah", values )
         setAlert("");
         enableLoading();
         await axios.post(`${API_URL}/api/v1/product-category`, values);
@@ -95,6 +105,9 @@ const ProductCategoryTab = ({ refresh, handleRefresh}) => {
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
       try {
+        if(values.hidden === "Active") values.hidden = true
+        if(values.hidden === "Inactive") values.hidden = false
+        console.log("data yang diupdate", values )
         setAlert("");
         enableLoading();
         await axios.put(
@@ -130,14 +143,18 @@ const ProductCategoryTab = ({ refresh, handleRefresh}) => {
   };
 
   const showEditCategoryModal = (data) => {
+    console.log("data edit", data)
     setAlertModal("");
     formikEditCategory.setFieldValue("id", data.id);
     formikEditCategory.setFieldValue("name", data.name);
+    if(data.hidden) setHiddenCategory("Active")
+    if(!data.hidden) setHiddenCategory("Inactive")
     setShowEditCategory(true);
     setTimeout(() => {
       if (inputRef.current) inputRef.current.focus();
     }, 100);
   };
+
   const closeEditCategoryModal = () => setShowEditCategory(false);
 
   const showConfirmModal = (data) => {
@@ -283,7 +300,8 @@ const ProductCategoryTab = ({ refresh, handleRefresh}) => {
         id: item.id,
         no: index + 1,
         name: item.name,
-        products: item.Products.length
+        products: item.Products.length,
+        hidden: item.hidden
       };
     });
   };
@@ -369,6 +387,8 @@ const ProductCategoryTab = ({ refresh, handleRefresh}) => {
 
       <ProductCategoryModal
         t={t}
+        hiddenCategory={hiddenCategory}
+        handleHiddenCategory={handleHiddenCategory}
         state={showAddCategory}
         closeModal={closeAddCategoryModal}
         loading={loading}
@@ -380,6 +400,8 @@ const ProductCategoryTab = ({ refresh, handleRefresh}) => {
 
       <ProductCategoryModal
         t={t}
+        hiddenCategory={hiddenCategory}
+        handleHiddenCategory={handleHiddenCategory}
         state={showEditCategory}
         closeModal={closeEditCategoryModal}
         loading={loading}

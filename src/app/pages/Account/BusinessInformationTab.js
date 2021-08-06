@@ -55,43 +55,43 @@ export const BusinessInformation = () => {
   });
   const { t } = useTranslation();
   const BusinessSchema = Yup.object().shape({
-    name: Yup.string()
-      .min(3, `${t("minimum3Character")}`)
-      .max(50, `${t("maximum50Character")}`)
-      .required("Please input a business name."),
-    name_on_ktp: Yup.string()
-      .min(3, `${t("minimum3Character")}`)
-      .max(50, `${t("maximum50Character")}`)
-      .required("Please input a name on ktp."),
-    business_address: Yup.string()
-      .min(3, `${t("minimum3Character")}`)
-      .max(50, `${t("maximum50Character")}`)
-      .required("Please input a business address."),
-    business_phone_number: Yup.number()
-      .typeError("Please input a number only")
-      .required("Please input a business phone_number"),
-    ktp_number: Yup.number()
-      .typeError("Please input a number only")
-      .test("ktp_number", "Must exactly 16 digits", (val) =>
-        val ? val.toString().length === 16 : ""
-      )
-      .required("Please input a ktp_number"),
-    npwp_number: Yup.number()
-      .typeError("Please input a number only")
-      .test("npwp_number", "Must exactly 15 digits", (val) =>
-        val ? val.toString().length === 15 : ""
-      )
-      .required("Please input a npwp_number"),
-    business_type_id: Yup.number()
-      .integer()
-      .min(1)
-      .required("Please input a business category"),
-    location_id: Yup.number()
-      .integer()
-      .min(1)
-      .required("Please input a business location"),
-    currency_id: Yup.string()
-      .required("Please choose currency")
+    // name: Yup.string()
+    //   .min(3, `${t("minimum3Character")}`)
+    //   .max(50, `${t("maximum50Character")}`)
+    //   .required("Please input a business name."),
+    // name_on_ktp: Yup.string()
+    //   .min(3, `${t("minimum3Character")}`)
+    //   .max(50, `${t("maximum50Character")}`)
+    //   .required("Please input a name on ktp."),
+    // business_address: Yup.string()
+    //   .min(3, `${t("minimum3Character")}`)
+    //   .max(50, `${t("maximum50Character")}`)
+    //   .required("Please input a business address."),
+    // business_phone_number: Yup.number()
+    //   .typeError("Please input a number only")
+    //   .required("Please input a business phone_number"),
+    // ktp_number: Yup.number()
+    //   .typeError("Please input a number only")
+    //   .test("ktp_number", "Must exactly 16 digits", (val) =>
+    //     val ? val.toString().length === 16 : ""
+    //   )
+    //   .required("Please input a ktp_number"),
+    // npwp_number: Yup.number()
+    //   .typeError("Please input a number only")
+    //   .test("npwp_number", "Must exactly 15 digits", (val) =>
+    //     val ? val.toString().length === 15 : ""
+    //   )
+    //   .required("Please input a npwp_number"),
+    // business_type_id: Yup.number()
+    //   .integer()
+    //   .min(1)
+    //   .required("Please input a business category"),
+    // location_id: Yup.number()
+    //   .integer()
+    //   .min(1)
+    //   .required("Please input a business location"),
+    // currency_id: Yup.string()
+    //   .required("Please choose currency")
   });
   // const handleSelectTab = async (prefix, noCurrency) => {
   //   try {
@@ -132,11 +132,11 @@ export const BusinessInformation = () => {
     initialValues: business,
     validationSchema: BusinessSchema,
     onSubmit: async (values) => {
-      console.log("Bismillah")
-      console.log("formikBusiness values", values)
+      // console.log("Bismillah")
+      // console.log("formikBusiness values", values)
       const API_URL = process.env.REACT_APP_API_URL;
       const userInfo = JSON.parse(localStorage.getItem("user_info"));
-      console.log('ini valie ap aaja', values)
+      // console.log('ini valie ap aaja', values)
       const options = {
         maxSizeMB: 0.5,
         maxWidthOrHeight: 1920,
@@ -159,12 +159,12 @@ export const BusinessInformation = () => {
       if (imageNpwp.name) {
         formData.append("npwp_picture", imageNpwp)
       }
-      console.log("businessImage", businessImage)
+      // console.log("businessImage", businessImage)
       if (businessImage.name) {
         formData.append("image", businessImage);
       }
       try {
-        console.log('ini append', formData)
+        // console.log('ini append', formData)
         enableLoading();
         await axios.put(
           `${API_URL}/api/v1/business/update-development/${userInfo.business_id}`,
@@ -172,9 +172,9 @@ export const BusinessInformation = () => {
         );
         handleRefresh();
         disableLoading();
-        console.log("imageKtp", imageKtp)
-        console.log("imageNpwp", imageNpwp)
-        console.log("businessImage", businessImage)
+        // console.log("imageKtp", imageKtp)
+        // console.log("imageNpwp", imageNpwp)
+        // console.log("businessImage", businessImage)
         if (stateImage) {
         } else {
           setStateComponent("show");
@@ -212,7 +212,7 @@ export const BusinessInformation = () => {
         `${API_URL}/api/v1/business/${userInfo.business_id}`
       );
 
-      console.log("getBusinessInfo", data.data)
+      // console.log("getBusinessInfo", data.data)
 
       setBusiness({
         name: data.data.name,
@@ -401,13 +401,13 @@ export const BusinessInformation = () => {
       const reader = new FileReader();
       reader.onload = () =>{
         if(reader.readyState === 2){
-          console.log("reader.result", reader.result)
+          // console.log("reader.result", reader.result)
             setPreviewKtp(reader.result);
         }
       }
       reader.readAsDataURL(e.target.files[0])
       img = e.target.files[0];
-      console.log("img", img)
+      // console.log("img", img)
       setImageKtp(img)
       formikBusiness.submitForm()
     } else {
@@ -423,13 +423,13 @@ export const BusinessInformation = () => {
       const reader = new FileReader();
       reader.onload = () =>{
         if(reader.readyState === 2){
-          console.log("reader.result", reader.result)
+          // console.log("reader.result", reader.result)
           setPreviewNpwp(reader.result);
         }
       }
       reader.readAsDataURL(e.target.files[0])
       img = e.target.files[0];
-      console.log("img", img)
+      // console.log("img", img)
       setImageNpwp(img)
       formikBusiness.submitForm()
     } else {
@@ -445,13 +445,13 @@ export const BusinessInformation = () => {
       const reader = new FileReader();
       reader.onload = () =>{
         if(reader.readyState === 2){
-          console.log("reader.result", reader.result)
+          // console.log("reader.result", reader.result)
             setPreviewBusinessImage(reader.result);
         }
       }
       reader.readAsDataURL(e.target.files[0])
       img = e.target.files[0];
-      console.log("img", img)
+      // console.log("img", img)
       setBusinessImage(img)
       formikBusiness.submitForm()
     } else {

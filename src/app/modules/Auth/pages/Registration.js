@@ -133,7 +133,7 @@ function Registration(props) {
   const [statusEmail, setStatusEmail] = useState(false)
   const [messageNotSent, setMessageNotSent] = React.useState(false)
   const [showModalPersonal, setShowModalPersonal] = React.useState(false)
-  const [methodSendOTP, setMethodSendOTP] = React.useState("")
+  const [methodSendOTP, setMethodSendOTP] = React.useState("whatsapp")
 
   const [code, setCode] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
@@ -184,10 +184,6 @@ function Registration(props) {
         });
 
         const outlet_id = data.data[0].id;
-
-        console.log('ini data outlet', data)
-        console.log('ini data outlet_id', outlet_id)
-
         const businessData = {
           business_type_id: values.business_type_id,
           location_id: values.business_location_id
@@ -228,18 +224,7 @@ function Registration(props) {
         });
         verifyAccount();
         // disableLoading();
-        console.log("Setelah verify code")
-        toast.success('Register Success, Please Login', {
-          position: "top-right",
-          autoClose: 8000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        history.push("/auth/login")
-        // props.register(token.split(" ")[1]);
+        props.register(token.split(" ")[1]);
         // setShowModalPersonal(true)
       } catch (err) {
         setAlertModal(err.response.data.message);
@@ -268,10 +253,6 @@ function Registration(props) {
         });
 
         const outlet_id = data.data[0].id;
-
-        console.log('ini data outlet', data)
-        console.log('ini data outlet_id', outlet_id)
-
         const businessData = {
           business_type_id: values.business_type_id,
           location_id: values.business_location_id
@@ -376,7 +357,6 @@ function Registration(props) {
     closeOTPModal()
     console.log("dataSentOTP", dataSentOTP)
     if(param === 'whatsapp') {
-      console.log("jika methodnya whatsapp")
       setSecond(15);
       await handleSendWhatsapp(dataSentOTP.phoneNumber, dataSentOTP.verifyCode)
       openVerifyModal();
@@ -386,21 +366,18 @@ function Registration(props) {
     }
     if (param === 'gmail') {
       setSentEmail(formik.values.email)
-      console.log("jika methodnya gmail")
       await handleSendEmail(formik.values.email, dataSentOTP.verifyCode)
       openVerifyModal();
       setTimeout(() => {
         setMessageNotSent(true)
       }, 50000);
     }
-    console.log("param", param)
   }
 
   const formik = useFormik({
     initialValues,
     validationSchema: RegistrationSchema,
     onSubmit: (values, { setStatus, setSubmitting }) => {
-      console.log('hellow')
       enableLoading();
       setPhonenumber(values.phone_number.toString());
       setDataFormik(values)
@@ -416,9 +393,6 @@ function Registration(props) {
           setToken(`Bearer ${accessToken}`);
           setVerificationCode(owner.verification_code);
 
-          console.log("Data setelah berhasil registrasi", data.data)
-          console.log("ownernye", owner)
-
           // Handle Check Country || jika diluar indonesia, ketika membuat outlet bisa select addres. Jika luar indonesia select diubah menjadi text
 
           const options = {
@@ -430,14 +404,14 @@ function Registration(props) {
           const success = async (pos) =>  {
             try {
               const crd = pos.coords;
-              console.log('Your current position is:');
-              console.log(`Latitude : ${crd.latitude}`);
-              console.log(`Longitude: ${crd.longitude}`);
-              console.log(`More or less ${crd.accuracy} meters.`);
+              // console.log('Your current position is:');
+              // console.log(`Latitude : ${crd.latitude}`);
+              // console.log(`Longitude: ${crd.longitude}`);
+              // console.log(`More or less ${crd.accuracy} meters.`);
               const result = await axios.get(`${API_URL}/api/v1/outlet/get-address?latitude=${parseFloat(crd.latitude)}&longitude=${parseFloat(crd.longitude)}`)
               console.log("country address", result.data.resultAddress.address)
               const checkCountry = result.data.resultAddress.address.includes("Indonesia");
-              console.log("true kah", checkCountry)
+              // console.log("true kah", checkCountry)
               if(checkCountry) {
                 localStorage.setItem("checkCountry", true);
               } else {
@@ -461,27 +435,20 @@ function Registration(props) {
           
           if (!owner.is_verified) {
             // pilih sent otp via gmail atau whatsapp
-            setDataSentOTP(
-              {
-                phoneNumber: values.phone_number.toString(),
-                verifyCode: owner.verification_code
-              }
-            )
-            openOTPModal()
 
-            // setSubmitting(false);
-            // setSecond(15);
-            // await handleSendWhatsapp(values.phone_number.toString(), owner.verification_code, accessToken)
-            // openVerifyModal();
-            // setTimeout(() => {
-            //   setMessageNotSent(true)
-            // }, 50000);
+            setSubmitting(false);
+            setSecond(15);
+            await handleSendWhatsapp(values.phone_number.toString(), owner.verification_code, accessToken)
+            openVerifyModal();
+            setTimeout(() => {
+              setMessageNotSent(true)
+            }, 50000);
           } else {
             props.login(token);
           }
         })
         .catch((err) => {
-          console.log('ini error formik', err)
+          // console.log('ini error formik', err)
           setSubmitting(false);
           console.log("err.response", err.response)
           // setStatus(err.response.data.message);

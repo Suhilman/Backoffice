@@ -164,7 +164,7 @@ const CommissionReport = () => {
   })
 
   const ExpandableComponent = ({ data }) => {
-    console.log("data apa", data)
+    // console.log("data apa", data)
     return (
       <>
         <ListGroup style={{ padding: "1rem", marginLeft: "1rem" }}>

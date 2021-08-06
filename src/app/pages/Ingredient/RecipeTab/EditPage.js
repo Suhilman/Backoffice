@@ -106,11 +106,19 @@ export const EditRecipePage = ({ location, match }) => {
     initialValues: initialValueRecipe,
     validationSchema: RecipeSchema,
     onSubmit: async (values) => {
+<<<<<<< HEAD
       const resultCalorie = handleTotalCalorie()
       const recipeData = {
         outlet_id: values.outlet_id,
         product_id: values.product_id,
         total_calorie: resultCalorie,
+=======
+      const totalCalorie = handleTotalCalorie()
+      const recipeData = {
+        outlet_id: values.outlet_id,
+        product_id: values.product_id,
+        total_calorie: totalCalorie,
+>>>>>>> backoffice-development
         total_cogs: values.total_ingredient_price,
         total_ingredient_price: values.total_ingredient_price,
         notes: values.notes || "",
@@ -131,11 +139,19 @@ export const EditRecipePage = ({ location, match }) => {
   });
 
   const handleTotalCalorie = () => {
+<<<<<<< HEAD
     const resultCalorie = formikRecipe.values.materials.reduce(
       (init, curr) => (init += curr.calorie_per_unit),
       0
     )
     return resultCalorie
+=======
+    const result = formikRecipe.values.materials.reduce(
+      (init, curr) => (init += curr.calorie_per_unit),
+      0
+    )
+    return result
+>>>>>>> backoffice-development
   }
 
   const validationRecipe = (fieldname) => {

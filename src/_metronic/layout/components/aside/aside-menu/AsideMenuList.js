@@ -98,7 +98,6 @@ function AsideMenuList(props) {
   };
 
   const findPrivilege = (name) => {
-    console.log("currPrivileges", currPrivileges)
     if (currPrivileges.length) {
       const find = currPrivileges.find(
         (item) => item.name === name && item.access === "Backend"
@@ -118,8 +117,6 @@ function AsideMenuList(props) {
     const ds = [...dashboardSections];
     const checkDashboard = findPrivilege("view_dashboard");
     const checkReport = findPrivilege("view_report");
-    console.log("checkDashboard", checkDashboard)
-    console.log("checkDashboard", checkDashboard)
 
     if (checkDashboard) ds.push("view_dashboard");
     if (checkReport) ds.push("view_report");
@@ -129,7 +126,6 @@ function AsideMenuList(props) {
       ds.push("view_report");
     }
 
-    console.log("ds", ds)
     setDashboardSections(ds);
 
     // product sections
@@ -153,7 +149,6 @@ function AsideMenuList(props) {
 
     // management sections
     const ms = [...managementSections];
-    console.log("findPrivilege", findPrivilege("outlet_management"))
     const checkOutlet = findPrivilege("outlet_management");
     const checkPromo = findPrivilege("promo_management");
     const checkStaff = findPrivilege("staff_management");
@@ -177,7 +172,6 @@ function AsideMenuList(props) {
       ms.push("commission_management");
     }
 
-    console.log("ms apa aja yaaa", ms)
     setManagementSections(ms);
   };
 

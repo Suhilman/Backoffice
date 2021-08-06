@@ -24,52 +24,36 @@ const NotificationExpired = () => {
       const year = dt.getFullYear()
 
       const daysInMonth = new Date(year, month, 0).getDate()
-      console.log(`satu bulan ada ${daysInMonth} hari`)
-      console.log("dataSubscription", dataSubscription.data.data)
       const userInfo = JSON.parse(localStorage.getItem("user_info"))
       const subscription = dataSubscription.data.data.find(item => {
         return item.business_id === userInfo.business_id
       })
       if (subscription) {
-        console.log("data subscription", subscription)
         const getDateExpired = subscription.expired_date
         const expired_tolerance = subscription.Subscription_Type.expired_tolerance
         const dateNow = new Date()
         const dateExpired = new Date(getDateExpired)
-        console.log("ini bulan expirednya", dateExpired.getMonth())
-        console.log("ini bulan sekarang", dateNow.getMonth())
-        console.log("ini hasilnya", dateExpired.getMonth() - dateNow.getMonth())
         let countDate;
         if (dateExpired.getFullYear() - dateNow.getFullYear() > 0) {
           const resultMonth = 12 - dateNow.getMonth()
           const resultMonth2 = dateExpired.getMonth() + resultMonth
           const expired = Math.floor(resultMonth2 * daysInMonth +  dateExpired.getDate())
           setCountExpired(expired)
-          console.log("ini tahuun | ada berapa hari", expired)
         }
-        console.log("Bulan dimulai dari 0 (Januari), 1 (Februari) . . . .")
         if (dateExpired.getFullYear() - dateNow.getFullYear() < 1) {
           if (dateExpired.getMonth() - dateNow.getMonth() <= 0) {
             countDate = dateExpired.getDate() - dateNow.getDate()
             setCountExpired(countDate)
-            console.log("Masukk 2")
-            console.log("ini hari | ada berapa hari", countDate)
             if (countDate < 1) {
               history.push('/logout');
               Swal.fire(`Masa uji coba sudah habis`, "", "warning")
             }
           } else if (dateExpired.getMonth() - dateNow.getMonth() === 1) {
             const expired = daysInMonth - dateNow.getDate() + dateExpired.getDate()
-            console.log("dateNow", dateNow.getDate())
-            console.log("dateExpired", dateExpired.getDate())
             setCountExpired(expired)
           } else {
             const resultMonth = dateExpired.getMonth() - dateNow.getMonth()
-            console.log("dateExpired.getMonth()", dateExpired.getMonth())
-            console.log("resultMonth", resultMonth)
-            console.log("ini ketika kurang dari 1 tahun dan lebih dari 1 bulan", resultMonth )
             const expired = Math.floor(resultMonth * daysInMonth + dateExpired.getDate())
-            console.log("ini bulan | ada berapa hari", expired)
             setCountExpired(expired)
           }
         }
@@ -102,9 +86,6 @@ const NotificationExpired = () => {
       {countExpired <= 14 && typeof countExpired === "number" ? (
         <div className="wrapper-notification d-flex justify-content-between">
           <p>{t("yourBeetPOSTrialWillEndIn")}<span className="text-danger mx-2">{countExpired}</span>{t("day(s)")}</p>
-          <div className="badge badge-info" onClick={openPersonalModal} style={{cursor: 'pointer'}}>
-            Upgrade
-          </div>
         </div>
       ) : (<div></div>) }
       <ModalPersonal

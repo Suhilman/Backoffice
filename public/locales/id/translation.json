@@ -785,7 +785,14 @@
     "exportCommissionReport": "Ekspor Laporan Komisi",
     "pickLocation": "Pilih Lokasi",
     "nameOnKtp": "Nama di KTP",
+<<<<<<< HEAD
     "markupPrice": "Harga Markup",
     "maxQuantity": "Jumlah Maksimal",
     "maxRange": "Jangkauan Maksimum"
+=======
+    "hiddenCategory": "Sembunyikan Kategori",
+    "addRecipientEmail": "Tambah Penerima Email",
+    "addNewEmail": "Tambah Email Baru",
+    "emailRecipientList": "Email Recipient List"
+>>>>>>> backoffice-development
   }

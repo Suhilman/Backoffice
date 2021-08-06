@@ -62,8 +62,6 @@ const ModalVerify = ({
     changeEmail(email)
   }
   
-  console.log("sentEmail", sentEmail)
-
   return (
     <Modal show={showVerifyModal} onHide={hanldeHide}>
       <Modal.Header closeButton>

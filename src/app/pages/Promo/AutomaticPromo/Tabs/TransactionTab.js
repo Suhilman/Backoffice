@@ -32,6 +32,11 @@ const TransactionTab = ({
   mode,
   t
 }) => {
+  
+  console.log("formikPromo name", formikPromo.values.name)
+  console.log("formikPromo transaction_amount", formikPromo.values.transaction_amount)
+  console.log("formikPromo transaction_type", formikPromo.values.transaction_type)
+
   return (
     <Row>
       <Col>

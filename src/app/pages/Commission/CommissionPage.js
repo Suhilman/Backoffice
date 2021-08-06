@@ -53,7 +53,7 @@ const CommissionPage = () => {
     handleCurrency()
   }, [])
 
-  console.log("filter opo iki bro?", filter)
+  // console.log("filter opo iki bro?", filter)
 
   const showConfirmModal = (data) => {
     setCommission({ id: data.id, name: data.groupName });
@@ -280,7 +280,7 @@ const CommissionPage = () => {
     return { value: item.id, label: item.name };
   });
 
-  console.log("Muantuelll", optionsOutlet)
+  // console.log("Muantuelll", optionsOutlet)
 
   React.useEffect(() => {
     getOutlets()
