@@ -25,6 +25,7 @@ const ModalPayment = ({
   t,
   editDataTable
 }) => {
+
   const [imageUrl, setImageUrl] = useState({})
   const businessId = formikTable.getFieldProps("business_id").value
   const tableId = formikTable.getFieldProps("id").value
@@ -80,7 +81,9 @@ const ModalPayment = ({
   //   "url_webview": `${process.env.REACT_APP_FRONTEND_URL}/get-data/${tableId}/${businessId}` 
   // }
 
-  const dataObj = JSON.stringify(data)
+  // const dataObj = JSON.stringify(data)
+  const dataObj = data
+
   console.log(dataObj)
 
   const downloadQR = async () => {
@@ -277,7 +280,7 @@ const ModalPayment = ({
                       <div className="table-name-qr-outlet-plus-25">{dataTemplateQr.tableName}</div>
                     )}
                     <div className="desc-qr-outlet mt-3">
-                      Scan to view Beet EMenu (non-member)<br />or BeetCustomer (Member)
+                      Scan to view Beet eMenu (non-Member)<br />or BeetCustomer (Member)
                     </div>
                       {/* <div className="wrapper-icon-sosmed-qr-outlet">
                         <div className="icon-facebook-qr-outlet">
