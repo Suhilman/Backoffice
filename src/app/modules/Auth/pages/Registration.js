@@ -133,7 +133,7 @@ function Registration(props) {
   const [statusEmail, setStatusEmail] = useState(false)
   const [messageNotSent, setMessageNotSent] = React.useState(false)
   const [showModalPersonal, setShowModalPersonal] = React.useState(false)
-  const [methodSendOTP, setMethodSendOTP] = React.useState("whatsapp")
+  const [methodSendOTP, setMethodSendOTP] = React.useState("")
 
   const [code, setCode] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
@@ -435,14 +435,15 @@ function Registration(props) {
           
           if (!owner.is_verified) {
             // pilih sent otp via gmail atau whatsapp
-
+            openOTPModal()
             setSubmitting(false);
             setSecond(15);
-            await handleSendWhatsapp(values.phone_number.toString(), owner.verification_code, accessToken)
-            openVerifyModal();
-            setTimeout(() => {
-              setMessageNotSent(true)
-            }, 50000);
+
+            // await handleSendWhatsapp(values.phone_number.toString(), owner.verification_code, accessToken)
+            // openVerifyModal();
+            // setTimeout(() => {
+            //   setMessageNotSent(true)
+            // }, 50000);
           } else {
             props.login(token);
           }
