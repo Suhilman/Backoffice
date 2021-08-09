@@ -548,11 +548,11 @@ const ModalCustomRange = ({
   const checkUserGuideBusiness = async () => {
     try {
       const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
-      // if(!data.data.user_guide) {
-      //   setShowGuide("dashboard")
-      // } else {
-      //   setShowGuide(null)
-      // }
+      if(!data.data.user_guide) {
+        setShowGuide("dashboard")
+      } else {
+        setShowGuide(null)
+      }
     } catch (error) {
       console.log(error)
     }

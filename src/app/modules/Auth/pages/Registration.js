@@ -225,7 +225,17 @@ function Registration(props) {
         });
         verifyAccount();
         // disableLoading();
-        props.register(token.split(" ")[1]);
+        history.push('/login')
+        toast.success(`Register success, please login`, {
+          position: "top-right",
+          autoClose: 4500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        // props.register(token.split(" ")[1]);
         // setShowModalPersonal(true)
       } catch (err) {
         setAlertModal(err.response.data.message);
@@ -305,7 +315,11 @@ function Registration(props) {
   const closeOTPModal = () => setShowOTPModal(false);
   const openOTPModal = () => setShowOTPModal(true);
 
-  const handleCaptcha = (value) => setCaptchaToken(value);
+  const handleCaptcha = (value) => {
+    console.log("handle captcha")
+    console.log("value handle captcha", value)
+    setCaptchaToken(value)
+  };
 
   React.useEffect(() => {
     let timer;
@@ -355,23 +369,69 @@ function Registration(props) {
 
   const handleMethodSentOTP = async (param) => {
     setMethodSendOTP(param)
-    closeOTPModal()
     console.log("dataSentOTP", dataSentOTP)
     if(param === 'whatsapp') {
       setSecond(15);
-      await handleSendWhatsapp(dataSentOTP.phoneNumber, dataSentOTP.verifyCode)
-      openVerifyModal();
-      setTimeout(() => {
-        setMessageNotSent(true)
-      }, 50000);
+      const resSendWhatsapp = await handleSendWhatsapp(dataSentOTP.phoneNumber, dataSentOTP.verifyCode)
+      if(resSendWhatsapp) {
+        console.log("send message whatsapp success")
+        closeOTPModal()
+        openVerifyModal();
+        setTimeout(() => {
+          setMessageNotSent(true)
+        }, 50000);
+      } else {
+        console.log("send message whatsapp failed")
+        setMethodSendOTP("gmail")
+        setSentEmail(formik.values.email)
+        await handleSendEmail(formik.values.email, dataSentOTP.verifyCode)
+        closeOTPModal()
+        openVerifyModal();
+        setTimeout(() => {
+          setMessageNotSent(true)
+        }, 50000);
+        toast.info(`Send whatstapp failed, please check your email ${formik.values.email} for verification`, {
+          position: "top-right",
+          autoClose: 6000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
     }
     if (param === 'gmail') {
       setSentEmail(formik.values.email)
-      await handleSendEmail(formik.values.email, dataSentOTP.verifyCode)
-      openVerifyModal();
-      setTimeout(() => {
-        setMessageNotSent(true)
-      }, 50000);
+      const resSendEmail = await handleSendEmail(formik.values.email, dataSentOTP.verifyCode)
+      if(resSendEmail) {
+        closeOTPModal()
+        openVerifyModal();
+        setTimeout(() => {
+          setMessageNotSent(true)
+        }, 50000);
+        toast.success('Verification code sent', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        setStatusEmail(false)
+        toast.info('Verification code not sent', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        console.log("send email error")
+      }
     }
   }
 
@@ -436,6 +496,12 @@ function Registration(props) {
           
           if (!owner.is_verified) {
             // pilih sent otp via gmail atau whatsapp
+            setDataSentOTP(
+              {
+                phoneNumber: values.phone_number.toString(),
+                verifyCode: owner.verification_code
+              }
+            )
             openOTPModal()
             setSubmitting(false);
             setSecond(15);
@@ -495,7 +561,7 @@ function Registration(props) {
       // })
 
       // Menggunakan proxy cors-anywhere agar melewati cors origin
-      const sendMessage = await axios.post('https://cors-anywhere.herokuapp.com/http://139.59.244.237:3001/api/v1/messaging/sendText', dataSend, {
+      const sendMessage = await axios.post('shttps://cors-anywhere.herokuapp.com/http://139.59.244.237:3001/api/v1/messaging/sendText', dataSend, {
         headers: {
           "x-api-key" : "EalYHzTieQVwZ83XnrPv"
         }
@@ -515,22 +581,14 @@ function Registration(props) {
         draggable: true,
         progress: undefined,
       });
+      return true
     } catch (error) {
       console.log("send whataspp error")
       console.log(error)
 
       // status whatsapp untuk cek response server error tidak
       setStatusWhatsapp(false)
-
-      toast.info('Verification code not sent', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return false
     }
   }
 
@@ -540,28 +598,10 @@ function Registration(props) {
         { headers: { Authorization: token } }
       )
       setStatusEmail(true)
-      toast.success('Verification code sent', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      return true
     } catch (error) {
-      setStatusEmail(false)
-      toast.info('Verification code not sent', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      console.log("send email error")
-      console.log(error)
+      console.log("error", error)
+      return false
     }
   }
 
@@ -638,6 +678,7 @@ function Registration(props) {
         { code },
         { headers: { Authorization: token } }
       );
+      console.log("verify modal")
       disableLoading();
       closeVerifyModal();
       // openBusinessModal();
@@ -662,7 +703,7 @@ function Registration(props) {
         { code },
         { headers: { Authorization: token } }
       );
-      closeVerifyModal();
+      // closeVerifyModal();
       handleFormikBusiness(dataFormik, token)
     } catch (err) {
       setAlertModal(err.response?.data.message);
