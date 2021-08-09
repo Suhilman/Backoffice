@@ -25,6 +25,7 @@ const ModalPayment = ({
   t,
   editDataTable
 }) => {
+
   const [imageUrl, setImageUrl] = useState({})
   const [dataTemplateQr, setDataTemplateQr] = useState({})
   const businessId = formikTable.getFieldProps("business_id").value
@@ -71,10 +72,19 @@ const ModalPayment = ({
     getDataBusinessTable()
     console.log("editDataTable", editDataTable)
   }, [editDataTable])
-  
-  const dataObj = JSON.stringify(data)
-  console.log("data business", businessId)
-  console.log("data table management", tableId)
+
+  // const data = {
+  //   "application": "beetpos",
+  //   "outlet_id": formikTable.getFieldProps("outlet_id").value,
+  //   "business_id": businessId,
+  //   "table_id": tableId,
+  //   "url_webview": `${process.env.REACT_APP_FRONTEND_URL}/get-data/${tableId}/${businessId}` 
+  // }
+
+  // const dataObj = JSON.stringify(data)
+  const dataObj = data
+
+  console.log(dataObj)
 
   console.log("formikTable.values.business_id", formikTable.values.business_id)
 
@@ -271,7 +281,7 @@ const ModalPayment = ({
                       <div className="table-name-qr-outlet-plus-25">{dataTemplateQr.tableName}</div>
                     )}
                     <div className="desc-qr-outlet mt-3">
-                      Scan to view Beet EMenu (non-member)<br />or BeetCustomer (Member)
+                      Scan to view Beet eMenu (non-Member)<br />or BeetCustomer (Member)
                     </div>
                       {/* <div className="wrapper-icon-sosmed-qr-outlet">
                         <div className="icon-facebook-qr-outlet">
