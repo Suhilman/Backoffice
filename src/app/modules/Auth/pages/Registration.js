@@ -10,6 +10,7 @@ import { Form } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './style.css'
 
 import ReCAPTCHA from "react-google-recaptcha";
 
@@ -726,8 +727,8 @@ function Registration(props) {
       />
 
       <div className="text-center mb-10 mb-lg-20">
-        <h3 className="font-size-h1">Register to BeetPOS</h3>
-        <p className="text-muted font-weight-bold">
+        <h3 className="register-to-beetpos">Register to BeetPOS</h3>
+        <p className="text-muted register-and-get-free-trial">
           Register and get free trial, no pre payment and credit card needed
         </p>
       </div>

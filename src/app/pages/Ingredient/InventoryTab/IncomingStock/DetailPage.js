@@ -92,7 +92,7 @@ export const DetailIncomingMaterialPage = ({ match }) => {
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div className="headerPage">
             <div className="headerStart">
-              <h3>{t("incomingStockDetailSumary")}</h3>
+              <h3>{t("incomingStockDetailSummary")}</h3>
             </div>
             <div className="headerEnd">
               <Link
@@ -115,7 +115,7 @@ export const DetailIncomingMaterialPage = ({ match }) => {
           >
             <Col sm={3}>
               <Form.Group>
-                <Form.Label>{t("stockID")}:</Form.Label>
+                <Form.Label>{t("stockId")}:</Form.Label>
                 <Form.Control
                   type="text"
                   value={incomingStock ? incomingStock.code : "-"}

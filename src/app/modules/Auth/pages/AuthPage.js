@@ -79,7 +79,7 @@ export function AuthPage() {
           <div className="flex-row-fluid d-flex flex-column position-relative p-7 overflow-hidden">
             {/*begin::Content header*/}
             <div className="position-absolute top-0 right-0 text-right mt-5 mb-15 mb-lg-0 flex-column-auto justify-content-center py-5 px-10">
-              <span className="font-weight-bold text-dark-50">
+              <span className="font-weight-bold text-dark-50 dont-have-an-account-yet">
                 Don't have an account yet?
               </span>
               <Link
