@@ -1,3 +1,15 @@
+/* style border select di modul subscription */
+.subscription_right__FQT_l{
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #623863;
+  box-shadow: 0 8px 6px -4px rgb(94, 93, 93);
+}
+
+.subscription_right__FQT_l:focus{
+  outline: none;
+}
+
 .container-qr-outlet{
   position: absolute;
   top: -2800px;

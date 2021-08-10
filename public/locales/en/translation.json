@@ -564,10 +564,9 @@
     "day": "Day",
     "getASalesReportNotificationEmailOnceADay": "Get a sales report notification email once a day",
     "signOut": "Sign Out",
-    "average": "Rata-rata",
-    "salesReport": "Laporan Penjualan",
+    "average": "Average",
+    "salesReport": "Sales Report",
     "allOutlets": "All Outlets",
-
     "pleaseInputDateStart": "Please input date start",
     "pleaseInputDateEnd": "Please input date end",
     "pleaseChoosePromodays": "Please choose promo days",
@@ -736,7 +735,6 @@
     "maximum100Character": "Maximum 100 Character",
     "maximum200Character": "Maximum 200 Character",
     "notification": "Notification",
-
     "backToStaffList":"Back to Staff List",
     "editStaffData": "Edit Staff Data",
     "optional": "Optional",
@@ -792,5 +790,18 @@
     "hiddenCategory": "Hidden Category",
     "addRecipientEmail": "Add Recipient Email",
     "addNewEmail": "Input New Email",
-    "emailRecipientList": "Email Recipient List"
+    "emailRecipientList": "Email Recipient List",
+    "subscription": "Subscription",
+    "subscriptionInformation": "Subscription Information",
+    "business": "Business",
+    "currentPlan": "Current Plan",
+    "lastPayment": "Last Payment",
+    "activeOutlet": "Active Outlet",
+    "expirationDate": "Expiration Date",
+    "totalAmount": "Total Amount",
+    "expirationDateWillBeExtendedTo": "Expiration Date Will Be Extended To",
+    "continueToPayment": "Continue To Payment",
+    "youDontHaveAnyInvoiceYet": "You Don't Have Any Invoice Yet",
+    "activeInvoice&SubscriptionHistory": "Active Invoice & Subscription History",
+    "subscriptionType": "Subscription Type"
 }

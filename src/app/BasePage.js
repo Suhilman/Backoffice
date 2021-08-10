@@ -10,6 +10,7 @@ import { StaffPage } from "./pages/Staff/StaffPage";
 import { AddStaffPage } from "./pages/Staff/AddStaffPage";
 import { DetailStaffPage } from "./pages/Staff/DetailStaffPage";
 import { AccountPage } from "./pages/Account/AccountPage";
+import SubscriptionPage from "./pages/Subscription/SubscriptionPage";
 import { ProductPage } from "./pages/Product/ProductPage";
 import { AddProductPage } from "./pages/Product/ProductTab/AddProductPage";
 import { EditProductPage } from "./pages/Product/ProductTab/EditProductPage";
@@ -72,7 +73,8 @@ export default function BasePage() {
     customer_management: false,
     inventory_management: false,
     kitchen_management: false,
-    commission_management: false
+    commission_management: false,
+    subscription: true
   });
 
   const localData = JSON.parse(localStorage.getItem("user_info"));
@@ -513,7 +515,16 @@ export default function BasePage() {
           component={EditGroupCommission}
         />
 
+        <ProtectedRoute
+          isAllowed={currPrivileges.subscription}
+          isRoute={true}
+          exact={false}
+          path="/subscription"
+          component={SubscriptionPage}
+        />
+
         <ContentRoute path="/account" component={AccountPage} />
+
         <Redirect to="error/error-v1" />
       </Switch>
     </Suspense>

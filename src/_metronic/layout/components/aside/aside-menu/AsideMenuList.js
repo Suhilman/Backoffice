@@ -18,6 +18,7 @@ import roleIcon from "../../../../../images/icons8-confirm-96.png"
 import customerIcon from "../../../../../images/icons8-customer-insight-64.png"
 import accountIcon from "../../../../../images/icons8-search-account-256.png"
 import commissionIcon from "../../../../../images/icons8-sales-performance-52.png"
+import subscriptionIcon from "../../../../../images/icons8-subscription-100.png"
 import axios from 'axios'
 
 import './style.css'
@@ -516,6 +517,19 @@ function AsideMenuList(props) {
             <span className="menu-text">{t("account")}</span>
           </NavLink>
         </li>
+
+        <li className={`menu-item ${getMenuItemActive("/subscription", false)}`}>
+          <NavLink className="menu-link" to="/subscription">
+            {/* <span className="svg-icon menu-icon">
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Shopping/Bag2.svg")} />
+            </span> */}
+            <div className="wrapper-icon">
+              <img src={subscriptionIcon} alt="Icon Subscription"/>
+            </div>
+            <span className="menu-text">{t("subscription")}</span>
+          </NavLink>
+        </li>
+
       </ul>
     </>
   );

@@ -567,7 +567,6 @@
     "average": "Rata-rata",
     "salesReport": "Laporan Penjualan",
     "allOutlets": "Semua Toko",
-
     "pleaseInputDateStart": "Silahkan masukkan tanggal mulai",
     "pleaseInputDateEnd": "Silahkan masukkan tanggal mulai",
     "pleaseChoosePromodays": "Silahkan pilih hari-hari promo",
@@ -736,7 +735,6 @@
     "maximum100Character": "Maksimal 100 Karakter",
     "maximum200Character": "Maksimal 200 Karakter",
     "notification": "Pemberitahuan",
-
     "backToStaffList":"Kembali ke daftar staf",
     "editStaffData": "Ubah data staf",
     "optional": "Pilihan",
@@ -791,5 +789,18 @@
     "hiddenCategory": "Sembunyikan Kategori",
     "addRecipientEmail": "Tambah Penerima Email",
     "addNewEmail": "Tambah Email Baru",
-    "emailRecipientList": "Email Recipient List"
+    "emailRecipientList": "Email Recipient List",
+    "subscription": "Berlangganan",
+    "subscriptionInformation": "Informasi Berlangganan",
+    "business": "Bisnis",
+    "currentPlan": "Rencana saat ini",
+    "lastPayment": "Pembayaran terakhir",
+    "activeOutlet": "Outlet Aktif",
+    "expirationDate": "Tanggal habis tempo",
+    "totalAmount": "Jumlah total",
+    "expirationDateWillBeExtendedTo": "Tanggal Kadaluarsa Akan Diperpanjang Sampai",
+    "continueToPayment": "Lanjutkan ke Pembayaran",
+    "youDontHaveAnyInvoiceYet": "Anda Belum Punya Faktur",
+    "activeInvoice&SubscriptionHistory": "Faktur Aktif & Riwayat Berlangganan",
+    "subscriptionType": "Tipe Langganan"
   }
