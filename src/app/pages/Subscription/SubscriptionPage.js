@@ -7,6 +7,7 @@ import axios from 'axios'
 import NumberFormat from 'react-number-format'
 import dayjs from 'dayjs'
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
+import outletIcon from "../../../images/icons8-store-front-96 black.png"
 
 import {
   Paper
@@ -127,7 +128,7 @@ const SubscriptionPage = () => {
                     {activeOutlet.length > 0 ? activeOutlet.map(value =>
                       <div className="d-flex align-items-center mb-2">
                         <div className={styles.wrapperMoney}>
-                          <img src={Money} alt="Money" />
+                          <img src={outletIcon} alt="Outlet Icon" />
                         </div>
                         <div>
                           <div className={styles.fontDefault}>{value.name}</div>
@@ -178,9 +179,9 @@ const SubscriptionPage = () => {
                     </div>
 
                   <div className={styles.wrapperButton}>
-                    <div className={styles.button}>
-                      <div className="">{t("continueToPayment")}</div>
-                    </div>
+                    {/* <div className={styles.button}> */}
+                      <div className="btn btn-primary">{t("continueToPayment")}</div>
+                    {/* </div> */}
                   </div>
 
                 </div>
@@ -192,7 +193,7 @@ const SubscriptionPage = () => {
                 <hr />
                 <div className={styles.containerActiveInvoice}>
                   <div className={styles.invoiceEmpty}>
-                    <img src={InvoiceEmpty} alt="Empt" />
+                    <img src={InvoiceEmpty} alt="Empty" />
                   </div>
                   <div className={styles.dontHaveInvoce}>{t("youDontHaveAnyInvoiceYet")}</div>
                 </div>

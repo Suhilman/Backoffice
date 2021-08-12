@@ -58,7 +58,7 @@ export const EmailNotifications = () => {
           message: `${value.createdAt.split("T")[0]} - ${value.createdAt.split("T")[1]} \n Recap By ${value.User?.User_Profile.name}` 
         }
         // console.log("ini messagenya", message)
-        await axios.post(`${API_URL}/api/v1/business-notification`, message)
+        // await axios.post(`${API_URL}/api/v1/business-notification`, message)
         // console.log("yey berhasill")
       })
     } catch (error) {
