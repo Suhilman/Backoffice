@@ -91,7 +91,7 @@ const NotificationExpired = () => {
       {countExpired <= 14 && typeof countExpired === "number" ? (
         <div className="wrapper-notification d-flex justify-content-between">
           <p>{t("yourBeetPOSTrialWillEndIn")}<span className="text-danger mx-2">{countExpired}</span>{t("day(s)")}</p>
-          <div className="badge badge-info" onClick={openFormCzModal}>Test Form CZ</div>
+          {/* <div className="badge badge-info" onClick={openFormCzModal}>Test Form CZ</div> */}
         </div>
       ) : (<div></div>) }
       <ModalPersonal

@@ -60,6 +60,7 @@ import Commission from "./pages/Commission/CommissionPage"
 import AddGroupCommission from "./pages/Commission/AddGroupCommission"
 import EditGroupCommission from "./pages/Commission/EditGroupCommission"
 import NotificationExpired from "./components/NotificationExpired"
+import PaymentModulePage from './pages/PaymentModul/PaymentModule'
 
 export default function BasePage() {
   const [currPrivileges, setCurrPrivileges] = React.useState({
@@ -74,7 +75,8 @@ export default function BasePage() {
     inventory_management: false,
     kitchen_management: false,
     commission_management: false,
-    subscription: true
+    subscription: true,
+    payment_module: true
   });
 
   const localData = JSON.parse(localStorage.getItem("user_info"));
@@ -521,6 +523,14 @@ export default function BasePage() {
           exact={false}
           path="/subscription"
           component={SubscriptionPage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.payment_module}
+          isRoute={true}
+          exact={false}
+          path="/payment"
+          component={PaymentModulePage}
         />
 
         <ContentRoute path="/account" component={AccountPage} />

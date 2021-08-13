@@ -24,7 +24,8 @@ export function loginStaff(staff_id, email, password, device) {
     staff_id,
     email,
     password,
-    device_id: device
+    // device_id: device
+    device_id: null
   });
 }
 
