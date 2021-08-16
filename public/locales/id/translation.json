@@ -872,5 +872,6 @@
     "pleaseInputABankName": "Silakan masukkan Nama Bank",
     "pleaseInputABankaccountnumber": "Silakan masukkan nomor rekening Bank",
     "pleaseInputANameOfOwnerMerchantAccount": "Silakan masukkan Nama Pemilik Akun Merchant",
-    "hideInEmenu": "Sembunyikan di eMenu"
+    "hideInEmenu": "Sembunyikan di eMenu",
+    "signaturePad": "Tanda Tangan"
   }

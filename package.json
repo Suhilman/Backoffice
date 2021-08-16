@@ -130,6 +130,7 @@
     "rupiah-format": "^1.0.0",
     "sha1": "^1.1.1",
     "sha256": "^0.2.0",
+    "signature_pad": "^3.0.0-beta.4",
     "socicon": "3.0.5",
     "socket.io-client": "^2.3.0",
     "styled-components": "^5.1.1",

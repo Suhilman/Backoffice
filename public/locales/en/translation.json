@@ -872,5 +872,6 @@
     "pleaseInputABankName": "Please input a Bank Name",
     "pleaseInputABankaccountnumber": "Please input a Bank account number",
     "pleaseInputANameOfOwnerMerchantAccount": "Please input a Name of Owner Merchant Account",
-    "hideInEmenu": "Hide in eMenu"
+    "hideInEmenu": "Hide in eMenu",
+    "signaturePad": "Signature Pad"
 }

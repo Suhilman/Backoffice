@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Row,
   Col,
@@ -27,9 +27,15 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from 'axios'
 
+import Signature from './ModalSignaturePad'
+
 const PaymentModule = () => {
   const { t } = useTranslation();
   console.log("modal form cashlez")
+  const [showSignaturePad, setShowSignaturePad] = useState(false)
+
+  const openSignaturePad = () => setShowSignaturePad(true)
+  const closeSignaturePad = () => setShowSignaturePad(false)
 
   const InitialFormCz = {
     nama_pemilik: "",
@@ -170,6 +176,11 @@ const PaymentModule = () => {
 
   return (
     <div>
+      <Signature
+        show={showSignaturePad}
+        close={closeSignaturePad}
+      />
+
       <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
         <div className="headerPage mb-5">
           <div className="headerStart">
@@ -662,8 +673,13 @@ const PaymentModule = () => {
               <small><em>({t("accordingToTheRegisteredMerchant/CompanyOwner")}</em></small>
             </Form.Group>
             <div className="d-flex justify-content-end">
-              <div className="btn btn-primary" onClick={handleSubmit}>
-                {t("export")} PDF
+              <div className="d-flex">
+                <div className="btn btn-info mr-2" onClick={openSignaturePad}>
+                  {t("signaturePad")}
+                </div>
+                <div className="btn btn-primary" onClick={handleSubmit}>
+                  {t("export")} PDF
+                </div>
               </div>
             </div>
           </Col>
