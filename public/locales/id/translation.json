@@ -858,7 +858,6 @@
     "mandatoryPhotosOfProductsSoldByMerchants": "wajib foto produk yang dijual oleh merchant",
     "mustAttachAPhotoOfTheCoverOfTheSavingsBook": "wajib lampirkan foto cover buku tabungan",
     "accordingToTheRegisteredMerchant/CompanyOwner": "sesuai dengan pemilik merchant/perusahaan yang didaftarkan",
-
     "pleaseInputAMerchantOwnerName": "Silakan masukkan Nama Pemilik Merchant",
     "pleaseInputAMerchantOwnerAddress": "Silakan masukkan Alamat Pemilik Merchant",
     "pleaseInputAMerchantOwnerCity": "Silakan masukkan Kota Pemilik Pedagang",
@@ -872,5 +871,6 @@
     "pleaseInputAProductDescriptionForSale": "Silakan masukkan Deskripsi Produk Dijual",
     "pleaseInputABankName": "Silakan masukkan Nama Bank",
     "pleaseInputABankaccountnumber": "Silakan masukkan nomor rekening Bank",
-    "pleaseInputANameOfOwnerMerchantAccount": "Silakan masukkan Nama Pemilik Akun Merchant"
+    "pleaseInputANameOfOwnerMerchantAccount": "Silakan masukkan Nama Pemilik Akun Merchant",
+    "hideInEmenu": "Sembunyikan di eMenu"
   }

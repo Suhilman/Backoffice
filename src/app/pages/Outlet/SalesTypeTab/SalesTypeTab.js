@@ -22,11 +22,16 @@ export const SalesTypeTab = ({ handleRefresh, refresh, t }) => {
   const [stateEditModal, setStateEditModal] = React.useState(false);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
   const [alert, setAlert] = React.useState("");
+  const [hidden, setHidden] = React.useState("Inactive")
 
   const [AllSalesTypes, setAllSalesTypes] = React.useState([]);
 
   const [search, setSearch] = React.useState("");
   const debouncedSearch = useDebounce(search, 1000);
+
+  const handleHidden = (status) => {
+    setHidden(status)
+  }
 
   const getSalesTypes = async (search) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -53,7 +58,8 @@ export const SalesTypeTab = ({ handleRefresh, refresh, t }) => {
     require_table: false,
     is_booking: false,
     is_delivery: false,
-    charge: 0
+    charge: 0,
+    hidden: ""
   };
 
   const SalesTypeSchema = Yup.object().shape({
@@ -82,6 +88,10 @@ export const SalesTypeTab = ({ handleRefresh, refresh, t }) => {
         is_delivery: values.is_delivery,
         charge: values.charge
       };
+      if(values.hidden === "Active") salesTypeData.hidden = true
+      if(values.hidden === "Inactive") salesTypeData.hidden = false
+
+      console.log("salesTypeData", salesTypeData)
 
       const API_URL = process.env.REACT_APP_API_URL;
       try {
@@ -109,6 +119,10 @@ export const SalesTypeTab = ({ handleRefresh, refresh, t }) => {
         is_delivery: values.is_delivery,
         charge: values.charge
       };
+      if(values.hidden === "Active") salesTypeData.hidden = true
+      if(values.hidden === "Inactive") salesTypeData.hidden = false
+
+      console.log("salesTypeData", salesTypeData)
 
       const API_URL = process.env.REACT_APP_API_URL;
       try {
@@ -171,6 +185,7 @@ export const SalesTypeTab = ({ handleRefresh, refresh, t }) => {
   };
 
   const showEditModalSalesType = (data) => {
+    console.log("showEditModalSalesType", data)
     formikSalesTypeEdit.setValues({
       id: data.id,
       name: data.name,
@@ -179,9 +194,11 @@ export const SalesTypeTab = ({ handleRefresh, refresh, t }) => {
       is_delivery: data.is_delivery,
       charge: parseInt(data.charge.slice(0, -1))
     });
-
+    if(data.hidden) setHidden("Active")
+    if(!data.hidden) setHidden("Inactive")
     setStateEditModal(true);
   };
+
   const cancelEditModalSalesType = () => {
     formikSalesTypeEdit.resetForm();
     setStateEditModal(false);
@@ -272,7 +289,8 @@ export const SalesTypeTab = ({ handleRefresh, refresh, t }) => {
         require_table: item.require_table,
         is_booking: item.is_booking,
         is_delivery: item.is_delivery,
-        charge: item.charge + "%"
+        charge: item.charge + "%",
+        hidden: item.hidden
       };
     });
   };
@@ -288,6 +306,8 @@ export const SalesTypeTab = ({ handleRefresh, refresh, t }) => {
         formikSalesType={formikSalesType}
         validationSalesType={validationSalesType}
         alert={alert}
+        hidden={hidden}
+        handleHidden={handleHidden}
       />
 
       <ModalSalesType
@@ -301,6 +321,8 @@ export const SalesTypeTab = ({ handleRefresh, refresh, t }) => {
         formikSalesType={formikSalesTypeEdit}
         validationSalesType={validationSalesTypeEdit}
         alert={alert}
+        hidden={hidden}
+        handleHidden={handleHidden}
       />
 
       <ShowConfirmModal

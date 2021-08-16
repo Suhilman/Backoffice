@@ -787,7 +787,7 @@
     "markupPrice": "Markup Price",
     "maxQuantity": "Max Quantity",
     "maxRange": "Max Range",
-    "hiddenCategory": "Hidden Category",
+    "hiddenCategory": "Hide Category",
     "addRecipientEmail": "Add Recipient Email",
     "addNewEmail": "Input New Email",
     "emailRecipientList": "Email Recipient List",
@@ -858,7 +858,6 @@
     "mandatoryPhotosOfProductsSoldByMerchants": "mandatory photos of products sold by merchants",
     "mustAttachAPhotoOfTheCoverOfTheSavingsBook": "must attach a photo of the cover of the savings book",
     "accordingToTheRegisteredMerchant/CompanyOwner": "according to the registered merchant/company owner",
-
     "pleaseInputAMerchantOwnerName": "Please input a Merchant Owner Name",
     "pleaseInputAMerchantOwnerAddress": "Please input a Merchant Owner Address",
     "pleaseInputAMerchantOwnerCity": "Please input a Merchant Owner City",
@@ -872,5 +871,6 @@
     "pleaseInputAProductDescriptionForSale": "Please input a Product Description For Sale",
     "pleaseInputABankName": "Please input a Bank Name",
     "pleaseInputABankaccountnumber": "Please input a Bank account number",
-    "pleaseInputANameOfOwnerMerchantAccount": "Please input a Name of Owner Merchant Account"
+    "pleaseInputANameOfOwnerMerchantAccount": "Please input a Name of Owner Merchant Account",
+    "hideInEmenu": "Hide in eMenu"
 }

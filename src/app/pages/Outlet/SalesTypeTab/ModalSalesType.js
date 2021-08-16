@@ -11,6 +11,14 @@ import {
   Alert
 } from "react-bootstrap";
 
+import {
+  FormControl,
+  FormControlLabel,
+  Switch,
+  FormGroup
+} from "@material-ui/core";
+
+
 import "../../style.css";
 
 const ModalPayment = ({
@@ -21,7 +29,9 @@ const ModalPayment = ({
   formikSalesType,
   validationSalesType,
   alert,
-  t
+  t,
+  handleHidden,
+  hidden
 }) => {
   return (
     <Modal show={stateModal} onHide={cancelModal} size="sm">
@@ -141,6 +151,38 @@ const ModalPayment = ({
                   }}
                   checked={formikSalesType.getFieldProps("is_delivery").value}
                 />
+              </Form.Group>
+
+              
+              <Form.Group>
+                <div>
+                  <Form.Label>{t("hideInEmenu")}</Form.Label>
+                </div>
+                <div className="d-flex align-items-center">
+                  <h4 className="text-muted h6 mr-3">{hidden}</h4>
+                  <FormControlLabel
+                    value={hidden}
+                    control={
+                      <Switch
+                        color="primary"
+                        checked={hidden === "Active" ? true : false}
+                        onChange={(e) => {
+                          console.log("switch hidden", e.target.value)
+                          if (hidden === e.target.value) {
+                            if (hidden === "Active") {
+                              handleHidden("Inactive");
+                              formikSalesType.setFieldValue("hidden", "Inactive")
+                            } else {
+                              handleHidden("Active");
+                              formikSalesType.setFieldValue("hidden", "Active")
+                            }
+                          }
+                        }}
+                        name=""
+                      />
+                    }
+                  />
+                </div>
               </Form.Group>
             </Col>
           </Row>
