@@ -648,7 +648,7 @@ const ModalCustomRange = ({
       {showGuide === 'inventory' ? (
         <div className="wrapper-guide inventory">
           <div className="font-weight-bold">Inventory</div>
-          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+          Pada menu utama modul inventory, akan terlihat Inventory List dari bisnis anda. Anda dapat melihat data produk yang telah dibuat pada bisnis anda beserta dengan supplier name, starting stock, current stock, incoming stock dan outcoming stock.
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('kitchen')}>
               <div className="badge badge-info">Skip Guide</div>
