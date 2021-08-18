@@ -519,11 +519,8 @@ function AsideMenuList(props) {
           </NavLink>
         </li>
 
-        <li className={`menu-item ${getMenuItemActive("/subscription", false)}`}>
+        {/* <li className={`menu-item ${getMenuItemActive("/subscription", false)}`}>
           <NavLink className="menu-link" to="/subscription">
-            {/* <span className="svg-icon menu-icon">
-              <SVG src={toAbsoluteUrl("/media/svg/icons/Shopping/Bag2.svg")} />
-            </span> */}
             <div className="wrapper-icon">
               <img src={subscriptionIcon} alt="Icon Subscription"/>
             </div>
@@ -533,15 +530,12 @@ function AsideMenuList(props) {
 
         <li className={`menu-item ${getMenuItemActive("/payment", false)}`}>
           <NavLink className="menu-link" to="/payment">
-            {/* <span className="svg-icon menu-icon">
-              <SVG src={toAbsoluteUrl("/media/svg/icons/Shopping/Bag2.svg")} />
-            </span> */}
             <div className="wrapper-icon">
               <img src={paymentIcon} alt="Icon Payment"/>
             </div>
             <span className="menu-text">{t("payment")}</span>
           </NavLink>
-        </li>
+        </li> */}
 
       </ul>
     </>

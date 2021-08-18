@@ -14,10 +14,10 @@
   transform: scale(1.05);
 }
 .whatsapp{
-  box-shadow: 0 0 3px 0.2px green;
+  box-shadow: 0 0 3px 0.2px grey;
 }
 .gmail{
-  box-shadow: 0 0 3px 0.2px red;
+  box-shadow: 0 0 3px 0.2px grey;
 }
 .react-date-picker__wrapper{
   padding: 3px 25px;

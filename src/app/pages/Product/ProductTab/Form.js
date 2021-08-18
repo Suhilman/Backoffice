@@ -216,8 +216,8 @@ const FormTemplate = ({
               ) : null}
             </Form.Group>
 
-            <Form.Group>
-              <Form.Label>{t("markupPrice")}<span className="text-muted ml-1">(optional)</span></Form.Label>
+            {/* <Form.Group>
+              <Form.Label>{t("markupPrice")}<span className="text-muted ml-1"></span></Form.Label>
               <Form.Control
                 type="number"
                 name="mark_up_price"
@@ -236,7 +236,7 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>{t("maxQuantity")}<span className="text-muted ml-1">(optional)</span></Form.Label>
+              <Form.Label>{t("maxQuantity")}<span className="text-muted ml-1"></span></Form.Label>
               <Form.Control
                 type="number"
                 name="max_quantity"
@@ -255,7 +255,7 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>{t("maxRange")}<span className="text-muted ml-1">(optional)</span></Form.Label>
+              <Form.Label>{t("maxRange")}<span className="text-muted ml-1"></span></Form.Label>
               <Form.Control
                 type="number"
                 name="max_range"
@@ -271,7 +271,7 @@ const FormTemplate = ({
                   </div>
                 </div>
               ) : null}
-            </Form.Group>
+            </Form.Group> */}
 
             {/* <Form.Group>
               <Form.Label>Tax*</Form.Label>
@@ -423,7 +423,7 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>{t("supplier")}<span className="text-muted ml-1">(optional)</span></Form.Label>
+              <Form.Label>{t("supplier")}<span className="text-muted ml-1"></span></Form.Label>
               <Select
                 options={optionsSupplier}
                 defaultValue={defaultValueSupplier}

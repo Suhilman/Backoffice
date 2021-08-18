@@ -514,7 +514,97 @@ const ModalOutlet = ({
                   ) : null}
                 </Form.Group>
               </Col>
+              {/* <Col>
+                <Form.Label>Select Open Day:</Form.Label>
+                <FormControl style={{ width: "100%" }}>
+                  <InputLabel>Day</InputLabel>
+                  <SelectReact
+                    isMulti
+                    options={optionDay}
+                    name="open_days"
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    onChange={(value) =>
+                      handleSelectDays(value, formikOutlet)
+                    }
+                    defaultValue={defaultOptionDays}
+                  />
+                  {formikOutlet.touched.open_days &&
+                  formikOutlet.errors.open_days ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikOutlet.errors.open_days}
+                      </div>
+                    </div>
+                  ) : null}
+                </FormControl>
+                <div className="d-flex justify-content-between align-items-end">
+                  <div style={{width: "45%"}}>
+                    <KeyboardTimePicker
+                      margin="normal"
+                      id="open-hour"
+                      label="Open"
+                      ampm={false}
+                      name="open_hour"
+                      value={timingState.start_hour}
+                      onChange={handleStartHour}
+                      KeyboardButtonProps={{
+                        "aria-label": "change time"
+                      }}
+                    />
+                  </div>
+                  <span className="mb-3">-</span>
+                  <div style={{width: "45%"}}>
+                    <KeyboardTimePicker
+                      margin="normal"
+                      id="open-hour"
+                      label="Close"
+                      ampm={false}
+                      name="open_hour"
+                      value={timingState.end_hour}
+                      onChange={handleEndHour}
+                      KeyboardButtonProps={{
+                        "aria-label": "change time"
+                      }}
+                    />
+                  </div>
+                </div>
+              </Col> */}
             </Row>
+            {/* <Row>
+              <Col>
+              </Col>
+              <Col>
+                <Form.Group style={{ margin: 0 }}>
+                  <Form.Label style={{ alignSelf: "center", marginRight: "1rem" }}>
+                    {t("Vacation")}
+                  </Form.Label>
+                  <FormControlLabel
+                    value={stateVacation}
+                    name="vacation"
+                    control={
+                      <Switch
+                        color="primary"
+                        checked={stateVacation === "Active" ? true : false}
+                        onChange={(e) => {
+                          console.log("switch vacation", e.target.value)
+                          if (stateVacation === e.target.value) {
+                            if (stateVacation === "Active") {
+                              handleSetVacation("Inactive");
+                              formikOutlet.setFieldValue("vacation", "Inactive")
+                            } else {
+                              handleSetVacation("Active");
+                              formikOutlet.setFieldValue("vacation", "Active")
+                            }
+                          }
+                        }}
+                        name=""
+                      />
+                    }
+                  />
+                </Form.Group>
+              </Col>
+            </Row> */}
             {/* <Row>
               <Col>
                 <Form.Group>

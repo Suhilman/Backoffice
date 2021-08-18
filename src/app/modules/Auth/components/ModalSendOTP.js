@@ -3,7 +3,7 @@ import { Modal, Button, Form, Alert, Row, Col } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import axios from 'axios'
 import IconWhatsapp from '../../../../images/icons8-whatsapp-384.png'
-import IconGmail from '../../../../images/icons8-gmail-480.png'
+import IconEmail from '../../../../images/icons8-email-64 (1).png'
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -32,10 +32,10 @@ const ModalSendOTP = ({loading, showOTPModal, closeButton, handleMethodSentOTP})
               <Col>
               <div className="d-flex wrapper-method-sent-otp gmail" onClick={() => handleMethodSentOTP("gmail")}>
                 <div className="wrapper-icon">
-                  <img src={IconGmail} alt="Icon Gmail" />
+                  <img src={IconEmail} alt="Icon Gmail" />
                 </div>
                 <div>
-                  Gmail
+                  Email
                 </div>
               </div>
               </Col>
