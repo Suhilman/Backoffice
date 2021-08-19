@@ -873,5 +873,8 @@
     "pleaseInputABankaccountnumber": "Silakan masukkan nomor rekening Bank",
     "pleaseInputANameOfOwnerMerchantAccount": "Silakan masukkan Nama Pemilik Akun Merchant",
     "hideInEmenu": "Sembunyikan di eMenu",
-    "signaturePad": "Tanda Tangan"
+    "signaturePad": "Tanda Tangan",
+    "settingTemplateQr": "Ubah Template Kode QR",
+    "socialMedia": "Media Sosial",
+    "socialMediaName": "Nama Media Sosial"
   }

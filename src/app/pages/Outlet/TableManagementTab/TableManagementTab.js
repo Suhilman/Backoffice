@@ -12,12 +12,15 @@ import { Paper } from "@material-ui/core";
 import { Search, MoreHoriz } from "@material-ui/icons";
 
 import ModalTable from "./ModalTable";
+import ModalTemplate from './ModalTemplate'
 import ShowConfirmModal from "../../../components/ConfirmModal";
 import useDebounce from "../../../hooks/useDebounce";
 
 import "../../style.css";
 
 export const TableManagementTab = ({ handleRefresh, refresh }) => {
+  const [allDataTemplate, setAllDataTemplate] = React.useState({})
+  const [stateModalQr, setStateModalQr] = React.useState(false)
   const [loading, setLoading] = React.useState(false);
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
@@ -46,7 +49,6 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
 
   const getOutlets = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
-
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/outlet`);
       setAllOutlets(data.data);
@@ -71,6 +73,129 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
       scrollToTopBtn.click();
     }
   };
+
+  const sosmed = [
+    {
+      id: 1,
+      short: "FB",
+      label: "Facebook"
+    },
+    {
+      id: 2,
+      short: "IG",
+      label: "Instagram"
+    },
+    {
+      id: 3,
+      short: "TikTok",
+      label: "TikTok"
+    },
+    {
+      id: 4,
+      short: "Twitter",
+      label: "Twitter"
+    }
+  ]
+
+  
+  const initialValueTemplate = {
+    sosmed: [],
+    name_sosmed: "",
+    whatsapp: "",
+    business_id: ""
+  };
+
+  const TemplateSchema = Yup.object().shape({
+    name_sosmed: Yup.string()
+      .min(3, `${t("minimum3Character ")}`)
+      .max(50, `${t("maximum50Character ")}`),
+    whatsapp: Yup.string()
+      .min(3, `${t("minimum3Character ")}`)
+      .max(50, `${t("maximum50Character ")}`)
+  });
+
+  const formikTemplate = useFormik({
+    enableReinitialize: true,
+    initialValues: initialValueTemplate,
+    validationSchema: TemplateSchema,
+    onSubmit: async (values) => {
+      console.log("formikTemplate", values)
+      const sendData = {
+        business_id: values.business_id,
+        sosmed: JSON.stringify(values.sosmed),
+        name_sosmed: values.name_sosmed,
+        whatsapp: values.whatsapp
+      };
+
+      console.log('data yang akan dikirim', sendData)
+      const API_URL = process.env.REACT_APP_API_URL;
+      try {
+        enableLoading();
+        await axios.post(`${API_URL}/api/v1/template-qrcode`, sendData);
+        handleRefresh();
+        disableLoading();
+        cancelAddModalTable();
+      } catch (err) {
+        disableLoading();
+      }
+    }
+  });
+
+
+  const validationTemplate = (fieldname) => {
+    if (formikTemplate.touched[fieldname] && formikTemplate.errors[fieldname]) {
+      return "is-invalid";
+    }
+
+    if (formikTemplate.touched[fieldname] && !formikTemplate.errors[fieldname]) {
+      return "is-valid";
+    }
+    return "";
+  };
+
+  const getBusiness = async () => {
+    try {
+      const user_info = JSON.parse(localStorage.getItem('user_info'))
+      const API_URL = process.env.REACT_APP_API_URL;
+      const { data } = await axios.get(`${API_URL}/api/v1/business/${user_info.business_id}`)
+      formikTemplate.setFieldValue("business_id", user_info.business_id)
+      formikTemplate.setFieldValue("whatsapp", data.data.phone_number)
+      console.log("data business", data.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const getTemplateQrcode = async () => {
+    try {
+      const user_info = JSON.parse(localStorage.getItem('user_info'))
+      const API_URL = process.env.REACT_APP_API_URL;
+      const { data } = await axios.get(`${API_URL}/api/v1/template-qrcode?business_id=${user_info.business_id}`)
+      console.log("getTemplateQrcode ada", data.data)
+      const resultSosmed = sosmed.map(value => {
+        data.data.sosmed.filter(value2 => {
+          return value.short === value2
+        })
+      })
+      console.log("resultSosmed", resultSosmed)
+      setAllDataTemplate({
+        sosmed: data.data.sosmed,
+        name_sosmed: data.data.name_sosmed,
+        whatsapp: data.data.whatsapp
+      })
+      formikTemplate.setFieldValue("sosmed", JSON.parse(data.data.sosmed))
+      formikTemplate.setFieldValue("name_sosmed", data.data.name_sosmed)
+      formikTemplate.setFieldValue("whatsapp", data.data.whatsapp)
+    } catch (error) {
+      console.log("getTemplateQrcode tidak ada")
+      console.log(error)
+    }
+  }
+
+  React.useEffect(() => {
+    getBusiness()
+    getTemplateQrcode()
+  }, [])
 
   const initialValueTable = {
     id: "",
@@ -183,6 +308,10 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
   };
 
   const showAddModalTable = () => setStateAddModal(true);
+
+  const showEditModalQr = () => setStateModalQr(true)
+  const cancelModalQr = () => setStateModalQr(false)
+
   const cancelAddModalTable = () => {
     formikTable.resetForm();
     setStateAddModal(false);
@@ -316,6 +445,7 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
         validationTable={validationTable}
         allOutlets={allOutlets}
         editDataTable={editDataTable}
+        sosmed={sosmed}
       />
 
       <ModalTable
@@ -328,6 +458,17 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
         validationTable={validationTableEdit}
         allOutlets={allOutlets}
         editDataTable={editDataTable}
+        sosmed={sosmed}
+      />
+
+      <ModalTemplate
+        t={t}
+        stateModal={stateModalQr}
+        cancelModal={cancelModalQr}
+        loading={loading}
+        sosmed={sosmed}
+        formikTemplate={formikTemplate}
+        validationTemplate={validationTemplate}
       />
 
       <ShowConfirmModal
@@ -347,6 +488,13 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
               <h3>{t("tableManagement")}</h3>
             </div>
             <div className="headerEnd">
+              {/* <Button
+                variant="primary"
+                style={{ marginLeft: "0.5rem" }}
+                onClick={showEditModalQr}
+              >
+                {t("settingTemplateQr")}
+              </Button> */}
               <Button
                 variant="primary"
                 style={{ marginLeft: "0.5rem" }}

@@ -31,7 +31,6 @@ const ModalPayment = ({
   const businessId = formikTable.getFieldProps("business_id").value
   const tableId = formikTable.getFieldProps("id").value
   const data = `${process.env.REACT_APP_FRONTEND_URL}/get-data/${tableId}/${businessId}`
-
   const getDataBusinessTable = async () => {
     try {
       if(editDataTable) {

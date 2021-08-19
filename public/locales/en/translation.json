@@ -873,5 +873,8 @@
     "pleaseInputABankaccountnumber": "Please input a Bank account number",
     "pleaseInputANameOfOwnerMerchantAccount": "Please input a Name of Owner Merchant Account",
     "hideInEmenu": "Hide in eMenu",
-    "signaturePad": "Signature Pad"
+    "signaturePad": "Signature Pad",
+    "settingTemplateQr": "Edit Template QR Code",
+    "socialMedia": "Social Media",
+    "socialMediaName": "Social Media Name"
 }

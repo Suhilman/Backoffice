@@ -40,7 +40,8 @@ const ExportModal = ({state, closeModal, optionsOutlet, handleExports, loading, 
       dt.getSeconds().toString().padStart(2, '0')}`
 
     const FileName = () => {
-      if(dataProduct) {
+      if(dataProduct.length) {
+        console.log("dataProduct", dataProduct)
         return `List-Product_${dataProduct[0]?.Business.name}_${uniqueArray.join("_")}_${dateTime}`
       }
     }
