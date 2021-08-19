@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 
 import { Button, Modal, Spinner, Form, Row, Col, Alert} from "react-bootstrap";
+import ReactSelect from "react-select";
 
 import {
   FormControl,
@@ -44,7 +45,9 @@ const ModalOutlet = ({
   t,
   handleSetStartHour,
   handleSetEndHour,
-  timingState
+  timingState,
+  handleChangeSosmed,
+  sosmed
 }) => {
 
   // console.log("bismillah", formikOutlet.values.vacation)
@@ -98,6 +101,14 @@ const ModalOutlet = ({
         label: "Saturday"
       }
     ];
+
+  const optionSosmed = sosmed.map(value => {
+    return { value: value.short, label: value.label };
+  })
+
+  const defaultValue = formikOutlet.values.sosmed.map((item) => {
+    return optionSosmed.find((val) => val.value === item);
+  });
 
   const defaultOptionDays = formikOutlet.values.open_days.map((item) => {
     console.log("item", item)
@@ -472,6 +483,44 @@ const ModalOutlet = ({
                 </Form.Group>
               </Col>
             </Row>
+
+            <Row>
+              <Col>
+                <Form.Group>
+                  <Form.Label>{t("socialMedia")}</Form.Label>
+                  <ReactSelect
+                    defaultValue={defaultValue}
+                    options={optionSosmed}
+                    name="sosmed"
+                    isMulti
+                    className="basic-single"
+                    classNamePrefix="select"
+                    onChange={(value) =>
+                      handleChangeSosmed(value, formikOutlet)
+                    }
+                  />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group>
+                  <Form.Label>{t("socialMediaName")}</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="sosmed_name"
+                    {...formikOutlet.getFieldProps("sosmed_name")}
+                    className={validationOutlet("sosmed_name")}
+                  />
+                  {formikOutlet.touched.sosmed_name && formikOutlet.errors.sosmed_name ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikOutlet.errors.sosmed_name}
+                      </div>
+                    </div>
+                  ) : null}
+                </Form.Group>
+              </Col>
+            </Row>
+
             <Row>
               <Col>
                 <div className="btn btn-danger mb-2" onClick={handleShowModal}>{t("pickLocation")}</div>

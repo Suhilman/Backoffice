@@ -428,7 +428,11 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
         name: item.name,
         outlet_name: item.Outlet?.name,
         capacity: item.capacity,
-        status: item.status
+        status: item.status,
+        outlet_phone_number: item.Outlet?.phone_number,
+        outlet_name: item.Outlet?.name,
+        outlet_sosmed: item.Outlet.sosmed ? JSON.parse(item.Outlet.sosmed) : [],
+        outlet_sosmed_name: item.Outlet?.sosmed_name
       };
     });
   };

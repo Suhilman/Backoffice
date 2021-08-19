@@ -12,8 +12,8 @@
 
 .container-qr-outlet{
   position: absolute;
-  /* top: -2800px; */
-  top: 0;
+  top: -2800px;
+  /* top: 0; */
   /* visibility: hidden; */
 }
 

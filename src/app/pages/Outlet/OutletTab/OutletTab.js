@@ -62,6 +62,30 @@ export const OutletTab = ({
 
   const debouncedSearch = useDebounce(search, 1000);
   const { t } = useTranslation();
+
+  const sosmed = [
+    {
+      id: 1,
+      short: "FB",
+      label: "Facebook"
+    },
+    {
+      id: 2,
+      short: "IG",
+      label: "Instagram"
+    },
+    {
+      id: 3,
+      short: "TikTok",
+      label: "TikTok"
+    },
+    {
+      id: 4,
+      short: "Twitter",
+      label: "Twitter"
+    }
+  ]
+
   const initialValueOutlet = {
     name: "",
     phone_number: "",
@@ -80,7 +104,9 @@ export const OutletTab = ({
     open_days: [],
     open_hour: "",
     close_hour: "",
-    vacation: ""
+    vacation: "",
+    sosmed: [],
+    sosmed_name: "",
   };
 
   const OutletSchema = Yup.object().shape({
@@ -187,7 +213,7 @@ export const OutletTab = ({
     validationSchema: OutletSchema,
     onSubmit: async (values) => {
       const locationPointer = JSON.parse(localStorage.getItem("addLocation"))
-      // console.log('ini data di edit', values)
+      console.log('ini data di edit', values)
       const formData = new FormData();
       formData.append("name", values.name);
       if(values.location_id) {
@@ -232,6 +258,17 @@ export const OutletTab = ({
           // console.log("masuk ketika open days dan open hour true", time)
           await axios.patch(`${API_URL}/api/v1/outlet/open-time/${values.id}`, time);
         }
+        if(values.sosmed) {
+          const dataSosmed = {}
+          console.log("dataSosmed", dataSosmed)
+          if(values.sosmed_name) {
+            dataSosmed.sosmed_name = values.sosmed_name
+          } else {
+            dataSosmed.sosmed_name = null
+          }
+          if(values.sosmed) dataSosmed.sosmed = JSON.stringify(values.sosmed)
+          await axios.patch(`${API_URL}/api/v1/outlet/setting-template/${values.id}`, dataSosmed);
+        }
         handleRefresh();
         disableLoading();
         cancelEditModalOutlet();
@@ -272,6 +309,16 @@ export const OutletTab = ({
     return "";
   };
 
+  const handleChangeSosmed = (value, formik)=> {
+    console.log("handleChangeSosmed", value)
+    if(value) {
+      const result = value.map(val => val.value)
+      formik.setFieldValue("sosmed", result)
+    } else {
+      formik.setFieldValue("sosmed", [])
+    }
+  }
+
   const showAddModalOutlet = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     const dataSubscription = await axios.get(`${API_URL}/api/v1/subscription`)
@@ -310,6 +357,7 @@ export const OutletTab = ({
       end_hour: data?.close_hour
     })
     setStateVacation(data?.vacation)
+    console.log("showEditModalOutlet", data)
 
     if(data.location_id) {
       console.log("ketika data.location_id nya masuk")
@@ -328,7 +376,9 @@ export const OutletTab = ({
         open_days: data.open_days ? JSON.parse(data.open_days) : [],
         open_hour: data?.open_hour, 
         close_hour: data?.close_hour,
-        vacation: data?.vacation
+        vacation: data?.vacation,
+        sosmed: data.sosmed,
+        sosmed_name: data.sosmed_name
       });
       const province_id = data.province_id;
       const city_id = data.city_id;
@@ -366,7 +416,9 @@ export const OutletTab = ({
         open_days: data.open_days ? JSON.parse(data.open_days) : [],
         open_hour: data?.open_hour, 
         close_hour: data?.close_hour,
-        vacation: data?.vacation
+        vacation: data?.vacation,
+        sosmed: data.sosmed,
+        sosmed_name: data.sosmed_name
       });
       setStateEditModal(true);
     }
@@ -608,7 +660,9 @@ export const OutletTab = ({
           close_hour: item.close_hour,
           tax: item.Outlet_Taxes.length ? "Taxable" : "No Tax",
           allTaxes: item.Outlet_Taxes.map((item) => item.Tax.name).join(", "),
-          vacation: item?.vacation
+          vacation: item?.vacation,
+          sosmed: item.sosmed ? JSON.parse(item.sosmed) : [],
+          sosmed_name: item.sosmed_name
         };
       } else {
         console.log("jika tidak ada")
@@ -632,7 +686,9 @@ export const OutletTab = ({
           close_hour: item.close_hour,
           tax: item.Outlet_Taxes.length ? "Taxable" : "No Tax",
           allTaxes: item.Outlet_Taxes.map((item) => item.Tax.name).join(", "),
-          vacation: item?.vacation
+          vacation: item?.vacation,
+          sosmed: item.sosmed ? JSON.parse(item.sosmed) : [],
+          sosmed_name: item.sosmed_name
         };
       }
     });
@@ -709,6 +765,8 @@ export const OutletTab = ({
         photoPreview={photoPreview}
         photo={photo}
         handlePreviewPhoto={handlePreviewPhoto}
+        handleChangeSosmed={handleChangeSosmed}
+        sosmed={sosmed}
       />
 
       <ModalOutlet
@@ -735,6 +793,8 @@ export const OutletTab = ({
         photoPreview={photoPreview}
         photo={photo}
         handlePreviewPhoto={handlePreviewPhoto}
+        handleChangeSosmed={handleChangeSosmed}
+        sosmed={sosmed}
       />
 
       <AlertOutletLimit

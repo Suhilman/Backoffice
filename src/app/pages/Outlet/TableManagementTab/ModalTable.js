@@ -34,6 +34,8 @@ const ModalPayment = ({
   const getDataBusinessTable = async () => {
     try {
       if(editDataTable) {
+        console.log("editDataTable", editDataTable)
+        console.log("editDataTable.outlet_sosmed", editDataTable.outlet_sosmed)
         const dataBusiness = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/business/${editDataTable.business_id}`)
         console.log("dataBusiness data data", dataBusiness.data.data)
         const dataTable = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/table-management/${editDataTable.id}`)
@@ -51,7 +53,10 @@ const ModalPayment = ({
           businessName: dataBusiness.data.data.name,
           outletName: dataTable.data.data.Outlet.name,
           tableName: dataTable.data.data.name,
-          phoneNumber: dataTable.data.data.phone_number
+          // phoneNumber: dataTable.data.data.phone_number,
+          phoneNumber: editDataTable.outlet_phone_number,
+          sosmed_name: editDataTable.outlet_sosmed_name,
+          sosmed: editDataTable.outlet_sosmed
         })
       }
     } catch (error) {
@@ -226,11 +231,16 @@ const ModalPayment = ({
                       WA | {dataTemplateQr.phoneNumber}
                     </div>
                     <div className="wrapper-sosmed-qr-outlet d-flex">
-                      <div className="sosmed-qr-outlet">
-                        FB | IG | TikTok |
+                      <div className="d-flex">
+                        {editDataTable.outlet_sosmed ? editDataTable.outlet_sosmed.map(value => 
+                          <div className="ml-3">{value} |</div>  
+                        ) : null}
                       </div>
-                      <div className="name-sosmed-qr-outlet ml-2">
-                        drsusiantowvc
+                      <div className="name-sosmed-qr-outlet ml-2" v-if={editDataTable.sosmed_name}>
+                        {editDataTable.sosmed_name}
+                      </div>
+                      <div className="name-sosmed-qr-outlet ml-2" v-else>
+                        [Social Media]
                       </div>
                     </div>
                   </div>
