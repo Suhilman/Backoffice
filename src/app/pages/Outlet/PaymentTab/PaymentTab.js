@@ -131,8 +131,8 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       .min(1)
       .required(`${t("pleaseInputAPaymentMethodType")}`),
     mdr: Yup.number()
-      .integer()
-      .min(0)
+      // .integer()
+      // .min(0)
       .required(`${t("pleaseInputAMdr")}`),
     status: Yup.string()
       .matches(/(active|inactive)/)
@@ -187,8 +187,8 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       .min(1)
       .required(`${t("pleaseInputAPaymentMethodType")}`),
     mdr: Yup.number()
-      .integer()
-      .min(0)
+      // .integer()
+      // .min(0)
       .required(`${t("pleaseInputAMdr")}`),
     status: Yup.string()
       .matches(/(active|inactive)/)
@@ -215,7 +215,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       try {
         enableLoading();
         await axios.put(
-          `${API_URL}/api/v1/payment-method/create-development/${values.id}`,
+          `${API_URL}/api/v1/payment-method/update-development/${values.id}`,
           paymentMethodData
         );
         handleRefresh();
@@ -276,7 +276,8 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       id: data.id,
       name: data.name,
       payment_method_type_id: data.type_id,
-      mdr: parseInt(data.mdr.slice(0, -1)),
+      // mdr: parseInt(data.mdr.slice(0, -1)),
+      mdr: parseFloat(data.mdr),
       status: data.status,
       outlet_id: data.outlet_id
     });
