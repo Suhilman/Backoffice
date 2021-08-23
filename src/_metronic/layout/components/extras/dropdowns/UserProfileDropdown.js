@@ -158,7 +158,7 @@ export function UserProfileDropdown() {
     {
       no: 3,
       key: "cn",
-      language: "China"
+      language: "Chinese"
     }
   ]
   

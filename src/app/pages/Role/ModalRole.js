@@ -61,13 +61,14 @@ const ModalRole = ({
             <Row>
               {formikRole.getFieldProps("privileges").value.length
                 ? accessLists.map((access, accessIdx) => {
+                  console.log("access", access)
                     return (
                       <Col key={accessIdx} style={{ paddingTop: "1rem" }}>
                         <FormControl
                           component="fieldset"
                           style={{ width: "100%" }}
                         >
-                          <h6>{access}</h6>
+                          <h6>{access === 'Cashier' ? 'Frontend App' : access}</h6>
 
                           <FormGroup row>
                             <Container style={{ padding: "0" }}>
