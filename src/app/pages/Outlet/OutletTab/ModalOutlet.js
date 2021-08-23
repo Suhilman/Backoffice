@@ -20,6 +20,8 @@ import {
 import { useDropzone } from "react-dropzone";
 import { Editor } from '@tinymce/tinymce-react'; 
 import ModalMap from './ModalMap'
+import ModalSosmed from './ModalSosmed'
+
 import axios from 'axios'
 
 const ModalOutlet = ({
@@ -47,7 +49,8 @@ const ModalOutlet = ({
   handleSetEndHour,
   timingState,
   handleChangeSosmed,
-  sosmed
+  sosmed,
+  refreshSosmed
 }) => {
 
   // console.log("bismillah", formikOutlet.values.vacation)
@@ -59,10 +62,14 @@ const ModalOutlet = ({
     formikOutlet.setFieldValue("open_hour", timingState.start_hour);
     formikOutlet.setFieldValue("close_hour", timingState.end_hour);
   }, [timingState])
+  const [openModalSosmed, setOpenModalSosmed] = React.useState(false)
 
   const handleStartHour = (e) => handleSetStartHour(e)
 
   const handleEndHour = (e) => handleSetEndHour(e)
+
+  const showModalSosmed = () => setOpenModalSosmed(true)
+  const closeModalSosmed = () => setOpenModalSosmed(false)
 
   const date = new Date()
   // console.log("Sekarang hari ke berapa", dayjs(date).format('d'))
@@ -103,7 +110,7 @@ const ModalOutlet = ({
     ];
 
   const optionSosmed = sosmed.map(value => {
-    return { value: value.short, label: value.label };
+    return { value: value.short_name, label: value.full_name };
   })
 
   const defaultValue = formikOutlet.values.sosmed.map((item) => {
@@ -164,6 +171,12 @@ const ModalOutlet = ({
         stateModal={showModalMap}
         cancelModal={cancelDeleteModalOutlet}
         formikOutlet={formikOutlet}
+      />
+      <ModalSosmed
+        stateModal={openModalSosmed}
+        cancelModal={closeModalSosmed}
+        t={t}
+        refreshSosmed={refreshSosmed}
       />
       <Modal show={stateModal} onHide={cancelModal} size="lg">
         <Modal.Header closeButton>
@@ -562,6 +575,9 @@ const ModalOutlet = ({
                     </div>
                   ) : null}
                 </Form.Group>
+              </Col>
+              <Col>
+                <div className="btn btn-primary mb-2" onClick={showModalSosmed}>{t("addSosmed")}</div>
               </Col>
               {/* <Col>
                 <Form.Label>Select Open Day:</Form.Label>

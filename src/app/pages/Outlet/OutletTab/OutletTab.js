@@ -59,32 +59,50 @@ export const OutletTab = ({
   const [photoPreview, setPhotoPreview] = React.useState("");
   const [alertPhoto, setAlertPhoto] = React.useState("");
   const [latitudeLongitude, setLatitudeLongitude] = React.useState({})
+  const [sosmed, setSosmed] = React.useState([])
 
   const debouncedSearch = useDebounce(search, 1000);
   const { t } = useTranslation();
 
-  const sosmed = [
-    {
-      id: 1,
-      short: "FB",
-      label: "Facebook"
-    },
-    {
-      id: 2,
-      short: "IG",
-      label: "Instagram"
-    },
-    {
-      id: 3,
-      short: "TikTok",
-      label: "TikTok"
-    },
-    {
-      id: 4,
-      short: "Twitter",
-      label: "Twitter"
+  // const sosmed = [
+  //   {
+  //     id: 1,
+  //     short: "FB",
+  //     label: "Facebook"
+  //   },
+  //   {
+  //     id: 2,
+  //     short: "IG",
+  //     label: "Instagram"
+  //   },
+  //   {
+  //     id: 3,
+  //     short: "TikTok",
+  //     label: "TikTok"
+  //   },
+  //   {
+  //     id: 4,
+  //     short: "Twitter",
+  //     label: "Twitter"
+  //   }
+  // ]
+
+  const getSosmed = async() => {
+    try {
+      const API_URL = process.env.REACT_APP_API_URL;
+      const {data} = await axios.get(`${API_URL}/api/v1/sosmed`)
+      console.log("getSosmed", data.data)
+      setSosmed(data.data)
+    } catch (error) {
+      console.log(error)
     }
-  ]
+  }
+
+  const refreshSosmed = () => getSosmed()
+
+  React.useEffect(() => {
+    getSosmed()
+  }, [])
 
   const initialValueOutlet = {
     name: "",
@@ -767,6 +785,7 @@ export const OutletTab = ({
         handlePreviewPhoto={handlePreviewPhoto}
         handleChangeSosmed={handleChangeSosmed}
         sosmed={sosmed}
+        refreshSosmed={refreshSosmed}
       />
 
       <ModalOutlet
@@ -795,6 +814,7 @@ export const OutletTab = ({
         handlePreviewPhoto={handlePreviewPhoto}
         handleChangeSosmed={handleChangeSosmed}
         sosmed={sosmed}
+        refreshSosmed={refreshSosmed}
       />
 
       <AlertOutletLimit

@@ -876,5 +876,9 @@
     "signaturePad": "Tanda Tangan",
     "settingTemplateQr": "Ubah Template Kode QR",
     "socialMedia": "Media Sosial",
-    "socialMediaName": "Nama Media Sosial"
+    "socialMediaName": "Nama Media Sosial",
+    "addSosmed": "Tambah Sosmed",
+    "shortName": "Nama Pendek",
+    "fullName": "Nama Lengkap",
+    "minimum2Character": "Minimum 2 Karakter"
   }

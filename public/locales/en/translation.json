@@ -876,5 +876,9 @@
     "signaturePad": "Signature Pad",
     "settingTemplateQr": "Edit Template QR Code",
     "socialMedia": "Social Media",
-    "socialMediaName": "Social Media Name"
+    "socialMediaName": "Social Media Name",
+    "addSosmed": "Add Sosmed",
+    "shortName": "Short Name",
+    "fullName": "Full Name",
+    "minimum2Character": "Minimum 2 Character"
 }
