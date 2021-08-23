@@ -526,9 +526,9 @@ function AsideMenuList(props) {
             </div>
             <span className="menu-text">{t("subscription")}</span>
           </NavLink>
-        </li>
+        </li> */}
 
-        <li className={`menu-item ${getMenuItemActive("/payment", false)}`}>
+        {/* <li className={`menu-item ${getMenuItemActive("/payment", false)}`}>
           <NavLink className="menu-link" to="/payment">
             <div className="wrapper-icon">
               <img src={paymentIcon} alt="Icon Payment"/>

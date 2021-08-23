@@ -17,6 +17,14 @@
   /* visibility: hidden; */
 }
 
+.length-sosmed-above-25{
+  font-size: 27px;
+}
+
+.length-sosmed-under-25{
+  display: flex;
+}
+
 .wrapper-qr-outlet{
   width: 1240px;
   height: 1748px;
@@ -47,6 +55,7 @@ canvas {
 .top-lane-qr-outlet{
   display: flex;
   justify-content: space-between;
+  align-items: center;
   position: absolute;
   background-color: #623863;
   color: white;

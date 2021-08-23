@@ -28,6 +28,8 @@ const ModalPayment = ({
 
   const [imageUrl, setImageUrl] = useState({})
   const [dataTemplateQr, setDataTemplateQr] = useState({})
+  const [lengthSosmed, setLengthSosmed] = useState(false)
+
   const businessId = formikTable.getFieldProps("business_id").value
   const tableId = formikTable.getFieldProps("id").value
   const data = `${process.env.REACT_APP_FRONTEND_URL}/get-data/${tableId}/${businessId}`
@@ -35,6 +37,21 @@ const ModalPayment = ({
     try {
       if(editDataTable) {
         console.log("editDataTable", editDataTable)
+
+        const res_sosmed_string = editDataTable.outlet_sosmed.join('')
+        const combine_string = editDataTable.outlet_sosmed_name + res_sosmed_string
+        console.log(combine_string)
+        if(combine_string) {
+          console.log(combine_string.length)
+          if(combine_string.length > 25) {
+            setLengthSosmed(true)
+            console.log("panjang sekali")
+          } else {
+            setLengthSosmed(false)
+            console.log("kurang panjang")
+          }
+        }
+
         console.log("editDataTable.outlet_sosmed", editDataTable.outlet_sosmed)
         const dataBusiness = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/business/${editDataTable.business_id}`)
         console.log("dataBusiness data data", dataBusiness.data.data)
@@ -230,18 +247,19 @@ const ModalPayment = ({
                     <div className="whatsapp-qr-outlet">
                       WA | {dataTemplateQr.phoneNumber}
                     </div>
-                    <div className="wrapper-sosmed-qr-outlet d-flex">
+                    {lengthSosmed}
+                    <div className="wrapper-sosmed-qr-outlet" className={lengthSosmed ? 'length-sosmed-above-25' : 'length-sosmed-under-25'}>
                       <div className="d-flex">
                         {editDataTable.outlet_sosmed ? editDataTable.outlet_sosmed.map(value => 
                           <div className="ml-3">{value} |</div>  
                         ) : null}
                       </div>
-                      <div className="name-sosmed-qr-outlet ml-2" v-if={editDataTable.sosmed_name}>
-                        {editDataTable.sosmed_name}
+                      <div className="name-sosmed-qr-outlet ml-2" v-if={editDataTable.outlet_sosmed_name}>
+                        {editDataTable.outlet_sosmed_name}
                       </div>
-                      <div className="name-sosmed-qr-outlet ml-2" v-else>
+                      {/* <div className="name-sosmed-qr-outlet ml-2" v-else>
                         [Social Media]
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   <div className="bottom-lane-qr-outlet"> 
