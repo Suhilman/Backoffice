@@ -334,7 +334,7 @@ const ProductTab = ({
       selector: "name",
       sortable: true,
       wrap: true,
-      grow: 5
+      grow: 4
     },
     {
       name: `${t("category")}`,
@@ -346,7 +346,7 @@ const ProductTab = ({
       name: `${t("price")}`,
       selector: "price",
       sortable: true,
-      grow: 1
+      grow: 3
     },
     {
       name: `${t("outlet")}`,
@@ -355,20 +355,21 @@ const ProductTab = ({
       wrap: true,
       grow: 4
     },
-    {
-      name: `${t("stock")}`,
-      selector: "stock",
-      sortable: true,
-      grow: 1
-    },
-    {
-      name: `${t("unit")}`,
-      selector: "unit",
-      sortable: true,
-      grow: 2
-    },
+    // {
+    //   name: `${t("stock")}`,
+    //   selector: "stock",
+    //   sortable: true,
+    //   grow: 1
+    // },
+    // {
+    //   name: `${t("unit")}`,
+    //   selector: "unit",
+    //   sortable: true,
+    //   grow: 2
+    // },
     {
       name: `${t("status")}`,
+      grow: 1,
       cell: (rows) => {
         return (
           <FormControl component="fieldset">
@@ -391,6 +392,7 @@ const ProductTab = ({
     },
     {
       name: `${t("actions")}`,
+      grow: 1,
       cell: (rows) => {
         return (
           <Dropdown>
@@ -602,16 +604,12 @@ const ProductTab = ({
   const ExpandableComponent = ({ data }) => {
     const keys = [
       {
-        key: "Product",
-        value: "name"
+        key: "Unit",
+        value: "unit"
       },
       {
-        key: "Category",
-        value: "category"
-      },
-      {
-        key: "Outlet",
-        value: "outlet"
+        key: "Stock",
+        value: "stock"
       }
     ];
 

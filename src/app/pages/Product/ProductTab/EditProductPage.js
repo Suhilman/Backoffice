@@ -219,6 +219,7 @@ export const EditProductPage = ({ match, location }) => {
         disableLoading();
         history.push("/product");
       } catch (err) {
+        console.log("error edit product", err.response)
         setAlert(err.response.data.message);
         disableLoading();
       }
