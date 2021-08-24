@@ -3,6 +3,14 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import {
+  Switch,
+  FormGroup,
+  FormControl,
+  FormControlLabel,
+  Paper
+} from "@material-ui/core";
+
+import {
   Dropdown,
   Row,
   Col,
@@ -10,7 +18,6 @@ import {
   Form,
   InputGroup
 } from "react-bootstrap";
-import { Paper } from "@material-ui/core";
 import { CalendarToday, TodayOutlined, Schedule } from "@material-ui/icons";
 import { SalesSummaryTab } from "./SalesSummaryTab";
 import { PaymentMethodTab } from "./PaymentMethodTab";
@@ -48,6 +55,7 @@ export const ReportPage = () => {
 
   const [startRange, setStartRange] = React.useState(new Date());
   const [endRange, setEndRange] = React.useState(new Date());
+  const [showMdr, setShowMdr] = React.useState("Inactive")
 
   const [startDate, setStartDate] = React.useState(
     dayjs().format("YYYY-MM-DD")
@@ -185,6 +193,36 @@ export const ReportPage = () => {
     // }
   ];
 
+  const getBusiness = async () => {
+    const user_info = JSON.parse(localStorage.getItem("user_info"))
+    const API_URL = process.env.REACT_APP_API_URL;
+
+    try {
+      const { data } = await axios.get(`${API_URL}/api/v1/business/${user_info.business_id}`);
+      if(data.data.show_mdr) setShowMdr("Active")
+      if(!data.data.show_mdr) setShowMdr("Inactive")
+      
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const handleShowMdr = async (params) => {
+    const user_info = JSON.parse(localStorage.getItem("user_info"))
+    const API_URL = process.env.REACT_APP_API_URL;
+    try {
+      setShowMdr(params)
+      const data = {}
+      if(params === "Active") data.show_mdr = true
+      if(params === "Inactive") data.show_mdr = false
+
+      await axios.patch(`${API_URL}/api/v1/business/update-show-mdr/${user_info.business_id}`, data);
+      getBusiness()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const getOutlets = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
 
@@ -197,13 +235,13 @@ export const ReportPage = () => {
   };
 
   React.useEffect(() => {
+    getBusiness()
     getOutlets();
   }, []);
 
   const handleSelectTab = (e) => {
     const { value } = e.target;
     setTabs(value);
-    // console.log('ini apa hyo', value)
     setSelectedOutlet({
       id: "",
       name: "All Outlet"
@@ -271,7 +309,6 @@ export const ReportPage = () => {
     setTime(`${time_start} - ${end_time}`);
     setShowTimePicker(false);
   };
-  // console.log("baksoow", allOutlets)
   return (
     <>
       <CustomDateRange
@@ -304,6 +341,31 @@ export const ReportPage = () => {
 
               <div className="headerEnd">
                 <Row>
+                  <div className="d-flex align-items-center">
+                    <Form.Label className="mr-1">{t("mdr")}</Form.Label>
+                    <FormControl component="fieldset">
+                      <FormGroup aria-label="position" row>
+                        <FormControlLabel
+                          value={showMdr}
+                          control={
+                            <Switch
+                              color="primary"
+                              checked={showMdr === "Active" ? true : false}
+                              onChange={(e) => {
+                                if (showMdr === e.target.value) {
+                                  if (showMdr === "Active") {
+                                    handleShowMdr("Inactive");
+                                  } else {
+                                    handleShowMdr("Active");
+                                  }
+                                }
+                              }}
+                            />
+                          }
+                        />
+                      </FormGroup>
+                    </FormControl>
+                  </div>
                   <DropdownButton
                     title={
                       tabData.find((item) => item.no === parseInt(tabs))
@@ -337,25 +399,27 @@ export const ReportPage = () => {
                       })}
                     </div>
                   </DropdownButton>
-
-                  {tabData.find((item) => 
-                  item.no === parseInt(tabs)).table ? (
-                    <ExportExcel
-                      className="btn btn-outline-primary ml-2"
-                      table={
-                        tabData.find((item) => item.no === parseInt(tabs))
-                          .table || ""
-                      }
-                      filename={
-                        tabData.find((item) => item.no === parseInt(tabs))
-                          .filename || `laporan_${startDate}-${endDate}`
-                      }
-                      sheet="transaction-report"
-                      buttonText={t("export")}
-                    />
-                  ) : (
-                    ""
-                  )}
+                  
+                  <div>
+                    {tabData.find((item) => 
+                    item.no === parseInt(tabs)).table ? (
+                      <ExportExcel
+                        className="btn btn-outline-primary ml-2"
+                        table={
+                          tabData.find((item) => item.no === parseInt(tabs))
+                            .table || ""
+                        }
+                        filename={
+                          tabData.find((item) => item.no === parseInt(tabs))
+                            .filename || `laporan_${startDate}-${endDate}`
+                        }
+                        sheet="transaction-report"
+                        buttonText={t("export")}
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </div>
                 </Row>
               </div>
             </div>

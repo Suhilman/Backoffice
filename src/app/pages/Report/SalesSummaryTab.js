@@ -65,6 +65,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate }) => {
       const { data } = await axios.get(
         `${API_URL}/api/v1/transaction${outlet_id}date_start=${start_range}&date_end=${end_range}`
       );
+      console.log("all transaction", data.data)
       setAllTransactions(data.data);
       allSales = data.data;
     } catch (err) {
