@@ -33,9 +33,20 @@ const PaymentModule = () => {
   const { t } = useTranslation();
   console.log("modal form cashlez")
   const [showSignaturePad, setShowSignaturePad] = useState(false)
+  const [baseSignature, setBaseSignature] = useState("")
+  const [ownerName, setOwnerName] = useState("")
 
   const openSignaturePad = () => setShowSignaturePad(true)
   const closeSignaturePad = () => setShowSignaturePad(false)
+  const handleResultSignature = (data) => {
+    setBaseSignature(data)
+    console.log("setBaseSignature", data)
+  }
+
+  const handleOwnerName = (value) => {
+    console.log("handleOwnerName", value)
+    setOwnerName(value)
+  }
 
   const InitialFormCz = {
     nama_pemilik: "",
@@ -133,6 +144,7 @@ const PaymentModule = () => {
         // hari: values.hari,
         // tanggal: values.tanggal
       }
+      if(baseSignature) dataSend.signature = baseSignature
       console.log("data form cz", dataSend)
       try {
         const date = new Date()
@@ -177,8 +189,11 @@ const PaymentModule = () => {
   return (
     <div>
       <Signature
+        ownerName={ownerName}
+        handleResultSignature={handleResultSignature}
         show={showSignaturePad}
         close={closeSignaturePad}
+        t={t}
       />
 
       <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
@@ -202,6 +217,7 @@ const PaymentModule = () => {
                 {...formikFormCz.getFieldProps("nama_pemilik")}
                 className={validationFormCz("nama_pemilik")}
                 required
+                onBlur={(e) => handleOwnerName(e.target.value)}
               />
               {formikFormCz.touched.nama_pemilik && formikFormCz.errors.nama_pemilik ? (
                 <div className="fv-plugins-message-container">

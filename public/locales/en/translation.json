@@ -880,5 +880,7 @@
     "addSosmed": "Add Sosmed",
     "shortName": "Short Name",
     "fullName": "Full Name",
-    "minimum2Character": "Minimum 2 Character"
+    "minimum2Character": "Minimum 2 Character",
+    "merchantOwner": "MERCHANT OWNER",
+    "fullName&Signature":"Full Name & Signature"
 }

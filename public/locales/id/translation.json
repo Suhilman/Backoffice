@@ -880,5 +880,7 @@
     "addSosmed": "Tambah Sosmed",
     "shortName": "Nama Pendek",
     "fullName": "Nama Lengkap",
-    "minimum2Character": "Minimum 2 Karakter"
+    "minimum2Character": "Minimum 2 Karakter",
+    "merchantOwner": "PEMILIK MERCHANT",
+    "fullName&Signature":"Nama Lengkap & Tanda Tangan"
   }
