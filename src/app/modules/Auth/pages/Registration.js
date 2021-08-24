@@ -73,12 +73,16 @@ function Registration(props) {
         })
       ),
     password: Yup.string()
-      .min(3, `${t("minimum3Symbols")}`)
+      .min(8, `${t("minimum8Character")}`)
       .max(50, `${t("maximum50Symbols")}`)
       .required(
         intl.formatMessage({
           id: "AUTH.VALIDATION.REQUIRED_FIELD"
         })
+      )
+      .matches(
+        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
+        "Must Contain 8 Characters, One Uppercase, One Lowercase and One Number"
       ),
     changepassword: Yup.string()
       .required(
@@ -92,7 +96,11 @@ function Registration(props) {
           [Yup.ref("password")],
           "Password and Confirm Password didn't match"
         )
-      }),
+      })
+      .matches(
+        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
+        "Must Contain 8 Characters, One Uppercase, One Lowercase and One Number"
+      ),
     business_type_id: Yup.number()
       .integer()
       .min(1)

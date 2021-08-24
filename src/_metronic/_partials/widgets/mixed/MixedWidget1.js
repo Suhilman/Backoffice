@@ -606,7 +606,7 @@ const ModalCustomRange = ({
       {showGuide === 'dashboard' ? (
         <div className="wrapper-guide dashboard">
           <div className="font-weight-bold">Dashboard</div>
-          Pada Submenu Dashboard, akan terlihat grafik penjualan beserta dengan detail sales dan detail transactions. Anda dapat menggunakan filter waktu dan outlet untuk mengubah grafik sesuai dengan yang diinginkan
+          Pada Submenu Dashboard, akan terlihat grafik penjualan beserta dengan detail sales dan detail transactions. Anda dapat menggunakan filter waktu dan outlet untuk mengubah grafik sesuai dengan yang diinginkan.
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('report')}>
               <div className="badge badge-info">Skip Guide</div>
@@ -634,7 +634,7 @@ const ModalCustomRange = ({
       {showGuide === 'product' ? (
         <div className="wrapper-guide product" >
           <div className="font-weight-bold">Product</div>
-            Pada menu utama modul product, akan terlihat Product List dari bisnis anda. Anda dapat melihat data produk yang telah dibuat pada bisnis anda, beserta dengan stock serta status produk tersebut. Status produk dapat diubah menjadi non aktif maupun aktif, yang dapat digunakan untuk menghilangkan produk dari product list pada aplikasi BeetPOS (jika non-aktif). Anda dapat melakukan edit maupun delete produk pada masing-masing produk
+            Pada menu utama modul product, akan terlihat Product List dari bisnis anda. Anda dapat melihat data produk yang telah dibuat pada bisnis anda, beserta dengan stock serta status produk tersebut. Status produk dapat diubah menjadi non aktif maupun aktif, yang dapat digunakan untuk menghilangkan produk dari product list pada aplikasi BeetPOS (jika non-aktif). Anda dapat melakukan edit maupun delete produk pada masing-masing produk.
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('inventory')}>
               <div className="badge badge-info">Skip Guide</div>
@@ -648,7 +648,7 @@ const ModalCustomRange = ({
       {showGuide === 'inventory' ? (
         <div className="wrapper-guide inventory">
           <div className="font-weight-bold">Inventory</div>
-          Pada menu utama modul inventory, akan terlihat Inventory List dari bisnis anda. Anda dapat melihat data produk yang telah dibuat pada bisnis anda beserta dengan supplier name, starting stock, current stock, incoming stock dan outcoming stock.
+          Pada modul Inventory, anda dapat mengatur stock pada setiap produk anda. Lakukan aktivitas pemasukan stock, pengeluaran stock, transfer stock, hingga pembuatan dokumen stock opname dan purchase order.
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('kitchen')}>
               <div className="badge badge-info">Skip Guide</div>
@@ -662,7 +662,7 @@ const ModalCustomRange = ({
       {showGuide === 'kitchen' ? (
         <div className="wrapper-guide kitchen">
           <div className="font-weight-bold">Kitchen</div>
-          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+          Pada modul kitchen, anda dapat menambahkan dan mengatur bahan baku yang terdapat pada usaha anda. Gunakan menu resep untuk membangun resep pada produk anda, dan masukan bahan baku pada resep untuk melakukan pengurangan bahan baku secara otomatis.
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('outlet')}>
               <div className="badge badge-info">Skip Guide</div>
@@ -676,7 +676,7 @@ const ModalCustomRange = ({
       {showGuide === 'outlet' ? (
         <div className="wrapper-guide outlet" >
           <div className="font-weight-bold">Outlet</div>
-          Pada menu utama Outlet, terdapat tampilan Outlet yang sudah dibuat pada bisnis anda. Pada setiap outlet, terdapat juga dropdown yang dapat digunakan untuk melihat data outlet secara cepat (quickview). Anda dapat memilih opsi edit outlet pada setiap outlet untuk mengubah data pada popup edit outlet. Menambah Outlet baru
+          Pada menu utama Outlet, terdapat tampilan Outlet yang sudah dibuat pada bisnis anda. Pada setiap outlet, terdapat juga dropdown yang dapat digunakan untuk melihat data outlet secara cepat (quickview). Anda dapat memilih opsi edit outlet pada setiap outlet untuk mengubah data pada popup edit outlet. Menambah Outlet baru.
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('promo')}>
               <div className="badge badge-info">Skip Guide</div>
@@ -751,7 +751,7 @@ const ModalCustomRange = ({
         <div className="wrapper-guide commission">
           <div onClick={() => handleShowGuide('account')}>
             <div className="font-weight-bold">Commission</div>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries
+            Catat komisi yang didapatkan oleh staff anda menggunakan modul comission. Buat grup komisi dan tentukan peraturan dan nilai komisi untuk staff anda. Komisi yang akan didapatkan oleh staff anda dapat dilihat pada menu report.
           </div>
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('account')}>
@@ -765,9 +765,41 @@ const ModalCustomRange = ({
       ): null}
       {showGuide === 'account' ? (
         <div className="wrapper-guide account">
-          <div onClick={() => handleShowGuide('finish_guide')}>
+          <div onClick={() => handleShowGuide('subscription')}>
             <div className="font-weight-bold">Account</div>
             Pada menu Account Information, akan ditampilkan data mengenai akun anda sesuai dengan data yang anda isi. Untuk mengubah data Account Information, anda dapat memilih Change Account Information, dan memasukan data yang ingin diganti. Untuk perubahan password dan PIN staff, dapat dilakukan juga pada menu Change Account Information.
+          </div>
+          <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('subscription')}>
+              <div className="badge badge-info">Skip Guide</div>
+            </div>
+            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('subscription')}>
+              <div className="badge badge-danger">Skip All Guide</div>
+            </div>
+          </div>
+        </div>
+      ): null}
+      {showGuide === 'subscription' ? (
+        <div className="wrapper-guide subscription">
+          <div onClick={() => handleShowGuide('payment')}>
+            <div className="font-weight-bold">Subscription</div>
+            Lihat status langganan beetPOS anda disini. Lakukan pelengkapan data melalui menu subscription, tambahkan kuota outlet dan pilih tipe pembayaran subscription melalui menu ini.
+          </div>
+          <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('payment')}>
+              <div className="badge badge-info">Skip Guide</div>
+            </div>
+            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('payment')}>
+              <div className="badge badge-danger">Skip All Guide</div>
+            </div>
+          </div>
+        </div>
+      ): null}
+      {showGuide === 'payment' ? (
+        <div className="wrapper-guide payment">
+          <div onClick={() => handleShowGuide('finish_guide')}>
+            <div className="font-weight-bold">Payment</div>
+            Permudah transaksi bisnis anda dengan mendaftarkan bisnis anda pada menu ini. Gunakan fitur Payment Gateway dari partner BeetPOS untuk melakukan transaksi online dengan konfirmasi otomatis pada setiap pembayaran online yang terdaftar pada menu ini.
           </div>
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>

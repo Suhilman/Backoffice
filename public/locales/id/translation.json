@@ -882,5 +882,6 @@
     "fullName": "Nama Lengkap",
     "minimum2Character": "Minimum 2 Karakter",
     "merchantOwner": "PEMILIK MERCHANT",
-    "fullName&Signature":"Nama Lengkap & Tanda Tangan"
+    "fullName&Signature":"Nama Lengkap & Tanda Tangan",
+    "minimum8Character": "Minimum 8 Karakter"
   }

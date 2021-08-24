@@ -882,5 +882,6 @@
     "fullName": "Full Name",
     "minimum2Character": "Minimum 2 Character",
     "merchantOwner": "MERCHANT OWNER",
-    "fullName&Signature":"Full Name & Signature"
+    "fullName&Signature":"Full Name & Signature",
+    "minimum8Character": "Minimum 8 Character"
 }
