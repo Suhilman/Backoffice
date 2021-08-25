@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import "../style.css";
 import NumberFormat from 'react-number-format'
 
-export const PaymentMethodTab = ({ selectedOutlet, startDate, endDate }) => {
+export const PaymentMethodTab = ({ selectedOutlet, startDate, endDate, refresh }) => {
   const [allPaymentMethods, setAllPaymentMethods] = React.useState([]);
   const [currency, setCurrency] = React.useState("")
   const handleCurrency = async () => {
@@ -46,9 +46,13 @@ export const PaymentMethodTab = ({ selectedOutlet, startDate, endDate }) => {
     }
 
     try {
+      // const { data } = await axios.get(
+      //   `${API_URL}/api/v1/transaction/payment-method${outlet_id}date_start=${start_range}&date_end=${end_range}`
+      // );
       const { data } = await axios.get(
-        `${API_URL}/api/v1/transaction/payment-method${outlet_id}date_start=${start_range}&date_end=${end_range}`
+        `${API_URL}/api/v1/transaction/payment-method/mdr${outlet_id}date_start=${start_range}&date_end=${end_range}`
       );
+      
       setAllPaymentMethods(data.data);
     } catch (err) {
       if (err.response.status === 404) {
@@ -60,7 +64,7 @@ export const PaymentMethodTab = ({ selectedOutlet, startDate, endDate }) => {
 
   React.useEffect(() => {
     getPaymentMethod(selectedOutlet.id, startDate, endDate);
-  }, [selectedOutlet, startDate, endDate]);
+  }, [selectedOutlet, startDate, endDate, refresh]);
 
   const paymentMethodData = () => {
     const data = [];

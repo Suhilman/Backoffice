@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import "../style.css";
 import NumberFormat from 'react-number-format'
 
-export const SalesTypeTab = ({ selectedOutlet, startDate, endDate }) => {
+export const SalesTypeTab = ({ selectedOutlet, startDate, endDate, refresh }) => {
   const [allSalesTypes, setAllSalesTypes] = React.useState([]);
   const [allTypes, setAllTypes] = React.useState([]);
   const [currency, setCurrency] = React.useState("")
@@ -62,9 +62,13 @@ export const SalesTypeTab = ({ selectedOutlet, startDate, endDate }) => {
     }
 
     try {
+      // const { data } = await axios.get(
+      //   `${API_URL}/api/v1/transaction/sales-type${outlet_id}date_start=${start_range}&date_end=${end_range}`
+      // );
       const { data } = await axios.get(
-        `${API_URL}/api/v1/transaction/sales-type${outlet_id}date_start=${start_range}&date_end=${end_range}`
+        `${API_URL}/api/v1/transaction/sales-type/mdr${outlet_id}date_start=${start_range}&date_end=${end_range}`
       );
+
       setAllSalesTypes(data.data);
     } catch (err) {
       if (err.response.status === 404) {
@@ -80,7 +84,7 @@ export const SalesTypeTab = ({ selectedOutlet, startDate, endDate }) => {
 
   React.useEffect(() => {
     getSalesType(selectedOutlet.id, startDate, endDate);
-  }, [selectedOutlet, startDate, endDate]);
+  }, [selectedOutlet, startDate, endDate, refresh]);
 
   const salesTypeData = () => {
     const data = [];

@@ -53,6 +53,7 @@ export const ReportPage = () => {
     name: ""
   });
 
+  const [refresh, setRefresh] = React.useState(0)
   const [startRange, setStartRange] = React.useState(new Date());
   const [endRange, setEndRange] = React.useState(new Date());
   const [showMdr, setShowMdr] = React.useState("Inactive")
@@ -193,6 +194,8 @@ export const ReportPage = () => {
     // }
   ];
 
+  const handleRefresh = () => setRefresh((state) => state + 1)
+
   const getBusiness = async () => {
     const user_info = JSON.parse(localStorage.getItem("user_info"))
     const API_URL = process.env.REACT_APP_API_URL;
@@ -201,7 +204,7 @@ export const ReportPage = () => {
       const { data } = await axios.get(`${API_URL}/api/v1/business/${user_info.business_id}`);
       if(data.data.show_mdr) setShowMdr("Active")
       if(!data.data.show_mdr) setShowMdr("Inactive")
-      
+      handleRefresh()
     } catch (err) {
       console.log(err);
     }
@@ -573,6 +576,7 @@ export const ReportPage = () => {
                     startTime={startTime}
                     endTime={endTime}
                     status={status}
+                    refresh={refresh}
                   />
                 );
               } else {

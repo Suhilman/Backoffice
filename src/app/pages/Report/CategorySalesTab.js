@@ -7,7 +7,7 @@ import NumberFormat from 'react-number-format'
 import { useTranslation } from "react-i18next";
 import "../style.css";
 
-export const CategorySalesTab = ({ selectedOutlet, startDate, endDate }) => {
+export const CategorySalesTab = ({ selectedOutlet, startDate, endDate, refresh }) => {
   const [allCategorySales, setAllCategorySales] = React.useState([]);
   const [allCategories, setAllCategories] = React.useState([]);
   const [currency, setCurrency] = React.useState("")
@@ -47,8 +47,11 @@ export const CategorySalesTab = ({ selectedOutlet, startDate, endDate }) => {
     }
 
     try {
+      // const { data } = await axios.get(
+      //   `${API_URL}/api/v1/transaction/category-sales${outlet_id}date_start=${start_range}&date_end=${end_range}`
+      // );
       const { data } = await axios.get(
-        `${API_URL}/api/v1/transaction/category-sales${outlet_id}date_start=${start_range}&date_end=${end_range}`
+        `${API_URL}/api/v1/transaction/category-sales/mdr${outlet_id}date_start=${start_range}&date_end=${end_range}`
       );
       setAllCategorySales(data.data);
     } catch (err) {
@@ -75,7 +78,7 @@ export const CategorySalesTab = ({ selectedOutlet, startDate, endDate }) => {
 
   React.useEffect(() => {
     getCategorySales(selectedOutlet.id, startDate, endDate);
-  }, [selectedOutlet, startDate, endDate]);
+  }, [selectedOutlet, startDate, endDate, refresh]);
 
   React.useEffect(() => {
     getCategories();
@@ -167,6 +170,7 @@ export const CategorySalesTab = ({ selectedOutlet, startDate, endDate }) => {
     }, {});
 
     allCategories.forEach((category) => {
+      console.log("categoryTotal[category]", categoryTotal[category])
       data.push({
         category,
         sold: categorySold[category],
