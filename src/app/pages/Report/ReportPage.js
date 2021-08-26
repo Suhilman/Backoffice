@@ -577,6 +577,7 @@ export const ReportPage = () => {
                     endTime={endTime}
                     status={status}
                     refresh={refresh}
+                    showMdr={showMdr}
                   />
                 );
               } else {

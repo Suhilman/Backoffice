@@ -196,7 +196,7 @@ export const AttendanceTab = ({ selectedOutlet, startDate, endDate }) => {
           </tbody>
           <thead>
             <tr>
-              <th>{t("date&time")}</th>
+              <th>{t("date&Time")}</th>
               <th>{t("staffName")}</th>
               <th>{t("outlet")}</th>
               <th>{t("checkInTime")}</th>

@@ -5,6 +5,7 @@ import rupiahFormat from "rupiah-format";
 import NumberFormat from 'react-number-format'
 import "../style.css";
 import { Table } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
 const SalesPerHour = ({
   selectedOutlet,
@@ -12,7 +13,8 @@ const SalesPerHour = ({
   startDate,
   startTime,
   endTime,
-  refresh
+  refresh,
+  showMdr
 }) => {
   const [salesPerHour, setSalesPerHour] = useState([]);
   const [currency, setCurrency] = React.useState("")
@@ -30,6 +32,7 @@ const SalesPerHour = ({
   React.useEffect(() => {
     handleCurrency()
   }, [])
+  const { t } = useTranslation();
 
   const getDataSalesPerHour = async (
     id,
@@ -131,6 +134,11 @@ const SalesPerHour = ({
     });
     return array;
   };
+
+  const handleMdr = (data) => {
+    console.log("handleMdrdata ", data)
+  }
+
   const renderTime = (array) => {
     let final = [];
     let seen2 = {};
@@ -153,15 +161,28 @@ const SalesPerHour = ({
       return true;
     });
 
-    array.map((i) => {
-      // Masalah Ditemukan
-      final.push({
-        time: i.time,
-        total_penjualan: sum(i.penjualan.flat(1)),
-        jumlah_transaksi: i.receiptId.length,
-        rata_rata: Math.round(sum(i.penjualan.flat(1)) / i.receiptId.length)
+    if(showMdr === 'Active') {
+      handleMdr(array)
+      // array.map((i) => {
+      //   // Masalah Ditemukan
+      //   final.push({
+      //     time: i.time,
+      //     total_penjualan: sum(i.penjualan.flat(1)),
+      //     jumlah_transaksi: i.receiptId.length,
+      //     rata_rata: Math.round(sum(i.penjualan.flat(1)) / i.receiptId.length)
+      //   });
+      // });
+    }else {
+      array.map((i) => {
+        // Masalah Ditemukan
+        final.push({
+          time: i.time,
+          total_penjualan: sum(i.penjualan.flat(1)),
+          jumlah_transaksi: i.receiptId.length,
+          rata_rata: Math.round(sum(i.penjualan.flat(1)) / i.receiptId.length)
+        });
       });
-    });
+    }
     return final.sort(compare);
   };
   const timeSet = (time) => {
@@ -229,10 +250,10 @@ const SalesPerHour = ({
           </tbody>
           <thead>
             <tr>
-              <th>Waktu</th>
-              <th>Jumlah Transaksi</th>
-              <th>Penjualan</th>
-              <th>Rata-Rata Penjualan</th>
+              <th>{t('time')}</th>
+              <th>{t('numberOfTransaction')}</th>
+              <th>{t('sales')}</th>
+              <th>{t('averageSales')}</th>
             </tr>
           </thead>
           <tbody>
@@ -249,11 +270,11 @@ const SalesPerHour = ({
               })
             ) : (
               <tr>
-                <td>Data Not Found</td>
+                <td>{t('dataNotFound')}</td>
               </tr>
             )}
             <tr>
-              <th>Grand Total</th>
+              <th>{t('grandTotal')}</th>
               <th>{sumReports(salesPerHour, "jumlah_transaksi")}</th>
               <th>{sumReports(salesPerHour, "total_penjualan")} </th>
               <th>{sumReports(salesPerHour, "rata_rata")} </th>
@@ -264,10 +285,10 @@ const SalesPerHour = ({
       <Table>
         <thead>
           <tr>
-            <th>Time</th>
-            <th>Total Transaction</th>
-            <th>Total Sales</th>
-            <th>Average Sales</th>
+            <th>{t('time')}</th>
+            <th>{t('totalTransaction')}</th>
+            <th>{t('totalSales')}</th>
+            <th>{t('averageSales')}</th>
           </tr>
         </thead>
         <tbody>
