@@ -47,12 +47,12 @@ export const CategorySalesTab = ({ selectedOutlet, startDate, endDate, refresh }
     }
 
     try {
-      // const { data } = await axios.get(
-      //   `${API_URL}/api/v1/transaction/category-sales${outlet_id}date_start=${start_range}&date_end=${end_range}`
-      // );
       const { data } = await axios.get(
-        `${API_URL}/api/v1/transaction/category-sales/mdr${outlet_id}date_start=${start_range}&date_end=${end_range}`
+        `${API_URL}/api/v1/transaction/category-sales${outlet_id}date_start=${start_range}&date_end=${end_range}`
       );
+      // const { data } = await axios.get(
+      //   `${API_URL}/api/v1/transaction/category-sales/mdr${outlet_id}date_start=${start_range}&date_end=${end_range}`
+      // );
       setAllCategorySales(data.data);
     } catch (err) {
       if (err.response.status === 404) {
