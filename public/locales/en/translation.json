@@ -883,5 +883,9 @@
     "minimum2Character": "Minimum 2 Character",
     "merchantOwner": "MERCHANT OWNER",
     "fullName&Signature":"Full Name & Signature",
-    "minimum8Character": "Minimum 8 Character"
+    "minimum8Character": "Minimum 8 Character",
+    "receiptId": "Receipt Id",
+    "staffOnCharge": "Staff On Charge",
+    "paymentTotal": "Payment Total",
+    "totalDiscount": "Total Discount"
 }

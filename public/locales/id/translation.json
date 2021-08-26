@@ -883,5 +883,9 @@
     "minimum2Character": "Minimum 2 Karakter",
     "merchantOwner": "PEMILIK MERCHANT",
     "fullName&Signature":"Nama Lengkap & Tanda Tangan",
-    "minimum8Character": "Minimum 8 Karakter"
+    "minimum8Character": "Minimum 8 Karakter",
+    "receiptId": "Id Kuitansi",
+    "staffOnCharge": "Staf Yang Bertanggung Jawab",
+    "paymentTotal": "Jumlah Pembayaran",
+    "totalDiscount": "Total Diskon"
   }

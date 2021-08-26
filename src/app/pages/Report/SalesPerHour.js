@@ -11,7 +11,8 @@ const SalesPerHour = ({
   endDate,
   startDate,
   startTime,
-  endTime
+  endTime,
+  refresh
 }) => {
   const [salesPerHour, setSalesPerHour] = useState([]);
   const [currency, setCurrency] = React.useState("")
@@ -67,10 +68,16 @@ const SalesPerHour = ({
       timeStart = timeEnd;
       timeEnd = switched;
     }
+    console.log("timeStart", timeStart)
+    console.log("timeEnd", timeEnd)
     try {
+      // const { data } = await axios.get(
+      //   `${API_URL}/api/v1/transaction/sales-hour${outlet_id}date_start=${start_range}&date_end=${end_range}&time_start=${timeStart}&time_end=${timeEnd}`
+      // );
       const { data } = await axios.get(
-        `${API_URL}/api/v1/transaction/sales-hour${outlet_id}date_start=${start_range}&date_end=${end_range}&time_start=${timeStart}&time_end=${timeEnd}`
+        `${API_URL}/api/v1/transaction/sales-hour/mdr${outlet_id}date_start=${start_range}&date_end=${end_range}&time_start=${timeStart}&time_end=${timeEnd}`
       );
+
       setSalesPerHour(renderTime(renderReceipt(data.data)));
     } catch (err) {
       if (err.response.status === 404) {
@@ -147,6 +154,7 @@ const SalesPerHour = ({
     });
 
     array.map((i) => {
+      // Masalah Ditemukan
       final.push({
         time: i.time,
         total_penjualan: sum(i.penjualan.flat(1)),
@@ -170,7 +178,7 @@ const SalesPerHour = ({
       startTime,
       endTime
     );
-  }, [selectedOutlet, startDate, endDate, startTime, endTime]);
+  }, [selectedOutlet, startDate, endDate, startTime, endTime, refresh]);
 
   return (
     <>
