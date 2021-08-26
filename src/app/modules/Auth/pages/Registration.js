@@ -11,6 +11,7 @@ import { useHistory } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './style.css'
+import dayjs from 'dayjs'
 
 import ReCAPTCHA from "react-google-recaptcha";
 
@@ -45,6 +46,22 @@ function Registration(props) {
   const { intl } = props;
   const [loading, setLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
+
+  const [expiredApp, setExpiredApp] = useState(false)
+  const handleExpiredApp = () => {
+    const dateNow = new Date()
+    const dateNowFormat = dayjs(dateNow)
+    const dateExpired = dayjs('2021-08-26')
+    const resDate = dateExpired.diff(dateNowFormat, 'day')
+    console.log("resDate", resDate)
+    if(resDate < 1) {
+      setExpiredApp(true)
+    }
+  }
+  // React.useEffect(() => {
+  //   handleExpiredApp()
+  // }, [])
+
   const { t } = useTranslation();
   const RegistrationSchema = Yup.object().shape({
     name: Yup.string()
@@ -1084,7 +1101,7 @@ function Registration(props) {
         <div className="form-group d-flex flex-wrap flex-center">
           <button
             type="submit"
-            disabled={formik.isSubmitting || !formik.values.acceptTerms}
+            disabled={formik.isSubmitting || !formik.values.acceptTerms || expiredApp}
             className="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4"
           >
             <span>Submit</span>

@@ -1,6 +1,5 @@
 import { DateRangePicker } from 'react-date-range';
-
-const dayjs = require('dayjs')
+import dayjs from 'dayjs'
 
 export default function setupAxios(axios, store) {
   axios.interceptors.request.use(
@@ -69,6 +68,7 @@ export default function setupAxios(axios, store) {
       } else {
         return Promise.reject(err);
       }
+      
     }
   );
 }

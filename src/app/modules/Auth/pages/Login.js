@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import ReCAPTCHA from "react-google-recaptcha";
 import ModalVerify from "../components/ModalVerify";
 import ModalRegister from "../components/ModalRegister";
+import dayjs from 'dayjs'
 
 const initialValues = {
   email: "",
@@ -34,6 +35,21 @@ function Login(props) {
   const { t } = useTranslation();
   const [code, setCode] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
+
+  const [expiredApp, setExpiredApp] = useState(false)
+  const handleExpiredApp = () => {
+    const dateNow = new Date()
+    const dateNowFormat = dayjs(dateNow)
+    const dateExpired = dayjs('2021-08-26')
+    const resDate = dateExpired.diff(dateNowFormat, 'day')
+    console.log("resDate", resDate)
+    if(resDate < 1) {
+      setExpiredApp(true)
+    }
+  }
+  // React.useEffect(() => {
+  //   handleExpiredApp()
+  // }, [])
 
   const initialValueBusiness = {
     business_type_id: "",
@@ -475,7 +491,7 @@ function Login(props) {
             <button
               id="kt_login_signin_submit"
               type="submit"
-              disabled={formik.isSubmitting}
+              disabled={formik.isSubmitting || expiredApp}
               className={`btn btn-primary font-weight-bold px-9 py-4 my-3`}
             >
               <span>Sign In</span>
