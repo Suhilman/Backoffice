@@ -71,12 +71,12 @@ const SalesPerHour = ({
     console.log("timeStart", timeStart)
     console.log("timeEnd", timeEnd)
     try {
-      const { data } = await axios.get(
-        `${API_URL}/api/v1/transaction/sales-hour${outlet_id}date_start=${start_range}&date_end=${end_range}&time_start=${timeStart}&time_end=${timeEnd}`
-      );
       // const { data } = await axios.get(
-      //   `${API_URL}/api/v1/transaction/sales-hour/mdr${outlet_id}date_start=${start_range}&date_end=${end_range}&time_start=${timeStart}&time_end=${timeEnd}`
+      //   `${API_URL}/api/v1/transaction/sales-hour${outlet_id}date_start=${start_range}&date_end=${end_range}&time_start=${timeStart}&time_end=${timeEnd}`
       // );
+      const { data } = await axios.get(
+        `${API_URL}/api/v1/transaction/sales-hour/mdr${outlet_id}date_start=${start_range}&date_end=${end_range}&time_start=${timeStart}&time_end=${timeEnd}`
+      );
 
       setSalesPerHour(renderTime(renderReceipt(data.data)));
     } catch (err) {
