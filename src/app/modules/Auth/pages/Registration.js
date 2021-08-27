@@ -48,6 +48,8 @@ function Registration(props) {
   const [captchaToken, setCaptchaToken] = useState("");
 
   const [expiredApp, setExpiredApp] = useState(false)
+
+  // expired_app
   const handleExpiredApp = () => {
     const dateNow = new Date()
     const dateNowFormat = dayjs(dateNow)
