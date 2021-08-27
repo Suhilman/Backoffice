@@ -56,11 +56,11 @@ import { AddOpnameMaterialPage } from "./pages/Ingredient/InventoryTab/StockOpna
 import { DetailOpnameMaterialPage } from "./pages/Ingredient/InventoryTab/StockOpname/DetailPage";
 import { AddBundlePage } from "./pages/Product/ProductTab/AddBundle";
 import { EditBundlePage } from "./pages/Product/ProductTab/EditBundle";
+import { PaymentModulPage } from './pages/PaymentModul/PaymentModulePage'
 import Commission from "./pages/Commission/CommissionPage"
 import AddGroupCommission from "./pages/Commission/AddGroupCommission"
 import EditGroupCommission from "./pages/Commission/EditGroupCommission"
 import NotificationExpired from "./components/NotificationExpired"
-import PaymentModulePage from './pages/PaymentModul/PaymentModule'
 
 export default function BasePage() {
   const [currPrivileges, setCurrPrivileges] = React.useState({
@@ -530,7 +530,7 @@ export default function BasePage() {
           isRoute={true}
           exact={false}
           path="/payment"
-          component={PaymentModulePage}
+          component={PaymentModulPage}
         />
 
         <ContentRoute path="/account" component={AccountPage} />

@@ -29,25 +29,12 @@ import axios from 'axios'
 
 import Signature from './ModalSignaturePad'
 
-const PaymentModule = () => {
+const PaymentModule2 = () => {
   const { t } = useTranslation();
   console.log("modal form cashlez")
   const [showSignaturePad, setShowSignaturePad] = useState(false)
   const [baseSignature, setBaseSignature] = useState("")
   const [ownerName, setOwnerName] = useState("")
-
-  const [previewKtp, setPreviewKtp] = React.useState("");
-  const [imageKtp, setImageKtp] = React.useState("")
-  const [previewNpwp, setPreviewNpwp] = React.useState("");
-  const [imageNpwp, setImageNpwp] = React.useState("")
-  const [previewProduct, setPreviewProduct] = React.useState("");
-  const [imageProduct, setImageProduct] = React.useState("")
-  const [previewSignpost, setPreviewSignpost] = React.useState("");
-  const [imageSignpost, setImageSignpost] = React.useState("")
-  const [previewLocation, setPreviewLocation] = React.useState("");
-  const [imageLocation, setImageLocation] = React.useState("")
-
-  const [business, setBusiness] = React.useState([])
 
   const openSignaturePad = () => setShowSignaturePad(true)
   const closeSignaturePad = () => setShowSignaturePad(false)
@@ -61,146 +48,6 @@ const PaymentModule = () => {
     setOwnerName(value)
   }
 
-  const getBusinessInfo = async () => {
-    const API_URL = process.env.REACT_APP_API_URL;
-    const userInfo = JSON.parse(localStorage.getItem("user_info"));
-
-    try {
-      const { data } = await axios.get(
-        `${API_URL}/api/v1/business/${userInfo.business_id}`
-      );
-
-      console.log("data.data", data.data)
-
-      setBusiness({
-        name: data.data.name,
-        province_name: data.data.Location.City.Province.name,
-        city_name: data.data.Location.City.name,
-        business_location: data.data.Location.name,
-        business_type: data.data.Business_Type.name,
-        business_address: data.data.address || "",
-        business_phone_number: data.data.phone_number,
-        name_on_ktp: data.data.name_on_ktp,
-        ktp_number: data.data.ktp_owner || "",
-        npwp_number: data.data.npwp_business || "",
-        payment_method: "",
-        sales_type: "",
-        business_type_id: data.data.business_type_id,
-        province_id: data.data.Location.City.Province.id,
-        city_id: data.data.Location.City.id,
-        location_id: data.data.location_id,
-        currency_id: data.data.currency_id,
-      });
-
-      setImageKtp(
-        `${data.data.ktp_picture ? `${API_URL}/${data.data.ktp_picture}` : ""}`
-      );
-
-      setImageNpwp(
-        `${
-          data.data.npwp_picture ? `${API_URL}/${data.data.npwp_picture}` : ""
-        }`
-      );
-
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  React.useEffect(() => {
-    getBusinessInfo();
-  }, []);
-
-  const handlePreviewKtp = (e) => {
-    let preview;
-    let img;
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = () =>{
-        if(reader.readyState === 2){
-            setPreviewKtp(reader.result);
-        }
-      }
-      reader.readAsDataURL(e.target.files[0])
-      img = e.target.files[0];
-      setImageKtp(img)
-    } else {
-      preview = "";
-    }
-  };
-
-  const handlePreviewNpwp = (e) => {
-    let preview;
-    let img;
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = () =>{
-        if(reader.readyState === 2){
-          setPreviewNpwp(reader.result);
-        }
-      }
-      reader.readAsDataURL(e.target.files[0])
-      img = e.target.files[0];
-      setImageNpwp(img)
-    } else {
-      preview = "";
-    }
-  };
-
-  const handlePreviewProduct = (e) => {
-    let preview;
-    let img;
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = () =>{
-        if(reader.readyState === 2){
-          setPreviewProduct(reader.result);
-        }
-      }
-      reader.readAsDataURL(e.target.files[0])
-      img = e.target.files[0];
-      setImageProduct(img)
-    } else {
-      preview = "";
-    }
-  };
-  
-  const handlePreviewSignpost = (e) => {
-    let preview;
-    let img;
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = () =>{
-        if(reader.readyState === 2){
-          setPreviewSignpost(reader.result);
-        }
-      }
-      reader.readAsDataURL(e.target.files[0])
-      img = e.target.files[0];
-      setImageSignpost(img)
-    } else {
-      preview = "";
-    }
-  };
-
-  const handlePreviewLocation = (e) => {
-    let preview;
-    let img;
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = () =>{
-        if(reader.readyState === 2){
-          setPreviewLocation(reader.result);
-        }
-      }
-      reader.readAsDataURL(e.target.files[0])
-      img = e.target.files[0];
-      setImageLocation(img)
-    } else {
-      preview = "";
-    }
-  };
-  
   const InitialFormCz = {
     nama_pemilik: "",
     tempat_tanggal_lahir: "",
@@ -352,7 +199,7 @@ const PaymentModule = () => {
       <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
         <div className="headerPage mb-5">
           <div className="headerStart">
-            <h3>{t("individualRegistration")}</h3>
+            <h3>{t("PTRegistration")}</h3>
           </div>
         </div>
         <Row className="px-5">
@@ -772,7 +619,7 @@ const PaymentModule = () => {
                 </Form.Group>
               </Col>
             </Row>
-
+            
             <div className="d-flex flex-column justify-content-center align-items-center mt-4">
               <div>
                 <strong style={{fontSize:"15px", textDecoration: "underline"}}>{t("dataBank")}</strong>
@@ -826,204 +673,74 @@ const PaymentModule = () => {
 
             <div className="d-flex flex-column justify-content-center align-items-center mt-4">
               <div>
-                <strong style={{fontSize:"15px", textDecoration: "underline"}}>{t("requirements")}</strong>
+                <strong style={{fontSize:"15px", textDecoration: "underline"}}>{t("PTRegistrationRequirements")}</strong>
               </div>
               <div>
-                <small><em>({t("individualRegistrationRequirements")})</em></small>
+                <small><em>({t("PTRegistrationRequirements")})</em></small>
               </div>
             </div>
             
             <Row className="mt-3">
               <Col>
-                <div className="px-2">
-                  <label>
-                    {t("uploadKtpPicture")} *
-                    <small className="ml-4">{t("fileSizeLimit")}</small>
-                  </label>
-                  <Row className="d-flex justify-content-between box">
-                    <div>
-                      <div
-                        style={{
-                          width: "220px",
-                          height: "120px",
-                          overflow: "hidden",
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                          backgroundImage: `url(${previewKtp || imageKtp})`
-                        }}
-                      />
+                <Form.Group>
+                  <Form.Label>{t("bankName")} *</Form.Label>
+                  <Form.Control
+                    name="nama_bank"
+                    placeholder={t("enterBankName")}
+                    {...formikFormCz.getFieldProps("nama_bank")}
+                    className={validationFormCz("nama_bank")}
+                    required
+                  />
+                  {formikFormCz.touched.nama_bank && formikFormCz.errors.nama_bank ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikFormCz.errors.nama_bank}
+                      </div>
                     </div>
-                    <div style={{ alignSelf: "center"}}>
-                      <input
-                        accept="image/jpeg,image/png"
-                        style={{ display: "none" }}
-                        id="upload-ktp-file"
-                        type="file"
-                        onChange={handlePreviewKtp}
-                      />
-                      <label
-                        htmlFor="upload-ktp-file"
-                        className="btn btn-primary"
-                      >
-                        {t("uploadFile")}
-                      </label>
-                    </div>
-                  </Row>
-                </div>
+                  ) : null}
+                  <small>({t("accordingToTheRegisteredMerchant/CompanyOwner")}</small>
+                </Form.Group>
               </Col>
               <Col>
-                <div className="px-2">
-                  <label>
-                    {t("uploadNpwpPicture")} *
-                    <small className="ml-4">{t("fileSizeLimit")}</small>
-                  </label>
-                  <Row className="d-flex justify-content-between box">
-                    <div>
-                      <div
-                        style={{
-                          width: "220px",
-                          height: "120px",
-                          overflow: "hidden",
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                          backgroundImage: `url(${previewNpwp || imageNpwp})`
-                        }}
-                      />
+                <Form.Group>
+                  <Form.Label>{t("bankAccountNumber")} *</Form.Label>
+                  <Form.Control
+                    name="nomor_rekening"
+                    placeholder={t("enterBankAccountNumber")}
+                    {...formikFormCz.getFieldProps("nomor_rekening")}
+                    className={validationFormCz("nomor_rekening")}
+                    required
+                  />
+                  {formikFormCz.touched.nomor_rekening && formikFormCz.errors.nomor_rekening ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikFormCz.errors.nomor_rekening}
+                      </div>
                     </div>
-                    <div style={{ alignSelf: "center" }}>
-                      <input
-                        accept="image/jpeg,image/png"
-                        style={{ display: "none" }}
-                        id="upload-npwp-file"
-                        type="file"
-                        onChange={handlePreviewNpwp}
-                      />
-                      <label
-                        htmlFor="upload-npwp-file"
-                        className="btn btn-primary"
-                      >
-                        {t("uploadFile")}
-                      </label>
-                    </div>
-                  </Row>
-                </div>
-              </Col>
-              <Col>
-                <div className="px-2">
-                  <label>
-                    {t("uploadProductPicture")} *
-                    <small className="ml-4">{t("fileSizeLimit")}</small>
-                  </label>
-                  <Row className="d-flex justify-content-between box">
-                    <div>
-                      <div
-                        style={{
-                          width: "220px",
-                          height: "120px",
-                          overflow: "hidden",
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                          backgroundImage: `url(${previewProduct || imageProduct})`
-                        }}
-                      />
-                    </div>
-                    <div style={{ alignSelf: "center" }}>
-                      <input
-                        accept="image/jpeg,image/png"
-                        style={{ display: "none" }}
-                        id="upload-product-file"
-                        type="file"
-                        onChange={handlePreviewProduct}
-                      />
-                      <label
-                        htmlFor="upload-product-file"
-                        className="btn btn-primary"
-                      >
-                        {t("uploadFile")}
-                      </label>
-                    </div>
-                  </Row>
-                </div>
+                  ) : null}
+                </Form.Group>
               </Col>
             </Row>
-            <Row className="mt-3">
-              <Col>
-                <div className="px-2">
-                  <label>
-                    {t("uploadSignpostPicture")} *
-                    <small className="ml-4">{t("fileSizeLimit")}</small>
-                  </label>
-                  <Row className="d-flex justify-content-between box">
-                    <div>
-                      <div
-                        style={{
-                          width: "220px",
-                          height: "120px",
-                          overflow: "hidden",
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                          backgroundImage: `url(${previewSignpost || imageSignpost})`
-                        }}
-                      />
-                    </div>
-                    <div style={{ alignSelf: "center" }}>
-                      <input
-                        accept="image/jpeg,image/png"
-                        style={{ display: "none" }}
-                        id="upload-signpost-file"
-                        type="file"
-                        onChange={handlePreviewSignpost}
-                      />
-                      <label
-                        htmlFor="upload-signpost-file"
-                        className="btn btn-primary"
-                      >
-                        {t("uploadFile")}
-                      </label>
-                    </div>
-                  </Row>
+
+            <Form.Group>
+              <Form.Label>{t("nameOfOwnerMerchantAccount")} *</Form.Label>
+              <Form.Control
+                name="nama_pemilik_rekening"
+                placeholder={t("enterNameOfOwnerMerchantAccount")}
+                {...formikFormCz.getFieldProps("nama_pemilik_rekening")}
+                className={validationFormCz("nama_pemilik_rekening")}
+                required
+              />
+              {formikFormCz.touched.nama_pemilik_rekening && formikFormCz.errors.nama_pemilik_rekening ? (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    {formikFormCz.errors.nama_pemilik_rekening}
+                  </div>
                 </div>
-              </Col>
-              <Col>
-                <div className="px-2">
-                  <label>
-                    {t("uploadLocationBusinessPicture")} *
-                    <small className="ml-4">{t("fileSizeLimit")}</small>
-                  </label>
-                  <Row className="d-flex justify-content-between box">
-                    <div>
-                      <div
-                        style={{
-                          width: "220px",
-                          height: "120px",
-                          overflow: "hidden",
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                          backgroundImage: `url(${previewLocation || imageLocation})`
-                        }}
-                      />
-                    </div>
-                    <div style={{ alignSelf: "center" }}>
-                      <input
-                        accept="image/jpeg,image/png"
-                        style={{ display: "none" }}
-                        id="upload-location-file"
-                        type="file"
-                        onChange={handlePreviewLocation}
-                      />
-                      <label
-                        htmlFor="upload-location-file"
-                        className="btn btn-primary"
-                      >
-                        {t("uploadFile")}
-                      </label>
-                    </div>
-                  </Row>
-                </div>
-              </Col>
-              <Col />
-            </Row>
-            <div className="d-flex justify-content-end mt-4">
+              ) : null}
+              <small><em>({t("accordingToTheRegisteredMerchant/CompanyOwner")}</em></small>
+            </Form.Group>
+            <div className="d-flex justify-content-end">
               <div className="d-flex">
                 <div className="btn btn-info mr-2" onClick={openSignaturePad}>
                   {t("signaturePad")}
@@ -1040,4 +757,4 @@ const PaymentModule = () => {
   );
 }
 
-export default PaymentModule;
+export default PaymentModule2;

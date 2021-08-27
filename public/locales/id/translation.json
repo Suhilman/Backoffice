@@ -887,5 +887,15 @@
     "receiptId": "Id Kuitansi",
     "staffOnCharge": "Staf Yang Bertanggung Jawab",
     "paymentTotal": "Jumlah Pembayaran",
-    "totalDiscount": "Total Diskon"
+    "totalDiscount": "Total Diskon",
+    "individualRegistration": "Registrasi Perorangan",
+    "PTRegistration": "Registrasi PT",
+    "requirements": "Persyaratan",
+    "individualRegistrationRequirements": "Persyaratan Registrasi Perorangan",
+    "PTRegistrationRequirements": "Persyaratan Registrasi PT",
+    "uploadProductPicture": "Unggah Gambar Produk",
+    "uploadLocationBusinessPicture": "Unggah Gambar Bisnis Lokasi",
+    "uploadSignpostPicture": "Unggah Gambar Plang",
+    "uploadNpwpPtPicture": "Unggah Gambar NPWP PT",
+    "uploadsiupTdpNibPicture": "Unggah Gambar SIUP/TDP/NIB"
   }
