@@ -29,162 +29,37 @@ import axios from 'axios'
 
 import Signature from './ModalSignaturePad'
 
-const PaymentModule2 = () => {
-  const { t } = useTranslation();
-  console.log("modal form cashlez")
-  const [showSignaturePad, setShowSignaturePad] = useState(false)
-  const [baseSignature, setBaseSignature] = useState("")
-  const [ownerName, setOwnerName] = useState("")
-
-  const openSignaturePad = () => setShowSignaturePad(true)
-  const closeSignaturePad = () => setShowSignaturePad(false)
-  const handleResultSignature = (data) => {
-    setBaseSignature(data)
-    console.log("setBaseSignature", data)
-  }
-
-  const handleOwnerName = (value) => {
-    console.log("handleOwnerName", value)
-    setOwnerName(value)
-  }
-
-  const InitialFormCz = {
-    nama_pemilik: "",
-    tempat_tanggal_lahir: "",
-    alamat_pemilik_merchant: "",
-    kota: "",
-    provinsi: "",
-    kode_pos: "",
-    nomor_hp_merchant: "",
-    alamat_email_pemilik_merchant: "",
-    ktp: "",
-    kk: "",
-    nama_merchant: "",
-    alamat_usaha_merchant: "",
-    kota_merchant: "",
-    provinsi_merchant: "",
-    kode_pos_merchant: "",
-    tipe_usaha_merchant: "",
-    status_usaha: "",
-    nomor_telp_merchant: "",
-    alamat_email_merchant: "",
-    bentuk_bidang_usaha: "",
-    deskripsi_produk: "",
-    nama_bank: "",
-    nomor_rekening: "",
-    nama_pemilik_rekening: "",
-    hari: "",
-    tanggal: ""
-  }
-
-  const FormCzSchema = Yup.object().shape({
-    nama_pemilik: Yup.string()
-      .required(`${t("pleaseInputAMerchantOwnerName")}`),
-    alamat_pemilik_merchant: Yup.string()
-      .required(`${t("pleaseInputAMerchantOwnerAddress")}`),
-    kota: Yup.string()
-      .required(`${t("pleaseInputAMerchantOwnerCity")}`),
-    nomor_hp_merchant: Yup.string()
-      .required(`${t("pleaseInputAMerchantOwnerMobileNumber")}`),
-    ktp: Yup.string()
-      .required(`${t("pleaseInputANo.Identity(KTP/Pasport/KITAS)")}`),
-    kk: Yup.string()
-      .required(`${t("pleaseInputANo.NPWP/KK")}`),
-    alamat_usaha_merchant: Yup.string()
-      .required(`${t("pleaseInputAMerchantBusinessAddress")}`),
-    kota_merchant: Yup.string()
-      .required(`${t("pleaseInputAMerchantCity")}`),
-    nomor_telp_merchant: Yup.string()
-      .required(`${t("pleaseInputAMerchantPhoneNumber")}`),
-    bentuk_bidang_usaha: Yup.string()
-      .required(`${t("pleaseInputAForm/FieldOfBusiness")}`),
-    deskripsi_produk: Yup.string()
-      .required(`${t("pleaseInputAProductDescriptionForSale")}`),
-    nama_bank: Yup.string()
-      .required(`${t("pleaseInputABankName")}`),
-    nomor_rekening: Yup.string()
-      .required(`${t("pleaseInputABankaccountnumber")}`),
-    nama_pemilik_rekening: Yup.string()
-      .required(`${t("pleaseInputANameOfOwnerMerchantAccount")}`)
-  });
-
-  const formikFormCz = useFormik({
-    enableReinitialize: true,
-    initialValues: InitialFormCz,
-    validationSchema: FormCzSchema,
-    onSubmit: async (values) => {
-      const API_URL = process.env.REACT_APP_API_URL;
-      const userInfo = JSON.parse(localStorage.getItem("user_info"));
-      console.log("userInfo", userInfo)
-      const dataSend = {
-        nama_pemilik: values.nama_pemilik,
-        tempat_tanggal_lahir: values.tempat_tanggal_lahir,
-        alamat_pemilik_merchant: values.alamat_pemilik_merchant,
-        kota: values.kota,
-        provinsi: values.provinsi,
-        kode_pos: values.kode_pos,
-        nomor_hp_merchant: values.nomor_hp_merchant,
-        alamat_email_pemilik_merchant: values.alamat_email_pemilik_merchant,
-        ktp: values.ktp,
-        kk: values.kk,
-        nama_merchant: values.nama_merchant,
-        alamat_usaha_merchant: values.alamat_usaha_merchant,
-        kota_merchant: values.kota_merchant,
-        provinsi_merchant: values.provinsi_merchant,
-        kode_pos_merchant: values.kode_pos_merchant,
-        tipe_usaha_merchant: values.tipe_usaha_merchant,
-        status_usaha: values.status_usaha,
-        nomor_telp_merchant: values.nomor_telp_merchant,
-        alamat_email_merchant: values.alamat_email_merchant,
-        bentuk_bidang_usaha: values.bentuk_bidang_usaha,
-        deskripsi_produk: values.deskripsi_produk,
-        nama_bank: values.nama_bank,
-        nomor_rekening: values.nomor_rekening,
-        nama_pemilik_rekening: values.nama_pemilik_rekening,
-        // hari: values.hari,
-        // tanggal: values.tanggal
-      }
-      if(baseSignature) dataSend.signature = baseSignature
-      console.log("data form cz", dataSend)
-      try {
-        const date = new Date()
-        const formatDate = dayjs(date).format('DD-MM-YYYY')
-        const fileName = `FORMULIR APLIKASI MERCHANT - ${formatDate}.pdf`
-        const {data} = await axios.post(`${API_URL}/api/v1/modify-pdf`, dataSend, {
-          responseType: "blob"
-        });
-        console.log("result axios.post", data)
-        console.log("fileName", fileName)
-        // const blob = new Blob([data], { type: 'application/pdf' })
-        // saveAs(blob, 'test.pdf')
-        await fileDownload(data, fileName)
-
-      } catch (err) {
-        console.log("error apa", err)
-      }
-    }
-  });
-
-  const validationFormCz = (fieldname) => {
-    if (formikFormCz.touched[fieldname] && formikFormCz.errors[fieldname]) {
-      return "is-invalid";
-    }
-
-    if (formikFormCz.touched[fieldname] && !formikFormCz.errors[fieldname]) {
-      return "is-valid";
-    }
-
-    return "";
-  };
-
-  const handleSubmit = async () => {
-    try {
-      formikFormCz.submitForm()
-      console.log("handle submit", formikFormCz.values)
-    } catch (error) {
-      console.log(error)
-    }
-  }
+const PaymentModule2 = ({
+  t,
+  formikFormCz,
+  validationFormCz,
+  ownerName,
+  handleResultSignature,
+  showSignaturePad,
+  closeSignaturePad,
+  handleSubmit,
+  handlePreviewLocation,
+  handlePreviewSignpost,
+  handlePreviewProduct,
+  handlePreviewNpwp,
+  handlePreviewKtp,
+  handleOwnerName,
+  openSignaturePad,
+  business,
+  imageLocation,
+  previewLocation,
+  imageSignpost,
+  previewSignpost,
+  imageProduct,
+  previewProduct,
+  imageNpwp,
+  previewNpwp,
+  imageKtp,
+  previewKtp
+}) => {
+  useEffect(() => {
+    formikFormCz.setFieldValue("register_type_cz", "PT. Register")
+  }, [])
 
   return (
     <div>
@@ -740,6 +615,208 @@ const PaymentModule2 = () => {
               ) : null}
               <small><em>({t("accordingToTheRegisteredMerchant/CompanyOwner")}</em></small>
             </Form.Group>
+
+            <div className="d-flex flex-column justify-content-center align-items-center mt-4">
+              <div>
+                <strong style={{fontSize:"15px", textDecoration: "underline"}}>{t("requirements")} *</strong>
+              </div>
+              <div>
+                <small><em>({t("individualRegistrationRequirements")})</em></small>
+              </div>
+            </div>
+
+            <Row className="mt-3">
+              <Col>
+                <div className="px-2">
+                  <label>
+                    {t("uploadKtpPicture")} *
+                    <small className="ml-4">{t("fileSizeLimit")}</small>
+                  </label>
+                  <Row className="d-flex justify-content-between box">
+                    <div>
+                      <div
+                        style={{
+                          width: "160px",
+                          height: "120px",
+                          overflow: "hidden",
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          backgroundImage: `url(${previewKtp || imageKtp})`
+                        }}
+                      />
+                    </div>
+                    <div style={{ alignSelf: "center"}}>
+                      <input
+                        accept="image/jpeg,image/png"
+                        style={{ display: "none" }}
+                        id="upload-ktp-file"
+                        type="file"
+                        onChange={handlePreviewKtp}
+                        required
+                      />
+                      <label
+                        htmlFor="upload-ktp-file"
+                        className="btn btn-primary"
+                      >
+                        {t("uploadFile")}
+                      </label>
+                    </div>
+                  </Row>
+                </div>
+              </Col>
+              <Col>
+                <div className="px-2">
+                  <label>
+                    {t("uploadNpwpPicture")} *
+                    <small className="ml-4">{t("fileSizeLimit")}</small>
+                  </label>
+                  <Row className="d-flex justify-content-between box">
+                    <div>
+                      <div
+                        style={{
+                          width: "160px",
+                          height: "120px",
+                          overflow: "hidden",
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          backgroundImage: `url(${previewNpwp || imageNpwp})`
+                        }}
+                      />
+                    </div>
+                    <div style={{ alignSelf: "center" }}>
+                      <input
+                        accept="image/jpeg,image/png"
+                        style={{ display: "none" }}
+                        id="upload-npwp-file"
+                        type="file"
+                        onChange={handlePreviewNpwp}
+                      />
+                      <label
+                        htmlFor="upload-npwp-file"
+                        className="btn btn-primary"
+                      >
+                        {t("uploadFile")}
+                      </label>
+                    </div>
+                  </Row>
+                </div>
+              </Col>
+              <Col>
+                <div className="px-2">
+                  <label>
+                    {t("uploadProductPicture")} *
+                    <small className="ml-4">{t("fileSizeLimit")}</small>
+                  </label>
+                  <Row className="d-flex justify-content-between box">
+                    <div>
+                      <div
+                        style={{
+                          width: "160px",
+                          height: "120px",
+                          overflow: "hidden",
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          backgroundImage: `url(${previewProduct || imageProduct})`
+                        }}
+                      />
+                    </div>
+                    <div style={{ alignSelf: "center" }}>
+                      <input
+                        accept="image/jpeg,image/png"
+                        style={{ display: "none" }}
+                        id="upload-product-file"
+                        type="file"
+                        onChange={handlePreviewProduct}
+                      />
+                      <label
+                        htmlFor="upload-product-file"
+                        className="btn btn-primary"
+                      >
+                        {t("uploadFile")}
+                      </label>
+                    </div>
+                  </Row>
+                </div>
+              </Col>
+            </Row>
+            <Row className="mt-3">
+              <Col>
+                <div className="px-2">
+                  <label>
+                    {t("uploadSignpostPicture")} *
+                    <small className="ml-4">{t("fileSizeLimit")}</small>
+                  </label>
+                  <Row className="d-flex justify-content-between box">
+                    <div>
+                      <div
+                        style={{
+                          width: "160px",
+                          height: "120px",
+                          overflow: "hidden",
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          backgroundImage: `url(${previewSignpost || imageSignpost})`
+                        }}
+                      />
+                    </div>
+                    <div style={{ alignSelf: "center" }}>
+                      <input
+                        accept="image/jpeg,image/png"
+                        style={{ display: "none" }}
+                        id="upload-signpost-file"
+                        type="file"
+                        onChange={handlePreviewSignpost}
+                      />
+                      <label
+                        htmlFor="upload-signpost-file"
+                        className="btn btn-primary"
+                      >
+                        {t("uploadFile")}
+                      </label>
+                    </div>
+                  </Row>
+                </div>
+              </Col>
+              <Col>
+                <div className="px-2">
+                  <label style={{fontSize: '11px'}}>
+                    {t("uploadLocationBusinessPicture")} *
+                    <small className="ml-4">{t("fileSizeLimit")}</small>
+                  </label>
+                  <Row className="d-flex justify-content-between box">
+                    <div>
+                      <div
+                        style={{
+                          width: "160px",
+                          height: "120px",
+                          overflow: "hidden",
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          backgroundImage: `url(${previewLocation || imageLocation})`
+                        }}
+                      />
+                    </div>
+                    <div style={{ alignSelf: "center" }}>
+                      <input
+                        accept="image/jpeg,image/png"
+                        style={{ display: "none" }}
+                        id="upload-location-file"
+                        type="file"
+                        onChange={handlePreviewLocation}
+                        required
+                      />
+                      <label
+                        htmlFor="upload-location-file"
+                        className="btn btn-primary"
+                      >
+                        {t("uploadFile")}
+                      </label>
+                    </div>
+                  </Row>
+                </div>
+              </Col>
+              <Col />
+            </Row>
             <div className="d-flex justify-content-end">
               <div className="d-flex">
                 <div className="btn btn-info mr-2" onClick={openSignaturePad}>

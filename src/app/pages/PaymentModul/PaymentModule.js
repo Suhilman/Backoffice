@@ -2,20 +2,11 @@ import React, {useState, useEffect} from 'react';
 import {
   Row,
   Col,
-  Button,
-  Form,
-  Dropdown,
-  InputGroup,
-  ButtonGroup,
-  ListGroup
+  Form
 } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 import {
-  Switch,
-  FormGroup,
-  FormControl,
-  FormControlLabel,
   Paper
 } from "@material-ui/core";
 import dayjs from 'dayjs'
@@ -29,316 +20,37 @@ import axios from 'axios'
 
 import Signature from './ModalSignaturePad'
 
-const PaymentModule = () => {
-  const { t } = useTranslation();
-  console.log("modal form cashlez")
-  const [showSignaturePad, setShowSignaturePad] = useState(false)
-  const [baseSignature, setBaseSignature] = useState("")
-  const [ownerName, setOwnerName] = useState("")
-
-  const [previewKtp, setPreviewKtp] = React.useState("");
-  const [imageKtp, setImageKtp] = React.useState("")
-  const [previewNpwp, setPreviewNpwp] = React.useState("");
-  const [imageNpwp, setImageNpwp] = React.useState("")
-  const [previewProduct, setPreviewProduct] = React.useState("");
-  const [imageProduct, setImageProduct] = React.useState("")
-  const [previewSignpost, setPreviewSignpost] = React.useState("");
-  const [imageSignpost, setImageSignpost] = React.useState("")
-  const [previewLocation, setPreviewLocation] = React.useState("");
-  const [imageLocation, setImageLocation] = React.useState("")
-
-  const [business, setBusiness] = React.useState([])
-
-  const openSignaturePad = () => setShowSignaturePad(true)
-  const closeSignaturePad = () => setShowSignaturePad(false)
-  const handleResultSignature = (data) => {
-    setBaseSignature(data)
-    console.log("setBaseSignature", data)
-  }
-
-  const handleOwnerName = (value) => {
-    console.log("handleOwnerName", value)
-    setOwnerName(value)
-  }
-
-  const getBusinessInfo = async () => {
-    const API_URL = process.env.REACT_APP_API_URL;
-    const userInfo = JSON.parse(localStorage.getItem("user_info"));
-
-    try {
-      const { data } = await axios.get(
-        `${API_URL}/api/v1/business/${userInfo.business_id}`
-      );
-
-      console.log("data.data", data.data)
-
-      setBusiness({
-        name: data.data.name,
-        province_name: data.data.Location.City.Province.name,
-        city_name: data.data.Location.City.name,
-        business_location: data.data.Location.name,
-        business_type: data.data.Business_Type.name,
-        business_address: data.data.address || "",
-        business_phone_number: data.data.phone_number,
-        name_on_ktp: data.data.name_on_ktp,
-        ktp_number: data.data.ktp_owner || "",
-        npwp_number: data.data.npwp_business || "",
-        payment_method: "",
-        sales_type: "",
-        business_type_id: data.data.business_type_id,
-        province_id: data.data.Location.City.Province.id,
-        city_id: data.data.Location.City.id,
-        location_id: data.data.location_id,
-        currency_id: data.data.currency_id,
-      });
-
-      setImageKtp(
-        `${data.data.ktp_picture ? `${API_URL}/${data.data.ktp_picture}` : ""}`
-      );
-
-      setImageNpwp(
-        `${
-          data.data.npwp_picture ? `${API_URL}/${data.data.npwp_picture}` : ""
-        }`
-      );
-
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  React.useEffect(() => {
-    getBusinessInfo();
-  }, []);
-
-  const handlePreviewKtp = (e) => {
-    let preview;
-    let img;
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = () =>{
-        if(reader.readyState === 2){
-            setPreviewKtp(reader.result);
-        }
-      }
-      reader.readAsDataURL(e.target.files[0])
-      img = e.target.files[0];
-      setImageKtp(img)
-    } else {
-      preview = "";
-    }
-  };
-
-  const handlePreviewNpwp = (e) => {
-    let preview;
-    let img;
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = () =>{
-        if(reader.readyState === 2){
-          setPreviewNpwp(reader.result);
-        }
-      }
-      reader.readAsDataURL(e.target.files[0])
-      img = e.target.files[0];
-      setImageNpwp(img)
-    } else {
-      preview = "";
-    }
-  };
-
-  const handlePreviewProduct = (e) => {
-    let preview;
-    let img;
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = () =>{
-        if(reader.readyState === 2){
-          setPreviewProduct(reader.result);
-        }
-      }
-      reader.readAsDataURL(e.target.files[0])
-      img = e.target.files[0];
-      setImageProduct(img)
-    } else {
-      preview = "";
-    }
-  };
-  
-  const handlePreviewSignpost = (e) => {
-    let preview;
-    let img;
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = () =>{
-        if(reader.readyState === 2){
-          setPreviewSignpost(reader.result);
-        }
-      }
-      reader.readAsDataURL(e.target.files[0])
-      img = e.target.files[0];
-      setImageSignpost(img)
-    } else {
-      preview = "";
-    }
-  };
-
-  const handlePreviewLocation = (e) => {
-    let preview;
-    let img;
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = () =>{
-        if(reader.readyState === 2){
-          setPreviewLocation(reader.result);
-        }
-      }
-      reader.readAsDataURL(e.target.files[0])
-      img = e.target.files[0];
-      setImageLocation(img)
-    } else {
-      preview = "";
-    }
-  };
-  
-  const InitialFormCz = {
-    nama_pemilik: "",
-    tempat_tanggal_lahir: "",
-    alamat_pemilik_merchant: "",
-    kota: "",
-    provinsi: "",
-    kode_pos: "",
-    nomor_hp_merchant: "",
-    alamat_email_pemilik_merchant: "",
-    ktp: "",
-    kk: "",
-    nama_merchant: "",
-    alamat_usaha_merchant: "",
-    kota_merchant: "",
-    provinsi_merchant: "",
-    kode_pos_merchant: "",
-    tipe_usaha_merchant: "",
-    status_usaha: "",
-    nomor_telp_merchant: "",
-    alamat_email_merchant: "",
-    bentuk_bidang_usaha: "",
-    deskripsi_produk: "",
-    nama_bank: "",
-    nomor_rekening: "",
-    nama_pemilik_rekening: "",
-    hari: "",
-    tanggal: ""
-  }
-
-  const FormCzSchema = Yup.object().shape({
-    nama_pemilik: Yup.string()
-      .required(`${t("pleaseInputAMerchantOwnerName")}`),
-    alamat_pemilik_merchant: Yup.string()
-      .required(`${t("pleaseInputAMerchantOwnerAddress")}`),
-    kota: Yup.string()
-      .required(`${t("pleaseInputAMerchantOwnerCity")}`),
-    nomor_hp_merchant: Yup.string()
-      .required(`${t("pleaseInputAMerchantOwnerMobileNumber")}`),
-    ktp: Yup.string()
-      .required(`${t("pleaseInputANo.Identity(KTP/Pasport/KITAS)")}`),
-    kk: Yup.string()
-      .required(`${t("pleaseInputANo.NPWP/KK")}`),
-    alamat_usaha_merchant: Yup.string()
-      .required(`${t("pleaseInputAMerchantBusinessAddress")}`),
-    kota_merchant: Yup.string()
-      .required(`${t("pleaseInputAMerchantCity")}`),
-    nomor_telp_merchant: Yup.string()
-      .required(`${t("pleaseInputAMerchantPhoneNumber")}`),
-    bentuk_bidang_usaha: Yup.string()
-      .required(`${t("pleaseInputAForm/FieldOfBusiness")}`),
-    deskripsi_produk: Yup.string()
-      .required(`${t("pleaseInputAProductDescriptionForSale")}`),
-    nama_bank: Yup.string()
-      .required(`${t("pleaseInputABankName")}`),
-    nomor_rekening: Yup.string()
-      .required(`${t("pleaseInputABankaccountnumber")}`),
-    nama_pemilik_rekening: Yup.string()
-      .required(`${t("pleaseInputANameOfOwnerMerchantAccount")}`)
-  });
-
-  const formikFormCz = useFormik({
-    enableReinitialize: true,
-    initialValues: InitialFormCz,
-    validationSchema: FormCzSchema,
-    onSubmit: async (values) => {
-      const API_URL = process.env.REACT_APP_API_URL;
-      const userInfo = JSON.parse(localStorage.getItem("user_info"));
-      console.log("userInfo", userInfo)
-      const dataSend = {
-        nama_pemilik: values.nama_pemilik,
-        tempat_tanggal_lahir: values.tempat_tanggal_lahir,
-        alamat_pemilik_merchant: values.alamat_pemilik_merchant,
-        kota: values.kota,
-        provinsi: values.provinsi,
-        kode_pos: values.kode_pos,
-        nomor_hp_merchant: values.nomor_hp_merchant,
-        alamat_email_pemilik_merchant: values.alamat_email_pemilik_merchant,
-        ktp: values.ktp,
-        kk: values.kk,
-        nama_merchant: values.nama_merchant,
-        alamat_usaha_merchant: values.alamat_usaha_merchant,
-        kota_merchant: values.kota_merchant,
-        provinsi_merchant: values.provinsi_merchant,
-        kode_pos_merchant: values.kode_pos_merchant,
-        tipe_usaha_merchant: values.tipe_usaha_merchant,
-        status_usaha: values.status_usaha,
-        nomor_telp_merchant: values.nomor_telp_merchant,
-        alamat_email_merchant: values.alamat_email_merchant,
-        bentuk_bidang_usaha: values.bentuk_bidang_usaha,
-        deskripsi_produk: values.deskripsi_produk,
-        nama_bank: values.nama_bank,
-        nomor_rekening: values.nomor_rekening,
-        nama_pemilik_rekening: values.nama_pemilik_rekening,
-        // hari: values.hari,
-        // tanggal: values.tanggal
-      }
-      if(baseSignature) dataSend.signature = baseSignature
-      console.log("data form cz", dataSend)
-      try {
-        const date = new Date()
-        const formatDate = dayjs(date).format('DD-MM-YYYY')
-        const fileName = `FORMULIR APLIKASI MERCHANT - ${formatDate}.pdf`
-        const {data} = await axios.post(`${API_URL}/api/v1/modify-pdf`, dataSend, {
-          responseType: "blob"
-        });
-        console.log("result axios.post", data)
-        console.log("fileName", fileName)
-        // const blob = new Blob([data], { type: 'application/pdf' })
-        // saveAs(blob, 'test.pdf')
-        await fileDownload(data, fileName)
-
-      } catch (err) {
-        console.log("error apa", err)
-      }
-    }
-  });
-
-  const validationFormCz = (fieldname) => {
-    if (formikFormCz.touched[fieldname] && formikFormCz.errors[fieldname]) {
-      return "is-invalid";
-    }
-
-    if (formikFormCz.touched[fieldname] && !formikFormCz.errors[fieldname]) {
-      return "is-valid";
-    }
-
-    return "";
-  };
-
-  const handleSubmit = async () => {
-    try {
-      formikFormCz.submitForm()
-      console.log("handle submit", formikFormCz.values)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
+const PaymentModule = ({
+  t,
+  formikFormCz,
+  validationFormCz,
+  ownerName,
+  handleResultSignature,
+  showSignaturePad,
+  closeSignaturePad,
+  handleSubmit,
+  handlePreviewLocation,
+  handlePreviewSignpost,
+  handlePreviewProduct,
+  handlePreviewNpwp,
+  handlePreviewKtp,
+  handleOwnerName,
+  openSignaturePad,
+  business,
+  imageLocation,
+  previewLocation,
+  imageSignpost,
+  previewSignpost,
+  imageProduct,
+  previewProduct,
+  imageNpwp,
+  previewNpwp,
+  imageKtp,
+  previewKtp
+}) => {
+  useEffect(() => {
+    formikFormCz.setFieldValue("register_type_cz", "Personal Register")
+  }, [])
   return (
     <div>
       <Signature
@@ -823,10 +535,32 @@ const PaymentModule = () => {
                 </Form.Group>
               </Col>
             </Row>
+            <Row>
+              <Col>
+                <Form.Group>
+                  <Form.Label>{t("nameOfOwnerMerchantAccount")} *</Form.Label>
+                  <Form.Control
+                    name="nama_pemilik_rekening"
+                    placeholder={t("enterBankName")}
+                    {...formikFormCz.getFieldProps("nama_pemilik_rekening")}
+                    className={validationFormCz("nama_pemilik_rekening")}
+                    required
+                  />
+                  {formikFormCz.touched.nama_pemilik_rekening && formikFormCz.errors.nama_pemilik_rekening ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikFormCz.errors.nama_pemilik_rekening}
+                      </div>
+                    </div>
+                  ) : null}
+                  <small>({t("accordingToTheRegisteredMerchant/CompanyOwner")}</small>
+                </Form.Group>
+              </Col>
+            </Row>
 
             <div className="d-flex flex-column justify-content-center align-items-center mt-4">
               <div>
-                <strong style={{fontSize:"15px", textDecoration: "underline"}}>{t("requirements")}</strong>
+                <strong style={{fontSize:"15px", textDecoration: "underline"}}>{t("requirements")} *</strong>
               </div>
               <div>
                 <small><em>({t("individualRegistrationRequirements")})</em></small>
@@ -844,7 +578,7 @@ const PaymentModule = () => {
                     <div>
                       <div
                         style={{
-                          width: "220px",
+                          width: "160px",
                           height: "120px",
                           overflow: "hidden",
                           backgroundSize: "cover",
@@ -860,6 +594,7 @@ const PaymentModule = () => {
                         id="upload-ktp-file"
                         type="file"
                         onChange={handlePreviewKtp}
+                        required
                       />
                       <label
                         htmlFor="upload-ktp-file"
@@ -881,7 +616,7 @@ const PaymentModule = () => {
                     <div>
                       <div
                         style={{
-                          width: "220px",
+                          width: "160px",
                           height: "120px",
                           overflow: "hidden",
                           backgroundSize: "cover",
@@ -918,7 +653,7 @@ const PaymentModule = () => {
                     <div>
                       <div
                         style={{
-                          width: "220px",
+                          width: "160px",
                           height: "120px",
                           overflow: "hidden",
                           backgroundSize: "cover",
@@ -957,7 +692,7 @@ const PaymentModule = () => {
                     <div>
                       <div
                         style={{
-                          width: "220px",
+                          width: "160px",
                           height: "120px",
                           overflow: "hidden",
                           backgroundSize: "cover",
@@ -986,7 +721,7 @@ const PaymentModule = () => {
               </Col>
               <Col>
                 <div className="px-2">
-                  <label>
+                  <label style={{fontSize: '11px'}}>
                     {t("uploadLocationBusinessPicture")} *
                     <small className="ml-4">{t("fileSizeLimit")}</small>
                   </label>
@@ -994,7 +729,7 @@ const PaymentModule = () => {
                     <div>
                       <div
                         style={{
-                          width: "220px",
+                          width: "160px",
                           height: "120px",
                           overflow: "hidden",
                           backgroundSize: "cover",
@@ -1010,6 +745,7 @@ const PaymentModule = () => {
                         id="upload-location-file"
                         type="file"
                         onChange={handlePreviewLocation}
+                        required
                       />
                       <label
                         htmlFor="upload-location-file"
@@ -1029,7 +765,7 @@ const PaymentModule = () => {
                   {t("signaturePad")}
                 </div>
                 <div className="btn btn-primary" onClick={handleSubmit}>
-                  {t("export")} PDF
+                  {t("register")}
                 </div>
               </div>
             </div>
