@@ -59,12 +59,15 @@ const PaymentModulePT = ({
   imageNpwp,
   previewNpwp,
   imageKtp,
-  previewKtp
+  previewKtp,
+  handlePreviewNpwpPt,
+  handlePreviewSiup,
+  register_type_cz,
+  imageNpwpPt,
+  previewNpwpPt,
+  imageSiup,
+  previewSiup
 }) => {
-  useEffect(() => {
-    formikFormCz.setFieldValue("register_type_cz", "PT. Register")
-  }, [])
-
   return (
     <div>
       <Signature
@@ -74,12 +77,13 @@ const PaymentModulePT = ({
         close={closeSignaturePad}
         t={t}
       />
-      <Modal show={stateModal} onHide={closeModal} size="lg">
+      {/* <Modal show={stateModal} onHide={closeModal} size="xl">
         <Modal.Header closeButton>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
-          <Modal.Body>
-          <Row className="px-5">
+          <Modal.Body> */}
+        {stateModal ? (
+          <Row className="p-5">
             <Col>
               <div className="d-flex justify-content-center">
                 <div>
@@ -741,7 +745,7 @@ const PaymentModulePT = ({
                   </div>
                 </Col>
               </Row>
-              <Row className="mt-3">
+              <Row className="my-3">
                 <Col>
                   <div className="px-2">
                     <label>
@@ -817,6 +821,84 @@ const PaymentModulePT = ({
                     </Row>
                   </div>
                 </Col>
+                <Col>
+                  <div className="px-2">
+                    <label style={{fontSize: '11px'}}>
+                      {t("uploadNpwpPtPicture")} *
+                      <small className="ml-4">{t("fileSizeLimit")}</small>
+                    </label>
+                    <Row className="d-flex justify-content-between box">
+                      <div>
+                        <div
+                          style={{
+                            width: "160px",
+                            height: "120px",
+                            overflow: "hidden",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundImage: `url(${previewNpwpPt || imageNpwpPt})`
+                          }}
+                        />
+                      </div>
+                      <div style={{ alignSelf: "center" }}>
+                        <input
+                          accept="image/jpeg,image/png"
+                          style={{ display: "none" }}
+                          id="upload-npwp-pt-file"
+                          type="file"
+                          onChange={handlePreviewNpwpPt}
+                          required
+                        />
+                        <label
+                          htmlFor="upload-npwp-pt-file"
+                          className="btn btn-primary"
+                        >
+                          {t("uploadFile")}
+                        </label>
+                      </div>
+                    </Row>
+                  </div>
+                </Col>
+              </Row>
+              <Row className="">
+                <Col>
+                  <div className="px-2">
+                    <label>
+                      {t("uploadsiupTdpNibPicture")} *
+                      <small className="ml-4">{t("fileSizeLimit")}</small>
+                    </label>
+                    <Row className="d-flex justify-content-between box">
+                      <div>
+                        <div
+                          style={{
+                            width: "160px",
+                            height: "120px",
+                            overflow: "hidden",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundImage: `url(${previewSiup || imageSiup})`
+                          }}
+                        />
+                      </div>
+                      <div style={{ alignSelf: "center" }}>
+                        <input
+                          accept="image/jpeg,image/png"
+                          style={{ display: "none" }}
+                          id="upload-siup-file"
+                          type="file"
+                          onChange={handlePreviewSiup}
+                        />
+                        <label
+                          htmlFor="upload-siup-file"
+                          className="btn btn-primary"
+                        >
+                          {t("uploadFile")}
+                        </label>
+                      </div>
+                    </Row>
+                  </div>
+                </Col>
+                <Col />
                 <Col />
               </Row>
               <div className="d-flex justify-content-end">
@@ -831,8 +913,9 @@ const PaymentModulePT = ({
               </div>
             </Col>
           </Row>
-        </Modal.Body>
-      </Modal>
+        ) : null}
+        {/* </Modal.Body>
+      </Modal> */}
     </div>
   );
 }

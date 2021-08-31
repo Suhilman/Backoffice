@@ -50,11 +50,9 @@ const PaymentModulePersonal = ({
   imageNpwp,
   previewNpwp,
   imageKtp,
-  previewKtp
+  previewKtp,
+  register_type_cz
 }) => {
-  useEffect(() => {
-    formikFormCz.setFieldValue("register_type_cz", "Personal Register")
-  }, [])
   return (
     <div>
       <Signature
@@ -65,11 +63,12 @@ const PaymentModulePersonal = ({
         t={t}
       />
 
-      <Modal show={stateModal} onHide={closeModal} size="lg">
+      {/* <Modal show={stateModal} onHide={closeModal} size="xl">
         <Modal.Header closeButton>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
-          <Modal.Body>
+          <Modal.Body> */}
+        {stateModal ? (
           <Row className="px-5">
             <Col>
               <div className="d-flex justify-content-center">
@@ -774,8 +773,10 @@ const PaymentModulePersonal = ({
               </div>
             </Col>
           </Row>
-        </Modal.Body>
-      </Modal>
+        ) : null }
+        {/* </Modal.Body>
+      </Modal> */}
+
     </div>
   );
 }

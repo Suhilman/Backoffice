@@ -46,6 +46,10 @@ export const PaymentModulPage = () => {
   const [imageSignpost, setImageSignpost] = React.useState("")
   const [previewLocation, setPreviewLocation] = React.useState("");
   const [imageLocation, setImageLocation] = React.useState("")
+  const [previewSiup, setPreviewSiup] = React.useState("");
+  const [imageSiup, setImageSiup] = React.useState("")
+  const [previewNpwpPt, setPreviewNpwpPt] = React.useState("");
+  const [imageNpwpPt, setImageNpwpPt] = React.useState("")
 
   const [business, setBusiness] = React.useState([])
 
@@ -125,6 +129,7 @@ export const PaymentModulPage = () => {
   };
   
   const handlePreviewSignpost = async (e) => {
+    console.log("handlePreviewSignpost")
     let preview;
     let img;
     if (e.target.files && e.target.files[0]) {
@@ -161,6 +166,49 @@ export const PaymentModulPage = () => {
       formData.append("business_location_photo", img);
       await axios.post(`${API_URL}/api/v1/business-form-data/first-photo`, formData)
       setImageLocation(img)
+    } else {
+      preview = "";
+    }
+  };
+
+  const handlePreviewSiup = async (e) => {
+    console.log("handlePreviewSiup")
+    let preview;
+    let img;
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          setPreviewSiup(reader.result);
+        }
+      }
+      reader.readAsDataURL(e.target.files[0])
+      img = e.target.files[0];
+      const formData = new FormData();
+      formData.append("siup_tdp_nib", img);
+      await axios.post(`${API_URL}/api/v1/business-form-data/second-photo`, formData)
+      setImageSiup(img)
+    } else {
+      preview = "";
+    }
+  };
+
+  const handlePreviewNpwpPt = async (e) => {
+    let preview;
+    let img;
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          setPreviewNpwpPt(reader.result);
+        }
+      }
+      reader.readAsDataURL(e.target.files[0])
+      img = e.target.files[0];
+      const formData = new FormData();
+      formData.append("npwp_pt_photo", img);
+      await axios.post(`${API_URL}/api/v1/business-form-data/first-photo`, formData)
+      setImageNpwpPt(img)
     } else {
       preview = "";
     }
@@ -264,7 +312,7 @@ export const PaymentModulPage = () => {
       const dataSendSave = {
         status: "sudah diajukan di backoffice",
         tracking_process: 1,
-        payment_gateway_name: "",
+        payment_gateway_name: values.payment_gateway_name,
         register_type_cz: values.register_type_cz,
         owner_name: values.nama_pemilik,
         place_and_date_of_birth: values.tempat_tanggal_lahir,
@@ -292,7 +340,7 @@ export const PaymentModulPage = () => {
         account_owner_name: values.nama_pemilik_rekening,
       }
       if(baseSignature) dataSendPdf.signature = baseSignature
-      console.log("data form cz", dataSendPdf)
+      console.log("dataSendSave", dataSendSave)
       try {
         await axios.post(`${API_URL}/api/v1/business-form-data`, dataSendSave)
         const date = new Date()
@@ -463,6 +511,18 @@ export const PaymentModulPage = () => {
         }`
       );
 
+      setImageNpwpPt(
+        `${
+          data.data.npwp_pt_photo ? `${API_URL}/${data.data.npwp_pt_photo}` : ""
+        }`
+      );
+
+      setImageSiup(
+        `${
+          data.data.siup_tdp_nib ? `${API_URL}/${data.data.siup_tdp_nib}` : ""
+        }`
+      );
+
     } catch (error) {
       console.log(error)
     }
@@ -514,6 +574,12 @@ export const PaymentModulPage = () => {
             ownerName={ownerName}
             baseSignature={baseSignature}
             showSignaturePad={showSignaturePad}
+            handlePreviewNpwpPt={handlePreviewNpwpPt}
+            handlePreviewSiup={handlePreviewSiup}
+            imageNpwpPt={imageNpwpPt}
+            previewNpwpPt={previewNpwpPt}
+            imageSiup={imageSiup}
+            previewSiup={previewSiup}
           />
         </Tab>
 
