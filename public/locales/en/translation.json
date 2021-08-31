@@ -898,5 +898,6 @@
     "uploadSignpostPicture": "Upload Signpost Picture",
     "uploadNpwpPtPicture": "Upload NPWP PT Picture",
     "uploadsiupTdpNibPicture": "Upload SIUP/TDP/NIB Picture",
-    "register": "Register"
+    "register": "Register",
+    "statusRegistration": "Status Registration"
 }

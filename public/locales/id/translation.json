@@ -898,5 +898,6 @@
     "uploadSignpostPicture": "Unggah Gambar Plang",
     "uploadNpwpPtPicture": "Unggah Gambar NPWP PT",
     "uploadsiupTdpNibPicture": "Unggah Gambar SIUP/TDP/NIB",
-    "register": "Daftar"
+    "register": "Daftar",
+    "statusRegistration": "Status Registrasi"
   }

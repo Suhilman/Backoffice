@@ -2,8 +2,10 @@ import React, {useState, useEffect} from "react";
 import { useTranslation } from "react-i18next";
 import { Tabs, Tab } from "react-bootstrap";
 
-import PaymentModule from "./PaymentModule";
-import PaymentModule2 from "./PaymentModule2";
+import PaymentModulePersonal from "./Cashlez/PaymentModulePersonal";
+import PaymentModulePT from "./Cashlez/PaymentModulePT";
+import StatusRegistration from "./StatusRegistration";
+import CashlezTab from "./Cashlez/CashlezTab";
 
 import {
   Row,
@@ -24,7 +26,7 @@ import * as Yup from "yup";
 import axios from 'axios'
 
 export const PaymentModulPage = () => {
-  const [tabs, setTabs] = React.useState("payment");
+  const [tabs, setTabs] = React.useState("status");
   const API_URL = process.env.REACT_APP_API_URL;
   const user_info = JSON.parse(localStorage.getItem('user_info'))
 
@@ -261,6 +263,8 @@ export const PaymentModulPage = () => {
 
       const dataSendSave = {
         status: "sudah diajukan di backoffice",
+        tracking_process: 1,
+        payment_gateway_name: "",
         register_type_cz: values.register_type_cz,
         owner_name: values.nama_pemilik,
         place_and_date_of_birth: values.tempat_tanggal_lahir,
@@ -472,8 +476,49 @@ export const PaymentModulPage = () => {
   return (
     <>
       <Tabs activeKey={tabs} onSelect={(v) => setTabs(v)}>
-        <Tab eventKey="payment" title={t("individualRegistration")}>
-          <PaymentModule
+        <Tab eventKey="status" title={t("statusRegistration")}>
+          <StatusRegistration 
+            t={t}
+          />
+        </Tab>
+
+        <Tab eventKey="cashlez" title={t("cashlez")}>
+          <CashlezTab 
+            t={t}
+            formikFormCz={formikFormCz}
+            validationFormCz={validationFormCz}
+            ownerName={ownerName}
+            handleResultSignature={handleResultSignature}
+            showSignaturePad={showSignaturePad}
+            closeSignaturePad={closeSignaturePad}
+            handleSubmit={handleSubmit}
+            handlePreviewLocation={handlePreviewLocation}
+            handlePreviewSignpost={handlePreviewSignpost}
+            handlePreviewProduct={handlePreviewProduct}
+            handlePreviewNpwp={handlePreviewNpwp}
+            handlePreviewKtp={handlePreviewKtp}
+            handleOwnerName={handleOwnerName}
+            handleResultSignature={handleResultSignature}
+            openSignaturePad={openSignaturePad}
+            business={business}
+            imageLocation={imageLocation}
+            previewLocation={previewLocation}
+            imageSignpost={imageSignpost}
+            previewSignpost={previewSignpost}
+            imageProduct={imageProduct}
+            previewProduct={previewProduct}
+            imageNpwp={imageNpwp}
+            previewNpwp={previewNpwp}
+            imageKtp={imageKtp}
+            previewKtp={previewKtp}
+            ownerName={ownerName}
+            baseSignature={baseSignature}
+            showSignaturePad={showSignaturePad}
+          />
+        </Tab>
+
+        {/* <Tab eventKey="payment" title={t("individualRegistration")}>
+          <PaymentModulePersonal
             t={t}
             formikFormCz={formikFormCz}
             validationFormCz={validationFormCz}
@@ -508,7 +553,7 @@ export const PaymentModulPage = () => {
         </Tab>
 
         <Tab eventKey="payment2" title={t("PTRegistration")}>
-          <PaymentModule2
+          <PaymentModulePT
             t={t}
             formikFormCz={formikFormCz}
             validationFormCz={validationFormCz}
@@ -540,7 +585,7 @@ export const PaymentModulPage = () => {
             baseSignature={baseSignature}
             showSignaturePad={showSignaturePad}
           />
-        </Tab>
+        </Tab> */}
       </Tabs>
     </>
   );
