@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import { useTranslation } from "react-i18next";
 import { Tabs, Tab } from "react-bootstrap";
 
-import PaymentModulePersonal from "./Cashlez/PaymentModulePersonal";
+import PaymentModulePersonal from "./Cashlez/PaymentModuleIndividual";
 import PaymentModulePT from "./Cashlez/PaymentModulePT";
 import StatusRegistration from "./StatusRegistration";
 import CashlezTab from "./Cashlez/CashlezTab";
@@ -50,6 +50,7 @@ export const PaymentModulPage = () => {
   const [imageSiup, setImageSiup] = React.useState("")
   const [previewNpwpPt, setPreviewNpwpPt] = React.useState("");
   const [imageNpwpPt, setImageNpwpPt] = React.useState("")
+  const [registerType, setRegisterType] = React.useState("")
 
   const [business, setBusiness] = React.useState([])
 
@@ -63,6 +64,11 @@ export const PaymentModulPage = () => {
   const handleOwnerName = (value) => {
     console.log("handleOwnerName", value)
     setOwnerName(value)
+  }
+
+  const handle_register_type_cz = (params) => {
+    const register_type = params
+    setRegisterType(register_type)
   }
 
   const handlePreviewKtp = async (e) => {
@@ -313,7 +319,7 @@ export const PaymentModulPage = () => {
         status: "sudah diajukan di backoffice",
         tracking_process: 1,
         payment_gateway_name: values.payment_gateway_name,
-        register_type_cz: values.register_type_cz,
+        register_type_cz: registerType,
         owner_name: values.nama_pemilik,
         place_and_date_of_birth: values.tempat_tanggal_lahir,
         merchant_owner_address: values.alamat_pemilik_merchant,
@@ -342,7 +348,7 @@ export const PaymentModulPage = () => {
       if(baseSignature) dataSendPdf.signature = baseSignature
       console.log("dataSendSave", dataSendSave)
       try {
-        await axios.post(`${API_URL}/api/v1/business-form-data`, dataSendSave)
+        // await axios.post(`${API_URL}/api/v1/business-form-data`, dataSendSave)
         const date = new Date()
         const formatDate = dayjs(date).format('DD-MM-YYYY')
         const fileName = `FORMULIR APLIKASI MERCHANT - ${formatDate}.pdf`
@@ -351,8 +357,8 @@ export const PaymentModulPage = () => {
         });
         const blob = new Blob([data], { type: 'application/pdf' })
         console.log("blob pdf", blob)
-        saveAs(blob, fileName)
-        await fileDownload(data, fileName)
+        // saveAs(blob, fileName)
+        // await fileDownload(data, fileName)
 
       } catch (err) {
         console.log("error apa", err)
@@ -542,7 +548,7 @@ export const PaymentModulPage = () => {
           />
         </Tab>
 
-        <Tab eventKey="cashlez" title={t("cashlez")}>
+        <Tab eventKey="cashlez" title="Cashlez">
           <CashlezTab 
             t={t}
             formikFormCz={formikFormCz}
@@ -580,6 +586,7 @@ export const PaymentModulPage = () => {
             previewNpwpPt={previewNpwpPt}
             imageSiup={imageSiup}
             previewSiup={previewSiup}
+            handle_register_type_cz={handle_register_type_cz}
           />
         </Tab>
 

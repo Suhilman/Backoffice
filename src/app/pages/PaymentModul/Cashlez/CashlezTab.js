@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import PaymentModulePersonal from './PaymentModulePersonal.js'
+import PaymentModuleIndividual from './PaymentModuleIndividual.js'
 import PaymentModulePT from './PaymentModulePT.js'
 import {
   Paper
@@ -38,20 +38,26 @@ const CashlezTab = ({
   imageNpwpPt,
   previewNpwpPt,
   imageSiup,
-  previewSiup
+  previewSiup,
+  handle_register_type_cz
 }) => {
-  const [showModalPersonal, setShowModalPersonal] = useState(false)
+  const [showModalIndividual, setShowModalIndividual] = useState(true)
   const [showModalPT, setShowModalPT] = useState(false)
+  const [registrationType, setRegistrationType] = useState(t('individualRegistration'))
 
-  const openModalPersonal = () => {
-    setShowModalPersonal(!showModalPersonal)
+  const handleRegistrationType = (value) => setRegistrationType(value)
+
+  const openModalIndividual = (params) => {
+    setRegistrationType(params)
+    setShowModalIndividual(!showModalIndividual)
     setShowModalPT(false)
   }
-  const closeModalPersonal = () => setShowModalPersonal(false)
+  const closeModalIndividual = () => setShowModalIndividual(false)
 
-  const openModalPT = () =>  {
+  const openModalPT = (params) =>  {
+    setRegistrationType(params)
     setShowModalPT(!showModalPT)
-    setShowModalPersonal(false)
+    setShowModalIndividual(false)
   }
   const closeModalPT = () => setShowModalPT(false)
 
@@ -64,18 +70,18 @@ const CashlezTab = ({
       <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
         <div className="headerPage mb-5">
           <div className="headerStart">
-            <h3>{t("statusRegistration")}</h3>
+            <h3>FORMULIR APLIKASI MERCHANT ({registrationType})</h3>
           </div>
         </div>
-        <div className="btn btn-primary" onClick={openModalPersonal}>
-          {t('registerPersonal')}
+        <div className="btn btn-primary" onClick={() => openModalIndividual(t('individualRegistration'))}>
+          {t('individualRegistration')}
         </div>
-        <div className="btn btn-primary ml-3" onClick={openModalPT}>
-          {t('registerPT')}
+        <div className="btn btn-primary ml-3" onClick={() => openModalPT(t('PTRegistration'))}>
+          {t('PTRegistration')}
         </div>
-        <PaymentModulePersonal 
-          stateModal={showModalPersonal}
-          closeModal={closeModalPersonal}
+        <PaymentModuleIndividual 
+          stateModal={showModalIndividual}
+          closeModal={closeModalIndividual}
           t={t}
           formikFormCz={formikFormCz}
           validationFormCz={validationFormCz}
@@ -106,7 +112,9 @@ const CashlezTab = ({
           ownerName={ownerName}
           baseSignature={baseSignature}
           showSignaturePad={showSignaturePad}
-          title={t('paymentPersonal')}
+          handleRegistrationType={handleRegistrationType}
+          title={t('paymentIndividual')}
+          handle_register_type_cz={handle_register_type_cz}
         />
 
         <PaymentModulePT 
@@ -142,7 +150,9 @@ const CashlezTab = ({
           ownerName={ownerName}
           baseSignature={baseSignature}
           showSignaturePad={showSignaturePad}
+          handleRegistrationType={handleRegistrationType}
           title={t('paymentPT')}
+          handle_register_type_cz={handle_register_type_cz}
           handlePreviewNpwpPt={handlePreviewNpwpPt}
           handlePreviewSiup={handlePreviewSiup}
           imageNpwpPt={imageNpwpPt}

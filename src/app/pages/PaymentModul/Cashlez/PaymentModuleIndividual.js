@@ -21,7 +21,7 @@ import axios from 'axios'
 
 import Signature from '../ModalSignaturePad'
 
-const PaymentModulePersonal = ({
+const PaymentModuleIndividual = ({
   stateModal,
   closeModal,
   title,
@@ -51,8 +51,12 @@ const PaymentModulePersonal = ({
   previewNpwp,
   imageKtp,
   previewKtp,
-  register_type_cz
+  register_type_cz,
+  handle_register_type_cz
 }) => {
+  useEffect(() => {
+    handle_register_type_cz('individual')
+  }, [])
   return (
     <div>
       <Signature
@@ -781,4 +785,4 @@ const PaymentModulePersonal = ({
   );
 }
 
-export default PaymentModulePersonal;
+export default PaymentModuleIndividual;

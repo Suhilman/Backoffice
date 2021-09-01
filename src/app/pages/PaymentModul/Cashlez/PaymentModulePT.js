@@ -66,8 +66,12 @@ const PaymentModulePT = ({
   imageNpwpPt,
   previewNpwpPt,
   imageSiup,
-  previewSiup
+  previewSiup,
+  handle_register_type_cz
 }) => {
+  useEffect(() => {
+    handle_register_type_cz('pt')
+  }, [])
   return (
     <div>
       <Signature
