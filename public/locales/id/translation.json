@@ -899,5 +899,6 @@
     "uploadNpwpPtPicture": "Unggah Gambar NPWP PT",
     "uploadsiupTdpNibPicture": "Unggah Gambar SIUP/TDP/NIB",
     "register": "Daftar",
-    "statusRegistration": "Status Registrasi"
+    "statusRegistration": "Status Registrasi",
+    "about": "About"
   }

@@ -417,9 +417,9 @@ function Registration(props) {
         setTimeout(() => {
           setMessageNotSent(true)
         }, 50000);
-        toast.info(`Send whatstapp failed, please check your email ${formik.values.email} for verification`, {
+        toast.info(`Send whatsapp failed, please check your email ${formik.values.email} for verification`, {
           position: "top-right",
-          autoClose: 6000,
+          autoClose: 15000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,

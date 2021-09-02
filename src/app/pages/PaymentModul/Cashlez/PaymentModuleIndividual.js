@@ -51,12 +51,8 @@ const PaymentModuleIndividual = ({
   previewNpwp,
   imageKtp,
   previewKtp,
-  register_type_cz,
-  handle_register_type_cz
+  register_type_cz
 }) => {
-  useEffect(() => {
-    handle_register_type_cz('individual')
-  }, [])
   return (
     <div>
       <Signature

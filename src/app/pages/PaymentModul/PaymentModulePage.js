@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import { useTranslation } from "react-i18next";
 import { Tabs, Tab } from "react-bootstrap";
-
+import dayjs from 'dayjs'
 import PaymentModulePersonal from "./Cashlez/PaymentModuleIndividual";
 import PaymentModulePT from "./Cashlez/PaymentModulePT";
 import StatusRegistration from "./StatusRegistration";
@@ -16,7 +16,6 @@ import {
 import {
   Paper
 } from "@material-ui/core";
-import dayjs from 'dayjs'
 
 import { saveAs } from 'file-saver'
 import fileDownload from 'js-file-download'
@@ -50,12 +49,20 @@ export const PaymentModulPage = () => {
   const [imageSiup, setImageSiup] = React.useState("")
   const [previewNpwpPt, setPreviewNpwpPt] = React.useState("");
   const [imageNpwpPt, setImageNpwpPt] = React.useState("")
-  const [registerType, setRegisterType] = React.useState("")
+  const [registerTypeCz, setRegisterTypeCz] = React.useState("individu")
+  const [paymentGatewayName, setPaymentGatewayName] = React.useState("")
+
+  const [businessFormData, setBusinessFormData] = React.useState([])
 
   const [business, setBusiness] = React.useState([])
 
   const openSignaturePad = () => setShowSignaturePad(true)
   const closeSignaturePad = () => setShowSignaturePad(false)
+
+  const handleClickTab = (params) => {
+    setPaymentGatewayName(params)
+  }
+
   const handleResultSignature = (data) => {
     setBaseSignature(data)
     console.log("setBaseSignature", data)
@@ -68,7 +75,8 @@ export const PaymentModulPage = () => {
 
   const handle_register_type_cz = (params) => {
     const register_type = params
-    setRegisterType(register_type)
+    console.log("register_type", register_type)
+    setRegisterTypeCz(register_type)
   }
 
   const handlePreviewKtp = async (e) => {
@@ -127,7 +135,8 @@ export const PaymentModulPage = () => {
       img = e.target.files[0];
       const formData = new FormData();
       formData.append("product_photo", img);
-      await axios.post(`${API_URL}/api/v1/business-form-data/first-photo`, formData)
+      await axios.post(`${API_URL}/api/v1/business-form-data/first-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
+      getBusinessFormData()
       setImageProduct(img)
     } else {
       preview = "";
@@ -149,7 +158,8 @@ export const PaymentModulPage = () => {
       img = e.target.files[0];
       const formData = new FormData();
       formData.append("business_signpost_photo", img);
-      await axios.post(`${API_URL}/api/v1/business-form-data/first-photo`, formData)
+      await axios.post(`${API_URL}/api/v1/business-form-data/first-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
+      getBusinessFormData()
       setImageSignpost(img)
     } else {
       preview = "";
@@ -170,7 +180,8 @@ export const PaymentModulPage = () => {
       img = e.target.files[0];
       const formData = new FormData();
       formData.append("business_location_photo", img);
-      await axios.post(`${API_URL}/api/v1/business-form-data/first-photo`, formData)
+      await axios.post(`${API_URL}/api/v1/business-form-data/first-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
+      getBusinessFormData()
       setImageLocation(img)
     } else {
       preview = "";
@@ -192,7 +203,8 @@ export const PaymentModulPage = () => {
       img = e.target.files[0];
       const formData = new FormData();
       formData.append("siup_tdp_nib", img);
-      await axios.post(`${API_URL}/api/v1/business-form-data/second-photo`, formData)
+      await axios.post(`${API_URL}/api/v1/business-form-data/second-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
+      getBusinessFormData()
       setImageSiup(img)
     } else {
       preview = "";
@@ -213,7 +225,8 @@ export const PaymentModulPage = () => {
       img = e.target.files[0];
       const formData = new FormData();
       formData.append("npwp_pt_photo", img);
-      await axios.post(`${API_URL}/api/v1/business-form-data/first-photo`, formData)
+      await axios.post(`${API_URL}/api/v1/business-form-data/first-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
+      getBusinessFormData()
       setImageNpwpPt(img)
     } else {
       preview = "";
@@ -316,10 +329,10 @@ export const PaymentModulPage = () => {
       }
 
       const dataSendSave = {
-        status: "sudah diajukan di backoffice",
+        status: "Sudah Diajukan di Backoffice",
         tracking_process: 1,
         payment_gateway_name: values.payment_gateway_name,
-        register_type_cz: registerType,
+        register_type_cz: registerTypeCz,
         owner_name: values.nama_pemilik,
         place_and_date_of_birth: values.tempat_tanggal_lahir,
         merchant_owner_address: values.alamat_pemilik_merchant,
@@ -348,17 +361,20 @@ export const PaymentModulPage = () => {
       if(baseSignature) dataSendPdf.signature = baseSignature
       console.log("dataSendSave", dataSendSave)
       try {
-        // await axios.post(`${API_URL}/api/v1/business-form-data`, dataSendSave)
+        await axios.post(`${API_URL}/api/v1/business-form-data`, dataSendSave)
+        getBusinessFormData()
+        
         const date = new Date()
-        const formatDate = dayjs(date).format('DD-MM-YYYY')
-        const fileName = `FORMULIR APLIKASI MERCHANT - ${formatDate}.pdf`
-        const {data} = await axios.post(`${API_URL}/api/v1/modify-pdf`, dataSendPdf, {
+        const formatDate = dayjs(date).format('DD-MM-YYYY_HH_m_ss')
+        const fileName = `FORMULIR APLIKASI MERCHANT - ${business.name} - ${formatDate}.pdf`
+        
+        const {data} = await axios.post(`${API_URL}/api/v1/modify-pdf?business_id=${user_info.business_id}&register_type_cz=${registerTypeCz}`, dataSendPdf, {
           responseType: "blob"
         });
         const blob = new Blob([data], { type: 'application/pdf' })
         console.log("blob pdf", blob)
         // saveAs(blob, fileName)
-        // await fileDownload(data, fileName)
+        fileDownload(data, fileName)
 
       } catch (err) {
         console.log("error apa", err)
@@ -448,87 +464,89 @@ export const PaymentModulPage = () => {
   const handleNomorTelpMerchant = () => formikFormCz.setFieldValue("nomor_telp_merchant", business.phone_number || "")
   
 
-  const getBusinessFormData = async () => {
+  const getBusinessFormDataMyId = async () => {
     try {
-      const {data} = await axios.get(`${API_URL}/api/v1/business-form-data/my-id`)
-
-      if(data.data.ktp_paspor_kitas) {
-        formikFormCz.setFieldValue("ktp", data.data.ktp_paspor_kitas || "")
-      } else {
-        handleKtp()
+      if(registerTypeCz) {
+        console.log("registerTypeCz", registerTypeCz)
+        const {data} = await axios.get(`${API_URL}/api/v1/business-form-data/my-id?register_type_cz=${registerTypeCz}`)
+  
+        if(data.data.ktp_paspor_kitas) {
+          formikFormCz.setFieldValue("ktp", data.data.ktp_paspor_kitas || "")
+        } else {
+          handleKtp()
+        }
+        if(data.data.kk_npwp) {
+          formikFormCz.setFieldValue("kk", data.data.kk_npwp || "")
+        } else {
+          handleKK()
+        }
+        if(data.data.merchant_name) {
+          formikFormCz.setFieldValue("nama_merchant", data.data.merchant_name || "")
+        } else {
+          handleNamaMerchant()
+        }
+        if(data.data.merchant_city) {
+          formikFormCz.setFieldValue("kota_merchant", data.data.merchant_city || "")
+        } else {
+          handleKotaMerchant()
+        }
+        if(data.data.merchant_province) {
+          formikFormCz.setFieldValue("provinsi_merchant", data.data.merchant_province || "")
+        } else {
+          handleProvinsiMerchant()
+        }
+        if(data.data.merchant_mobile_number) {
+          formikFormCz.setFieldValue("nomor_telp_merchant", data.data.merchant_mobile_number || "")
+        } else {
+          handleNomorTelpMerchant()
+        }
+        formikFormCz.setFieldValue("nama_pemilik", data.data.owner_name || "")
+        formikFormCz.setFieldValue("tempat_tanggal_lahir", data.data.place_and_date_of_birth || "")
+        formikFormCz.setFieldValue("alamat_pemilik_merchant", data.data.merchant_owner_address || "")
+        formikFormCz.setFieldValue("kota", data.data.city || "")
+        formikFormCz.setFieldValue("provinsi", data.data.province || "")
+        formikFormCz.setFieldValue("kode_pos", data.data.postal_code || "")
+        formikFormCz.setFieldValue("nomor_hp_merchant", data.data.merchant_mobile_number || "")
+        formikFormCz.setFieldValue("alamat_email_pemilik_merchant", data.data.merchant_owner_email_address || "")
+        formikFormCz.setFieldValue("alamat_usaha_merchant", data.data.merchant_business_address || "")
+        formikFormCz.setFieldValue("kode_pos_merchant", data.data.merchant_postal_code || "")
+        formikFormCz.setFieldValue("tipe_usaha_merchant", data.data.merchant_business_type || "")
+        formikFormCz.setFieldValue("status_usaha", data.data.business_status || "")
+        formikFormCz.setFieldValue("alamat_email_merchant", data.data.merchant_email_address || "")
+        formikFormCz.setFieldValue("bentuk_bidang_usaha", data.data.form_of_business || "")
+        formikFormCz.setFieldValue("deskripsi_produk", data.data.product_description || "")
+        formikFormCz.setFieldValue("nama_bank", data.data.bank_name || "")
+        formikFormCz.setFieldValue("nomor_rekening", data.data.account_number || "")
+        formikFormCz.setFieldValue("nama_pemilik_rekening", data.data.account_owner_name || "")
+        
+        setImageProduct(
+          `${data.data.product_photo ? `${API_URL}/${data.data.product_photo}` : ""}`
+        );
+  
+        setImageLocation(
+          `${
+            data.data.business_location_photo ? `${API_URL}/${data.data.business_location_photo}` : ""
+          }`
+        );
+  
+        setImageSignpost(
+          `${
+            data.data.business_signpost_photo ? `${API_URL}/${data.data.business_signpost_photo}` : ""
+          }`
+        );
+  
+        setImageNpwpPt(
+          `${
+            data.data.npwp_pt_photo ? `${API_URL}/${data.data.npwp_pt_photo}` : ""
+          }`
+        );
+  
+        setImageSiup(
+          `${
+            data.data.siup_tdp_nib ? `${API_URL}/${data.data.siup_tdp_nib}` : ""
+          }`
+        );
       }
-      if(data.data.kk_npwp) {
-        formikFormCz.setFieldValue("kk", data.data.kk_npwp || "")
-      } else {
-        handleKK()
-      }
-      if(data.data.merchant_name) {
-        formikFormCz.setFieldValue("nama_merchant", data.data.merchant_name || "")
-      } else {
-        handleNamaMerchant()
-      }
-      if(data.data.merchant_city) {
-        formikFormCz.setFieldValue("kota_merchant", data.data.merchant_city || "")
-      } else {
-        handleKotaMerchant()
-      }
-      if(data.data.merchant_province) {
-        formikFormCz.setFieldValue("provinsi_merchant", data.data.merchant_province || "")
-      } else {
-        handleProvinsiMerchant()
-      }
-      if(data.data.merchant_mobile_number) {
-        formikFormCz.setFieldValue("nomor_telp_merchant", data.data.merchant_mobile_number || "")
-      } else {
-        handleNomorTelpMerchant()
-      }
-      formikFormCz.setFieldValue("nama_pemilik", data.data.owner_name || "")
-      formikFormCz.setFieldValue("tempat_tanggal_lahir", data.data.place_and_date_of_birth || "")
-      formikFormCz.setFieldValue("alamat_pemilik_merchant", data.data.merchant_owner_address || "")
-      formikFormCz.setFieldValue("kota", data.data.city || "")
-      formikFormCz.setFieldValue("provinsi", data.data.province || "")
-      formikFormCz.setFieldValue("kode_pos", data.data.postal_code || "")
-      formikFormCz.setFieldValue("nomor_hp_merchant", data.data.merchant_mobile_number || "")
-      formikFormCz.setFieldValue("alamat_email_pemilik_merchant", data.data.merchant_owner_email_address || "")
-      formikFormCz.setFieldValue("alamat_usaha_merchant", data.data.merchant_business_address || "")
-      formikFormCz.setFieldValue("kode_pos_merchant", data.data.merchant_postal_code || "")
-      formikFormCz.setFieldValue("tipe_usaha_merchant", data.data.merchant_business_type || "")
-      formikFormCz.setFieldValue("status_usaha", data.data.business_status || "")
-      formikFormCz.setFieldValue("alamat_email_merchant", data.data.merchant_email_address || "")
-      formikFormCz.setFieldValue("bentuk_bidang_usaha", data.data.form_of_business || "")
-      formikFormCz.setFieldValue("deskripsi_produk", data.data.product_description || "")
-      formikFormCz.setFieldValue("nama_bank", data.data.bank_name || "")
-      formikFormCz.setFieldValue("nomor_rekening", data.data.account_number || "")
-      formikFormCz.setFieldValue("nama_pemilik_rekening", data.data.account_owner_name || "")
-      
-      setImageProduct(
-        `${data.data.product_photo ? `${API_URL}/${data.data.product_photo}` : ""}`
-      );
-
-      setImageLocation(
-        `${
-          data.data.business_location_photo ? `${API_URL}/${data.data.business_location_photo}` : ""
-        }`
-      );
-
-      setImageSignpost(
-        `${
-          data.data.business_signpost_photo ? `${API_URL}/${data.data.business_signpost_photo}` : ""
-        }`
-      );
-
-      setImageNpwpPt(
-        `${
-          data.data.npwp_pt_photo ? `${API_URL}/${data.data.npwp_pt_photo}` : ""
-        }`
-      );
-
-      setImageSiup(
-        `${
-          data.data.siup_tdp_nib ? `${API_URL}/${data.data.siup_tdp_nib}` : ""
-        }`
-      );
-
     } catch (error) {
       console.log(error)
     }
@@ -536,8 +554,43 @@ export const PaymentModulPage = () => {
 
   React.useEffect(() => {
     getBusinessInfo();
-    getBusinessFormData();
-  }, []);
+    getBusinessFormDataMyId();
+  }, [registerTypeCz]);
+
+  const getBusinessFormData = async () => {
+    try {
+      const {data} = await axios.get(`${API_URL}/api/v1/business-form-data?business_id=${user_info.business_id}`)
+      data.data.map((value) => {
+        if(value.date_tracking_1) {
+          console.log("value.date_tracking_1", value.date_tracking_1)
+          value.date_tracking_1 = dayjs(value.date_tracking_1).format('ddd, MMM DD')
+          value.time_tracking_1 = dayjs(value.time_tracking_1).format('hh:mm')
+        }
+        if(value.date_tracking_2) {
+          console.log("value.date_tracking_2", value.date_tracking_2)
+          value.date_tracking_2 = dayjs(value.date_tracking_2).format('ddd, MMM DD')
+          value.time_tracking_2 = dayjs(value.time_tracking_2).format('hh:mm')
+        }
+        if(value.date_tracking_3) {
+          console.log("value.date_tracking_3", value.date_tracking_3)
+          value.date_tracking_3 = dayjs(value.date_tracking_3).format('ddd, MMM DD')
+          value.time_tracking_3 = dayjs(value.time_tracking_3).format('hh:mm')
+        }
+        if(value.date_tracking_4) {
+          console.log("value.date_tracking_4", value.date_tracking_4)
+          value.date_tracking_4 = dayjs(value.date_tracking_4).format('ddd, MMM DD')
+          value.time_tracking_4 = dayjs(value.time_tracking_4).format('hh:mm')
+        }
+      })
+      setBusinessFormData(data.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  React.useEffect(() => {
+    getBusinessFormData()
+  }, [])
 
   return (
     <>
@@ -545,10 +598,12 @@ export const PaymentModulPage = () => {
         <Tab eventKey="status" title={t("statusRegistration")}>
           <StatusRegistration 
             t={t}
+            business={business}
+            businessFormData={businessFormData}
           />
         </Tab>
 
-        <Tab eventKey="cashlez" title="Cashlez">
+        <Tab eventKey="cashlez" title="Cashlez" onClick={() => handleClickTab('cashlez')}>
           <CashlezTab 
             t={t}
             formikFormCz={formikFormCz}
@@ -589,76 +644,6 @@ export const PaymentModulPage = () => {
             handle_register_type_cz={handle_register_type_cz}
           />
         </Tab>
-
-        {/* <Tab eventKey="payment" title={t("individualRegistration")}>
-          <PaymentModulePersonal
-            t={t}
-            formikFormCz={formikFormCz}
-            validationFormCz={validationFormCz}
-            ownerName={ownerName}
-            handleResultSignature={handleResultSignature}
-            showSignaturePad={showSignaturePad}
-            closeSignaturePad={closeSignaturePad}
-            handleSubmit={handleSubmit}
-            handlePreviewLocation={handlePreviewLocation}
-            handlePreviewSignpost={handlePreviewSignpost}
-            handlePreviewProduct={handlePreviewProduct}
-            handlePreviewNpwp={handlePreviewNpwp}
-            handlePreviewKtp={handlePreviewKtp}
-            handleOwnerName={handleOwnerName}
-            handleResultSignature={handleResultSignature}
-            openSignaturePad={openSignaturePad}
-            business={business}
-            imageLocation={imageLocation}
-            previewLocation={previewLocation}
-            imageSignpost={imageSignpost}
-            previewSignpost={previewSignpost}
-            imageProduct={imageProduct}
-            previewProduct={previewProduct}
-            imageNpwp={imageNpwp}
-            previewNpwp={previewNpwp}
-            imageKtp={imageKtp}
-            previewKtp={previewKtp}
-            ownerName={ownerName}
-            baseSignature={baseSignature}
-            showSignaturePad={showSignaturePad}
-          />
-        </Tab>
-
-        <Tab eventKey="payment2" title={t("PTRegistration")}>
-          <PaymentModulePT
-            t={t}
-            formikFormCz={formikFormCz}
-            validationFormCz={validationFormCz}
-            ownerName={ownerName}
-            handleResultSignature={handleResultSignature}
-            showSignaturePad={showSignaturePad}
-            closeSignaturePad={closeSignaturePad}
-            handleSubmit={handleSubmit}
-            handlePreviewLocation={handlePreviewLocation}
-            handlePreviewSignpost={handlePreviewSignpost}
-            handlePreviewProduct={handlePreviewProduct}
-            handlePreviewNpwp={handlePreviewNpwp}
-            handlePreviewKtp={handlePreviewKtp}
-            handleOwnerName={handleOwnerName}
-            handleResultSignature={handleResultSignature}
-            openSignaturePad={openSignaturePad}
-            business={business}
-            imageLocation={imageLocation}
-            previewLocation={previewLocation}
-            imageSignpost={imageSignpost}
-            previewSignpost={previewSignpost}
-            imageProduct={imageProduct}
-            previewProduct={previewProduct}
-            imageNpwp={imageNpwp}
-            previewNpwp={previewNpwp}
-            imageKtp={imageKtp}
-            previewKtp={previewKtp}
-            ownerName={ownerName}
-            baseSignature={baseSignature}
-            showSignaturePad={showSignaturePad}
-          />
-        </Tab> */}
       </Tabs>
     </>
   );

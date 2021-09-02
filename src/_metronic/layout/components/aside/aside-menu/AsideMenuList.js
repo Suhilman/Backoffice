@@ -20,6 +20,7 @@ import accountIcon from "../../../../../images/icons8-search-account-256.png"
 import commissionIcon from "../../../../../images/icons8-sales-performance-52.png"
 import subscriptionIcon from "../../../../../images/icons8-subscription-100.png"
 import paymentIcon from "../../../../../images/icons8-mobile-payment-90.png"
+import aboutIcon from "../../../../../images/icons8-about-500.png"
 import axios from 'axios'
 
 import './style.css'
@@ -534,6 +535,15 @@ function AsideMenuList(props) {
               <img src={paymentIcon} alt="Icon Payment"/>
             </div>
             <span className="menu-text">{t("payment")}</span>
+          </NavLink>
+        </li>
+
+        <li className={`menu-item ${getMenuItemActive("/about", false)}`}>
+          <NavLink className="menu-link" to="/about">
+            <div className="wrapper-icon">
+              <img src={aboutIcon} alt="Icon About"/>
+            </div>
+            <span className="menu-text">{t("about")}</span>
           </NavLink>
         </li>
 

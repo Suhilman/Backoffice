@@ -66,12 +66,8 @@ const PaymentModulePT = ({
   imageNpwpPt,
   previewNpwpPt,
   imageSiup,
-  previewSiup,
-  handle_register_type_cz
+  previewSiup
 }) => {
-  useEffect(() => {
-    handle_register_type_cz('pt')
-  }, [])
   return (
     <div>
       <Signature
@@ -504,64 +500,13 @@ const PaymentModulePT = ({
                   </Form.Group>
                 </Col>
               </Row>
-              
+
               <div className="d-flex flex-column justify-content-center align-items-center mt-4">
                 <div>
                   <strong style={{fontSize:"15px", textDecoration: "underline"}}>{t("dataBank")}</strong>
                 </div>
                 <div>
                   <small><em>({t("mustAttachAPhotoOfTheCoverOfTheSavingsBook")})</em></small>
-                </div>
-              </div>
-              
-              <Row className="mt-3">
-                <Col>
-                  <Form.Group>
-                    <Form.Label>{t("bankName")} *</Form.Label>
-                    <Form.Control
-                      name="nama_bank"
-                      placeholder={t("enterBankName")}
-                      {...formikFormCz.getFieldProps("nama_bank")}
-                      className={validationFormCz("nama_bank")}
-                      required
-                    />
-                    {formikFormCz.touched.nama_bank && formikFormCz.errors.nama_bank ? (
-                      <div className="fv-plugins-message-container">
-                        <div className="fv-help-block">
-                          {formikFormCz.errors.nama_bank}
-                        </div>
-                      </div>
-                    ) : null}
-                    <small>({t("accordingToTheRegisteredMerchant/CompanyOwner")}</small>
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group>
-                    <Form.Label>{t("bankAccountNumber")} *</Form.Label>
-                    <Form.Control
-                      name="nomor_rekening"
-                      placeholder={t("enterBankAccountNumber")}
-                      {...formikFormCz.getFieldProps("nomor_rekening")}
-                      className={validationFormCz("nomor_rekening")}
-                      required
-                    />
-                    {formikFormCz.touched.nomor_rekening && formikFormCz.errors.nomor_rekening ? (
-                      <div className="fv-plugins-message-container">
-                        <div className="fv-help-block">
-                          {formikFormCz.errors.nomor_rekening}
-                        </div>
-                      </div>
-                    ) : null}
-                  </Form.Group>
-                </Col>
-              </Row>
-
-              <div className="d-flex flex-column justify-content-center align-items-center mt-4">
-                <div>
-                  <strong style={{fontSize:"15px", textDecoration: "underline"}}>{t("PTRegistrationRequirements")}</strong>
-                </div>
-                <div>
-                  <small><em>({t("PTRegistrationRequirements")})</em></small>
                 </div>
               </div>
               
@@ -628,10 +573,10 @@ const PaymentModulePT = ({
 
               <div className="d-flex flex-column justify-content-center align-items-center mt-4">
                 <div>
-                  <strong style={{fontSize:"15px", textDecoration: "underline"}}>{t("requirements")} *</strong>
+                  <strong style={{fontSize:"15px", textDecoration: "underline"}}>{t("PTRegistrationRequirements")}</strong>
                 </div>
                 <div>
-                  <small><em>({t("individualRegistrationRequirements")})</em></small>
+                  <small><em>({t("PTRegistrationRequirements")})</em></small>
                 </div>
               </div>
 

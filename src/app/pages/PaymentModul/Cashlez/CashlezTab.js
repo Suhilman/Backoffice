@@ -48,6 +48,10 @@ const CashlezTab = ({
   const handleRegistrationType = (value) => setRegistrationType(value)
 
   const openModalIndividual = (params) => {
+    // input database
+    handle_register_type_cz('individu')
+
+    // untuk judul tab
     setRegistrationType(params)
     setShowModalIndividual(!showModalIndividual)
     setShowModalPT(false)
@@ -55,7 +59,12 @@ const CashlezTab = ({
   const closeModalIndividual = () => setShowModalIndividual(false)
 
   const openModalPT = (params) =>  {
+    // input database
+    handle_register_type_cz('pt')
+
+    // untuk judul tab
     setRegistrationType(params)
+
     setShowModalPT(!showModalPT)
     setShowModalIndividual(false)
   }
@@ -114,7 +123,6 @@ const CashlezTab = ({
           showSignaturePad={showSignaturePad}
           handleRegistrationType={handleRegistrationType}
           title={t('paymentIndividual')}
-          handle_register_type_cz={handle_register_type_cz}
         />
 
         <PaymentModulePT 
@@ -152,7 +160,6 @@ const CashlezTab = ({
           showSignaturePad={showSignaturePad}
           handleRegistrationType={handleRegistrationType}
           title={t('paymentPT')}
-          handle_register_type_cz={handle_register_type_cz}
           handlePreviewNpwpPt={handlePreviewNpwpPt}
           handlePreviewSiup={handlePreviewSiup}
           imageNpwpPt={imageNpwpPt}
