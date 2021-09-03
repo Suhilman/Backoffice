@@ -9,11 +9,6 @@ const AboutPage = () => {
   return (
     <div>
       <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
-          <div className="headerPage">
-            <div className="headerStart">
-              <h3>{t("about")}</h3>
-            </div>
-          </div>
           <div className={styles.wrapperContent}>
             <div className="d-flex flex-column align-items-center">
               <div className={styles.wrapperLogo}>
@@ -21,6 +16,8 @@ const AboutPage = () => {
               </div>
               <h6>POS System</h6>
               <h5>Version 1.0.1</h5>
+              <br />
+              &copy; 2021 Lifetech
             </div>
           </div>
         </Paper>

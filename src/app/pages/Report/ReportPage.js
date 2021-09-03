@@ -286,7 +286,7 @@ export const ReportPage = () => {
     setStartDate(dayjs(startRange).format("YYYY-MM-DD"));
     setEndDate(
       dayjs(endRange)
-        .add(1, "days")
+        // .add(1, "days")
         .format("YYYY-MM-DD")
     );
     setStateCustom(false);

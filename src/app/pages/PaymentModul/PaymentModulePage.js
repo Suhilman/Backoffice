@@ -366,7 +366,7 @@ export const PaymentModulPage = () => {
         
         const date = new Date()
         const formatDate = dayjs(date).format('DD-MM-YYYY_HH_m_ss')
-        const fileName = `FORMULIR APLIKASI MERCHANT - ${business.name} - ${formatDate}.pdf`
+        const fileName = `FORMULIR APLIKASI MERCHANT - ${business.name} - ${values.payment_gateway_name} - ${registerTypeCz} - ${formatDate}.pdf`
         
         const {data} = await axios.post(`${API_URL}/api/v1/modify-pdf?business_id=${user_info.business_id}&register_type_cz=${registerTypeCz}`, dataSendPdf, {
           responseType: "blob"
@@ -580,6 +580,19 @@ export const PaymentModulPage = () => {
           console.log("value.date_tracking_4", value.date_tracking_4)
           value.date_tracking_4 = dayjs(value.date_tracking_4).format('ddd, MMM DD')
           value.time_tracking_4 = dayjs(value.time_tracking_4).format('hh:mm')
+        }
+        if (value.payment_gateway_name) {
+          const str = value.payment_gateway_name;
+          const str2 = str.charAt(0).toUpperCase() + str.slice(1);
+          value.payment_gateway_name = str2
+        }
+        if (value.register_type_cz) {
+          if(value.register_type_cz === 'pt') {
+            value.register_type_cz = 'PT Registration'
+          }
+          if(value.register_type_cz === 'individu') {
+            value.register_type_cz = 'Individual Registration'
+          }
         }
       })
       setBusinessFormData(data.data)

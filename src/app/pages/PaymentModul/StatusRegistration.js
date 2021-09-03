@@ -12,12 +12,14 @@ import {
 } from "@material-ui/core";
 
 import './style.css'
+import styles from './modalsignature.module.css'
 
 const StatusRegistration = ({
 	t,
 	business,
 	businessFormData
 }) => {
+	console.log("businessFormData", businessFormData)
   return (
     <div>
       <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
@@ -27,9 +29,36 @@ const StatusRegistration = ({
           </div>
         </div>
         <div className="container">
-					{businessFormData.map(value => 
+					{businessFormData.length ? 
+					businessFormData.map(value => 
 						<div className="row">
-						<div className="col-12 col-md-10 hh-grayBox pt45 pb20">
+						<div className="col-12 col-md-12 hh-grayBox pt45 pb20 mb-3">
+							<div className={styles.wrapperPayment}>
+								<div>
+									<div className={styles.title}>
+										Tracking Process
+									</div>
+									<div className={styles.value}>
+										{value.status}
+									</div>
+								</div>
+								<div>
+									<div className={styles.title}>
+										Payment Gateway Name
+									</div>
+									<div className={styles.value}>
+										{value.payment_gateway_name}
+									</div>
+								</div>
+								<div>
+									<div className={styles.title}>
+										Register Type Cashlez
+									</div>
+									<div className={styles.value}>
+										{value.register_type_cz}
+									</div>
+								</div>
+							</div>
 							<div className="row justify-content-between">
 								<div className={`order-tracking ${value.tracking_process > 0 && value.tracking_process < 5 ? 'completed' : ''}`}>
 									<span className="is-complete"></span>
@@ -61,8 +90,10 @@ const StatusRegistration = ({
 								</div>
 							</div>
 						</div>
-					</div>
-					)}
+					</div>)
+					: 
+					(<div className="d-flex justify-content-center py-3">There are no status registration to display</div>)
+				}
         </div>
       </Paper>
     </div>
