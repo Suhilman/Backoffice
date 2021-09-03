@@ -314,7 +314,7 @@ const UnitTab = ({ refresh, handleRefresh, t }) => {
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
         title={`${t("deleteUnit")} - ${currUnit.name}`}
-        body={t("areYouSureWantToDelete")}
+        body={t("areYouSureWantToDelete?")}
         loading={loading}
         buttonColor="danger"
         handleClick={() => handleDeleteUnit(currUnit.id)}

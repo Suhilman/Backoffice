@@ -636,8 +636,8 @@ const ProductTab = ({
   return (
     <Row>
       <ConfirmModal
-        title={`Delete Product - ${product.name}`}
-        body="Are you sure want to delete?"
+        title={`${t('deleteProduct')} - ${product.name}`}
+        body={t('areYouSureWantToDelete?')}
         buttonColor="danger"
         handleClick={handleDelete}
         state={showConfirm}
@@ -646,8 +646,8 @@ const ProductTab = ({
       />
 
       <ConfirmModal
-        title={`Delete ${selectedData.length} Selected Products`}
-        body="Are you sure want to delete?"
+        title={`${t('delete')} ${selectedData.length} Selected Products`}
+        body={t('areYouSureWantToDelete?')}
         buttonColor="danger"
         handleClick={() => handleBulkDelete(selectedData)}
         state={showConfirmBulk}

@@ -908,5 +908,6 @@
     "stockOpnameId": "Stock Opname ID",
     "transferStockId": "Transfer Stock ID",
     "transferStockDetailSummary": "Transfer Stock Detail Summary",
-    "deletePurchaseOrder": "Hapus Pesanan Pembelian"
+    "deletePurchaseOrder": "Hapus Pesanan Pembelian",
+    "deleteProduct": "Delete Product"
 }

@@ -908,5 +908,6 @@
     "stockOpnameId": "ID Stok Opname",
     "transferStockId": "ID Stok Transfer",
     "transferStockDetailSummary": "Ringkasan Detail Saham Transfer",
-    "deletePurchaseOrder": "Hapus Pesanan Pembelian"
+    "deletePurchaseOrder": "Hapus Pesanan Pembelian",
+    "deleteProduct": "Hapus Produk"
   }
