@@ -127,7 +127,7 @@ export const DetailPurchaseOrderPage = ({ match }) => {
       sortable: true
     },
     {
-      name: `${t("totalPrice")}`,
+      name: `${t("priceTotal")}`,
       selector: "total_price",
       sortable: true
     }
@@ -287,10 +287,10 @@ export const DetailPurchaseOrderPage = ({ match }) => {
                     </table>
                   </div>
                   <Pdf targetRef={ref} filename={fileName} options={options} scale={1}>
-                    {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>Export To PDF</Button>}
+                    {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>{t('exportToPdf')}</Button>}
                   </Pdf>
                   {/* <Button variant="btn btn-outline-primary mr-2" onClick={handleExportPdf}>Export</Button> */}
-                  <Button variant="outline-secondary">Back</Button>
+                  <Button variant="outline-secondary">{t('back')}</Button>
                 </Link>
 
                 {/* <Button variant="primary" style={{ marginLeft: "0.5rem" }}>

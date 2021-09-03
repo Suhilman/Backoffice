@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import { Paper } from "@material-ui/core";
 import { Button, InputGroup, Form, Row, Col, Dropdown } from "react-bootstrap";
 import DataTable from "react-data-table-component";
+import { useTranslation } from "react-i18next";
 
 import { Search, MoreHoriz } from "@material-ui/icons";
 import useDebounce from "../../../../hooks/useDebounce";
@@ -17,6 +18,7 @@ export const StockOpnamePage = () => {
   const [search, setSearch] = React.useState("");
   const [refresh, setRefresh] = React.useState(0);
   const [alert, setAlert] = React.useState(0);
+  const { t } = useTranslation();
 
   const debouncedSearch = useDebounce(search, 1000);
 
@@ -142,23 +144,23 @@ export const StockOpnamePage = () => {
 
   const columns = [
     {
-      name: "No.",
+      name: t('no'),
       selector: "no",
       sortable: true,
       width: "50px"
     },
     {
-      name: "Stock Opname ID",
+      name: t('stockOpnameId'),
       selector: "code",
       sortable: true
     },
     {
-      name: "Location",
+      name: t('location'),
       selector: "outlet_name",
       sortable: true
     },
     {
-      name: "Date",
+      name: t('date'),
       selector: "date",
       sortable: true
     },
@@ -206,8 +208,8 @@ export const StockOpnamePage = () => {
   return (
     <>
       <ConfirmModal
-        title={`Delete Stock - ${currStock.code}`}
-        body="Are you sure want to delete?"
+        title={`${t('deleteStock')} - ${currStock.code}`}
+        body={t('areYouSureWantToDelete?')}
         buttonColor="danger"
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
@@ -221,7 +223,7 @@ export const StockOpnamePage = () => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Stock Opname</h3>
+                <h3>{t('stockOpname')}</h3>
               </div>
               <div className="headerEnd">
                 <Link
@@ -229,7 +231,7 @@ export const StockOpnamePage = () => {
                     pathname: "/inventory"
                   }}
                 >
-                  <Button variant="outline-secondary">Back to Main View</Button>
+                  <Button variant="outline-secondary">{t('backToMainView')}</Button>
                 </Link>
 
                 <Link
@@ -239,7 +241,7 @@ export const StockOpnamePage = () => {
                   }}
                 >
                   <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
-                    Add New Stock Opname
+                    {t('addNewStockOpname')}
                   </Button>
                 </Link>
               </div>

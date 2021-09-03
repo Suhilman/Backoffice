@@ -260,7 +260,7 @@ export const AddStockOpnamePage = ({ location }) => {
           <Form noValidate onSubmit={formikStock.handleSubmit}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Add Stock Opname</h3>
+                <h3>{t('addStockOpname')}</h3>
               </div>
               <div className="headerEnd">
                 <Link to="/inventory/stock-opname">
@@ -285,7 +285,7 @@ export const AddStockOpnamePage = ({ location }) => {
             <Row style={{ padding: "1rem" }} className="lineBottom">
               <Col sm={3}>
                 <Form.Group>
-                  <Form.Label>Location:</Form.Label>
+                  <Form.Label>{t('location')}:</Form.Label>
                   <Select
                     options={optionsOutlet}
                     name="outlet_id"
@@ -317,7 +317,7 @@ export const AddStockOpnamePage = ({ location }) => {
                 </Form.Group>
 
                 <Form.Group>
-                  <Form.Label>Date:</Form.Label>
+                  <Form.Label>{t('date')}:</Form.Label>
                   <InputGroup>
                     <DatePicker
                       name="date"
@@ -345,7 +345,7 @@ export const AddStockOpnamePage = ({ location }) => {
 
               <Col>
                 <Form.Group>
-                  <Form.Label>Notes:</Form.Label>
+                  <Form.Label>{t('notes')}:</Form.Label>
                   <Form.Control
                     as="textarea"
                     name="notes"
@@ -367,13 +367,13 @@ export const AddStockOpnamePage = ({ location }) => {
               <Col>
                 <Row>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Product Name</h6>
+                    <h6>{t('productName')}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Quantity System</h6>
+                    <h6>{t('quantitySystem')}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Quantity Actual</h6>
+                    <h6>{t('quantityActual')}</h6>
                   </Col>
 
                   {hasUnit ? (
@@ -385,13 +385,13 @@ export const AddStockOpnamePage = ({ location }) => {
                   )}
 
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Difference</h6>
+                    <h6>{t('difference')}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Price System</h6>
+                    <h6>{t('priceSystem')}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Price New</h6>
+                    <h6>{t('priceNew')}</h6>
                   </Col>
                   <Col sm={1}></Col>
                 </Row>
@@ -641,7 +641,7 @@ export const AddStockOpnamePage = ({ location }) => {
                               }
                               variant="primary"
                             >
-                              + Add Another Product
+                              + {t('addAnotherProduct')}
                             </Button>
                           </Row>
                         </div>

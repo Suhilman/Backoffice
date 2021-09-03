@@ -68,7 +68,7 @@ export const DetailIncomingMaterialPage = ({ match }) => {
       sortable: true
     },
     {
-      name: `${t("totalPrice")}`,
+      name: `${t("priceTotal")}`,
       selector: "total_price",
       sortable: true
     }

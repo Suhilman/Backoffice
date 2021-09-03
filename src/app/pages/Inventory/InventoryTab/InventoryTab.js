@@ -25,7 +25,8 @@ const InventoryTab = ({ refresh, t }) => {
 
   const getInventory = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
-    const filterInventory = `?name=${search}`;
+    const filterInventory = `?name=${search}&order=${filter.time}`;
+    console.log("filterInventory", filterInventory)
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/product${filterInventory}`);
       setInventory(data.data);
@@ -36,13 +37,14 @@ const InventoryTab = ({ refresh, t }) => {
 
   React.useEffect(() => {
     getInventory(debouncedSearch);
-  }, [refresh, debouncedSearch]);
+  }, [filter, refresh, debouncedSearch]);
 
   const handleSearch = (e) => setSearch(e.target.value);
   const handleFilter = (e) => {
     const { name, value } = e.target;
     const filterData = { ...filter };
     filterData[name] = value;
+    console.log("filterData", filterData)
     setFilter(filterData);
   };
 

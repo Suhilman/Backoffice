@@ -51,22 +51,22 @@ export const DetailTransferStockPage = ({ match }) => {
 
   const columns = [
     {
-      name: "Product Name",
+      name: t('productName'),
       selector: "product_name",
       sortable: true
     },
     {
-      name: "Quantity",
+      name: t('quantity'),
       selector: "quantity",
       sortable: true
     },
     {
-      name: "Unit",
+      name: t('unit'),
       selector: "unit",
       sortable: true
     },
     {
-      name: "Expired Date",
+      name: t('expiredDate'),
       selector: "expired_date",
       sortable: true
     }
@@ -192,7 +192,7 @@ export const DetailTransferStockPage = ({ match }) => {
             <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
               <div className="headerPage">
                 <div className="headerStart">
-                  <h3>Transfer Stock Detail Summary</h3>
+                  <h3>{t('transferStockDetailSummary')}</h3>
                 </div>
                 <div className="headerEnd">
                   <Link
@@ -232,9 +232,9 @@ export const DetailTransferStockPage = ({ match }) => {
                     </table>
                   </div>
                   <Pdf targetRef={ref} filename={fileName} options={options} scale={1}>
-                    {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>Export To PDF</Button>}
+                    {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>{t('exportToPdf')}</Button>}
                   </Pdf>
-                    <Button variant="outline-secondary">Back</Button>
+                    <Button variant="outline-secondary">{t('back')}</Button>
                   </Link>
 
                   {/* <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
@@ -249,7 +249,7 @@ export const DetailTransferStockPage = ({ match }) => {
               >
                 <Col sm={3}>
                   <Form.Group>
-                    <Form.Label>Origin:</Form.Label>
+                    <Form.Label>{t('origin')}:</Form.Label>
                     <Form.Control
                       type="text"
                       value={transferStock ? transferStock.Origin.name : "-"}
@@ -258,7 +258,7 @@ export const DetailTransferStockPage = ({ match }) => {
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>Destination:</Form.Label>
+                    <Form.Label>{t('destination')}:</Form.Label>
                     <Form.Control
                       type="text"
                       value={transferStock ? transferStock.Destination.name : "-"}
@@ -267,7 +267,7 @@ export const DetailTransferStockPage = ({ match }) => {
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>Date:</Form.Label>
+                    <Form.Label>{t('date')}:</Form.Label>
                     <Form.Control
                       type="text"
                       value={
@@ -282,7 +282,7 @@ export const DetailTransferStockPage = ({ match }) => {
 
                 <Col>
                   <Form.Group>
-                    <Form.Label>Notes:</Form.Label>
+                    <Form.Label>{t('notes')}:</Form.Label>
                     <Form.Control
                       as="textarea"
                       name="notes"

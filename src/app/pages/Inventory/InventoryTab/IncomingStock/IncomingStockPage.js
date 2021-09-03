@@ -208,8 +208,8 @@ export const IncomingStockPage = () => {
   return (
     <>
       <ConfirmModal
-        title={`Delete Stock - ${currStock.code}`}
-        body="Are you sure want to delete?"
+        title={`${t('deleteStock')} - ${currStock.code}`}
+        body={t('areYouSureWantToDelete?')}
         buttonColor="danger"
         state={stateDeleteModal}
         closeModal={closeDeleteModal}

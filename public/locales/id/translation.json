@@ -750,7 +750,7 @@
     "stockId": "ID Stok",
     "exportStockOpnameResult": "Ekspor Hasil Stok Opname",
     "theProductMustHaveAUnit": "Produk Harus Mempunyai Unit",
-    "exportToExcel": "Export To Excel",
+    "exportToExcel": "Ekspor ke Excel",
     "exportIncomingStockResult": "Ekspor Hasil Stok Masuk",
     "exportPurchaseOrderResult": "Ekspor Hasil Pesanan Pembelian",
     "exportTransferStockResult": "Ekspor Hasil Stok Transfer",
@@ -900,5 +900,13 @@
     "uploadsiupTdpNibPicture": "Unggah Gambar SIUP/TDP/NIB",
     "register": "Daftar",
     "statusRegistration": "Status Registrasi",
-    "about": "About"
+    "about": "Tentang",
+    "outcomingStockDetailSummary": "Ringkasan Detail Stok Keluar",
+    "exportToPdf": "Ekspor ke PDF",
+    "no": "No",
+    "outcomingStockId": "ID Stok Keluar",
+    "stockOpnameId": "ID Stok Opname",
+    "transferStockId": "ID Stok Transfer",
+    "transferStockDetailSummary": "Ringkasan Detail Saham Transfer",
+    "deletePurchaseOrder": "Hapus Pesanan Pembelian"
   }

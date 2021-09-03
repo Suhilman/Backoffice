@@ -144,23 +144,23 @@ export const OutcomingStockPage = () => {
 
   const columns = [
     {
-      name: "No.",
+      name: t('no'),
       selector: "no",
       sortable: true,
       width: "50px"
     },
     {
-      name: "Outcoming Stock ID",
+      name: t('outcomingStockId'),
       selector: "code",
       sortable: true
     },
     {
-      name: "Location",
+      name: t('location'),
       selector: "outlet_name",
       sortable: true
     },
     {
-      name: "Date",
+      name: t('date'),
       selector: "date",
       sortable: true
     },
@@ -208,8 +208,8 @@ export const OutcomingStockPage = () => {
   return (
     <>
       <ConfirmModal
-        title={`Delete Stock - ${currStock.code}`}
-        body="Are you sure want to delete?"
+        title={`${t('deleteStock')} - ${currStock.code}`}
+        body={t('areYouSureWantToDelete?')}
         buttonColor="danger"
         state={stateDeleteModal}
         closeModal={closeDeleteModal}

@@ -83,15 +83,15 @@ export const AddBundlePage = ({ location }) => {
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
 
-      const totalPrice = values.bundle_items.reduce(
+      const priceTotal = values.bundle_items.reduce(
         (init, curr) => (init += parseInt(curr.system_price)),
         0
       );
       if (!isCustomPrice) {
-        values.price_purchase = totalPrice;
+        values.price_purchase = priceTotal;
       }
 
-      values.price = totalPrice;
+      values.price = priceTotal;
 
       const formData = new FormData();
       formData.append("outlet_id", values.outlet_id);

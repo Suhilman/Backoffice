@@ -72,37 +72,37 @@ export const DetailStockOpnamePage = ({ match }) => {
 
   const columns = [
     {
-      name: "Product Name",
+      name: t('productName'),
       selector: "product_name",
       sortable: true
     },
     {
-      name: "Quantity System",
+      name: t('quantitySystem'),
       selector: "quantity_system",
       sortable: true
     },
     {
-      name: "Quantity Actual",
+      name: t('quantityActual'),
       selector: "quantity_actual",
       sortable: true
     },
     {
-      name: "Unit",
+      name: t('unit'),
       selector: "unit",
       sortable: true
     },
     {
-      name: "Difference",
+      name: t('difference'),
       selector: "difference",
       sortable: true
     },
     {
-      name: "Price System",
+      name: t('priceSystem'),
       selector: "price_system",
       sortable: true
     },
     {
-      name: "Price New",
+      name: t('priceNew'),
       selector: "price_new",
       sortable: true
     }
@@ -211,7 +211,7 @@ export const DetailStockOpnamePage = ({ match }) => {
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div className="headerPage">
             <div className="headerStart">
-              <h3>Stock Opname Detail Summary</h3>
+              <h3>{t('stockOpnameDetailSummary')}</h3>
             </div>
             <div className="headerEnd">
               <Link
@@ -257,9 +257,9 @@ export const DetailStockOpnamePage = ({ match }) => {
                 </table>
               </div>
               <Pdf targetRef={ref} filename={fileName} options={options} scale={1}>
-                {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>Export To PDF</Button>}
+                {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>{t('exportToPdf')}</Button>}
               </Pdf>
-                <Button variant="outline-secondary">Back</Button>
+                <Button variant="outline-secondary">{t('back')}</Button>
               </Link>
 
               {/* <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
@@ -274,7 +274,7 @@ export const DetailStockOpnamePage = ({ match }) => {
           >
             <Col sm={3}>
               <Form.Group>
-                <Form.Label>Stock ID:</Form.Label>
+                <Form.Label>{t('stockId')}:</Form.Label>
                 <Form.Control
                   type="text"
                   value={stockOpname ? stockOpname.code : "-"}
@@ -283,7 +283,7 @@ export const DetailStockOpnamePage = ({ match }) => {
               </Form.Group>
 
               <Form.Group>
-                <Form.Label>Location:</Form.Label>
+                <Form.Label>{t('location')}:</Form.Label>
                 <Form.Control
                   type="text"
                   value={stockOpname ? stockOpname.Outlet?.name : "-"}
@@ -292,7 +292,7 @@ export const DetailStockOpnamePage = ({ match }) => {
               </Form.Group>
 
               <Form.Group>
-                <Form.Label>Date:</Form.Label>
+                <Form.Label>{t('date')}:</Form.Label>
                 <Form.Control
                   type="text"
                   value={
@@ -307,7 +307,7 @@ export const DetailStockOpnamePage = ({ match }) => {
 
             <Col>
               <Form.Group>
-                <Form.Label>Notes:</Form.Label>
+                <Form.Label>{t('notes')}:</Form.Label>
                 <Form.Control
                   as="textarea"
                   name="notes"
