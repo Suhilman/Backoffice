@@ -909,5 +909,6 @@
     "transferStockId": "Transfer Stock ID",
     "transferStockDetailSummary": "Transfer Stock Detail Summary",
     "deletePurchaseOrder": "Hapus Pesanan Pembelian",
-    "deleteProduct": "Delete Product"
+    "deleteProduct": "Delete Product",
+    "rawMaterialName": "Raw Material Name"
 }

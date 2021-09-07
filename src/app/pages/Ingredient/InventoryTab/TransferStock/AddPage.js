@@ -161,7 +161,7 @@ export const AddTransferMaterialPage = ({ location }) => {
           <Form noValidate onSubmit={formikStock.handleSubmit}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Add Transfer Stock</h3>
+                <h3>{t('addTransferStock')}</h3>
               </div>
               <div className="headerEnd">
                 <Link to="/ingredient-inventory/transfer-stock">
@@ -186,7 +186,7 @@ export const AddTransferMaterialPage = ({ location }) => {
             <Row style={{ padding: "1rem" }} className="lineBottom">
               <Col sm={3}>
                 <Form.Group>
-                  <Form.Label>Origin:</Form.Label>
+                  <Form.Label>{t('origin')}:</Form.Label>
                   <Select
                     options={optionsFromOutlet}
                     name="outlet_from_id"
@@ -214,7 +214,7 @@ export const AddTransferMaterialPage = ({ location }) => {
                 </Form.Group>
 
                 <Form.Group>
-                  <Form.Label>Destination:</Form.Label>
+                  <Form.Label>{t('destination')}:</Form.Label>
                   <Select
                     options={optionsToOutlet}
                     name="outlet_to_id"
@@ -235,7 +235,7 @@ export const AddTransferMaterialPage = ({ location }) => {
                 </Form.Group>
 
                 <Form.Group>
-                  <Form.Label>Date:</Form.Label>
+                  <Form.Label>{t('date')}:</Form.Label>
                   <InputGroup>
                     <DatePicker
                       name="date"
@@ -263,7 +263,7 @@ export const AddTransferMaterialPage = ({ location }) => {
 
               <Col>
                 <Form.Group>
-                  <Form.Label>Notes:</Form.Label>
+                  <Form.Label>{t('notes')}:</Form.Label>
                   <Form.Control
                     as="textarea"
                     name="notes"
@@ -285,13 +285,13 @@ export const AddTransferMaterialPage = ({ location }) => {
               <Col>
                 <Row>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Raw Material Name</h6>
+                    <h6>{t('rawMaterialName')}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Quantity</h6>
+                    <h6>{t('quantity')}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Unit</h6>
+                    <h6>{t('unit')}</h6>
                   </Col>
                   <Col sm={1}></Col>
                 </Row>
@@ -402,7 +402,7 @@ export const AddTransferMaterialPage = ({ location }) => {
                               }
                               variant="primary"
                             >
-                              + Add Raw Material
+                              + {t('addRawMaterial')}
                             </Button>
                           </Row>
                         </div>

@@ -31,7 +31,7 @@ const StatusRegistration = ({
         <div className="container">
 					{businessFormData.length ? 
 					businessFormData.map(value => 
-						<div className="row">
+					<div className="row">
 						<div className="col-12 col-md-12 hh-grayBox pt45 pb20 mb-3">
 							<div className={styles.wrapperPayment}>
 								<div>

@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import { Paper } from "@material-ui/core";
 import { Button, InputGroup, Form, Row, Col, Dropdown } from "react-bootstrap";
 import DataTable from "react-data-table-component";
+import { useTranslation } from "react-i18next";
 
 import { Search, MoreHoriz } from "@material-ui/icons";
 import useDebounce from "../../../../hooks/useDebounce";
@@ -18,6 +19,7 @@ export const OutcomingMaterialPage = () => {
   const [refresh, setRefresh] = React.useState(0);
   const [alert, setAlert] = React.useState(0);
 
+  const { t } = useTranslation();
   const debouncedSearch = useDebounce(search, 1000);
 
   // const [filter, setFilter] = React.useState({
@@ -148,22 +150,22 @@ export const OutcomingMaterialPage = () => {
       width: "50px"
     },
     {
-      name: "Outcoming Stock ID",
+      name: t('outcomingStockId'),
       selector: "code",
       sortable: true
     },
     {
-      name: "Location",
+      name: t('location'),
       selector: "outlet_name",
       sortable: true
     },
     {
-      name: "Date",
+      name: t('date'),
       selector: "date",
       sortable: true
     },
     {
-      name: "Actions",
+      name: t('actions'),
       cell: (rows) => {
         return (
           <Dropdown>
@@ -207,8 +209,8 @@ export const OutcomingMaterialPage = () => {
   return (
     <>
       <ConfirmModal
-        title={`Delete Stock - ${currStock.code}`}
-        body="Are you sure want to delete?"
+        title={`${t('deleteStock')}- ${currStock.code}`}
+        body={t('areYouSureWantToDelete?')}
         buttonColor="danger"
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
@@ -222,7 +224,7 @@ export const OutcomingMaterialPage = () => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Outcoming Stock</h3>
+                <h3>{t('outcomingStock?')}</h3>
               </div>
               <div className="headerEnd">
                 <Link
@@ -230,7 +232,7 @@ export const OutcomingMaterialPage = () => {
                     pathname: "/ingredient-inventory"
                   }}
                 >
-                  <Button variant="outline-secondary">Back to Main View</Button>
+                  <Button variant="outline-secondary">{t('backToMainView')}</Button>
                 </Link>
 
                 <Link
@@ -240,7 +242,7 @@ export const OutcomingMaterialPage = () => {
                   }}
                 >
                   <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
-                    Add New Outcoming Stock
+                    {t('addNewOutcomingStock')}
                   </Button>
                 </Link>
               </div>

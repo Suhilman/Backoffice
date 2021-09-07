@@ -194,7 +194,7 @@ export const AddOpnameMaterialPage = ({ location }) => {
           <Form noValidate onSubmit={formikStock.handleSubmit}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Add Stock Opname</h3>
+                <h3>{t('addStockOpname')}</h3>
               </div>
               <div className="headerEnd">
                 <Link to="/ingredient-inventory/stock-opname">
@@ -219,7 +219,7 @@ export const AddOpnameMaterialPage = ({ location }) => {
             <Row style={{ padding: "1rem" }} className="lineBottom">
               <Col sm={3}>
                 <Form.Group>
-                  <Form.Label>Location:</Form.Label>
+                  <Form.Label>{t('location')}:</Form.Label>
                   <Select
                     options={optionsOutlet}
                     name="outlet_id"
@@ -251,7 +251,7 @@ export const AddOpnameMaterialPage = ({ location }) => {
                 </Form.Group>
 
                 <Form.Group>
-                  <Form.Label>Date:</Form.Label>
+                  <Form.Label>{t('date')}:</Form.Label>
                   <InputGroup>
                     <DatePicker
                       name="date"
@@ -279,7 +279,7 @@ export const AddOpnameMaterialPage = ({ location }) => {
 
               <Col>
                 <Form.Group>
-                  <Form.Label>Notes:</Form.Label>
+                  <Form.Label>{t('notes')}:</Form.Label>
                   <Form.Control
                     as="textarea"
                     name="notes"
@@ -301,19 +301,19 @@ export const AddOpnameMaterialPage = ({ location }) => {
               <Col>
                 <Row>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Raw Material Name</h6>
+                    <h6>{t('rawMaterialName')}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Quantity System</h6>
+                    <h6>{t('quantitysystem')}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Quantity Actual</h6>
+                    <h6>{t('quantityActual')}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Unit</h6>
+                    <h6>{t('unit')}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Difference</h6>
+                    <h6>{t('difference')}</h6>
                   </Col>
                   <Col sm={1}></Col>
                 </Row>
@@ -467,7 +467,7 @@ export const AddOpnameMaterialPage = ({ location }) => {
                               }
                               variant="primary"
                             >
-                              + Add Raw Material
+                              + {t('addRawMaterial')}
                             </Button>
                           </Row>
                         </div>

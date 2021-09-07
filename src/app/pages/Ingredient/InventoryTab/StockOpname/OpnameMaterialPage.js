@@ -9,6 +9,7 @@ import DataTable from "react-data-table-component";
 
 import { Search, MoreHoriz } from "@material-ui/icons";
 import useDebounce from "../../../../hooks/useDebounce";
+import { useTranslation } from "react-i18next";
 
 import ConfirmModal from "../../../../components/ConfirmModal";
 
@@ -25,6 +26,7 @@ export const OpnameMaterialPage = () => {
   // });
 
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
+  const { t } = useTranslation();
 
   const [currStock, setCurrStock] = React.useState({
     id: "",
@@ -148,22 +150,22 @@ export const OpnameMaterialPage = () => {
       width: "50px"
     },
     {
-      name: "Stock Opname ID",
+      name: t('stockOpnameId'),
       selector: "code",
       sortable: true
     },
     {
-      name: "Location",
+      name: t('location'),
       selector: "outlet_name",
       sortable: true
     },
     {
-      name: "Date",
+      name: t('date'),
       selector: "date",
       sortable: true
     },
     {
-      name: "Actions",
+      name: t('actions'),
       cell: (rows) => {
         return (
           <Dropdown>
@@ -182,10 +184,10 @@ export const OpnameMaterialPage = () => {
                   }
                 }}
               >
-                <Dropdown.Item as="button">Detail</Dropdown.Item>
+                <Dropdown.Item as="button">{t('detail')}</Dropdown.Item>
               </Link>
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                Delete
+                {t('delete')}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -222,7 +224,7 @@ export const OpnameMaterialPage = () => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Stock Opname</h3>
+                <h3>{t('stockOpname')}</h3>
               </div>
               <div className="headerEnd">
                 <Link
@@ -230,7 +232,7 @@ export const OpnameMaterialPage = () => {
                     pathname: "/ingredient-inventory"
                   }}
                 >
-                  <Button variant="outline-secondary">Back to Main View</Button>
+                  <Button variant="outline-secondary">{t('backToMainView')}</Button>
                 </Link>
 
                 <Link
@@ -240,7 +242,7 @@ export const OpnameMaterialPage = () => {
                   }}
                 >
                   <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
-                    Add New Stock Opname
+                   {t('addNewStockOpname')}
                   </Button>
                 </Link>
               </div>

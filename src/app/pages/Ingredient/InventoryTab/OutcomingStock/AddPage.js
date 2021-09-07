@@ -178,7 +178,7 @@ export const AddOutcomingMaterialPage = ({ location }) => {
           <Form noValidate onSubmit={formikStock.handleSubmit}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Add Outcoming Stock</h3>
+                <h3>{t('addOutcomingStock')}</h3>
               </div>
               <div className="headerEnd">
                 <Link to="/ingredient-inventory/outcoming-stock">
@@ -203,7 +203,7 @@ export const AddOutcomingMaterialPage = ({ location }) => {
             <Row style={{ padding: "1rem" }} className="lineBottom">
               <Col sm={3}>
                 <Form.Group>
-                  <Form.Label>Location:</Form.Label>
+                  <Form.Label>{t('location')}:</Form.Label>
                   <Select
                     options={optionsOutlet}
                     name="outlet_id"
@@ -231,7 +231,7 @@ export const AddOutcomingMaterialPage = ({ location }) => {
                 </Form.Group>
 
                 <Form.Group>
-                  <Form.Label>Date:</Form.Label>
+                  <Form.Label>{t('date')}:</Form.Label>
                   <InputGroup>
                     <DatePicker
                       name="date"
@@ -259,7 +259,7 @@ export const AddOutcomingMaterialPage = ({ location }) => {
 
               <Col>
                 <Form.Group>
-                  <Form.Label>Notes:</Form.Label>
+                  <Form.Label>{t('notes')}:</Form.Label>
                   <Form.Control
                     as="textarea"
                     name="notes"
@@ -281,13 +281,13 @@ export const AddOutcomingMaterialPage = ({ location }) => {
               <Col>
                 <Row>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Raw Material Name</h6>
+                    <h6>{t('rawMaterialName')}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Quantity</h6>
+                    <h6>{t('quantity')}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>Unit</h6>
+                    <h6>{t('unit')}</h6>
                   </Col>
                   <Col sm={1}></Col>
                 </Row>
@@ -399,7 +399,7 @@ export const AddOutcomingMaterialPage = ({ location }) => {
                               }
                               variant="primary"
                             >
-                              + Add Raw Material
+                              + {t('addRawMaterial')}
                             </Button>
                           </Row>
                         </div>

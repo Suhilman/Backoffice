@@ -6,11 +6,13 @@ import dayjs from "dayjs";
 import { Paper } from "@material-ui/core";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import DataTable from "react-data-table-component";
+import { useTranslation } from "react-i18next";
 
 export const DetailOpnameMaterialPage = ({ match }) => {
   const { materialId } = match.params;
 
   const [stockOpname, setStockOpname] = React.useState("");
+  const { t } = useTranslation();
 
   const getStockOpname = async (id) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -30,27 +32,27 @@ export const DetailOpnameMaterialPage = ({ match }) => {
 
   const columns = [
     {
-      name: "Raw Material Name",
+      name: t('rawMaterialName'),
       selector: "material_name",
       sortable: true
     },
     {
-      name: "Quantity System",
+      name: t('quantitySystem'),
       selector: "quantity_system",
       sortable: true
     },
     {
-      name: "Quantity Actual",
+      name: t('quantityActual'),
       selector: "quantity_actual",
       sortable: true
     },
     {
-      name: "Unit",
+      name: t('unit'),
       selector: "unit",
       sortable: true
     },
     {
-      name: "Difference",
+      name: t('difference'),
       selector: "difference",
       sortable: true
     }
@@ -74,7 +76,7 @@ export const DetailOpnameMaterialPage = ({ match }) => {
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div className="headerPage">
             <div className="headerStart">
-              <h3>Stock Opname Detail Summary</h3>
+              <h3>{t('stockOpnameDetailSummary')}</h3>
             </div>
             <div className="headerEnd">
               <Link
@@ -82,7 +84,7 @@ export const DetailOpnameMaterialPage = ({ match }) => {
                   pathname: "/ingredient-inventory/stock-opname"
                 }}
               >
-                <Button variant="outline-secondary">Back</Button>
+                <Button variant="outline-secondary">{t('back')}</Button>
               </Link>
 
               {/* <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
@@ -97,7 +99,7 @@ export const DetailOpnameMaterialPage = ({ match }) => {
           >
             <Col sm={3}>
               <Form.Group>
-                <Form.Label>Stock ID:</Form.Label>
+                <Form.Label>{t('stockId')}:</Form.Label>
                 <Form.Control
                   type="text"
                   value={stockOpname ? stockOpname.code : "-"}
@@ -106,7 +108,7 @@ export const DetailOpnameMaterialPage = ({ match }) => {
               </Form.Group>
 
               <Form.Group>
-                <Form.Label>Location:</Form.Label>
+                <Form.Label>{t('location')}:</Form.Label>
                 <Form.Control
                   type="text"
                   value={stockOpname ? stockOpname.Outlet?.name : "-"}
@@ -115,7 +117,7 @@ export const DetailOpnameMaterialPage = ({ match }) => {
               </Form.Group>
 
               <Form.Group>
-                <Form.Label>Date:</Form.Label>
+                <Form.Label>{t('date')}:</Form.Label>
                 <Form.Control
                   type="text"
                   value={
@@ -130,7 +132,7 @@ export const DetailOpnameMaterialPage = ({ match }) => {
 
             <Col>
               <Form.Group>
-                <Form.Label>Notes:</Form.Label>
+                <Form.Label>{t('notes')}:</Form.Label>
                 <Form.Control
                   as="textarea"
                   name="notes"

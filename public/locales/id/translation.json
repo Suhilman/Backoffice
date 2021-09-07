@@ -754,7 +754,7 @@
     "exportIncomingStockResult": "Ekspor Hasil Stok Masuk",
     "exportPurchaseOrderResult": "Ekspor Hasil Pesanan Pembelian",
     "exportTransferStockResult": "Ekspor Hasil Stok Transfer",
-    "editRawMaterial": "Edit Raw Material",
+    "editRawMaterial": "Edit Bahan Baku",
     "exportRawMaterialResult": "Ekspor Hasil Bahan Baku",
     "outletLimit": "Batas Outlet",
     "youHaveReachedTheOutletQuotaLimit": "Anda telah memenuhi batas kuota outlet.",
@@ -909,5 +909,6 @@
     "transferStockId": "ID Stok Transfer",
     "transferStockDetailSummary": "Ringkasan Detail Saham Transfer",
     "deletePurchaseOrder": "Hapus Pesanan Pembelian",
-    "deleteProduct": "Hapus Produk"
+    "deleteProduct": "Hapus Produk",
+    "rawMaterialName": "Nama Bahan Baku"
   }

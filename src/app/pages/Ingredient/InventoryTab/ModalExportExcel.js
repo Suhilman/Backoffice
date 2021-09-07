@@ -166,7 +166,7 @@ const ModalExportExcel = ({state, closeModal, optionsOutlet, handleExports, data
                     </table>
                   </div>
                   <Pdf targetRef={ref} filename={fileName} options={options} scale={1}>
-                    {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>Export To PDF</Button>}
+                    {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>{t('exportToPdf')}</Button>}
                   </Pdf>
                 </div>
               ) : ""}

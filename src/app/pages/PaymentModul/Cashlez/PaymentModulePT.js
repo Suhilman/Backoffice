@@ -856,7 +856,7 @@ const PaymentModulePT = ({
                     {t("signaturePad")}
                   </div>
                   <div className="btn btn-primary" onClick={handleSubmit}>
-                    {t("export")} PDF
+                    {t("register")}
                   </div>
                 </div>
               </div>
