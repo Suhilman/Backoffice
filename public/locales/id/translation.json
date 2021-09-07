@@ -252,7 +252,7 @@
     "detail": "Rincian",
     "addIncomingStock": "Tambahkan Stok Masuk",
     "confirm": "Konfirmasi",
-    "areYouSureWantToAddIncomingStock": "Are you sure want to add incoming stock?",
+    "areYouSureWantToAddIncomingStock": "Apakah Anda yakin ingin menambah stok yang masuk?",
     "addOutcomingStock": "Tambahkan Stok Keluar",
     "transferStockID": "Transfer Stok ID",
     "originLocation": "Lokasi Asal",
@@ -910,5 +910,8 @@
     "transferStockDetailSummary": "Ringkasan Detail Saham Transfer",
     "deletePurchaseOrder": "Hapus Pesanan Pembelian",
     "deleteProduct": "Hapus Produk",
-    "rawMaterialName": "Nama Bahan Baku"
+    "rawMaterialName": "Nama Bahan Baku",
+    "editIncomingStock": "Ubah Stok Masuk",
+    "stockOpnameDetailSummary": "Ringkasan Detail Stok Opname",
+    "deleteCommission": "Hapus Komisi"
   }

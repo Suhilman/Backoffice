@@ -192,7 +192,7 @@ export const EditIncomingMaterialPage = ({ location, match }) => {
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div className="headerPage">
             <div className="headerStart">
-              <h3>{t("incomingStockDetailSummary")}</h3>
+              <h3>{t("editIncomingStock")}</h3>
             </div>
             <div className="headerEnd">
               <Link

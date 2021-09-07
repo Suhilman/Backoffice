@@ -291,8 +291,8 @@ const CommissionPage = () => {
   return (
     <div>
       <ConfirmModal
-        title={`Delete Commission - ${commission.name}`}
-        body="Are you sure want to delete?"
+        title={`${t('deleteCommission')}- ${commission.name}`}
+        body={t('areYouSureWantToDelete?')}
         buttonColor="danger"
         handleClick={handleDelete}
         state={showConfirm}

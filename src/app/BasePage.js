@@ -29,6 +29,7 @@ import { InventoryPage } from "./pages/Inventory/InventoryPage";
 import { IncomingStockPage } from "./pages/Inventory/InventoryTab/IncomingStock/IncomingStockPage";
 import { AddIncomingStockPage } from "./pages/Inventory/InventoryTab/IncomingStock/AddPage";
 import { DetailIncomingStockPage } from "./pages/Inventory/InventoryTab/IncomingStock/DetailPage";
+import { EditIncomingStockPage } from "./pages/Inventory/InventoryTab/IncomingStock/EditPage";
 import { OutcomingStockPage } from "./pages/Inventory/InventoryTab/OutcomingStock/OutcomingStockPage";
 import { AddOutcomingStockPage } from "./pages/Inventory/InventoryTab/OutcomingStock/AddPage";
 import { DetailOutcomingStockPage } from "./pages/Inventory/InventoryTab/OutcomingStock/DetailPage";
@@ -210,7 +211,13 @@ export default function BasePage() {
           path="/inventory/incoming-stock/:stockId"
           component={DetailIncomingStockPage}
         />
-
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory/edit-incoming-stock/:stockId"
+          component={EditIncomingStockPage}
+        />
         <ProtectedRoute
           isAllowed={currPrivileges.inventory_management}
           isRoute={false}
