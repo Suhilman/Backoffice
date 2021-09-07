@@ -45,6 +45,7 @@ import { EditRecipePage } from "./pages/Ingredient/RecipeTab/EditPage";
 import { IncomingMaterialPage } from "./pages/Ingredient/InventoryTab/IncomingStock/IncomingMaterialPage";
 import { AddIncomingMaterialPage } from "./pages/Ingredient/InventoryTab/IncomingStock/AddPage";
 import { DetailIncomingMaterialPage } from "./pages/Ingredient/InventoryTab/IncomingStock/DetailPage";
+import { EditIncomingMaterialPage } from "./pages/Ingredient/InventoryTab/IncomingStock/EditPage";
 import { OutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/OutcomingMaterialPage";
 import { AddOutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/AddPage";
 import { DetailOutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/DetailPage";
@@ -325,6 +326,13 @@ export default function BasePage() {
           exact={true}
           path="/ingredient-inventory/incoming-stock/:materialId"
           component={DetailIncomingMaterialPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/edit-incoming-stock/:materialId"
+          component={EditIncomingMaterialPage}
         />
         <ProtectedRoute
           isAllowed={currPrivileges.kitchen_management}
