@@ -5,8 +5,10 @@ import * as Yup from "yup";
 import { useFormik, FormikProvider, FieldArray } from "formik";
 import Select from "react-select";
 import { useTranslation } from "react-i18next";
-
 import {
+  Dropdown,
+  ButtonGroup,
+  ListGroup,
   Button,
   Form,
   Row,
@@ -28,6 +30,7 @@ export const AddIncomingStockPage = ({ location }) => {
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [showConfirm, setShowConfirm] = React.useState(false)
+  const [saveAsDraft, setSaveAsDraft] = React.useState(false)
 
   const [startDate, setStartDate] = React.useState(new Date());
   const [expiredDate, setExpiredDate] = React.useState(new Date());
@@ -92,7 +95,11 @@ export const AddIncomingStockPage = ({ location }) => {
 
       try {
         enableLoading();
-        await axios.post(`${API_URL}/api/v1/incoming-stock`, stockData);
+        if(saveAsDraft) {
+          await axios.post(`${API_URL}/api/v1/incoming-stock/draft`, stockData);
+        } else {
+          await axios.post(`${API_URL}/api/v1/incoming-stock`, stockData);
+        }
         disableLoading();
         history.push("/inventory/incoming-stock");
       } catch (err) {
@@ -209,6 +216,11 @@ export const AddIncomingStockPage = ({ location }) => {
     closeConfirmModal()
   };
 
+  const handleSaveDraft = () => {
+    setSaveAsDraft(true)
+    formikStock.submitForm()
+  }
+
   return (
     <>
       <ConfirmModal
@@ -232,6 +244,7 @@ export const AddIncomingStockPage = ({ location }) => {
                   <Link to="/inventory/incoming-stock">
                     <Button variant="secondary">{t("cancel")}</Button>
                   </Link>
+                  <Dropdown as={ButtonGroup} style={{ marginLeft: "0.5rem" }}>
                   <Button
                     variant="primary"
                     style={{ marginLeft: "0.5rem" }}
@@ -243,6 +256,15 @@ export const AddIncomingStockPage = ({ location }) => {
                       `${t("save")}`
                     )}
                   </Button>
+
+                  <Dropdown.Toggle split variant="primary" />
+
+                  <Dropdown.Menu>
+                    <Dropdown.Item variant="primary" onClick={handleSaveDraft}>
+                        {t("saveAsDraft")}
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
                 </div>
               </div>
 

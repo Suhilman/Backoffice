@@ -58,17 +58,20 @@ const InventoryTab = ({ refresh, t }) => {
     {
       name: `${t("outletName")}`,
       selector: "outlet_name",
-      sortable: true
+      sortable: true,
+      wrap: true
     },
     {
       name: `${t("name")}`,
       selector: "name",
-      sortable: true
+      sortable: true,
+      wrap: true
     },
     {
       name: `${t("supplier")}`,
       selector: "supplier",
-      sortable: true
+      sortable: true,
+      wrap: true
     },
     {
       name: `${t("startingStock")}`,

@@ -81,6 +81,8 @@ export const AddOutcomingStockPage = ({ location }) => {
         items: values.items
       };
 
+      console.log("outcoming stock Inventory", stockData)
+
       try {
         enableLoading();
         await axios.post(`${API_URL}/api/v1/outcoming-stock`, stockData);

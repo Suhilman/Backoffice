@@ -150,12 +150,14 @@ export const IncomingMaterialPage = () => {
     {
       name: `${t("incomingStockID")}`,
       selector: "code",
-      sortable: true
+      sortable: true,
+      wrap: true
     },
     {
       name: `${t("location")}`,
       selector: "outlet_name",
-      sortable: true
+      sortable: true,
+      wrap: true
     },
     {
       name: `${t("date")}`,

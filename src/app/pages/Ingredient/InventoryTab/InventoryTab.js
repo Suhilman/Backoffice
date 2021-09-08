@@ -308,12 +308,14 @@ const InventoryIngredientTab = ({
     {
       name: `${t("location")}`,
       selector: "location",
-      sortable: true
+      sortable: true,
+      wrap: true
     },
     {
       name: `${t("name")}`,
       selector: "name",
-      sortable: true
+      sortable: true,
+      wrap: true
     },
     {
       name: `${t("stock")}`,

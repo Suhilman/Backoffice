@@ -6,6 +6,7 @@ import rupiahFormat from "rupiah-format";
 import NumberFormat from 'react-number-format'
 import { useTranslation } from "react-i18next";
 import ExportExcel from "react-html-table-to-excel";
+import ConfirmModal from "../../../../components/ConfirmModal";
 
 import Pdf from "react-to-pdf";
 import beetposLogo from '../../../../../images/logo beetPOS new.png'
@@ -20,8 +21,11 @@ export const DetailIncomingStockPage = ({ match }) => {
   const ref = React.createRef()
   const { stockId } = match.params;
 
+  const [showConfirm, setShowConfirm] = React.useState(false)
   const [dateTime, setDateTime] = React.useState("")
   const [incomingStock, setIncomingStock] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+
   const [currency, setCurrency] = React.useState("")
   const handleCurrency = async () => {
       const API_URL = process.env.REACT_APP_API_URL;
@@ -102,6 +106,40 @@ export const DetailIncomingStockPage = ({ match }) => {
       sortable: true
     }
   ];
+  
+  const enableLoading = () => setLoading(true);
+  const disableLoading = () => setLoading(false);
+
+  const handleStatus = async () => {
+    try {
+      enableLoading()
+      const API_URL = process.env.REACT_APP_API_URL;
+
+      const sendStock = {
+        outlet_id: incomingStock.outlet_id,
+        items: incomingStock.Incoming_Stock_Products,
+        status: 'done'
+      }
+      console.log("sendStock", sendStock)
+
+      await axios.patch(`${API_URL}/api/v1/incoming-stock/status/${incomingStock.id}`, sendStock)
+      disableLoading()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleShowConfirm = () => {
+    setShowConfirm(true)
+  }
+  
+  const closeConfirmModal = () => setShowConfirm(false);
+
+  const handleConfirm = () => {
+    console.log("trigger handleConfirm")
+    handleStatus()
+    closeConfirmModal()
+  };
 
   const dataStock = incomingStock
     ? incomingStock.Incoming_Stock_Products.map((item) => {
@@ -131,6 +169,15 @@ export const DetailIncomingStockPage = ({ match }) => {
     const fileName = setFileName()
   return (
     <>
+      <ConfirmModal
+        title={t("confirm")}
+        body={t("areYouSureWantToAddIncomingStock")}
+        buttonColor="warning"
+        handleClick={handleConfirm}
+        state={showConfirm}
+        closeModal={closeConfirmModal}
+        loading={loading}
+      />
       <div className="style-pdf" style={{width: 1100, height: "fit-content", color: "black solid"}} ref={ref}>
         <div className="container">
           <div className="row justify-content-between mb-5">
@@ -218,6 +265,7 @@ export const DetailIncomingStockPage = ({ match }) => {
                 <h3>{t('incomingStockDetailSummary')}</h3>
               </div>
               <div className="headerEnd">
+                <Button className="mr-2 btn btn-primary" disabled={incomingStock.status === "done"} onClick={handleShowConfirm}>{t(incomingStock.status)}</Button>
                 <Link
                   to={{
                     pathname: "/inventory/incoming-stock"

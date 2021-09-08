@@ -913,5 +913,7 @@
     "rawMaterialName": "Raw Material Name",
     "editIncomingStock": "Edit Incoming Stock",
     "stockOpnameDetailSummary": "Stock Opname Detail Summary",
-    "deleteCommission": "Delete Commission"
+    "deleteCommission": "Delete Commission",
+    "saveAsDraft": "Save As Draft",
+    "pending": "Pending"
 }

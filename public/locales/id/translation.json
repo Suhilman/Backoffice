@@ -913,5 +913,7 @@
     "rawMaterialName": "Nama Bahan Baku",
     "editIncomingStock": "Ubah Stok Masuk",
     "stockOpnameDetailSummary": "Ringkasan Detail Stok Opname",
-    "deleteCommission": "Hapus Komisi"
+    "deleteCommission": "Hapus Komisi",
+    "saveAsDraft": "Simpan Sebagai Draf",
+    "pending": "Tertunda"
   }

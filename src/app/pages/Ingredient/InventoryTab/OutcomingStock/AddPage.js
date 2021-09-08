@@ -74,6 +74,8 @@ export const AddOutcomingMaterialPage = ({ location }) => {
         items: values.items
       };
 
+      console.log("outcoming stock Kitchen", stockData)
+
       try {
         enableLoading();
         await axios.post(`${API_URL}/api/v1/outcoming-stock`, stockData);

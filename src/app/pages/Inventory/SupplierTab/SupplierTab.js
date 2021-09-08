@@ -83,7 +83,7 @@ const SupplierTab = ({ refresh, handleRefresh, t }) => {
   const formikSupplier = useFormik({
     initialValues: initialValueSupplier,
     validationSchema: SupplierSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, {resetForm}) => {
       const supplierData = {
         name: values.supplier_name,
         address: values.address,
@@ -95,6 +95,7 @@ const SupplierTab = ({ refresh, handleRefresh, t }) => {
         const API_URL = process.env.REACT_APP_API_URL;
         enableLoading();
         await axios.post(`${API_URL}/api/v1/supplier`, supplierData);
+        resetForm()
         handleRefresh();
         disableLoading();
         closeAddModal();
