@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
 import rupiahFormat from "rupiah-format";
@@ -12,6 +12,8 @@ import NumberFormat from 'react-number-format'
 import ConfirmModal from "../../../../components/ConfirmModal";
 
 export const DetailIncomingMaterialPage = ({ match }) => {
+  const history = useHistory();
+
   const { materialId } = match.params;
   const { t } = useTranslation();
   const [incomingStock, setIncomingStock] = React.useState("");
@@ -66,6 +68,7 @@ export const DetailIncomingMaterialPage = ({ match }) => {
 
       await axios.patch(`${API_URL}/api/v1/incoming-stock/status/${incomingStock.id}`, sendStock)
       disableLoading()
+      history.push("/ingredient-inventory/incoming-stock");
     } catch (error) {
       console.log(error)
     }
@@ -109,7 +112,7 @@ export const DetailIncomingMaterialPage = ({ match }) => {
           material_name: item.Raw_Material.name,
           quantity: item.quantity,
           price: <NumberFormat value={item.price} displayType={'text'} thousandSeparator={true} prefix={currency} />,
-          unit: item.Unit.name,
+          unit: item.Unit?.name || "-",
           total_price: <NumberFormat value={item.total_price} displayType={'text'} thousandSeparator={true} prefix={currency} />
         };
       })

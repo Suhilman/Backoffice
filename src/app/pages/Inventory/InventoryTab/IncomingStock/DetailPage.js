@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
 import rupiahFormat from "rupiah-format";
@@ -20,6 +20,7 @@ export const DetailIncomingStockPage = ({ match }) => {
   const { t } = useTranslation();
   const ref = React.createRef()
   const { stockId } = match.params;
+  const history = useHistory();
 
   const [showConfirm, setShowConfirm] = React.useState(false)
   const [dateTime, setDateTime] = React.useState("")
@@ -106,7 +107,7 @@ export const DetailIncomingStockPage = ({ match }) => {
       sortable: true
     }
   ];
-  
+
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
@@ -124,6 +125,8 @@ export const DetailIncomingStockPage = ({ match }) => {
 
       await axios.patch(`${API_URL}/api/v1/incoming-stock/status/${incomingStock.id}`, sendStock)
       disableLoading()
+      history.push("/inventory/incoming-stock");
+
     } catch (error) {
       console.log(error)
     }
