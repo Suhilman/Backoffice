@@ -62,127 +62,142 @@ export const ReportPage = () => {
     dayjs().format("YYYY-MM-DD")
   );
   const [endDate, setEndDate] = React.useState(dayjs().format("YYYY-MM-DD"));
+
+  const [endDateFilename, setEndDateFilename] = React.useState("");
+
   const [stateCustom, setStateCustom] = React.useState(false);
   const [status, setStatus] = React.useState("");
   const { t } = useTranslation();
+
+  const handleFilename = (date) => {
+    const day = date.split("-")[2]
+    const toInt = parseInt(day) - 1
+    const result = `${date.split("-")[0]}-${date.split("-")[1]}-${toInt}`
+    setEndDateFilename(result)
+  }
+
+  React.useEffect(() => {
+    handleFilename(endDate)
+  }, [endDate])
+
   const tabData = [
     {
       no: 1,
       title: `${t("salesSummary")}`,
       table: "table-summary",
-      filename: `transaksi-penjualan-produk_${startDate}-${endDate}`,
+      filename: `transaksi-penjualan-produk_${startDate}-${endDateFilename}`,
       Component: SalesSummaryTab
     },
     {
       no: 2,
       title: `${t("paymentMethod")}`,
       table: "table-payment",
-      filename: `payment-method_${startDate}-${endDate}`,
+      filename: `payment-method_${startDate}-${endDateFilename}`,
       Component: PaymentMethodTab
     },
     {
       no: 3,
       title: `${t("salesType")}`,
       table: "table-sales",
-      filename: `sales-type_${startDate}-${endDate}`,
+      filename: `sales-type_${startDate}-${endDateFilename}`,
       Component: SalesTypeTab
     },
     {
       no: 4,
       title: `${t("categorySales")}`,
       table: "table-category",
-      filename: `table-category_${startDate}-${endDate}`,
+      filename: `table-category_${startDate}-${endDateFilename}`,
       Component: CategorySalesTab
     },
     {
       no: 5,
       title: `${t("transactionHistory")}`,
       table: "table-history-transaction",
-      filename: `riwayat-transaksi_${startDate}-${endDate}`,
+      filename: `riwayat-transaksi_${startDate}-${endDateFilename}`,
       Component: TransactionHistoryTab
     },
     {
       no: 6,
       title: `${t("attendance")}`,
       table: "table-attendance-report",
-      filename: `laporan-absensi_${startDate}-${endDate}`,
+      filename: `laporan-absensi_${startDate}-${endDateFilename}`,
       Component: AttendanceTab
     },
     {
       no: 7,
       title: `${t("discountSales")}`,
       table: "table-discount",
-      filename: `laporan-diskon_${startDate}-${endDate}`,
+      filename: `laporan-diskon_${startDate}-${endDateFilename}`,
       Component: DiscountSalesTab
     },
     {
       no: 8,
       title: `${t("recap")}`,
       table: "table-recap",
-      filename: `laporan-rekap_${startDate}-${endDate}`,
+      filename: `laporan-rekap_${startDate}-${endDateFilename}`,
       Component: RecapTab
     },
     {
       no: 9,
       title: `${t("salesPerProduct")}`,
       table: "table-sales-per-product",
-      filename: `laporan-penjualan-per-produk_${startDate}-${endDate}`,
+      filename: `laporan-penjualan-per-produk_${startDate}-${endDateFilename}`,
       Component: SalesPerProductTab
     },
     {
       no: 10,
       title: `${t("costOfGoodSold")}`,
       table: "table-cogs",
-      filename: `laporan-COGS_${startDate}-${endDate}`,
+      filename: `laporan-COGS_${startDate}-${endDateFilename}`,
       Component: COGSReport
     },
     {
       no: 11,
       title: `${t("profitCalculation")}`,
       table: "table-profit",
-      filename: `laporan-perhitunga-laba_${startDate}-${endDate}`,
+      filename: `laporan-perhitunga-laba_${startDate}-${endDateFilename}`,
       Component: ProfitReport
     },
     {
       no: 12,
       title: `${t("staffTransaction")}`,
       table: "table-staff-transaction",
-      filename: `laporan-penjualan-staff_${startDate}-${endDate}`,
+      filename: `laporan-penjualan-staff_${startDate}-${endDateFilename}`,
       Component: StaffTransaction
     },
     {
       no: 13,
       title: `${t("voidTransaction")}`,
       table: "table-void",
-      filename: `laporan-transaksi-void/refund_${startDate}-${endDate}`,
+      filename: `laporan-transaksi-void/refund_${startDate}-${endDateFilename}`,
       Component: VoidTransaction
     },
     {
       no: 14,
       title: `${t("salesPerHour")}`,
       table: "table-sales-per-hour",
-      filename: `laporan-transaksi-penjualan-per-jam_${startDate}-${endDate}`,
+      filename: `laporan-transaksi-penjualan-per-jam_${startDate}-${endDateFilename}`,
       Component: SalesPerHour
     },
     {
       no: 15,
       title: `${t("stockReport")}`,
       table: "table-stock",
-      filename: `laporan-stock-barang_${startDate}-${endDate}`,
+      filename: `laporan-stock-barang_${startDate}-${endDateFilename}`,
       Component: StockReport
     },
     {
       no: 16,
       title: `${t("rawMaterial")}`,
       table: "table-raw-material-report",
-      filename: `raw_material_report_${startDate}-${endDate}`,
+      filename: `raw_material_report_${startDate}-${endDateFilename}`,
       Component: RawMaterial
     },
     {
       no: 17,
       title: `${t("commissionReport")}`,
       table: "table-commission-report",
-      filename: `commission_report${startDate}-${endDate}`,
+      filename: `commission_report${startDate}-${endDateFilename}`,
       Component: CommissionReport
     },
     // {
@@ -286,7 +301,7 @@ export const ReportPage = () => {
     setStartDate(dayjs(startRange).format("YYYY-MM-DD"));
     setEndDate(
       dayjs(endRange)
-        // .add(1, "days")
+        .add(1, "days")
         .format("YYYY-MM-DD")
     );
     setStateCustom(false);
@@ -414,7 +429,7 @@ export const ReportPage = () => {
                         }
                         filename={
                           tabData.find((item) => item.no === parseInt(tabs))
-                            .filename || `laporan_${startDate}-${endDate}`
+                            .filename || `laporan_${startDate}-${endDateFilename}`
                         }
                         sheet="transaction-report"
                         buttonText={t("export")}
