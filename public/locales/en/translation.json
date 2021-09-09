@@ -912,6 +912,7 @@
     "deleteProduct": "Delete Product",
     "rawMaterialName": "Raw Material Name",
     "editIncomingStock": "Edit Incoming Stock",
+    "editOutcomingStock": "Edit Outcoming Stock",
     "stockOpnameDetailSummary": "Stock Opname Detail Summary",
     "deleteCommission": "Delete Commission",
     "saveAsDraft": "Save As Draft",

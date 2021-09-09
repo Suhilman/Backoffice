@@ -165,6 +165,11 @@ export const IncomingMaterialPage = () => {
       sortable: true
     },
     {
+      name: `${t("status")}`,
+      selector: "status",
+      sortable: true
+    },
+    {
       name: `${t("actions")}`,
       cell: (rows) => {
         return (
@@ -185,18 +190,20 @@ export const IncomingMaterialPage = () => {
               >
                 <Dropdown.Item as="button">{t("detail")}</Dropdown.Item>
               </Link>
-              <Link
-                to={{
-                  pathname: `/ingredient-inventory/edit-incoming-stock/${rows.id}`,
-                  state: {
-                    allOutlets,
-                    allMaterials,
-                    allUnits
-                  }
-                }}
-              >
-                <Dropdown.Item as="button">{t("edit")}</Dropdown.Item>
-              </Link>
+              {rows.status === 'Pending' ? (
+                <Link
+                  to={{
+                    pathname: `/ingredient-inventory/edit-incoming-stock/${rows.id}`,
+                    state: {
+                      allOutlets,
+                      allMaterials,
+                      allUnits
+                    }
+                  }}
+                >
+                  <Dropdown.Item as="button">{t("edit")}</Dropdown.Item>
+                </Link>
+              ) : null }
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
                 {t("delete")}
               </Dropdown.Item>
@@ -213,7 +220,8 @@ export const IncomingMaterialPage = () => {
       no: index + 1,
       outlet_name: item.Outlet?.name,
       code: item.code,
-      date: dayjs(item.date).format("DD/MM/YYYY")
+      date: dayjs(item.date).format("DD/MM/YYYY"),
+      status: item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : "-"
     };
   });
 

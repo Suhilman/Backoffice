@@ -21,6 +21,7 @@ import { Paper } from "@material-ui/core";
 import DatePicker from "react-datepicker";
 import { CalendarToday, Delete } from "@material-ui/icons";
 import ConfirmModal from "../../../../components/ConfirmModal";
+
 export const AddIncomingMaterialPage = ({ location }) => {
   const history = useHistory();
   const { allOutlets, allMaterials, allUnits } = location.state;

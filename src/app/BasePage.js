@@ -49,6 +49,7 @@ import { DetailIncomingMaterialPage } from "./pages/Ingredient/InventoryTab/Inco
 import { EditIncomingMaterialPage } from "./pages/Ingredient/InventoryTab/IncomingStock/EditPage";
 import { OutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/OutcomingMaterialPage";
 import { AddOutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/AddPage";
+import { EditOutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/EditPage";
 import { DetailOutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/DetailPage";
 import { TransferMaterialPage } from "./pages/Ingredient/InventoryTab/TransferStock/TransferMaterialPage";
 import { AddTransferMaterialPage } from "./pages/Ingredient/InventoryTab/TransferStock/AddPage";
@@ -354,6 +355,13 @@ export default function BasePage() {
           exact={true}
           path="/ingredient-inventory/outcoming-stock/add"
           component={AddOutcomingMaterialPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/edit-outcoming-stock/:materialId"
+          component={EditOutcomingMaterialPage}
         />
         <ProtectedRoute
           isAllowed={currPrivileges.kitchen_management}

@@ -165,6 +165,11 @@ export const OutcomingMaterialPage = () => {
       sortable: true
     },
     {
+      name: `${t("status")}`,
+      selector: "status",
+      sortable: true
+    },
+    {
       name: t('actions'),
       cell: (rows) => {
         return (
@@ -186,6 +191,20 @@ export const OutcomingMaterialPage = () => {
               >
                 <Dropdown.Item as="button">Detail</Dropdown.Item>
               </Link>
+              {rows.status === 'Pending' ? (
+                <Link
+                  to={{
+                    pathname: `/ingredient-inventory/edit-outcoming-stock/${rows.id}`,
+                    state: {
+                      allOutlets,
+                      allMaterials,
+                      allUnits
+                    }
+                  }}
+                >
+                  <Dropdown.Item as="button">{t("edit")}</Dropdown.Item>
+                </Link>
+              ) : null }
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
                 Delete
               </Dropdown.Item>
@@ -202,7 +221,8 @@ export const OutcomingMaterialPage = () => {
       no: index + 1,
       outlet_name: item.Outlet?.name,
       code: item.code,
-      date: dayjs(item.date).format("DD/MM/YYYY")
+      date: dayjs(item.date).format("DD/MM/YYYY"),
+      status: item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : "-"
     };
   });
 

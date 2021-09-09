@@ -912,6 +912,7 @@
     "deleteProduct": "Hapus Produk",
     "rawMaterialName": "Nama Bahan Baku",
     "editIncomingStock": "Ubah Stok Masuk",
+    "editOutcomingStock": "Ubah Stok Keluar",
     "stockOpnameDetailSummary": "Ringkasan Detail Stok Opname",
     "deleteCommission": "Hapus Komisi",
     "saveAsDraft": "Simpan Sebagai Draf",
