@@ -2,19 +2,22 @@ import React from "react";
 import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
+import Select from "react-select";
 
 import * as Yup from "yup";
 import { useFormik, FormikProvider, FieldArray } from "formik";
+import { CalendarToday, Delete } from "@material-ui/icons";
 
 import { Paper } from "@material-ui/core";
-import { Row, Col, Form, Button } from "react-bootstrap";
+import { Row, Col, Form, Button, Spinner } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import ConfirmModal from "../../../../components/ConfirmModal";
 
-export const EditOutcomingMaterialPage = ({ match }) => {
+export const EditOutcomingMaterialPage = ({ location, match }) => {
   const { materialId } = match.params;
   const history = useHistory();
+  const { allOutlets, allMaterials, allUnits } = location.state;
 
   const [outcomingStock, setOutcomingStock] = React.useState("");
   const [showConfirm, setShowConfirm] = React.useState(false)
@@ -38,35 +41,36 @@ export const EditOutcomingMaterialPage = ({ match }) => {
   };
 
   const StockSchema = Yup.object().shape({
-    outlet_id: Yup.number()
-      .integer()
-      .min(1)
-      .required(`${t("pleaseChooseAnOutletLocation")}`),
-    notes: Yup.string(),
-    date: Yup.string().required(`${t("pleaseInputDate")}`),
-    items: Yup.array().of(
-      Yup.object().shape({
-        stock_id: Yup.number()
-          .min(1)
-          .required(`${t("pleaseInputARawMaterial")}`),
-        quantity: Yup.number()
-          .min(1, `${t("minimum1Character")}`)
-          .required(`${t("pleaseInputAQuantity ")}`),
-        unit_id: Yup.string().required(`${t("pleaseInputAUnit")}`)
-      })
-    )
+    // outlet_id: Yup.number()
+    //   .integer()
+    //   .min(1)
+    //   .required(`${t("pleaseChooseAnOutletLocation")}`),
+    // notes: Yup.string(),
+    // date: Yup.string().required(`${t("pleaseInputDate")}`),
+    // items: Yup.array().of(
+    //   Yup.object().shape({
+    //     stock_id: Yup.number()
+    //       .min(1)
+    //       .required(`${t("pleaseInputARawMaterial")}`),
+    //     quantity: Yup.number()
+    //       .min(1, `${t("minimum1Character")}`)
+    //       .required(`${t("pleaseInputAQuantity ")}`),
+    //     unit_id: Yup.string().required(`${t("pleaseInputAUnit")}`)
+    //   })
+    // )
   });
 
   const formikStock = useFormik({
     initialValues: initialValueStock,
     validationSchema: StockSchema,
     onSubmit: async (values) => {
+      // console.log("onSubmit")
       const API_URL = process.env.REACT_APP_API_URL;
 
       const stockData = {
-        outlet_id: values.outlet_id,
+        outlet_id: outcomingStock.outlet_id,
         notes: values.notes,
-        date: values.date,
+        date: outcomingStock.date,
         items: values.items
       };
 
@@ -74,13 +78,20 @@ export const EditOutcomingMaterialPage = ({ match }) => {
 
       try {
         enableLoading();
+        await axios.put(`${API_URL}/api/v1/outcoming-stock/${outcomingStock.id}`, stockData)
         disableLoading();
         history.push("/ingredient-inventory/outcoming-stock");
       } catch (err) {
+        console.log("Error formiknye breee", err)
         disableLoading();
       }
     }
   });
+
+  const handleSubmit = () => {
+    formikStock.submitForm()
+    console.log("handleSubmit")
+  }
 
   const validationStock = (fieldname) => {
     if (formikStock.touched[fieldname] && formikStock.errors[fieldname]) {
@@ -103,10 +114,14 @@ export const EditOutcomingMaterialPage = ({ match }) => {
         `${API_URL}/api/v1/outcoming-stock/${id}`
       );
       
+      console.log("outcoming stock", data.data)
+
       formikStock.setValues({
-        notes: data.data.notes,
-        items: data.data.Incoming_Stock_Products
+        notes: data.data.notes || "-",
+        items: data.data.Outcoming_Stock_Products
       });
+      
+      data.data.date = data.data.date ? dayjs(data.data.date).format('YYYY-MM-DD HH:mm:ss') : ""
 
       setOutcomingStock(data.data);
     } catch (err) {
@@ -135,6 +150,62 @@ export const EditOutcomingMaterialPage = ({ match }) => {
       sortable: true
     }
   ];
+  const optionsOutlet = allOutlets.map((item) => {
+    return { value: item.id, label: item.name };
+  });
+
+  const optionsMaterial = allMaterials
+    .map((item) => {
+      if (item.outlet_id === outcomingStock.outlet_id) {
+        return item;
+      } else {
+        return "";
+      }
+    })
+    .filter((item) => item)
+    .map((item) => {
+      return {
+        value: item.id,
+        label: item.name,
+        options: item.Stocks.map((val) => {
+          return {
+            value: val.id,
+            label: `${item.name} | Stock: ${val.stock}`
+          };
+        })
+      };
+    });
+  
+  console.log("optionsMaterial", optionsMaterial)
+
+  const optionsUnit = allUnits.map((item) => {
+    return { value: item.id, label: item.name };
+  });
+
+  const groupStyles = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between"
+  };
+  const groupBadgeStyles = {
+    backgroundColor: "#EBECF0",
+    borderRadius: "2em",
+    color: "#172B4D",
+    display: "inline-block",
+    fontSize: 12,
+    fontWeight: "normal",
+    lineHeight: "1",
+    minWidth: 1,
+    padding: "0.16666666666667em 0.5em",
+    textAlign: "center"
+  };
+
+  const formatGroupLabel = (data) => (
+    <div style={groupStyles}>
+      <span>{data.label}</span>
+      <span style={groupBadgeStyles}>{data.options.length}</span>
+    </div>
+  );
 
   const dataStock = outcomingStock
     ? outcomingStock.Outcoming_Stock_Products.map((item) => {
@@ -177,7 +248,6 @@ export const EditOutcomingMaterialPage = ({ match }) => {
     handleStatus()
     closeConfirmModal()
   };
-
   return (
     <>
       <ConfirmModal
@@ -197,7 +267,6 @@ export const EditOutcomingMaterialPage = ({ match }) => {
                 <h3>{t('editOutcomingStock')}</h3>
               </div>
               <div className="headerEnd">
-              <Button className="mr-2 btn btn-primary" disabled={outcomingStock.status === "done"} onClick={handleShowConfirm}>{t(outcomingStock.status)}</Button>
                 <Link
                   to={{
                     pathname: "/ingredient-inventory/outcoming-stock"
@@ -205,10 +274,18 @@ export const EditOutcomingMaterialPage = ({ match }) => {
                 >
                   <Button variant="outline-secondary">{t('back')}</Button>
                 </Link>
-  
-                {/* <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
-                  Download
-                </Button> */}
+                <Button
+                  variant="primary"
+                  style={{ marginLeft: "0.5rem" }}
+                  type="submit"
+                  onClick={handleSubmit}
+                >
+                  {loading ? (
+                    <Spinner animation="border" variant="light" size="sm" />
+                  ) : (
+                    `${t("save")}`
+                  )}
+                </Button>
               </div>
             </div>
   
@@ -255,20 +332,115 @@ export const EditOutcomingMaterialPage = ({ match }) => {
                   <Form.Control
                     as="textarea"
                     name="notes"
-                    value={outcomingStock?.notes || "-"}
-                    disabled
+                    {...formikStock.getFieldProps('notes')}
                   />
                 </Form.Group>
               </Col>
             </Row>
-  
-            <DataTable
-              noHeader
-              pagination
-              columns={columns}
-              data={dataStock}
-              style={{ minHeight: "100%" }}
-            />
+                    
+            <Row style={{ padding: "1rem" }}>
+              <Col>
+                <Row>
+                  <Col style={{ padding: "1rem", textAlign: "center" }}>
+                    <h6>{t('rawMaterialName')}</h6>
+                  </Col>
+                  <Col style={{ padding: "1rem", textAlign: "center" }}>
+                    <h6>{t('quantity')}</h6>
+                  </Col>
+                  <Col style={{ padding: "1rem", textAlign: "center" }}>
+                    <h6>{t('unit')}</h6>
+                  </Col>
+                  <Col sm={1}></Col>
+                </Row>
+                {optionsMaterial.length ? (
+                  <FormikProvider value={formikStock}>
+                    <FieldArray
+                      name="items"
+                      render={(arrayHelpers) => {
+                        return (
+                          <div>
+                            {formikStock.values.items.map((item, index) => {
+                              return (
+                                <Row key={index}>
+                                  <Col>
+                                    <Form.Group>
+                                      <Form.Control
+                                        type="text"
+                                        value={item.Stock.Raw_Material.name}
+                                        disabled
+                                      />
+                                    </Form.Group>
+                                    {/* <Form.Group>
+                                      <Select
+                                        options={optionsMaterial}
+                                        // defaultValue={defaultMaterial[index]}
+                                        formatGroupLabel={formatGroupLabel}
+                                        name={`items[${index}].stock_id`}
+                                        // className="basic-single"
+                                        // classNamePrefix="select"
+                                        onChange={(value) =>
+                                          formikStock.setFieldValue(
+                                            `items[${index}].stock_id`,
+                                            value.value
+                                          )
+                                        }
+                                      />
+                                      {formikStock.touched.items &&
+                                      formikStock.errors.items ? (
+                                        <div className="fv-plugins-message-container">
+                                          <div className="fv-help-block">
+                                            {
+                                              formikStock.errors.items[index]
+                                                ?.stock_id
+                                            }
+                                          </div>
+                                        </div>
+                                      ) : null}
+                                    </Form.Group> */}
+                                  </Col>
+                                  <Col>
+                                    <Form.Group>
+                                      <Form.Control
+                                        type="number"
+                                        name={`items[${index}].quantity`}
+                                        {...formikStock.getFieldProps(
+                                          `items[${index}].quantity`
+                                        )}
+                                        required
+                                      />
+                                      {formikStock.touched.items &&
+                                      formikStock.errors.items ? (
+                                        <div className="fv-plugins-message-container">
+                                          <div className="fv-help-block">
+                                            {
+                                              formikStock.errors.items[index]
+                                                ?.quantity
+                                            }
+                                          </div>
+                                        </div>
+                                      ) : null}
+                                    </Form.Group>
+                                  </Col>
+                                  <Col>
+                                    <Form.Group>
+                                      <Form.Control
+                                        type="text"
+                                        value={item.Unit?.name || "-"}
+                                        disabled
+                                      />
+                                    </Form.Group>
+                                  </Col>
+                                </Row>
+                              );
+                            })}
+                          </div>
+                        );
+                      }}
+                    />
+                  </FormikProvider>
+                ) : null}
+              </Col>
+            </Row>
           </Paper>
         </Col>
       </Row>

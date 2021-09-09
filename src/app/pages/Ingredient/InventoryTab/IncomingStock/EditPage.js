@@ -325,7 +325,7 @@ export const EditIncomingMaterialPage = ({ location, match }) => {
                                   <Form.Group>
                                     <Form.Control
                                       type="text"
-                                      value={item.Unit.name}
+                                      value={item.Unit?.name || "-"}
                                       disabled
                                     />
                                   </Form.Group>

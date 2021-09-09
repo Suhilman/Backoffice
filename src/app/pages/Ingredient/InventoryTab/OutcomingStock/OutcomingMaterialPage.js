@@ -244,7 +244,7 @@ export const OutcomingMaterialPage = () => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>{t('outcomingStock?')}</h3>
+                <h3>{t('outcomingStock')}</h3>
               </div>
               <div className="headerEnd">
                 <Link

@@ -188,10 +188,6 @@ export const EditIncomingStockPage = ({ location, match }) => {
       const defaultProduct = data.data.Incoming_Stock_Products.map(item => {
         optionsProduct.find(item2 =>  {
           if(item2.value === item.product_id) {
-            console.log("masukk")
-            console.log("item2", item2)
-            console.log("item2.label", item2.label)
-            console.log("item2.value", item2.value)
             //  return { label: item2.label, value: item2.value}
             result.push({ 
               label: item2.label, value: item2.value
@@ -424,7 +420,7 @@ export const EditIncomingStockPage = ({ location, match }) => {
                                     <Form.Group>
                                       <Form.Control
                                         type="text"
-                                        value={item.Unit.name}
+                                        value={item.Unit?.name}
                                         disabled
                                       />
                                     </Form.Group>
