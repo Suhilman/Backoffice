@@ -33,7 +33,8 @@ const FormTemplate = ({
   handlePromoDays,
   handlePromoHour,
   handleSelectOutlet,
-  mode
+  mode,
+  errorDate
 }) => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -119,6 +120,13 @@ const FormTemplate = ({
                   <div className="fv-plugins-message-container">
                     <div className="fv-help-block">
                       {formikPromo.errors.promo_date_end}
+                    </div>
+                  </div>
+                ) : null}
+                {errorDate ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {t('endDateMustBeGreaterThanTheStartDate')}
                     </div>
                   </div>
                 ) : null}

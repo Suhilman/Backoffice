@@ -30,7 +30,8 @@ const TransactionTab = ({
   handlePromoHour,
   handleSelectOutlet,
   mode,
-  t
+  t,
+  errorDate
 }) => {
   
   console.log("formikPromo name", formikPromo.values.name)
@@ -185,6 +186,7 @@ const TransactionTab = ({
               handlePromoHour={handlePromoHour}
               handleSelectOutlet={handleSelectOutlet}
               mode={mode}
+              errorDate={errorDate}
             />
           </Form>
         </Paper>

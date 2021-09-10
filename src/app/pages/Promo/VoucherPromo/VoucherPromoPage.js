@@ -114,7 +114,7 @@ export const VoucherPromoPage = () => {
     enableReinitialize: true,
     initialValues: initialValuePromo,
     validationSchema: PromoSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, {resetForm}) => {
       const options = {
         maxSizeMB: 0.5,
         maxWidthOrHeight: 1920,
@@ -139,6 +139,7 @@ export const VoucherPromoPage = () => {
       try {
         enableLoading();
         await axios.post(`${API_URL}/api/v1/voucher-promo/create-development`, promoData);
+        resetForm()
         handleRefresh();
         disableLoading();
         closeAddModal();

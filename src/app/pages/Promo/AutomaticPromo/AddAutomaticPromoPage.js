@@ -23,6 +23,7 @@ export const AddAutomaticPromoPage = ({ location }) => {
   const [alert, setAlert] = React.useState("");
   const [alertPhoto, setAlertPhoto] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [errorDate, setErrorDate] = React.useState(false)
 
   const [startDate, setStartDate] = React.useState(new Date());
   const [endDate, setEndDate] = React.useState(new Date());
@@ -164,36 +165,40 @@ export const AddAutomaticPromoPage = ({ location }) => {
     validationSchema: PromoQuantitySchema,
     enableReinitialize: true,
     onSubmit: async (values) => {
-      const API_URL = process.env.REACT_APP_API_URL;
-      const formData = new FormData();
+      if(errorDate) {
+        console.log("tanggal akhir harus lebih besar dari tanggal mulai")
+      } else {
+        const API_URL = process.env.REACT_APP_API_URL;
+        const formData = new FormData();
 
-      formData.append("name", values.name);
-      formData.append("type", values.type);
-      formData.append("outlet_id", JSON.stringify(values.outlet_id));
-      formData.append("description_type", values.description_type);
-      formData.append("promo_date_start", values.promo_date_start);
-      formData.append("promo_date_end", values.promo_date_end);
-      formData.append("promo_days", values.promo_days);
-      formData.append("promo_hour_start", values.promo_hour_start);
-      formData.append("promo_hour_end", values.promo_hour_end);
-      formData.append("quantity_product_id", values.quantity_product_id);
-      formData.append("quantity_value", values.quantity_value);
-      formData.append("quantity_type", values.quantity_type);
-      formData.append("quantity_amount", values.quantity_amount);
+        formData.append("name", values.name);
+        formData.append("type", values.type);
+        formData.append("outlet_id", JSON.stringify(values.outlet_id));
+        formData.append("description_type", values.description_type);
+        formData.append("promo_date_start", values.promo_date_start);
+        formData.append("promo_date_end", values.promo_date_end);
+        formData.append("promo_days", values.promo_days);
+        formData.append("promo_hour_start", values.promo_hour_start);
+        formData.append("promo_hour_end", values.promo_hour_end);
+        formData.append("quantity_product_id", values.quantity_product_id);
+        formData.append("quantity_value", values.quantity_value);
+        formData.append("quantity_type", values.quantity_type);
+        formData.append("quantity_amount", values.quantity_amount);
 
-      if (values.description) formData.append("description", values.description);
-      if (photo) {
-        formData.append("automaticPromoImage", photo);
-      }
+        if (values.description) formData.append("description", values.description);
+        if (photo) {
+          formData.append("automaticPromoImage", photo);
+        }
 
-      try {
-        enableLoading();
-        await axios.post(`${API_URL}/api/v1/automatic-promo/create-development`, formData);
-        disableLoading();
-        history.push("/promo/automatic-promo");
-      } catch (err) {
-        setAlert(err.response?.data.message || err.message);
-        disableLoading();
+        try {
+          enableLoading();
+          await axios.post(`${API_URL}/api/v1/automatic-promo/create-development`, formData);
+          disableLoading();
+          history.push("/promo/automatic-promo");
+        } catch (err) {
+          setAlert(err.response?.data.message || err.message);
+          disableLoading();
+        }
       }
     }
   });
@@ -202,35 +207,40 @@ export const AddAutomaticPromoPage = ({ location }) => {
     initialValues: initialValuePromoTransaction,
     validationSchema: PromoTransactionSchema,
     onSubmit: async (values) => {
-      const API_URL = process.env.REACT_APP_API_URL;
-      const formData = new FormData();
-
-      formData.append("name", values.name);
-      formData.append("type", values.type);
-      formData.append("outlet_id", JSON.stringify(values.outlet_id));
-      formData.append("description_type", values.description_type);
-      formData.append("promo_date_start", values.promo_date_start);
-      formData.append("promo_date_end", values.promo_date_end);
-      formData.append("promo_days", values.promo_days);
-      formData.append("promo_hour_start", values.promo_hour_start);
-      formData.append("promo_hour_end", values.promo_hour_end);
-      formData.append("transaction_value", values.transaction_value);
-      formData.append("transaction_type", values.transaction_type);
-      formData.append("transaction_amount", values.transaction_amount);
-
-      if (values.description) formData.append("description", values.description);
-      if (photo) {
-        formData.append("automaticPromoImage", photo);
-      }
-
-      try {
-        enableLoading();
-        await axios.post(`${API_URL}/api/v1/automatic-promo/create-development`, formData);
-        disableLoading();
-        history.push("/promo/automatic-promo");
-      } catch (err) {
-        setAlert(err.response?.data.message || err.message);
-        disableLoading();
+      
+      if(errorDate) {
+        console.log("tanggal akhir harus lebih besar dari tanggal mulai")
+      } else {
+        const API_URL = process.env.REACT_APP_API_URL;
+        const formData = new FormData();
+  
+        formData.append("name", values.name);
+        formData.append("type", values.type);
+        formData.append("outlet_id", JSON.stringify(values.outlet_id));
+        formData.append("description_type", values.description_type);
+        formData.append("promo_date_start", values.promo_date_start);
+        formData.append("promo_date_end", values.promo_date_end);
+        formData.append("promo_days", values.promo_days);
+        formData.append("promo_hour_start", values.promo_hour_start);
+        formData.append("promo_hour_end", values.promo_hour_end);
+        formData.append("transaction_value", values.transaction_value);
+        formData.append("transaction_type", values.transaction_type);
+        formData.append("transaction_amount", values.transaction_amount);
+  
+        if (values.description) formData.append("description", values.description);
+        if (photo) {
+          formData.append("automaticPromoImage", photo);
+        }
+  
+        try {
+          enableLoading();
+          await axios.post(`${API_URL}/api/v1/automatic-promo/create-development`, formData);
+          disableLoading();
+          history.push("/promo/automatic-promo");
+        } catch (err) {
+          setAlert(err.response?.data.message || err.message);
+          disableLoading();
+        }
       }
     }
   });
@@ -239,50 +249,54 @@ export const AddAutomaticPromoPage = ({ location }) => {
     initialValues: initialValuePromoXY,
     validationSchema: PromoXYSchema,
     onSubmit: async (values) => {
-      const options = {
-        maxSizeMB: 0.5,
-        maxWidthOrHeight: 1920,
-        useWebWorker: true
-      }
-      const API_URL = process.env.REACT_APP_API_URL;
-      const formData = new FormData();
-
-      formData.append("name", values.name);
-      formData.append("type", values.type);
-      formData.append("outlet_id", JSON.stringify(values.outlet_id));
-      formData.append("description_type", values.description_type);
-      formData.append("promo_date_start", values.promo_date_start);
-      formData.append("promo_date_end",
-       values.promo_date_end);
-      formData.append("promo_days", values.promo_days);
-      formData.append("promo_hour_start", values.promo_hour_start);
-      formData.append("promo_hour_end", values.promo_hour_end);
-      formData.append(
-        "xy_product_x_id",
-        JSON.stringify(values.xy_product_x_id)
-      );
-      formData.append(
-        "xy_product_y_id",
-        JSON.stringify(values.xy_product_y_id)
-      );
-      formData.append("xy_amount_x", values.xy_amount_x);
-      formData.append("xy_amount_y", values.xy_amount_y);
-      formData.append("xy_apply_multiply", values.xy_apply_multiply);
-
-      if (values.description)
-        formData.append("description", values.description);
-      if (photo) {
-        formData.append("automaticPromoImage", photo);
-      }
-
-      try {
-        enableLoading();
-        await axios.post(`${API_URL}/api/v1/automatic-promo/create-development`, formData);
-        disableLoading();
-        history.push("/promo/automatic-promo");
-      } catch (err) {
-        setAlert(err.response?.data.message || err.message);
-        disableLoading();
+      if(errorDate) {
+        console.log("tanggal akhir harus lebih besar dari tanggal mulai")
+      } else { 
+        const options = {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true
+        }
+        const API_URL = process.env.REACT_APP_API_URL;
+        const formData = new FormData();
+  
+        formData.append("name", values.name);
+        formData.append("type", values.type);
+        formData.append("outlet_id", JSON.stringify(values.outlet_id));
+        formData.append("description_type", values.description_type);
+        formData.append("promo_date_start", values.promo_date_start);
+        formData.append("promo_date_end",
+         values.promo_date_end);
+        formData.append("promo_days", values.promo_days);
+        formData.append("promo_hour_start", values.promo_hour_start);
+        formData.append("promo_hour_end", values.promo_hour_end);
+        formData.append(
+          "xy_product_x_id",
+          JSON.stringify(values.xy_product_x_id)
+        );
+        formData.append(
+          "xy_product_y_id",
+          JSON.stringify(values.xy_product_y_id)
+        );
+        formData.append("xy_amount_x", values.xy_amount_x);
+        formData.append("xy_amount_y", values.xy_amount_y);
+        formData.append("xy_apply_multiply", values.xy_apply_multiply);
+  
+        if (values.description)
+          formData.append("description", values.description);
+        if (photo) {
+          formData.append("automaticPromoImage", photo);
+        }
+  
+        try {
+          enableLoading();
+          await axios.post(`${API_URL}/api/v1/automatic-promo/create-development`, formData);
+          disableLoading();
+          history.push("/promo/automatic-promo");
+        } catch (err) {
+          setAlert(err.response?.data.message || err.message);
+          disableLoading();
+        }
       }
     }
   });
@@ -388,6 +402,18 @@ export const AddAutomaticPromoPage = ({ location }) => {
   };
 
   const handlePromoEndDate = (date) => {
+    const formatStartDate = dayjs(startDate).format('YYYY-MM-DD')
+    const formatEndDate = dayjs(date).format('YYYY-MM-DD')
+    const endDateDiff = dayjs(formatEndDate)
+    const resultCompare = endDateDiff.diff(formatStartDate, 'day')
+
+    if(resultCompare >= 0) {
+      setErrorDate(false)
+      console.log("silahkan masuk")
+    } else {
+      setErrorDate(true)
+    }
+
     setEndDate(date);
 
     if (tabs === "quantity") {
@@ -569,6 +595,7 @@ export const AddAutomaticPromoPage = ({ location }) => {
           handlePromoHour={handlePromoHour}
           handleSelectOutlet={handleSelectOutlet}
           mode="add"
+          errorDate={errorDate}
         />
       </Tab>
 
@@ -597,6 +624,7 @@ export const AddAutomaticPromoPage = ({ location }) => {
           handlePromoHour={handlePromoHour}
           handleSelectOutlet={handleSelectOutlet}
           mode="add"
+          errorDate={errorDate}
         />
       </Tab>
 
@@ -627,6 +655,7 @@ export const AddAutomaticPromoPage = ({ location }) => {
           handleSelectY={handleSelectY}
           handleSelectOutlet={handleSelectOutlet}
           mode="add"
+          errorDate={errorDate}
         />
       </Tab>
     </Tabs>

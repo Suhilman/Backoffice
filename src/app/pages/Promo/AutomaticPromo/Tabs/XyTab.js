@@ -33,7 +33,8 @@ const XyTab = ({
   handleSelectY,
   handleSelectOutlet,
   mode,
-  t
+  t,
+  errorDate
 }) => {
   const defaultValueX = formikPromo.values["xy_product_x_id"].map((item) => {
     const product = allProducts.find((val) => val.id === item);
@@ -240,6 +241,7 @@ const XyTab = ({
               handlePromoHour={handlePromoHour}
               handleSelectOutlet={handleSelectOutlet}
               mode={mode}
+              errorDate={errorDate}
             />
           </Form>
         </Paper>

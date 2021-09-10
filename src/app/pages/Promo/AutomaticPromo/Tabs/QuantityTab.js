@@ -30,7 +30,8 @@ const QuantityTab = ({
   handlePromoHour,
   handleSelectOutlet,
   mode,
-  t
+  t,
+  errorDate
 }) => {
   return (
     <Row>
@@ -213,6 +214,7 @@ const QuantityTab = ({
               handlePromoHour={handlePromoHour}
               handleSelectOutlet={handleSelectOutlet}
               mode={mode}
+              errorDate={errorDate}
             />
           </Form>
         </Paper>

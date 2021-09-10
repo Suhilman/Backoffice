@@ -14,7 +14,8 @@ const ModalExportExcel = ({state, closeModal, optionsOutlet, handleExports, data
   dayjs.extend(localizedFormat)
   const { t } = useTranslation();
   const ref = React.createRef()
-  const [fileName, setFileName] = React.useState("")
+  const [fileNameExcel, setFileNameExcel] = React.useState("")
+  const [fileNamePdf, setFileNamePdf] = React.useState("")
 
   const options = {
     orientation: 'landscape'
@@ -37,15 +38,21 @@ const ModalExportExcel = ({state, closeModal, optionsOutlet, handleExports, data
       dt.getMinutes().toString().padStart(2, '0')}-${
       dt.getSeconds().toString().padStart(2, '0')}`
 
-    const FileName = () => {
+    const handleFileNameExcel = () => {
       if(dataExport) {
         return `Raw-Material_${dataExport[0]?.Business.name}_${uniqueArray.join("_")}_${dateTime}`
       }
     }
-    setFileName(FileName)
-  }
 
-  console.log("fileName", fileName)
+    const handleFileNamePdf = () => {
+      if(dataExport) {
+        return `Raw-Material_${dataExport[0]?.Business.name}_${uniqueArray.join("_")}_${dateTime}.pdf`
+      }
+    }
+
+    setFileNameExcel(handleFileNameExcel)
+    setFileNamePdf(handleFileNamePdf)
+  }
 
   useEffect(() => {
     handleFilename()
@@ -130,7 +137,7 @@ const ModalExportExcel = ({state, closeModal, optionsOutlet, handleExports, data
                     id="test-table-xls-button"
                     className="btn btn-outline-info mx-2"
                     table="table-to-xls"
-                    filename={fileName}
+                    filename={fileNameExcel}
                     sheet="tablexls"
                     buttonText={t("Export To Excel")}
                   />
@@ -165,7 +172,7 @@ const ModalExportExcel = ({state, closeModal, optionsOutlet, handleExports, data
                       )}
                     </table>
                   </div>
-                  <Pdf targetRef={ref} filename={fileName} options={options} scale={1}>
+                  <Pdf targetRef={ref} filename={fileNamePdf} options={options} scale={1}>
                     {({ toPdf }) => <Button variant="btn btn-outline-primary mr-2" onClick={toPdf}>{t('exportToPdf')}</Button>}
                   </Pdf>
                 </div>

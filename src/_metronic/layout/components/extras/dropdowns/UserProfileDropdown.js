@@ -40,11 +40,12 @@ export function UserProfileDropdown() {
       const settingsNotification = await axios.get(
         `${API_URL}/api/v1/email-notification/${userInfo.business_id}`
       );
+
+      setEmailNotification(settingsNotification.data.data)
+
       const { data } = await axios.get(
         `${API_URL}/api/v1/product`
       );
-      
-      setEmailNotification(settingsNotification.data.data)
 
       const dateSettings = new Date(settingsNotification.data.data.timeState[2].time)
       const dateNow = new Date()
@@ -269,7 +270,7 @@ export function UserProfileDropdown() {
           {/* Start Notification Email */}
 
           <div className="low-stock-alert px-8">
-            {notifStockAlert.length > 0 && emailNotification.emailNotification.stok_habis_harian ? (
+            {notifStockAlert.length > 0 && emailNotification.emailNotification?.stok_habis_harian ? (
               <>
                 <h5 style={{ fontWeight: 700 }}>Low Stock Alert</h5>
                 <div className="content-notif mt-5">
@@ -322,7 +323,7 @@ export function UserProfileDropdown() {
             </div> */
             null
           )}
-          {filterWeeklyReport.length > 0 && emailNotification.emailNotification.penjualan_produk_mingguan ? (
+          {filterWeeklyReport.length > 0 && emailNotification.emailNotification?.penjualan_produk_mingguan ? (
             <div>
               <hr/>
               <div className="low-stock-alert px-8">
@@ -350,7 +351,7 @@ export function UserProfileDropdown() {
             // </div>
             null
           ) }
-          {filterDailyReport.length > 0 && emailNotification.emailNotification.penjualan_produk_harian ? (
+          {filterDailyReport.length > 0 && emailNotification.emailNotification?.penjualan_produk_harian ? (
             <div>
               <hr/>
               <div className="low-stock-alert px-8">
