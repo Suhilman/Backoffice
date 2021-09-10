@@ -915,6 +915,7 @@
     "editOutcomingStock": "Edit Outcoming Stock",
     "stockOpnameDetailSummary": "Stock Opname Detail Summary",
     "deleteCommission": "Delete Commission",
-    "saveAsDraft": "Save As Draft",
-    "pending": "Pending"
+    "saveAsDraft": "Save as Draft",
+    "pending": "Pending",
+    "areYouSureWantToAddOutcomingStock": "Are You Sure Want To Add Outoming Stock?"
 }

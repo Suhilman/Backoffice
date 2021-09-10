@@ -203,7 +203,7 @@ export const AddOutcomingMaterialPage = ({ location }) => {
     <>
       <ConfirmModal
         title={t("confirm")}
-        body={t("areYouSureWantToAddIncomingStock")}
+        body={t("areYouSureWantToAddOutomingStock")}
         buttonColor="warning"
         handleClick={handleConfirm}
         state={showConfirm}

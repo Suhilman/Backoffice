@@ -916,5 +916,6 @@
     "stockOpnameDetailSummary": "Ringkasan Detail Stok Opname",
     "deleteCommission": "Hapus Komisi",
     "saveAsDraft": "Simpan Sebagai Draf",
-    "pending": "Tertunda"
+    "pending": "Tertunda",
+    "areYouSureWantToAddOutcomingStock": "Apakah Anda yakin ingin menambah stok yang keluar?"
   }

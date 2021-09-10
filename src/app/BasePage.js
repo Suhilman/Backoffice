@@ -32,6 +32,7 @@ import { DetailIncomingStockPage } from "./pages/Inventory/InventoryTab/Incoming
 import { EditIncomingStockPage } from "./pages/Inventory/InventoryTab/IncomingStock/EditPage";
 import { OutcomingStockPage } from "./pages/Inventory/InventoryTab/OutcomingStock/OutcomingStockPage";
 import { AddOutcomingStockPage } from "./pages/Inventory/InventoryTab/OutcomingStock/AddPage";
+import { EditOutcomingStockPage } from "./pages/Inventory/InventoryTab/OutcomingStock/EditPage";
 import { DetailOutcomingStockPage } from "./pages/Inventory/InventoryTab/OutcomingStock/DetailPage";
 import { TransferStockPage } from "./pages/Inventory/InventoryTab/TransferStock/TransferStockPage";
 import { AddTransferStockPage } from "./pages/Inventory/InventoryTab/TransferStock/AddPage";
@@ -232,6 +233,13 @@ export default function BasePage() {
           exact={true}
           path="/inventory/outcoming-stock/add"
           component={AddOutcomingStockPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory/edit-outcoming-stock/:stockId"
+          component={EditOutcomingStockPage}
         />
         <ProtectedRoute
           isAllowed={currPrivileges.inventory_management}

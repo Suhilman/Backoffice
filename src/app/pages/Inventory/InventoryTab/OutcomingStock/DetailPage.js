@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
@@ -12,15 +12,22 @@ import localizedFormat from 'dayjs/plugin/localizedFormat'
 import { Paper } from "@material-ui/core";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import DataTable from "react-data-table-component";
+import ConfirmModal from "../../../../components/ConfirmModal";
 
 export const DetailOutcomingStockPage = ({ match }) => {
   dayjs.extend(localizedFormat)
   const { t } = useTranslation();
   const ref = React.createRef()
   const { stockId } = match.params;
+  const history = useHistory();
 
   const [outcomingStock, setOutcomingStock] = React.useState("");
   const [dateTime, setDateTime] = React.useState("")
+  const [showConfirm, setShowConfirm] = React.useState(false)
+  const [loading, setLoading] = React.useState(false);
+
+  const enableLoading = () => setLoading(true);
+  const disableLoading = () => setLoading(false);
 
   const getOutcomingStock = async (id) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -96,9 +103,49 @@ export const DetailOutcomingStockPage = ({ match }) => {
     }
   }
   const fileName = setFileName()
+  
+  const handleShowConfirm = () => {
+    setShowConfirm(true)
+  }
 
+  const handleStatus = async () => {
+    try {
+      enableLoading()
+      const API_URL = process.env.REACT_APP_API_URL;
+
+      const sendStock = {
+        outlet_id: outcomingStock.outlet_id,
+        items: outcomingStock.Outcoming_Stock_Products,
+        status: 'done'
+      }
+      console.log("sendStock", sendStock)
+
+      await axios.patch(`${API_URL}/api/v1/outcoming-stock/status/${outcomingStock.id}`, sendStock)
+      disableLoading()
+      history.push("/inventory/outcoming-stock");
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const closeConfirmModal = () => setShowConfirm(false);
+
+  const handleConfirm = () => {
+    console.log("trigger handleConfirm")
+    handleStatus()
+    closeConfirmModal()
+  };
   return (
     <>
+      <ConfirmModal
+        title={t("confirm")}
+        body={t("areYouSureWantToAddOutcomingStock")}
+        buttonColor="warning"
+        handleClick={handleConfirm}
+        state={showConfirm}
+        closeModal={closeConfirmModal}
+        loading={loading}
+      />
       <div className="style-pdf" style={{width: 1100, height: "fit-content", color: "black solid"}} ref={ref}>
         <div className="container">
           <div className="row justify-content-between mb-5">
@@ -186,7 +233,9 @@ export const DetailOutcomingStockPage = ({ match }) => {
                 <h3>{t('outcomingStockDetailSummary')}</h3>
               </div>
               <div className="headerEnd">
+              <Button className="btn" className={outcomingStock.status === "done" ? 'btn-secondary' : 'btn-primary'} disabled={outcomingStock.status === "done"} onClick={handleShowConfirm}>{t(outcomingStock.status)}</Button>
                 <Link
+                  className="ml-2"
                   to={{
                     pathname: "/inventory/outcoming-stock"
                   }}

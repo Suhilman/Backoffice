@@ -14,13 +14,12 @@ import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import ConfirmModal from "../../../../components/ConfirmModal";
 
-export const EditOutcomingMaterialPage = ({ location, match }) => {
-  const { materialId } = match.params;
+export const EditOutcomingStockPage = ({ location, match }) => {
+  const { stockId } = match.params;
   const history = useHistory();
-  const { allOutlets, allMaterials, allUnits } = location.state;
+  const { allOutlets, allUnits } = location.state;
 
   const [outcomingStock, setOutcomingStock] = React.useState("");
-  const [showConfirm, setShowConfirm] = React.useState(false)
   const [loading, setLoading] = React.useState(false);
 
   const enableLoading = () => setLoading(true);
@@ -68,13 +67,11 @@ export const EditOutcomingMaterialPage = ({ location, match }) => {
         items: values.items
       };
 
-      console.log("outcoming stock Kitchen", stockData)
-
       try {
         enableLoading();
         await axios.put(`${API_URL}/api/v1/outcoming-stock/${outcomingStock.id}`, stockData)
         disableLoading();
-        history.push("/ingredient-inventory/outcoming-stock");
+        history.push("/inventory/outcoming-stock");
       } catch (err) {
         console.log("Error formiknye breee", err)
         disableLoading();
@@ -124,13 +121,13 @@ export const EditOutcomingMaterialPage = ({ location, match }) => {
   };
 
   React.useEffect(() => {
-    getOutcomingStock(materialId);
-  }, [materialId]);
+    getOutcomingStock(stockId);
+  }, [stockId]);
 
   const columns = [
     {
-      name: t('rawMaterialName'),
-      selector: "material_name",
+      name: t('productName'),
+      selector: "product_name",
       sortable: true
     },
     {
@@ -148,7 +145,7 @@ export const EditOutcomingMaterialPage = ({ location, match }) => {
     return { value: item.id, label: item.name };
   });
 
-  const optionsMaterial = allMaterials
+  const optionsMaterial = []
     .map((item) => {
       if (item.outlet_id === outcomingStock.outlet_id) {
         return item;
@@ -204,9 +201,12 @@ export const EditOutcomingMaterialPage = ({ location, match }) => {
   const dataStock = outcomingStock
     ? outcomingStock.Outcoming_Stock_Products.map((item) => {
         return {
-          material_name: item.Stock.Raw_Material.name,
+          product_name: item.Stock.Product ? item.Stock.Product.name : "-",
           quantity: item.quantity,
-          unit: item.Unit?.name || "-"
+          unit: item.Unit?.name || "-",
+          expired_date: item.Stock.expired_date
+            ? dayjs(item.Stock.expired_date).format("DD-MMM-YYYY")
+            : "-"
         };
       })
     : [];
@@ -225,34 +225,13 @@ export const EditOutcomingMaterialPage = ({ location, match }) => {
 
       await axios.patch(`${API_URL}/api/v1/outcoming-stock/status/${outcomingStock.id}`, sendStock)
       disableLoading()
-      history.push("/ingredient-inventory/outcoming-stock");
+      history.push("/inventory/outcoming-stock");
     } catch (error) {
       console.log(error)
     }
   }
-
-  const handleShowConfirm = () => {
-    setShowConfirm(true)
-  }
-
-  const closeConfirmModal = () => setShowConfirm(false);
-
-  const handleConfirm = () => {
-    console.log("trigger handleConfirm")
-    handleStatus()
-    closeConfirmModal()
-  };
   return (
     <>
-      <ConfirmModal
-        title={t("confirm")}
-        body={t("areYouSureWantToAddIncomingStock")}
-        buttonColor="warning"
-        handleClick={handleConfirm}
-        state={showConfirm}
-        closeModal={closeConfirmModal}
-        loading={loading}
-      />
       <Row>
         <Col>
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
@@ -263,23 +242,14 @@ export const EditOutcomingMaterialPage = ({ location, match }) => {
               <div className="headerEnd">
                 <Link
                   to={{
-                    pathname: "/ingredient-inventory/outcoming-stock"
+                    pathname: "/inventory/outcoming-stock"
                   }}
                 >
                   <Button variant="outline-secondary">{t('back')}</Button>
                 </Link>
-                <Button
-                  variant="primary"
-                  style={{ marginLeft: "0.5rem" }}
-                  type="submit"
-                  onClick={handleSubmit}
-                >
-                  {loading ? (
-                    <Spinner animation="border" variant="light" size="sm" />
-                  ) : (
-                    `${t("save")}`
-                  )}
-                </Button>
+                <Button variant="primary" style={{ marginLeft: "0.5rem" }} onClick={handleSubmit}>
+                  {t('save')}
+              </Button>
               </div>
             </div>
   
@@ -336,7 +306,7 @@ export const EditOutcomingMaterialPage = ({ location, match }) => {
               <Col>
                 <Row>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>{t('rawMaterialName')}</h6>
+                    <h6>{t('productName')}</h6>
                   </Col>
                   <Col style={{ padding: "1rem", textAlign: "center" }}>
                     <h6>{t('quantity')}</h6>
@@ -346,11 +316,11 @@ export const EditOutcomingMaterialPage = ({ location, match }) => {
                   </Col>
                   <Col sm={1}></Col>
                 </Row>
-                {optionsMaterial.length ? (
                   <FormikProvider value={formikStock}>
                     <FieldArray
                       name="items"
                       render={(arrayHelpers) => {
+                        console.log("items nya", formikStock.values.items)
                         return (
                           <div>
                             {formikStock.values.items.map((item, index) => {
@@ -360,7 +330,7 @@ export const EditOutcomingMaterialPage = ({ location, match }) => {
                                     <Form.Group>
                                       <Form.Control
                                         type="text"
-                                        value={item.Stock.Raw_Material.name}
+                                        value={item.Stock.Product.name}
                                         disabled
                                       />
                                     </Form.Group>
@@ -432,7 +402,6 @@ export const EditOutcomingMaterialPage = ({ location, match }) => {
                       }}
                     />
                   </FormikProvider>
-                ) : null}
               </Col>
             </Row>
           </Paper>

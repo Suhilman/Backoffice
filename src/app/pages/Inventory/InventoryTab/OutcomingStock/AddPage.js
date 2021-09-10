@@ -14,7 +14,9 @@ import {
   Col,
   Alert,
   Spinner,
-  InputGroup
+  InputGroup,
+  Dropdown,
+  ButtonGroup
 } from "react-bootstrap";
 import { Paper } from "@material-ui/core";
 import DatePicker from "react-datepicker";
@@ -30,6 +32,7 @@ export const AddOutcomingStockPage = ({ location }) => {
 
   const [startDate, setStartDate] = React.useState(new Date());
   const [hasUnit, setHasUnit] = React.useState(false);
+  const [saveAsDraft, setSaveAsDraft] = React.useState(false)
 
   const [showConfirm, setShowConfirm] = React.useState(false)
 
@@ -85,7 +88,11 @@ export const AddOutcomingStockPage = ({ location }) => {
 
       try {
         enableLoading();
-        await axios.post(`${API_URL}/api/v1/outcoming-stock`, stockData);
+        if(saveAsDraft) {
+          await axios.post(`${API_URL}/api/v1/outcoming-stock/draft`, stockData);
+        } else {
+          await axios.post(`${API_URL}/api/v1/outcoming-stock`, stockData);
+        }
         disableLoading();
         history.push("/inventory/outcoming-stock");
       } catch (err) {
@@ -207,11 +214,16 @@ export const AddOutcomingStockPage = ({ location }) => {
     closeConfirmModal()
   };
 
+  const handleSaveDraft = () => {
+    setSaveAsDraft(true)
+    formikStock.submitForm()
+  }
+
   return (
     <>
       <ConfirmModal
-        title={`Confirm`}
-        body="Are you sure want to add outcoming stock?"
+        title={t('confirm')}
+        body={t('areYouSureWantToAddOutomingStock')}
         buttonColor="warning"
         handleClick={handleConfirm}
         state={showConfirm}
@@ -230,17 +242,27 @@ export const AddOutcomingStockPage = ({ location }) => {
                   <Link to="/inventory/outcoming-stock">
                     <Button variant="secondary">{t("cancel")}</Button>
                   </Link>
-                  <Button
-                    variant="primary"
-                    style={{ marginLeft: "0.5rem" }}
-                    type="submit"
-                  >
-                    {loading ? (
-                      <Spinner animation="border" variant="light" size="sm" />
-                    ) : (
-                      `${t("save")}`
-                    )}
-                  </Button>
+                  <Dropdown as={ButtonGroup} style={{ marginLeft: "0.5rem" }}>
+                    <Button
+                      variant="primary"
+                      style={{ marginLeft: "0.5rem" }}
+                      type="submit"
+                    >
+                      {loading ? (
+                        <Spinner animation="border" variant="light" size="sm" />
+                      ) : (
+                        `${t("save")}`
+                      )}
+                    </Button>
+  
+                    <Dropdown.Toggle split variant="primary" />
+  
+                    <Dropdown.Menu>
+                        <Dropdown.Item variant="primary" onClick={handleSaveDraft}>
+                          {t("saveAsDraft")}
+                        </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
                 </div>
               </div>
 

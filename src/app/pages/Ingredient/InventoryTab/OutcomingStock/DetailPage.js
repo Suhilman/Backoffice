@@ -103,7 +103,7 @@ export const DetailOutcomingMaterialPage = ({ match }) => {
     <>
       <ConfirmModal
         title={t("confirm")}
-        body={t("areYouSureWantToAddIncomingStock")}
+        body={t("areYouSureWantToAddOutcomingStock")}
         buttonColor="warning"
         handleClick={handleConfirm}
         state={showConfirm}
@@ -118,8 +118,9 @@ export const DetailOutcomingMaterialPage = ({ match }) => {
                 <h3>{t('outcomingStockDetailSummary')}</h3>
               </div>
               <div className="headerEnd">
-              <Button className="mr-2 btn btn-primary" disabled={outcomingStock.status === "done"} onClick={handleShowConfirm}>{t(outcomingStock.status)}</Button>
+              <Button className="btn" className={outcomingStock.status === "done" ? 'btn-secondary' : 'btn-primary'} disabled={outcomingStock.status === "done"} onClick={handleShowConfirm}>{t(outcomingStock.status)}</Button>
                 <Link
+                  className="ml-2"
                   to={{
                     pathname: "/ingredient-inventory/outcoming-stock"
                   }}

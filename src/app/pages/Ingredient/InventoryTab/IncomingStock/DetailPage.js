@@ -149,8 +149,9 @@ export const DetailIncomingMaterialPage = ({ match }) => {
                 <h3>{t("incomingStockDetailSummary")}</h3>
               </div>
               <div className="headerEnd">
-                <Button className="mr-2 btn btn-primary" disabled={incomingStock.status === "done"} onClick={handleShowConfirm}>{t(incomingStock.status)}</Button>
+                <Button className="btn" className={incomingStock.status === "done" ? 'btn-secondary' : 'btn-primary'} disabled={incomingStock.status === "done"} onClick={handleShowConfirm}>{t(incomingStock.status)}</Button>
                 <Link
+                  className="ml-2"
                   to={{
                     pathname: "/ingredient-inventory/incoming-stock"
                   }}

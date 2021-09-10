@@ -157,11 +157,17 @@ export const OutcomingStockPage = () => {
     {
       name: t('location'),
       selector: "outlet_name",
-      sortable: true
+      sortable: true,
+      wrap: true
     },
     {
       name: t('date'),
       selector: "date",
+      sortable: true
+    },
+    {
+      name: t('status'),
+      selector: "status",
       sortable: true
     },
     {
@@ -185,6 +191,19 @@ export const OutcomingStockPage = () => {
               >
                 <Dropdown.Item as="button">{t("detail")}</Dropdown.Item>
               </Link>
+              {rows.status === 'Pending' ? (
+                <Link
+                  to={{
+                    pathname: `/inventory/edit-outcoming-stock/${rows.id}`,
+                    state: {
+                      allOutlets,
+                      allUnits
+                    }
+                  }}
+                >
+                  <Dropdown.Item as="button">{t("edit")}</Dropdown.Item>
+                </Link>
+              ) : null }
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
                 {t("delete")}
               </Dropdown.Item>
@@ -201,7 +220,8 @@ export const OutcomingStockPage = () => {
       no: index + 1,
       outlet_name: item.Outlet?.name,
       code: item.code,
-      date: dayjs(item.date).format("DD/MM/YYYY")
+      date: dayjs(item.date).format("DD/MM/YYYY"),
+      status: item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : "-"
     };
   });
 

@@ -238,7 +238,7 @@ export const EditIncomingStockPage = ({ location, match }) => {
               </Link>
 
               <Button variant="primary" style={{ marginLeft: "0.5rem" }} onClick={handleSubmit}>
-                Save
+                {t('save')}
               </Button>
             </div>
           </div>
