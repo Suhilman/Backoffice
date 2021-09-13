@@ -78,12 +78,10 @@ export const AddTransferMaterialPage = ({ location }) => {
         date: values.date,
         items: values.items
       };
-
-      if (stockData.outlet_from_id === stockData.outlet_to_id) {
-        throw new Error("origin and destination cannot be the same outlet");
-      }
-
       try {
+        if (stockData.outlet_from_id === stockData.outlet_to_id) {
+          throw new Error("origin and destination cannot be the same outlet");
+        }
         enableLoading();
         await axios.post(`${API_URL}/api/v1/transfer-stock`, stockData);
         disableLoading();
