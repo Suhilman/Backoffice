@@ -120,7 +120,7 @@ export const SpecialPromoPage = () => {
     enableReinitialize: true,
     initialValues: initialValuePromo,
     validationSchema: PromoSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, {resetForm}) => {
       const promoData = new FormData();
       promoData.append("outlet_id", JSON.stringify(values.outlet_id));
       promoData.append("name", values.name);
@@ -137,6 +137,7 @@ export const SpecialPromoPage = () => {
       try {
         enableLoading();
         await axios.post(`${API_URL}/api/v1/special-promo/create-development`, promoData);
+        resetForm()
         handleRefresh();
         disableLoading();
         closeAddModal();

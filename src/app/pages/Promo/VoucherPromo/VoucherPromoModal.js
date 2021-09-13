@@ -34,7 +34,9 @@ const VoucherPromoModal = ({
   setStartDate,
   endDate,
   setEndDate,
-  t
+  t,
+  handleDate,
+  errorDate
 }) => {
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
@@ -45,7 +47,6 @@ const VoucherPromoModal = ({
   });
   const handleSelectOutlet = (value, formik) => {
     if (value) {
-      console.log("handleSelectOutlet", value)
       const outlet = value.map((item) => item.value);
       formikPromo.setFieldValue("outlet_id", outlet);
     } else {
@@ -162,6 +163,8 @@ const VoucherPromoModal = ({
                   <DateTimePicker
                     startDate={startDate}
                     setStartDate={setStartDate}
+                    handleDate={handleDate}
+                    state="start"
                   />
 
                   <InputGroup.Append>
@@ -180,6 +183,8 @@ const VoucherPromoModal = ({
                   <DateTimePicker
                     startDate={endDate}
                     setStartDate={setEndDate}
+                    handleDate={handleDate}
+                    state="end"
                   />
 
                   <InputGroup.Append>
@@ -188,6 +193,13 @@ const VoucherPromoModal = ({
                     </InputGroup.Text>
                   </InputGroup.Append>
                 </InputGroup>
+                {errorDate ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {t('endDateMustBeGreaterThanTheStartDate')}
+                    </div>
+                  </div>
+                ) : null}
               </Form.Group>
             </Col>
           </Row>
@@ -333,7 +345,7 @@ const VoucherPromoModal = ({
   );
 };
 
-const DateTimePicker = ({ startDate, setStartDate }) => {
+const DateTimePicker = ({ startDate, setStartDate, handleDate, state }) => {
   const CustomInput = ({ value, onClick }) => {
     return (
       <Form.Control
@@ -347,7 +359,8 @@ const DateTimePicker = ({ startDate, setStartDate }) => {
   return (
     <DatePicker
       selected={startDate}
-      onChange={(date) => setStartDate(date)}
+      // onChange={(date) => setStartDate(date)}
+      onChange={(date) => handleDate(date, state)}
       dateFormat="dd/MM/yyyy HH:mm"
       showTimeInput
       timeInputLabel="Time:"

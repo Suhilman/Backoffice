@@ -377,6 +377,18 @@ export const AddAutomaticPromoPage = ({ location }) => {
   };
 
   const handlePromoStartDate = (date) => {
+    const formatStartDate = dayjs(date).format('YYYY-MM-DD')
+    const formatEndDate = dayjs(endDate).format('YYYY-MM-DD')
+    const startDateDiff = dayjs(formatStartDate)
+    const resultCompare = startDateDiff.diff(formatEndDate, 'day')
+
+    if(resultCompare > 0) {
+      setErrorDate(true)
+      console.log("silahkan masuk")
+    } else {
+      setErrorDate(false)
+    }
+
     setStartDate(date);
 
     if (tabs === "quantity") {

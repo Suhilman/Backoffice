@@ -215,7 +215,9 @@ export const RolePage = () => {
 
       console.log("data compare", privilegeDataOwner)
 
-      const { data } = await axios.get(`${API_URL}/api/v1/role${filter}`);
+      // const { data } = await axios.get(`${API_URL}/api/v1/role${filter}`);
+      const { data } = await axios.get(`${API_URL}/api/v1/role/development${filter}`);
+
       console.log("data all roles", data.data)
       // data.data[0].Role_Privileges[0].privilege_id
       // iniPrivilegenya[0].id && iniPrivilegenya[0].allowShow

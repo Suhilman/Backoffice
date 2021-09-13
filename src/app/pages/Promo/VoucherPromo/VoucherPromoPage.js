@@ -40,6 +40,7 @@ export const VoucherPromoPage = () => {
   const [photo, setPhoto] = React.useState("");
   const [photoPreview, setPhotoPreview] = React.useState("");
   const [alertPhoto, setAlertPhoto] = React.useState("");
+  const [errorDate, setErrorDate] = React.useState(false)
 
   const [voucherPromos, setVoucherPromos] = React.useState([]);
   const [allOutlets, setAllOutlets] = React.useState([]);
@@ -115,37 +116,41 @@ export const VoucherPromoPage = () => {
     initialValues: initialValuePromo,
     validationSchema: PromoSchema,
     onSubmit: async (values, {resetForm}) => {
-      const options = {
-        maxSizeMB: 0.5,
-        maxWidthOrHeight: 1920,
-        useWebWorker: true
-      }
-      const promoData = new FormData();
-      promoData.append("outlet_id", JSON.stringify(values.outlet_id));
-      promoData.append("name", values.name);
-      promoData.append("description_type", values.description_type);
-      promoData.append("description", values.description);
-      promoData.append("type", values.type);
-      promoData.append("value", values.value);
-      promoData.append("code", values.code);
-      promoData.append("quota", values.quota);
-      promoData.append("promo_date_start", startDate);
-      promoData.append("promo_date_end", endDate);
-      if (photo) {
-        promoData.append("voucherPromoImage", photo);
-      }
+      if(errorDate) {
+        console.log("tanggal akhir harus lebih besar dari tanggal mulai")
+      } else {
+        const options = {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true
+        }
+        const promoData = new FormData();
+        promoData.append("outlet_id", JSON.stringify(values.outlet_id));
+        promoData.append("name", values.name);
+        promoData.append("description_type", values.description_type);
+        promoData.append("description", values.description);
+        promoData.append("type", values.type);
+        promoData.append("value", values.value);
+        promoData.append("code", values.code);
+        promoData.append("quota", values.quota);
+        promoData.append("promo_date_start", startDate);
+        promoData.append("promo_date_end", endDate);
+        if (photo) {
+          promoData.append("voucherPromoImage", photo);
+        }
 
-      const API_URL = process.env.REACT_APP_API_URL;
-      try {
-        enableLoading();
-        await axios.post(`${API_URL}/api/v1/voucher-promo/create-development`, promoData);
-        resetForm()
-        handleRefresh();
-        disableLoading();
-        closeAddModal();
-      } catch (err) {
-        disableLoading();
-        setAlert(err.response?.data.message || err.message);
+        const API_URL = process.env.REACT_APP_API_URL;
+        try {
+          enableLoading();
+          await axios.post(`${API_URL}/api/v1/voucher-promo/create-development`, promoData);
+          resetForm()
+          handleRefresh();
+          disableLoading();
+          closeAddModal();
+        } catch (err) {
+          disableLoading();
+          setAlert(err.response?.data.message || err.message);
+        }
       }
     }
   });
@@ -167,39 +172,43 @@ export const VoucherPromoPage = () => {
     initialValues: initialValuePromo,
     validationSchema: EditPromoSchema,
     onSubmit: async (values) => {
-      const options = {
-        maxSizeMB: 0.5,
-        maxWidthOrHeight: 1920,
-        useWebWorker: true
-      }
-      const promoData = new FormData();
-      promoData.append("outlet_id", values.outlet_id);
-      promoData.append("name", values.name);
-      promoData.append("description_type", values.description_type);
-      promoData.append("description", values.description);
-      promoData.append("type", values.type);
-      promoData.append("value", values.value);
-      promoData.append("code", values.code);
-      promoData.append("quota", values.quota);
-      promoData.append("promo_date_start", startDate);
-      promoData.append("promo_date_end", endDate);
-      if (photo.name) {
-        promoData.append("voucherPromoImage", photo);
-      }
-
-      const API_URL = process.env.REACT_APP_API_URL;
-      try {
-        enableLoading();
-        await axios.put(
-          `${API_URL}/api/v1/voucher-promo/update-development/${values.id}`,
-          promoData
-        );
-        handleRefresh();
-        disableLoading();
-        closeEditModal();
-      } catch (err) {
-        disableLoading();
-        setAlert(err.response?.data.message || err.message);
+      if(errorDate) {
+        console.log("tanggal akhir harus lebih besar dari tanggal mulai")
+      } else {
+        const options = {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true
+        }
+        const promoData = new FormData();
+        promoData.append("outlet_id", values.outlet_id);
+        promoData.append("name", values.name);
+        promoData.append("description_type", values.description_type);
+        promoData.append("description", values.description);
+        promoData.append("type", values.type);
+        promoData.append("value", values.value);
+        promoData.append("code", values.code);
+        promoData.append("quota", values.quota);
+        promoData.append("promo_date_start", startDate);
+        promoData.append("promo_date_end", endDate);
+        if (photo.name) {
+          promoData.append("voucherPromoImage", photo);
+        }
+  
+        const API_URL = process.env.REACT_APP_API_URL;
+        try {
+          enableLoading();
+          await axios.put(
+            `${API_URL}/api/v1/voucher-promo/update-development/${values.id}`,
+            promoData
+          );
+          handleRefresh();
+          disableLoading();
+          closeEditModal();
+        } catch (err) {
+          disableLoading();
+          setAlert(err.response?.data.message || err.message);
+        }
       }
     }
   });
@@ -312,6 +321,35 @@ export const VoucherPromoPage = () => {
     }
     setStateEditModal(true);
   };
+
+  const handleDate = (date, state) => {
+    if(state === 'start') {
+      const formatStartDate = dayjs(date).format('YYYY-MM-DD')
+      const formatEndDate = dayjs(endDate).format('YYYY-MM-DD')
+      const startDateDiff = dayjs(formatStartDate)
+      const resultCompare = startDateDiff.diff(formatEndDate, 'day')
+
+      if(resultCompare > 0) {
+        setErrorDate(true)
+        console.log("silahkan masuk")
+      } else {
+        setErrorDate(false)
+      }
+      setStartDate(date)
+    } else {
+      const formatStartDate = dayjs(startDate).format('YYYY-MM-DD')
+      const formatEndDate = dayjs(date).format('YYYY-MM-DD')
+      const endDateDiff = dayjs(formatEndDate)
+      const resultCompare = endDateDiff.diff(formatStartDate, 'day')
+      if(resultCompare >= 0) {
+        setErrorDate(false)
+      } else {
+        setErrorDate(true)
+      }
+      setEndDate(date)
+    }
+  } 
+
   const closeEditModal = () => {
     formikEditPromo.resetForm();
     setPhoto("");
@@ -339,13 +377,11 @@ export const VoucherPromoPage = () => {
       const reader = new FileReader();
       reader.onload = () =>{
         if(reader.readyState === 2){
-          console.log("reader.result", reader.result)
           setPhotoPreview(reader.result);
         }
       }
       reader.readAsDataURL(file[0])
       img = file[0];
-      console.log("img", img)
       setPhoto(img)
     } else {
       preview = "";
@@ -499,6 +535,8 @@ export const VoucherPromoPage = () => {
         setStartDate={setStartDate}
         endDate={endDate}
         setEndDate={setEndDate}
+        handleDate={handleDate}
+        errorDate={errorDate}
       />
 
       <VoucherPromoModalEdit
@@ -519,6 +557,8 @@ export const VoucherPromoPage = () => {
         setStartDate={setStartDate}
         endDate={endDate}
         setEndDate={setEndDate}
+        handleDate={handleDate}
+        errorDate={errorDate}
       />
 
       <ShowConfirmModal
