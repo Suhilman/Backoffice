@@ -640,7 +640,7 @@ export const DetailStaffPage = ({ match, location }) => {
                 </Col>
 
                 <Col md={3}>
-                  <div className="title">{t("staffLocation")}</div>
+                  <div className="title">{t("outlet")}</div>
                   {statePage === "show" ? (
                     <h5 className="mb-5">{formikStaff.values.location_name}</h5>
                   ) : (
@@ -655,7 +655,8 @@ export const DetailStaffPage = ({ match, location }) => {
                         {allOutlets.map((item) => {
                           return (
                             <option key={item.id} value={item.id}>
-                              {item.Location?.name}
+                              {/* {item.Location?.name} */}
+                              {item.name}
                             </option>
                           );
                         })}

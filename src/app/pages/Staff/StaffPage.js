@@ -138,7 +138,7 @@ export const StaffPage = () => {
       sortable: true
     },
     {
-      name: `${t("location")}`,
+      name: `${t("outlet")}`,
       selector: "location",
       sortable: true
     },
@@ -189,7 +189,8 @@ export const StaffPage = () => {
       id: item.id,
       no: index + 1,
       name: item.name,
-      location: item.Outlet.Location?.name,
+      // location: item.Outlet.Location?.name,
+      location: item.Outlet.name,
       // type: item.User.type
       role: item.User.Role?.name
     };
@@ -276,7 +277,7 @@ export const StaffPage = () => {
                     <Form.Label
                       style={{ alignSelf: "center", marginBottom: "0" }}
                     >
-                      {t("location")}:
+                      {t("outlet")}:
                     </Form.Label>
                     <Col>
                       <Form.Control
@@ -289,7 +290,8 @@ export const StaffPage = () => {
                         {allOutlets.map((item) => {
                           return (
                             <option key={item.id} value={item.id}>
-                              {item.Location?.name}
+                              {/* {item.Location?.name} */}
+                              {item.name}
                             </option>
                           );
                         })}
