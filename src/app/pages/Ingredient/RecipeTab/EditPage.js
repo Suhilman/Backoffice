@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
 import * as Yup from "yup";
@@ -24,15 +24,12 @@ export const EditRecipePage = ({ location, match }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
-  console.log("currRecipe", currRecipe)
   const [currTotalPrice, setCurrTotalPrice] = React.useState(0);
   const [currTotalCalorie, setCurrTotalCalorie] = React.useState(0);
 
   const [valueMaterial, setValueMaterial] = React.useState({})
 
   const [stateCustom, setStateCustom] = React.useState(false);
-
-  console.log("currRecipe", currRecipe)
 
   const initialValueRecipe = {
     outlet_id: currRecipe.outlet_id,
@@ -61,13 +58,13 @@ export const EditRecipePage = ({ location, match }) => {
       const result = await axios.get(`${API_URL}/api/v1/raw-material`);
       result.data.data.map((item) => {
         if (item.name === value.label) {
-          setValueMaterial(item)
+          setValueMaterial(item);
         }
-      })
+      });
     } catch (err) {
       setAlert(err.response?.data.message || err.message);
     }
-  }
+  };
 
   const RecipeSchema = Yup.object().shape({
     outlet_id: Yup.number().required(`${t("pleaseChooseAnOutlet")}`),
@@ -106,7 +103,7 @@ export const EditRecipePage = ({ location, match }) => {
     initialValues: initialValueRecipe,
     validationSchema: RecipeSchema,
     onSubmit: async (values) => {
-      const resultCalorie = handleTotalCalorie()
+      const resultCalorie = handleTotalCalorie();
       const recipeData = {
         outlet_id: values.outlet_id,
         product_id: values.product_id,
@@ -134,9 +131,9 @@ export const EditRecipePage = ({ location, match }) => {
     const resultCalorie = formikRecipe.values.materials.reduce(
       (init, curr) => (init += curr.calorie_per_unit),
       0
-    )
-    return resultCalorie
-  }
+    );
+    return resultCalorie;
+  };
 
   const validationRecipe = (fieldname) => {
     if (formikRecipe.touched[fieldname] && formikRecipe.errors[fieldname]) {
@@ -246,28 +243,28 @@ export const EditRecipePage = ({ location, match }) => {
   const defaultValueRaw = (index) =>
     optionsRaw(index).find(
       (val) =>
-        val.value === formikRecipe.values.materials[index].raw_material_id,
+        val.value === formikRecipe.values.materials[index].raw_material_id
     );
   const optionsUnit = allUnits.map((item) => {
     return { value: item.id, label: item.name };
   });
   const defaultValueUnit = (index) => {
     let result;
-    optionsUnit.map(item => {
-      if(item.value === formikRecipe.values.materials[index].unit_id){
-        result = item.label
+    optionsUnit.map((item) => {
+      if (item.value === formikRecipe.values.materials[index].unit_id) {
+        result = item.label;
       }
-    })
-    return result
-  }
+    });
+    return result;
+  };
 
   const total_cogs = formikRecipe.values.materials.reduce(
     (init, curr) => (init += curr.ingredient_price),
     0
-  )
+  );
 
-  console.log("initialValueRecipe", initialValueRecipe.total_cogs)
-  console.log("total cogs", total_cogs)
+  console.log("initialValueRecipe", initialValueRecipe.total_cogs);
+  console.log("total cogs", total_cogs);
 
   return (
     <>
@@ -468,7 +465,7 @@ export const EditRecipePage = ({ location, match }) => {
                                             className="basic-single"
                                             classNamePrefix="select"
                                             onChange={(value) => {
-                                              handleMaterial(value)
+                                              handleMaterial(value);
                                               formikRecipe.setFieldValue(
                                                 `materials[${index}].raw_material_id`,
                                                 value.value
@@ -488,12 +485,15 @@ export const EditRecipePage = ({ location, match }) => {
                                                 (val) =>
                                                   val.value === value.value
                                               );
-                                            
+
                                               let price = 0;
-                                              if (resultPriceIngredient.total_price) {
-                                                price = resultPriceIngredient.total_price;
+                                              if (
+                                                resultPriceIngredient.total_price
+                                              ) {
+                                                price =
+                                                  resultPriceIngredient.total_price;
                                               }
-                                              
+
                                               formikRecipe.setFieldValue(
                                                 `materials[${index}].total_price`,
                                                 price
@@ -597,14 +597,14 @@ export const EditRecipePage = ({ location, match }) => {
                                         </Form.Group>
                                       </Col>
                                       <Col>
-                                      <Form.Group>
-                                        <Form.Control
-                                          type="text"
-                                          value={defaultValueUnit(index)}
-                                          disabled
-                                          name={`materials[${index}].unit_id`}
-                                        />
-                                      </Form.Group>
+                                        <Form.Group>
+                                          <Form.Control
+                                            type="text"
+                                            value={defaultValueUnit(index)}
+                                            disabled
+                                            name={`materials[${index}].unit_id`}
+                                          />
+                                        </Form.Group>
                                         {/* <Form.Group>
                                           <Form.Control
                                             type="text"

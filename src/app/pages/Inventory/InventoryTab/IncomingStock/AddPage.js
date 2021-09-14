@@ -29,8 +29,8 @@ export const AddIncomingStockPage = ({ location }) => {
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
-  const [showConfirm, setShowConfirm] = React.useState(false)
-  const [saveAsDraft, setSaveAsDraft] = React.useState(false)
+  const [showConfirm, setShowConfirm] = React.useState(false);
+  const [saveAsDraft, setSaveAsDraft] = React.useState(false);
 
   const [startDate, setStartDate] = React.useState(new Date());
   const [expiredDate, setExpiredDate] = React.useState(new Date());
@@ -171,7 +171,7 @@ export const AddIncomingStockPage = ({ location }) => {
 
   const optionsProduct = allProducts
     .map((item) => {
-      console.log("semua item", item)
+      console.log("semua item", item);
       if (item.outlet_id === formikStock.values.outlet_id) {
         return {
           value: item.id,
@@ -186,40 +186,40 @@ export const AddIncomingStockPage = ({ location }) => {
     })
     .filter((item) => item);
 
-  console.log("optionsProduct", optionsProduct)
-  console.log("allProducts", allProducts)
+  console.log("optionsProduct", optionsProduct);
+  console.log("allProducts", allProducts);
 
   const optionsUnit = allUnits.map((item) => {
     return { value: item.id, label: item.name };
   });
 
   const defaultValueUnit = (index) => {
-    console.log("ini unit nya", formikStock.values.items[index])
+    console.log("ini unit nya", formikStock.values.items[index]);
     let result;
-    optionsUnit.map(item => {
-      if(item.value === formikStock.values.items[index].unit_id){
-        result = item.label
+    optionsUnit.map((item) => {
+      if (item.value === formikStock.values.items[index].unit_id) {
+        result = item.label;
       }
-    })
-    return result
-  }
+    });
+    return result;
+  };
 
   const handleShowConfirm = (e) => {
-    e.preventDefault()
-    setShowConfirm(true)
-  }
+    e.preventDefault();
+    setShowConfirm(true);
+  };
 
   const closeConfirmModal = () => setShowConfirm(false);
 
   const handleConfirm = () => {
-    formikStock.handleSubmit()
-    closeConfirmModal()
+    formikStock.handleSubmit();
+    closeConfirmModal();
   };
 
   const handleSaveDraft = () => {
-    setSaveAsDraft(true)
-    formikStock.submitForm()
-  }
+    setSaveAsDraft(true);
+    formikStock.submitForm();
+  };
 
   return (
     <>
@@ -245,22 +245,25 @@ export const AddIncomingStockPage = ({ location }) => {
                     <Button variant="secondary">{t("cancel")}</Button>
                   </Link>
                   <Dropdown as={ButtonGroup} style={{ marginLeft: "0.5rem" }}>
-                  <Button
-                    variant="primary"
-                    style={{ marginLeft: "0.5rem" }}
-                    type="submit"
-                  >
-                    {loading ? (
-                      <Spinner animation="border" variant="light" size="sm" />
-                    ) : (
-                      `${t("save")}`
-                    )}
-                  </Button>
+                    <Button
+                      variant="primary"
+                      style={{ marginLeft: "0.5rem" }}
+                      type="submit"
+                    >
+                      {loading ? (
+                        <Spinner animation="border" variant="light" size="sm" />
+                      ) : (
+                        `${t("save")}`
+                      )}
+                    </Button>
 
-                  <Dropdown.Toggle split variant="primary" />
+                    <Dropdown.Toggle split variant="primary" />
 
-                  <Dropdown.Menu>
-                    <Dropdown.Item variant="primary" onClick={handleSaveDraft}>
+                    <Dropdown.Menu>
+                      <Dropdown.Item
+                        variant="primary"
+                        onClick={handleSaveDraft}
+                      >
                         {t("saveAsDraft")}
                       </Dropdown.Item>
                     </Dropdown.Menu>
@@ -418,9 +421,17 @@ export const AddIncomingStockPage = ({ location }) => {
                                             1
                                           );
 
-                                          formikStock.setFieldValue(`items[${index}].total_price`, value.price);
+                                          formikStock.setFieldValue(
+                                            `items[${index}].total_price`,
+                                            value.price
+                                          );
 
-                                          console.log("total quantity", formikStock.getFieldProps(`items[${index}].quantity`).value)
+                                          console.log(
+                                            "total quantity",
+                                            formikStock.getFieldProps(
+                                              `items[${index}].quantity`
+                                            ).value
+                                          );
 
                                           const currStock = value.Stocks.find(
                                             (val) => val.is_initial
@@ -463,8 +474,7 @@ export const AddIncomingStockPage = ({ location }) => {
                                           `items[${index}].quantity`
                                         )}
                                         onChange={(e) => {
-                                          handleChangeQuantity(e, index)
-
+                                          handleChangeQuantity(e, index);
                                         }}
                                         onBlur={(e) =>
                                           handleChangeQuantity(e, index)
@@ -496,7 +506,7 @@ export const AddIncomingStockPage = ({ location }) => {
                                         />
                                       </Form.Group>
                                     </Col>
-                                  ) : null }
+                                  ) : null}
 
                                   <Col>
                                     <Form.Group>
@@ -560,7 +570,9 @@ export const AddIncomingStockPage = ({ location }) => {
                                           onChange={(date) =>
                                             handleExpiredDate(date, index)
                                           }
-                                          customInput={<CustomInputExpiredDate />}
+                                          customInput={
+                                            <CustomInputExpiredDate />
+                                          }
                                           required
                                         />
                                         {formikStock.touched.items &&
