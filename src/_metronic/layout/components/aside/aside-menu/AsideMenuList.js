@@ -6,24 +6,24 @@ import SVG from "react-inlinesvg";
 import { toAbsoluteUrl, checkIsActive } from "../../../../_helpers";
 import { connect } from "react-redux";
 import { useTranslation } from "react-i18next";
-import inventoryIcon from "../../../../../images/icons8-in-inventory-96.png"
-import productIcon from "../../../../../images/icons8-exclusive-product-60.png"
-import dashboardIcon from "../../../../../images/icons8-dashboard-52.png"
-import reportIcon from "../../../../../images/icons8-business-report-96.png"
-import kitchenIcon from "../../../../../images/icons8-kitchen-room-48.png"
-import outletIcon from "../../../../../images/icons8-store-front-96.png"
-import promoIcon from "../../../../../images/icons8-voucher-64.png"
-import staffIcon from "../../../../../images/icons8-staff-100.png"
-import roleIcon from "../../../../../images/icons8-confirm-96.png"
-import customerIcon from "../../../../../images/icons8-customer-insight-64.png"
-import accountIcon from "../../../../../images/icons8-search-account-256.png"
-import commissionIcon from "../../../../../images/icons8-sales-performance-52.png"
-import subscriptionIcon from "../../../../../images/icons8-subscription-100.png"
-import paymentIcon from "../../../../../images/icons8-mobile-payment-90.png"
-import aboutIcon from "../../../../../images/icons8-about-500.png"
-import axios from 'axios'
+import inventoryIcon from "../../../../../images/icons8-in-inventory-96.png";
+import productIcon from "../../../../../images/icons8-exclusive-product-60.png";
+import dashboardIcon from "../../../../../images/icons8-dashboard-52.png";
+import reportIcon from "../../../../../images/icons8-business-report-96.png";
+import kitchenIcon from "../../../../../images/icons8-kitchen-room-48.png";
+import outletIcon from "../../../../../images/icons8-store-front-96.png";
+import promoIcon from "../../../../../images/icons8-voucher-64.png";
+import staffIcon from "../../../../../images/icons8-staff-100.png";
+import roleIcon from "../../../../../images/icons8-confirm-96.png";
+import customerIcon from "../../../../../images/icons8-customer-insight-64.png";
+import accountIcon from "../../../../../images/icons8-search-account-256.png";
+import commissionIcon from "../../../../../images/icons8-sales-performance-52.png";
+import subscriptionIcon from "../../../../../images/icons8-subscription-100.png";
+import paymentIcon from "../../../../../images/icons8-mobile-payment-90.png";
+import aboutIcon from "../../../../../images/icons8-about-500.png";
+import axios from "axios";
 
-import './style.css'
+import "./style.css";
 
 // TODO: ambil privileges dari store
 const select = (appState) => {
@@ -40,6 +40,8 @@ function AsideMenuList(props) {
   const [productSections, setProductSections] = React.useState([]);
   const [managementSections, setManagementSections] = React.useState([]);
 
+  const [kitchenModul, setKitchenModul] = React.useState("");
+
   const location = useLocation();
   const getMenuItemActive = (url, hasSubmenu = false) => {
     return checkIsActive(location, url)
@@ -47,55 +49,89 @@ function AsideMenuList(props) {
       : "";
   };
 
+  const handleTypeBusiness = async () => {
+    try {
+      const localData = JSON.parse(localStorage.getItem("user_info"));
+
+      let nameKithcenModul;
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/business/${localData.business_id}`
+      );
+      if (data.data.business_type_id == 1) nameKithcenModul = "assembly";
+      if (data.data.business_type_id == 2) nameKithcenModul = "kitchen";
+      if (data.data.business_type_id == 3) nameKithcenModul = "assembly";
+
+      console.log("nameKithcenModul", nameKithcenModul);
+
+      setKitchenModul(nameKithcenModul);
+
+      console.log();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSubscriptionPartitionId = async () => {
     const localData = JSON.parse(localStorage.getItem("user_info"));
-    const {data} = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${localData.business_id}`)
+    const { data } = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${localData.business_id}`
+    );
     // {{local-api}}/api/v1/subscription-partition-privilege?subscription_partition_id=2
-    const resultSubscriptionPrivileges = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription-partition-privilege?subscription_partition_id=${data.data[0].subscription_partition_id}`)
-    console.log("resultSubscriptionPrivileges", resultSubscriptionPrivileges)
-    const resLocalData = resultSubscriptionPrivileges.data.data.map(value => {
+    const resultSubscriptionPrivileges = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/v1/subscription-partition-privilege?subscription_partition_id=${data.data[0].subscription_partition_id}`
+    );
+    console.log("resultSubscriptionPrivileges", resultSubscriptionPrivileges);
+    const resLocalData = resultSubscriptionPrivileges.data.data.map((value) => {
       const tempData = {
         id: value.privilege_id,
         allow: value.allow,
-        name: value.Privilege.name.toLowerCase().split(' ').join('_'),
+        name: value.Privilege.name
+          .toLowerCase()
+          .split(" ")
+          .join("_"),
         access: value.Privilege.Access.name
-      }
-      console.log("tempData", tempData)
-      return tempData
-    })
-    return resLocalData
-  }
+      };
+      console.log("tempData", tempData);
+      return tempData;
+    });
+    return resLocalData;
+  };
 
   const handleSetPrivileges = async () => {
-    const localDataOwner = await handleSubscriptionPartitionId()
-    console.log("localDataOwner", localDataOwner)
+    const localDataOwner = await handleSubscriptionPartitionId();
+    console.log("localDataOwner", localDataOwner);
     const localData = JSON.parse(localStorage.getItem("user_info"));
-    console.log("localData user-id", localData.user_id)
+    console.log("localData user-id", localData.user_id);
     let privileges;
     // const privileges = localData?.privileges ? localData.privileges : localDataOwner;
 
-    if(localData.user_id) {
-      const {data} = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/staff/${localData.user_id}`)
-      const rolePrivileges = data.data.User.Role.Role_Privileges
-      const resultPrivileges = rolePrivileges.map(value => {
+    if (localData.user_id) {
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/staff/${localData.user_id}`
+      );
+      const rolePrivileges = data.data.User.Role.Role_Privileges;
+      const resultPrivileges = rolePrivileges.map((value) => {
         return {
-          name: value.Privilege.name.toLowerCase().split(' ').join('_'),
+          name: value.Privilege.name
+            .toLowerCase()
+            .split(" ")
+            .join("_"),
           access: value.Privilege.Access.name,
           allow: value.allow
-        }
-      })
-      privileges = resultPrivileges
-      localData.privileges = resultPrivileges
-      console.log("localstorage privilege", localData)
-      localStorage.setItem("user_info", JSON.stringify(localData))
-      console.log("resultPrivileges", resultPrivileges)
+        };
+      });
+      privileges = resultPrivileges;
+      localData.privileges = resultPrivileges;
+      console.log("localstorage privilege", localData);
+      localStorage.setItem("user_info", JSON.stringify(localData));
+      console.log("resultPrivileges", resultPrivileges);
     } else {
-      privileges = localDataOwner
+      privileges = localDataOwner;
     }
 
     const currUser = privileges.length ? "staff" : "owner";
-    console.log("privileges1", privileges)
-    console.log("currUser", currUser)
+    console.log("privileges1", privileges);
+    console.log("currUser", currUser);
     setCurrPrivileges(privileges);
     setUser(currUser);
   };
@@ -147,7 +183,7 @@ function AsideMenuList(props) {
       ps.push("kitchen_management");
     }
 
-    console.log("productSections", ps)
+    console.log("productSections", ps);
     setProductSections(ps);
 
     // management sections
@@ -180,6 +216,7 @@ function AsideMenuList(props) {
 
   React.useEffect(() => {
     handleSetPrivileges();
+    handleTypeBusiness();
   }, []);
 
   React.useEffect(() => {
@@ -215,7 +252,7 @@ function AsideMenuList(props) {
                         />
                       </span> */}
                       <div className="wrapper-icon">
-                        <img src={dashboardIcon} alt="Icon Dashboard"/>
+                        <img src={dashboardIcon} alt="Icon Dashboard" />
                       </div>
                       <span className="menu-text">{t("dashboard")}</span>
                     </NavLink>
@@ -242,7 +279,7 @@ function AsideMenuList(props) {
                         />
                       </span> */}
                       <div className="wrapper-icon">
-                        <img src={reportIcon} alt="Icon Report"/>
+                        <img src={reportIcon} alt="Icon Report" />
                       </div>
                       <span className="menu-text">{t("report")}</span>
                     </NavLink>
@@ -280,7 +317,7 @@ function AsideMenuList(props) {
                         />
                       </span> */}
                       <div className="wrapper-icon">
-                        <img src={productIcon} alt="Icon Product"/>
+                        <img src={productIcon} alt="Icon Product" />
                       </div>
                       <span className="menu-text">{t("product")}</span>
                     </NavLink>
@@ -306,7 +343,7 @@ function AsideMenuList(props) {
                         />
                       </span> */}
                       <div className="wrapper-icon">
-                        <img src={inventoryIcon} alt="Icon Inventory"/>
+                        <img src={inventoryIcon} alt="Icon Inventory" />
                       </div>
                       <span className="menu-text">{t("inventory")}</span>
                     </NavLink>
@@ -332,9 +369,9 @@ function AsideMenuList(props) {
                         />
                       </span> */}
                       <div className="wrapper-icon">
-                        <img src={kitchenIcon} alt="Icon Kitchen"/>
+                        <img src={kitchenIcon} alt="Icon Kitchen" />
                       </div>
-                      <span className="menu-text">{t("kitchen")}</span>
+                      <span className="menu-text">{t(kitchenModul)}</span>
                     </NavLink>
                   </li>
                 );
@@ -370,7 +407,7 @@ function AsideMenuList(props) {
                         />
                       </span> */}
                       <div className="wrapper-icon">
-                        <img src={outletIcon} alt="Icon Outlet"/>
+                        <img src={outletIcon} alt="Icon Outlet" />
                       </div>
                       <span className="menu-text">{t("outlet")}</span>
                     </NavLink>
@@ -396,7 +433,7 @@ function AsideMenuList(props) {
                         />
                       </span> */}
                       <div className="wrapper-icon">
-                        <img src={promoIcon} alt="Icon Promo"/>
+                        <img src={promoIcon} alt="Icon Promo" />
                       </div>
                       <span className="menu-text">{t("promo")}</span>
                     </NavLink>
@@ -422,7 +459,7 @@ function AsideMenuList(props) {
                         />
                       </span> */}
                       <div className="wrapper-icon">
-                        <img src={staffIcon} alt="Icon Staff"/>
+                        <img src={staffIcon} alt="Icon Staff" />
                       </div>
                       <span className="menu-text">{t("staff")}</span>
                     </NavLink>
@@ -444,7 +481,7 @@ function AsideMenuList(props) {
                         />
                       </span> */}
                       <div className="wrapper-icon">
-                        <img src={roleIcon} alt="Icon Role"/>
+                        <img src={roleIcon} alt="Icon Role" />
                       </div>
                       <span className="menu-text">{t("role")}</span>
                     </NavLink>
@@ -469,7 +506,7 @@ function AsideMenuList(props) {
                         />
                       </span> */}
                       <div className="wrapper-icon">
-                        <img src={customerIcon} alt="Icon Customer"/>
+                        <img src={customerIcon} alt="Icon Customer" />
                       </div>
                       <span className="menu-text">{t("customer")}</span>
                     </NavLink>
@@ -494,7 +531,7 @@ function AsideMenuList(props) {
                         />
                       </span> */}
                       <div className="wrapper-icon">
-                        <img src={commissionIcon} alt="Icon Commission"/>
+                        <img src={commissionIcon} alt="Icon Commission" />
                       </div>
                       <span className="menu-text">{t("Commission")}</span>
                     </NavLink>
@@ -514,7 +551,7 @@ function AsideMenuList(props) {
               <SVG src={toAbsoluteUrl("/media/svg/icons/Shopping/Bag2.svg")} />
             </span> */}
             <div className="wrapper-icon">
-              <img src={accountIcon} alt="Icon Account"/>
+              <img src={accountIcon} alt="Icon Account" />
             </div>
             <span className="menu-text">{t("account")}</span>
           </NavLink>
@@ -532,7 +569,7 @@ function AsideMenuList(props) {
         <li className={`menu-item ${getMenuItemActive("/payment", false)}`}>
           <NavLink className="menu-link" to="/payment">
             <div className="wrapper-icon">
-              <img src={paymentIcon} alt="Icon Payment"/>
+              <img src={paymentIcon} alt="Icon Payment" />
             </div>
             <span className="menu-text">{t("payment")}</span>
           </NavLink>
@@ -541,12 +578,11 @@ function AsideMenuList(props) {
         <li className={`menu-item ${getMenuItemActive("/about", false)}`}>
           <NavLink className="menu-link" to="/about">
             <div className="wrapper-icon">
-              <img src={aboutIcon} alt="Icon About"/>
+              <img src={aboutIcon} alt="Icon About" />
             </div>
             <span className="menu-text">{t("about")}</span>
           </NavLink>
         </li>
-
       </ul>
     </>
   );
