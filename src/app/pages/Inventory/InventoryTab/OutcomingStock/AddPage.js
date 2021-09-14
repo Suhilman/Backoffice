@@ -32,9 +32,9 @@ export const AddOutcomingStockPage = ({ location }) => {
 
   const [startDate, setStartDate] = React.useState(new Date());
   const [hasUnit, setHasUnit] = React.useState(false);
-  const [saveAsDraft, setSaveAsDraft] = React.useState(false)
+  const [saveAsDraft, setSaveAsDraft] = React.useState(false);
 
-  const [showConfirm, setShowConfirm] = React.useState(false)
+  const [showConfirm, setShowConfirm] = React.useState(false);
 
   const { t } = useTranslation();
 
@@ -76,7 +76,7 @@ export const AddOutcomingStockPage = ({ location }) => {
     validationSchema: StockSchema,
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
-      console.log("values stock", values)
+      console.log("values stock", values);
       const stockData = {
         outlet_id: values.outlet_id,
         notes: values.notes,
@@ -84,12 +84,15 @@ export const AddOutcomingStockPage = ({ location }) => {
         items: values.items
       };
 
-      console.log("outcoming stock Inventory", stockData)
+      console.log("outcoming stock Inventory", stockData);
 
       try {
         enableLoading();
-        if(saveAsDraft) {
-          await axios.post(`${API_URL}/api/v1/outcoming-stock/draft`, stockData);
+        if (saveAsDraft) {
+          await axios.post(
+            `${API_URL}/api/v1/outcoming-stock/draft`,
+            stockData
+          );
         } else {
           await axios.post(`${API_URL}/api/v1/outcoming-stock`, stockData);
         }
@@ -169,13 +172,13 @@ export const AddOutcomingStockPage = ({ location }) => {
 
   const defaultValueUnit = (index) => {
     let result;
-    optionsUnit.map(item => {
-      if(item.value === formikStock.values.items[index].unit_id){
-        result = item.label
+    optionsUnit.map((item) => {
+      if (item.value === formikStock.values.items[index].unit_id) {
+        result = item.label;
       }
-    })
-    return result
-  }
+    });
+    return result;
+  };
 
   const groupStyles = {
     display: "flex",
@@ -203,27 +206,27 @@ export const AddOutcomingStockPage = ({ location }) => {
   );
 
   const handleShowConfirm = (e) => {
-    e.preventDefault()
-    setShowConfirm(true)
-  }
+    e.preventDefault();
+    setShowConfirm(true);
+  };
 
   const closeConfirmModal = () => setShowConfirm(false);
 
   const handleConfirm = () => {
-    formikStock.handleSubmit()
-    closeConfirmModal()
+    formikStock.handleSubmit();
+    closeConfirmModal();
   };
 
   const handleSaveDraft = () => {
-    setSaveAsDraft(true)
-    formikStock.submitForm()
-  }
+    setSaveAsDraft(true);
+    formikStock.submitForm();
+  };
 
   return (
     <>
       <ConfirmModal
-        title={t('confirm')}
-        body={t('areYouSureWantToAddOutomingStock')}
+        title={t("confirm")}
+        body={t("areYouSureWantToAddOutcomingStock")}
         buttonColor="warning"
         handleClick={handleConfirm}
         state={showConfirm}
@@ -254,13 +257,16 @@ export const AddOutcomingStockPage = ({ location }) => {
                         `${t("save")}`
                       )}
                     </Button>
-  
+
                     <Dropdown.Toggle split variant="primary" />
-  
+
                     <Dropdown.Menu>
-                        <Dropdown.Item variant="primary" onClick={handleSaveDraft}>
-                          {t("saveAsDraft")}
-                        </Dropdown.Item>
+                      <Dropdown.Item
+                        variant="primary"
+                        onClick={handleSaveDraft}
+                      >
+                        {t("saveAsDraft")}
+                      </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
@@ -472,18 +478,18 @@ export const AddOutcomingStockPage = ({ location }) => {
                                     ""
                                   )} */}
 
-                                {hasUnit ? (
-                                  <Col>
-                                    <Form.Group>
-                                      <Form.Control
-                                        type="text"
-                                        value={defaultValueUnit(index)}
-                                        disabled
-                                        name={`items[${index}].unit_id`}
-                                      />
-                                    </Form.Group>
-                                  </Col>
-                                ) : null }
+                                  {hasUnit ? (
+                                    <Col>
+                                      <Form.Group>
+                                        <Form.Control
+                                          type="text"
+                                          value={defaultValueUnit(index)}
+                                          disabled
+                                          name={`items[${index}].unit_id`}
+                                        />
+                                      </Form.Group>
+                                    </Col>
+                                  ) : null}
 
                                   <Col sm={1}>
                                     <Button

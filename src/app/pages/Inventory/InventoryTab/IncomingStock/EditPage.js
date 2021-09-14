@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import { useFormik, FormikProvider, FieldArray } from "formik";
 import Select from "react-select";
 import { useTranslation } from "react-i18next";
-import dayjs from 'dayjs'
+import dayjs from "dayjs";
 import {
   Button,
   Form,
@@ -23,16 +23,16 @@ export const EditIncomingStockPage = ({ location, match }) => {
   const history = useHistory();
   const [hasExpiredDate, setHasExpiredDate] = React.useState(false);
   const [hasUnit, setHasUnit] = React.useState(false);
-  const [optionsProduct, setOptionsProduct] = React.useState([])
-  const [defaultProduct, setDefaultProduct] = React.useState([])
+  const [optionsProduct, setOptionsProduct] = React.useState([]);
+  const [defaultProduct, setDefaultProduct] = React.useState([]);
 
   const { allOutlets, allProducts, allUnits } = location.state;
-  console.log("allUnits", allUnits)
+  console.log("allUnits", allUnits);
   const { stockId } = match.params;
   const { t } = useTranslation();
   const [incomingStock, setIncomingStock] = React.useState({});
-  const [currency, setCurrency] = React.useState("")
-  
+  const [currency, setCurrency] = React.useState("");
+
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
 
@@ -42,16 +42,17 @@ export const EditIncomingStockPage = ({ location, match }) => {
     const API_URL = process.env.REACT_APP_API_URL;
     const userInfo = JSON.parse(localStorage.getItem("user_info"));
 
-    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+    const { data } = await axios.get(
+      `${API_URL}/api/v1/business/${userInfo.business_id}`
+    );
 
     // console.log("currency nya brpw", data.data.Currency.name)
-     
 
-    setCurrency(data.data.Currency.name)
-  }
+    setCurrency(data.data.Currency.name);
+  };
   React.useEffect(() => {
-    handleCurrency()
-  }, [])
+    handleCurrency();
+  }, []);
   const initialValueStock = {
     outlet_id: "",
     notes: "",
@@ -90,7 +91,7 @@ export const EditIncomingStockPage = ({ location, match }) => {
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
 
-      console.log("send incomingStock", incomingStock)
+      console.log("send incomingStock", incomingStock);
 
       const stockData = {
         outlet_id: incomingStock.outlet_id,
@@ -101,7 +102,10 @@ export const EditIncomingStockPage = ({ location, match }) => {
 
       try {
         enableLoading();
-        await axios.put(`${API_URL}/api/v1/incoming-stock/${incomingStock.id}`, stockData);
+        await axios.put(
+          `${API_URL}/api/v1/incoming-stock/${incomingStock.id}`,
+          stockData
+        );
         disableLoading();
         history.push("/inventory/incoming-stock");
       } catch (err) {
@@ -110,7 +114,7 @@ export const EditIncomingStockPage = ({ location, match }) => {
       }
     }
   });
-  
+
   const validationStock = (fieldname) => {
     if (formikStock.touched[fieldname] && formikStock.errors[fieldname]) {
       return "is-invalid";
@@ -146,7 +150,7 @@ export const EditIncomingStockPage = ({ location, match }) => {
     formikStock.setFieldValue(`items[${idx}].quantity`, value);
     formikStock.setFieldValue(`items[${idx}].total_price`, total_price);
   };
-  
+
   const getIncomingStock = async (id) => {
     const API_URL = process.env.REACT_APP_API_URL;
     // const filterCustomer = `?name=${search}&sort=${filter.time}`;
@@ -161,49 +165,51 @@ export const EditIncomingStockPage = ({ location, match }) => {
         items: data.data.Incoming_Stock_Products
       });
 
-      data.data.date = data.data.date ? dayjs(data.data.date).format('YYYY-MM-DD HH:mm:ss') : ""
-
+      data.data.date = data.data.date
+        ? dayjs(data.data.date).format("YYYY-MM-DD HH:mm:ss")
+        : "";
 
       const optionsProduct = allProducts
-      .map((item) => {
-        console.log("semua item", item)
-        if (item.outlet_id === data.data.outlet_id) {
-          return {
-            value: item.id,
-            label: item.name,
-            Stocks: item.Stocks,
-            Unit: item.unit_id,
-            price: item.price
-          };
-        } else {
-          return "";
-        }
-      })
-      .filter((item) => item);
-      
-      console.log("optionsProduct",optionsProduct)
-
-      const result = []
-
-      const defaultProduct = data.data.Incoming_Stock_Products.map(item => {
-        optionsProduct.find(item2 =>  {
-          if(item2.value === item.product_id) {
-            //  return { label: item2.label, value: item2.value}
-            result.push({ 
-              label: item2.label, value: item2.value
-            })
+        .map((item) => {
+          console.log("semua item", item);
+          if (item.outlet_id === data.data.outlet_id) {
+            return {
+              value: item.id,
+              label: item.name,
+              Stocks: item.Stocks,
+              Unit: item.unit_id,
+              price: item.price
+            };
+          } else {
+            return "";
           }
         })
-      })
+        .filter((item) => item);
 
-      console.log("bismillah result", result)
-      console.log("defaultProduct salto",defaultProduct)
+      console.log("optionsProduct", optionsProduct);
 
-      setOptionsProduct(optionsProduct)
-      setDefaultProduct(result)
+      const result = [];
+
+      const defaultProduct = data.data.Incoming_Stock_Products.map((item) => {
+        optionsProduct.find((item2) => {
+          if (item2.value === item.product_id) {
+            //  return { label: item2.label, value: item2.value}
+            result.push({
+              label: item2.label,
+              value: item2.value
+            });
+          }
+        });
+      });
+
+      console.log("bismillah result", result);
+      console.log("defaultProduct salto", defaultProduct);
+
+      setOptionsProduct(optionsProduct);
+      setDefaultProduct(result);
 
       setIncomingStock(data.data);
-      console.log("data.data", data.data)
+      console.log("data.data", data.data);
     } catch (err) {
       console.log(err);
     }
@@ -213,12 +219,12 @@ export const EditIncomingStockPage = ({ location, match }) => {
     getIncomingStock(stockId);
   }, [stockId]);
 
-  console.log("defaultProduct", defaultProduct[0])
+  console.log("defaultProduct", defaultProduct[0]);
 
   const handleSubmit = () => {
-    formikStock.submitForm()
-    console.log("handleSubmit")
-  }
+    formikStock.submitForm();
+    console.log("handleSubmit");
+  };
 
   return (
     <Row>
@@ -237,8 +243,12 @@ export const EditIncomingStockPage = ({ location, match }) => {
                 <Button variant="outline-secondary">{t("back")}</Button>
               </Link>
 
-              <Button variant="primary" style={{ marginLeft: "0.5rem" }} onClick={handleSubmit}>
-                {t('save')}
+              <Button
+                variant="primary"
+                style={{ marginLeft: "0.5rem" }}
+                onClick={handleSubmit}
+              >
+                {t("save")}
               </Button>
             </div>
           </div>
@@ -281,52 +291,52 @@ export const EditIncomingStockPage = ({ location, match }) => {
                 <Form.Label>{t("notes")}:</Form.Label>
                 <Form.Control
                   as="textarea"
-                  name={'notes'}
-                  {...formikStock.getFieldProps('notes')}
+                  name={"notes"}
+                  {...formikStock.getFieldProps("notes")}
                 />
               </Form.Group>
             </Col>
           </Row>
           <Row style={{ padding: "1rem" }}>
-              <Col>
-                <Row>
-                  <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>{t('productName')}</h6>
-                  </Col>
-                  <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>{t('quantity')}</h6>
-                  </Col>
-                  <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>{t('unit')}</h6>
-                  </Col>
-                  <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>{t('price')}</h6>
-                  </Col>
-                  <Col style={{ padding: "1rem", textAlign: "center" }}>
-                    <h6>{t('priceTotal')}</h6>
-                  </Col>
-                  <Col sm={1}></Col>
-                </Row>
+            <Col>
+              <Row>
+                <Col style={{ padding: "1rem", textAlign: "center" }}>
+                  <h6>{t("productName")}</h6>
+                </Col>
+                <Col style={{ padding: "1rem", textAlign: "center" }}>
+                  <h6>{t("quantity")}</h6>
+                </Col>
+                <Col style={{ padding: "1rem", textAlign: "center" }}>
+                  <h6>{t("unit")}</h6>
+                </Col>
+                <Col style={{ padding: "1rem", textAlign: "center" }}>
+                  <h6>{t("price")}</h6>
+                </Col>
+                <Col style={{ padding: "1rem", textAlign: "center" }}>
+                  <h6>{t("priceTotal")}</h6>
+                </Col>
+                <Col sm={1}></Col>
+              </Row>
 
-                <FormikProvider value={formikStock}>
-                  <FieldArray
-                    name="items"
-                    render={(arrayHelpers) => {
-                      return (
-                        <div>
-                          {formikStock.values.items.map((item, index) => 
-                            defaultProduct[index] ? (
-                                <Row key={index}>
-                                  <Col>
-                                    <Form.Group>
-                                      <Form.Control
-                                        type="text"
-                                        value={item.Product.name}
-                                        disabled
-                                      />
-                                    </Form.Group>
-                                  </Col>
-                                  {/* <Col>
+              <FormikProvider value={formikStock}>
+                <FieldArray
+                  name="items"
+                  render={(arrayHelpers) => {
+                    return (
+                      <div>
+                        {formikStock.values.items.map((item, index) =>
+                          defaultProduct[index] ? (
+                            <Row key={index}>
+                              <Col>
+                                <Form.Group>
+                                  <Form.Control
+                                    type="text"
+                                    value={item.Product.name}
+                                    disabled
+                                  />
+                                </Form.Group>
+                              </Col>
+                              {/* <Col>
                                     <Form.Group>
                                       <Select
                                         options={optionsProduct}
@@ -387,114 +397,109 @@ export const EditIncomingStockPage = ({ location, match }) => {
                                       ) : null}
                                     </Form.Group>
                                   </Col> */}
-                                  <Col>
-                                    <Form.Group>
-                                      <Form.Control
-                                        type="number"
-                                        name={`items[${index}].quantity`}
-                                        {...formikStock.getFieldProps(
-                                          `items[${index}].quantity`
-                                        )}
-                                        onChange={(e) =>
-                                          handleChangeQuantity(e, index)
+                              <Col>
+                                <Form.Group>
+                                  <Form.Control
+                                    type="number"
+                                    name={`items[${index}].quantity`}
+                                    {...formikStock.getFieldProps(
+                                      `items[${index}].quantity`
+                                    )}
+                                    onChange={(e) =>
+                                      handleChangeQuantity(e, index)
+                                    }
+                                    onBlur={(e) =>
+                                      handleChangeQuantity(e, index)
+                                    }
+                                    required
+                                  />
+                                  {formikStock.touched.items &&
+                                  formikStock.errors.items ? (
+                                    <div className="fv-plugins-message-container">
+                                      <div className="fv-help-block">
+                                        {
+                                          formikStock.errors.items[index]
+                                            ?.quantity
                                         }
-                                        onBlur={(e) =>
-                                          handleChangeQuantity(e, index)
+                                      </div>
+                                    </div>
+                                  ) : null}
+                                </Form.Group>
+                              </Col>
+                              <Col>
+                                <Form.Group>
+                                  <Form.Control
+                                    type="text"
+                                    value={item.Unit?.name}
+                                    disabled
+                                  />
+                                </Form.Group>
+                              </Col>
+                              <Col>
+                                <Form.Group>
+                                  <Form.Control
+                                    type="number"
+                                    name={`items[${index}].price`}
+                                    {...formikStock.getFieldProps(
+                                      `items[${index}].price`
+                                    )}
+                                    onChange={(e) =>
+                                      handleChangePrice(e, index)
+                                    }
+                                    onBlur={(e) => handleChangePrice(e, index)}
+                                    required
+                                  />
+                                  {formikStock.touched.items &&
+                                  formikStock.errors.items ? (
+                                    <div className="fv-plugins-message-container">
+                                      <div className="fv-help-block">
+                                        {formikStock.errors.items[index]?.price}
+                                      </div>
+                                    </div>
+                                  ) : null}
+                                </Form.Group>
+                              </Col>
+                              <Col>
+                                <Form.Group>
+                                  <Form.Control
+                                    type="number"
+                                    name={`items[${index}].total_price`}
+                                    {...formikStock.getFieldProps(
+                                      `items[${index}].total_price`
+                                    )}
+                                    required
+                                  />
+                                  {formikStock.touched.items &&
+                                  formikStock.errors.items ? (
+                                    <div className="fv-plugins-message-container">
+                                      <div className="fv-help-block">
+                                        {
+                                          formikStock.errors.items[index]
+                                            ?.total_price
                                         }
-                                        required
-                                      />
-                                      {formikStock.touched.items &&
-                                      formikStock.errors.items ? (
-                                        <div className="fv-plugins-message-container">
-                                          <div className="fv-help-block">
-                                            {
-                                              formikStock.errors.items[index]
-                                                ?.quantity
-                                            }
-                                          </div>
-                                        </div>
-                                      ) : null}
-                                    </Form.Group>
-                                  </Col>
-                                  <Col>
-                                    <Form.Group>
-                                      <Form.Control
-                                        type="text"
-                                        value={item.Unit?.name}
-                                        disabled
-                                      />
-                                    </Form.Group>
-                                  </Col>
-                                  <Col>
-                                    <Form.Group>
-                                      <Form.Control
-                                        type="number"
-                                        name={`items[${index}].price`}
-                                        {...formikStock.getFieldProps(
-                                          `items[${index}].price`
-                                        )}
-                                        onChange={(e) =>
-                                          handleChangePrice(e, index)
-                                        }
-                                        onBlur={(e) =>
-                                          handleChangePrice(e, index)
-                                        }
-                                        required
-                                      />
-                                      {formikStock.touched.items &&
-                                      formikStock.errors.items ? (
-                                        <div className="fv-plugins-message-container">
-                                          <div className="fv-help-block">
-                                            {
-                                              formikStock.errors.items[index]
-                                                ?.price
-                                            }
-                                          </div>
-                                        </div>
-                                      ) : null}
-                                    </Form.Group>
-                                  </Col>
-                                  <Col>
-                                    <Form.Group>
-                                      <Form.Control
-                                        type="number"
-                                        name={`items[${index}].total_price`}
-                                        {...formikStock.getFieldProps(
-                                          `items[${index}].total_price`
-                                        )}
-                                        required
-                                      />
-                                      {formikStock.touched.items &&
-                                      formikStock.errors.items ? (
-                                        <div className="fv-plugins-message-container">
-                                          <div className="fv-help-block">
-                                            {
-                                              formikStock.errors.items[index]
-                                                ?.total_price
-                                            }
-                                          </div>
-                                        </div>
-                                      ) : null}
-                                    </Form.Group>
-                                  </Col>
-                                  <Col sm={1}>
-                                    <Button
-                                      onClick={() => arrayHelpers.remove(index)}
-                                      variant="danger"
-                                    >
-                                      <Delete />
-                                    </Button>
-                                  </Col>
-                                </Row>
-                            ) : null
-                          )}
-                        </div>
-                      );
-                    }}
-                  />
-                </FormikProvider>
-              </Col>
-            </Row>
+                                      </div>
+                                    </div>
+                                  ) : null}
+                                </Form.Group>
+                              </Col>
+                              <Col sm={1}>
+                                <Button
+                                  onClick={() => arrayHelpers.remove(index)}
+                                  variant="danger"
+                                >
+                                  <Delete />
+                                </Button>
+                              </Col>
+                            </Row>
+                          ) : null
+                        )}
+                      </div>
+                    );
+                  }}
+                />
+              </FormikProvider>
+            </Col>
+          </Row>
         </Paper>
       </Col>
     </Row>

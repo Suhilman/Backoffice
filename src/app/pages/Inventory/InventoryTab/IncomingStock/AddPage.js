@@ -95,7 +95,7 @@ export const AddIncomingStockPage = ({ location }) => {
 
       try {
         enableLoading();
-        if(saveAsDraft) {
+        if (saveAsDraft) {
           await axios.post(`${API_URL}/api/v1/incoming-stock/draft`, stockData);
         } else {
           await axios.post(`${API_URL}/api/v1/incoming-stock`, stockData);
@@ -362,17 +362,22 @@ export const AddIncomingStockPage = ({ location }) => {
                       <h6>{t("quantity")}</h6>
                     </Col>
 
-                    {hasUnit ? (
+                    {/* {hasUnit ? (
                       <Col style={{ padding: "1rem", textAlign: "center" }}>
                         <h6>{t("unit")}</h6>
                       </Col>
                     ) : (
                       ""
-                    )}
+                    )} */}
+
+                    <Col style={{ padding: "1rem", textAlign: "center" }}>
+                      <h6>{t("unit")}</h6>
+                    </Col>
 
                     <Col style={{ padding: "1rem", textAlign: "center" }}>
                       <h6>{t("price")}</h6>
                     </Col>
+
                     <Col style={{ padding: "1rem", textAlign: "center" }}>
                       <h6>{t("priceTotal")}</h6>
                     </Col>
@@ -506,7 +511,18 @@ export const AddIncomingStockPage = ({ location }) => {
                                         />
                                       </Form.Group>
                                     </Col>
-                                  ) : null}
+                                  ) : (
+                                    <Col>
+                                      <Form.Group>
+                                        <Form.Control
+                                          type="text"
+                                          value="-"
+                                          disabled
+                                          name="materials"
+                                        />
+                                      </Form.Group>
+                                    </Col>
+                                  )}
 
                                   <Col>
                                     <Form.Group>

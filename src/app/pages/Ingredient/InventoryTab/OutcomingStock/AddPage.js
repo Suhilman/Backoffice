@@ -15,7 +15,7 @@ import {
   Spinner,
   InputGroup,
   Dropdown,
-  ButtonGroup,
+  ButtonGroup
 } from "react-bootstrap";
 import { Paper } from "@material-ui/core";
 import DatePicker from "react-datepicker";
@@ -28,8 +28,8 @@ export const AddOutcomingMaterialPage = ({ location }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
-  const [saveAsDraft, setSaveAsDraft] = React.useState(false)
-  const [showConfirm, setShowConfirm] = React.useState(false)
+  const [saveAsDraft, setSaveAsDraft] = React.useState(false);
+  const [showConfirm, setShowConfirm] = React.useState(false);
 
   const [startDate, setStartDate] = React.useState(new Date());
 
@@ -79,12 +79,15 @@ export const AddOutcomingMaterialPage = ({ location }) => {
         items: values.items
       };
 
-      console.log("outcoming stock Kitchen", stockData)
+      console.log("outcoming stock Kitchen", stockData);
 
       try {
         enableLoading();
-        if(saveAsDraft) {
-          await axios.post(`${API_URL}/api/v1/outcoming-stock/draft`, stockData);
+        if (saveAsDraft) {
+          await axios.post(
+            `${API_URL}/api/v1/outcoming-stock/draft`,
+            stockData
+          );
         } else {
           await axios.post(`${API_URL}/api/v1/outcoming-stock`, stockData);
         }
@@ -183,27 +186,27 @@ export const AddOutcomingMaterialPage = ({ location }) => {
   );
 
   const handleShowConfirm = (e) => {
-    e.preventDefault()
-    setShowConfirm(true)
-  }
+    e.preventDefault();
+    setShowConfirm(true);
+  };
 
   const closeConfirmModal = () => setShowConfirm(false);
 
   const handleConfirm = () => {
-    formikStock.handleSubmit()
-    closeConfirmModal()
+    formikStock.handleSubmit();
+    closeConfirmModal();
   };
 
   const handleSaveDraft = () => {
-    setSaveAsDraft(true)
-    formikStock.submitForm()
-  }
+    setSaveAsDraft(true);
+    formikStock.submitForm();
+  };
 
   return (
     <>
       <ConfirmModal
         title={t("confirm")}
-        body={t("areYouSureWantToAddOutomingStock")}
+        body={t("areYouSureWantToAddOutcomingStock")}
         buttonColor="warning"
         handleClick={handleConfirm}
         state={showConfirm}
@@ -216,7 +219,7 @@ export const AddOutcomingMaterialPage = ({ location }) => {
             <Form noValidate onSubmit={handleShowConfirm}>
               <div className="headerPage">
                 <div className="headerStart">
-                  <h3>{t('addOutcomingStock')}</h3>
+                  <h3>{t("addOutcomingStock")}</h3>
                 </div>
                 <div className="headerEnd">
                   <Link to="/ingredient-inventory/outcoming-stock">
@@ -234,24 +237,27 @@ export const AddOutcomingMaterialPage = ({ location }) => {
                         `${t("save")}`
                       )}
                     </Button>
-  
+
                     <Dropdown.Toggle split variant="primary" />
-  
+
                     <Dropdown.Menu>
-                        <Dropdown.Item variant="primary" onClick={handleSaveDraft}>
-                          {t("saveAsDraft")}
-                        </Dropdown.Item>
+                      <Dropdown.Item
+                        variant="primary"
+                        onClick={handleSaveDraft}
+                      >
+                        {t("saveAsDraft")}
+                      </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
               </div>
-  
+
               {alert ? <Alert variant="danger">{alert}</Alert> : ""}
-  
+
               <Row style={{ padding: "1rem" }} className="lineBottom">
                 <Col sm={3}>
                   <Form.Group>
-                    <Form.Label>{t('location')}:</Form.Label>
+                    <Form.Label>{t("location")}:</Form.Label>
                     <Select
                       options={optionsOutlet}
                       name="outlet_id"
@@ -277,9 +283,9 @@ export const AddOutcomingMaterialPage = ({ location }) => {
                       </div>
                     ) : null}
                   </Form.Group>
-  
+
                   <Form.Group>
-                    <Form.Label>{t('date')}:</Form.Label>
+                    <Form.Label>{t("date")}:</Form.Label>
                     <InputGroup>
                       <DatePicker
                         name="date"
@@ -288,7 +294,7 @@ export const AddOutcomingMaterialPage = ({ location }) => {
                         customInput={<CustomInputDate />}
                         required
                       />
-  
+
                       <InputGroup.Append>
                         <InputGroup.Text>
                           <CalendarToday />
@@ -304,10 +310,10 @@ export const AddOutcomingMaterialPage = ({ location }) => {
                     ) : null}
                   </Form.Group>
                 </Col>
-  
+
                 <Col>
                   <Form.Group>
-                    <Form.Label>{t('notes')}:</Form.Label>
+                    <Form.Label>{t("notes")}:</Form.Label>
                     <Form.Control
                       as="textarea"
                       name="notes"
@@ -324,22 +330,22 @@ export const AddOutcomingMaterialPage = ({ location }) => {
                   </Form.Group>
                 </Col>
               </Row>
-  
+
               <Row style={{ padding: "1rem" }}>
                 <Col>
                   <Row>
                     <Col style={{ padding: "1rem", textAlign: "center" }}>
-                      <h6>{t('rawMaterialName')}</h6>
+                      <h6>{t("rawMaterialName")}</h6>
                     </Col>
                     <Col style={{ padding: "1rem", textAlign: "center" }}>
-                      <h6>{t('quantity')}</h6>
+                      <h6>{t("quantity")}</h6>
                     </Col>
                     <Col style={{ padding: "1rem", textAlign: "center" }}>
-                      <h6>{t('unit')}</h6>
+                      <h6>{t("unit")}</h6>
                     </Col>
                     <Col sm={1}></Col>
                   </Row>
-  
+
                   <FormikProvider value={formikStock}>
                     <FieldArray
                       name="items"
@@ -427,7 +433,7 @@ export const AddOutcomingMaterialPage = ({ location }) => {
                                       ) : null}
                                     </Form.Group>
                                   </Col>
-  
+
                                   <Col sm={1}>
                                     <Button
                                       onClick={() => arrayHelpers.remove(index)}
@@ -439,7 +445,7 @@ export const AddOutcomingMaterialPage = ({ location }) => {
                                 </Row>
                               );
                             })}
-  
+
                             <Row style={{ padding: "1rem" }}>
                               <Button
                                 onClick={() =>
@@ -447,7 +453,7 @@ export const AddOutcomingMaterialPage = ({ location }) => {
                                 }
                                 variant="primary"
                               >
-                                + {t('addRawMaterial')}
+                                + {t("addRawMaterial")}
                               </Button>
                             </Row>
                           </div>
