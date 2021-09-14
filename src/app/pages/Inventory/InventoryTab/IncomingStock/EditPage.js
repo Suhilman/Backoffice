@@ -21,7 +21,6 @@ import { CalendarToday, Delete } from "@material-ui/icons";
 
 export const EditIncomingStockPage = ({ location, match }) => {
   const history = useHistory();
-  const [hasExpiredDate, setHasExpiredDate] = React.useState(false);
   const [hasUnit, setHasUnit] = React.useState(false);
   const [optionsProduct, setOptionsProduct] = React.useState([]);
   const [defaultProduct, setDefaultProduct] = React.useState([]);
@@ -31,7 +30,11 @@ export const EditIncomingStockPage = ({ location, match }) => {
   const { stockId } = match.params;
   const { t } = useTranslation();
   const [incomingStock, setIncomingStock] = React.useState({});
+  const [incomingStockProduct, setIncomingStockProducts] = React.useState([]);
+
   const [currency, setCurrency] = React.useState("");
+  const [hasExpiredDate, setHasExpiredDate] = React.useState(false);
+  const [expiredDate, setExpiredDate] = React.useState(new Date());
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
@@ -100,6 +103,8 @@ export const EditIncomingStockPage = ({ location, match }) => {
         items: values.items
       };
 
+      console.log("stockData", stockData);
+
       try {
         enableLoading();
         await axios.put(
@@ -125,6 +130,16 @@ export const EditIncomingStockPage = ({ location, match }) => {
     }
 
     return "";
+  };
+
+  const CustomInputExpiredDate = ({ value, onClick }) => {
+    return <Form.Control type="text" defaultValue={value} onClick={onClick} />;
+  };
+
+  const handleExpiredDate = (date, idx) => {
+    incomingStockProduct[idx].expired_date = date;
+    setExpiredDate(date);
+    formikStock.setFieldValue(`items[${idx}].expired_date`, date);
   };
 
   const enableLoading = () => setLoading(true);
@@ -171,7 +186,6 @@ export const EditIncomingStockPage = ({ location, match }) => {
 
       const optionsProduct = allProducts
         .map((item) => {
-          console.log("semua item", item);
           if (item.outlet_id === data.data.outlet_id) {
             return {
               value: item.id,
@@ -186,14 +200,13 @@ export const EditIncomingStockPage = ({ location, match }) => {
         })
         .filter((item) => item);
 
-      console.log("optionsProduct", optionsProduct);
+      // console.log("optionsProduct", optionsProduct);
 
       const result = [];
 
-      const defaultProduct = data.data.Incoming_Stock_Products.map((item) => {
+      data.data.Incoming_Stock_Products.map((item) => {
         optionsProduct.find((item2) => {
           if (item2.value === item.product_id) {
-            //  return { label: item2.label, value: item2.value}
             result.push({
               label: item2.label,
               value: item2.value
@@ -202,24 +215,30 @@ export const EditIncomingStockPage = ({ location, match }) => {
         });
       });
 
-      console.log("bismillah result", result);
-      console.log("defaultProduct salto", defaultProduct);
+      data.data.Incoming_Stock_Products.map((item) => {
+        if (item.expired_date) {
+          const date = new Date(item.expired_date);
+          item.expired_date = date;
+        }
+      });
 
-      setOptionsProduct(optionsProduct);
       setDefaultProduct(result);
-
+      console.log(
+        "sebelum setIncomingStockProducts",
+        data.data.Incoming_Stock_Products
+      );
+      setIncomingStockProducts(data.data.Incoming_Stock_Products);
       setIncomingStock(data.data);
-      console.log("data.data", data.data);
     } catch (err) {
-      console.log(err);
+      console.log("error getIncomingStock", err);
     }
   };
+
+  console.log("incomingStockProduct", incomingStockProduct);
 
   React.useEffect(() => {
     getIncomingStock(stockId);
   }, [stockId]);
-
-  console.log("defaultProduct", defaultProduct[0]);
 
   const handleSubmit = () => {
     formikStock.submitForm();
@@ -315,6 +334,11 @@ export const EditIncomingStockPage = ({ location, match }) => {
                 <Col style={{ padding: "1rem", textAlign: "center" }}>
                   <h6>{t("priceTotal")}</h6>
                 </Col>
+
+                <Col style={{ padding: "1rem", textAlign: "center" }}>
+                  <h6>{t("expiredDate")}</h6>
+                </Col>
+
                 <Col sm={1}></Col>
               </Row>
 
@@ -482,6 +506,50 @@ export const EditIncomingStockPage = ({ location, match }) => {
                                   ) : null}
                                 </Form.Group>
                               </Col>
+                              {console.log(
+                                "looping incomingStockProduct",
+                                incomingStockProduct[index]
+                              )}
+                              {incomingStockProduct[index]?.expired_date ? (
+                                <Col>
+                                  <Form.Group>
+                                    <DatePicker
+                                      name={`items[${index}].expired_date`}
+                                      selected={
+                                        incomingStockProduct[index]
+                                          ?.expired_date
+                                      }
+                                      onChange={(date) =>
+                                        handleExpiredDate(date, index)
+                                      }
+                                      customInput={<CustomInputExpiredDate />}
+                                      required
+                                    />
+                                    {formikStock.touched.items &&
+                                    formikStock.errors.items ? (
+                                      <div className="fv-plugins-message-container">
+                                        <div className="fv-help-block">
+                                          {
+                                            formikStock.errors.items[index]
+                                              ?.expired_date
+                                          }
+                                        </div>
+                                      </div>
+                                    ) : null}
+                                  </Form.Group>
+                                </Col>
+                              ) : (
+                                <Col>
+                                  <Form.Group>
+                                    <Form.Control
+                                      type="text"
+                                      value="-"
+                                      disabled
+                                      name="expired_date"
+                                    />
+                                  </Form.Group>
+                                </Col>
+                              )}
                               <Col sm={1}>
                                 <Button
                                   onClick={() => arrayHelpers.remove(index)}

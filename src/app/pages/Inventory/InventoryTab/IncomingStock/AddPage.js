@@ -34,6 +34,8 @@ export const AddIncomingStockPage = ({ location }) => {
 
   const [startDate, setStartDate] = React.useState(new Date());
   const [expiredDate, setExpiredDate] = React.useState(new Date());
+  const [hasExpired, setHasExpired] = React.useState([]);
+  const [incomingStockProduct, setIncomingStockProducts] = React.useState([]);
 
   const [hasUnit, setHasUnit] = React.useState(false);
   const [hasExpiredDate, setHasExpiredDate] = React.useState(false);
@@ -49,7 +51,7 @@ export const AddIncomingStockPage = ({ location }) => {
         unit_id: "",
         price: 0,
         total_price: 0,
-        expired_date: expiredDate
+        expired_date: ""
       }
     ]
   };
@@ -93,6 +95,8 @@ export const AddIncomingStockPage = ({ location }) => {
         items: values.items
       };
 
+      console.log("data yang akan disave", stockData);
+
       try {
         enableLoading();
         if (saveAsDraft) {
@@ -130,6 +134,7 @@ export const AddIncomingStockPage = ({ location }) => {
   };
 
   const handleExpiredDate = (date, idx) => {
+    incomingStockProduct[idx] = date;
     setExpiredDate(date);
     formikStock.setFieldValue(`items[${idx}].expired_date`, date);
   };
@@ -377,19 +382,12 @@ export const AddIncomingStockPage = ({ location }) => {
                     <Col style={{ padding: "1rem", textAlign: "center" }}>
                       <h6>{t("price")}</h6>
                     </Col>
-
                     <Col style={{ padding: "1rem", textAlign: "center" }}>
                       <h6>{t("priceTotal")}</h6>
                     </Col>
-
-                    {hasExpiredDate ? (
-                      <Col style={{ padding: "1rem", textAlign: "center" }}>
-                        <h6>{t("expiredDate")}</h6>
-                      </Col>
-                    ) : (
-                      ""
-                    )}
-
+                    <Col style={{ padding: "1rem", textAlign: "center" }}>
+                      <h6>{t("expiredDate")}</h6>
+                    </Col>
                     <Col sm={1}></Col>
                   </Row>
 
@@ -410,7 +408,6 @@ export const AddIncomingStockPage = ({ location }) => {
                                         className="basic-single"
                                         classNamePrefix="select"
                                         onChange={(value) => {
-                                          // console.log("opo neh iki ??", value)
                                           formikStock.setFieldValue(
                                             `items[${index}].product_id`,
                                             value.value
@@ -441,9 +438,37 @@ export const AddIncomingStockPage = ({ location }) => {
                                           const currStock = value.Stocks.find(
                                             (val) => val.is_initial
                                           );
+                                          console.log("currStock", currStock);
                                           if (currStock?.expired_date) {
+                                            const resDate = new Date(
+                                              currStock.expired_date
+                                            );
+                                            const tempExpired = hasExpired;
+                                            hasExpired[index] = true;
+                                            setHasExpired(tempExpired);
+                                            formikStock.setFieldValue(
+                                              `items[${index}].expired_date`,
+                                              resDate
+                                            );
+
+                                            const tempExpiredDate = incomingStockProduct;
+                                            tempExpiredDate[index] = resDate;
+                                            setIncomingStockProducts(
+                                              tempExpiredDate
+                                            );
                                             setHasExpiredDate(true);
                                           } else {
+                                            console.log(
+                                              "TIDAK masuk expired nya"
+                                            );
+                                            const tempExpired = hasExpired;
+                                            hasExpired[index] = null;
+                                            setHasExpired(tempExpired);
+                                            formikStock.setFieldValue(
+                                              `items[${index}].expired_date`,
+                                              null
+                                            );
+
                                             setHasExpiredDate(false);
                                           }
                                           if (value.Unit) {
@@ -518,7 +543,7 @@ export const AddIncomingStockPage = ({ location }) => {
                                           type="text"
                                           value="-"
                                           disabled
-                                          name="materials"
+                                          name="material"
                                         />
                                       </Form.Group>
                                     </Col>
@@ -577,12 +602,12 @@ export const AddIncomingStockPage = ({ location }) => {
                                     </Form.Group>
                                   </Col>
 
-                                  {hasExpiredDate ? (
+                                  {hasExpired[index] ? (
                                     <Col>
                                       <Form.Group>
                                         <DatePicker
                                           name={`items[${index}].expired_date`}
-                                          selected={expiredDate}
+                                          selected={incomingStockProduct[index]}
                                           onChange={(date) =>
                                             handleExpiredDate(date, index)
                                           }
@@ -605,7 +630,16 @@ export const AddIncomingStockPage = ({ location }) => {
                                       </Form.Group>
                                     </Col>
                                   ) : (
-                                    ""
+                                    <Col>
+                                      <Form.Group>
+                                        <Form.Control
+                                          type="text"
+                                          value="-"
+                                          disabled
+                                          name="expired_date"
+                                        />
+                                      </Form.Group>
+                                    </Col>
                                   )}
 
                                   <Col sm={1}>
