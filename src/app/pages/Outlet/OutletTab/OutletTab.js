@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import imageCompression from 'browser-image-compression';
+import imageCompression from "browser-image-compression";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 
@@ -42,7 +42,7 @@ export const OutletTab = ({
     start_hour: new Date(),
     end_hour: new Date()
   });
-  const [stateVacation, setStateVacation] = useState("Inactive")
+  const [stateVacation, setStateVacation] = useState("Inactive");
 
   const [search, setSearch] = React.useState("");
   const [filter, setFilter] = React.useState({
@@ -58,8 +58,8 @@ export const OutletTab = ({
   const [photo, setPhoto] = React.useState("");
   const [photoPreview, setPhotoPreview] = React.useState("");
   const [alertPhoto, setAlertPhoto] = React.useState("");
-  const [latitudeLongitude, setLatitudeLongitude] = React.useState({})
-  const [sosmed, setSosmed] = React.useState([])
+  const [latitudeLongitude, setLatitudeLongitude] = React.useState({});
+  const [sosmed, setSosmed] = React.useState([]);
 
   const debouncedSearch = useDebounce(search, 1000);
   const { t } = useTranslation();
@@ -87,22 +87,22 @@ export const OutletTab = ({
   //   }
   // ]
 
-  const getSosmed = async() => {
+  const getSosmed = async () => {
     try {
       const API_URL = process.env.REACT_APP_API_URL;
-      const {data} = await axios.get(`${API_URL}/api/v1/sosmed`)
-      console.log("getSosmed", data.data)
-      setSosmed(data.data)
+      const { data } = await axios.get(`${API_URL}/api/v1/sosmed`);
+      console.log("getSosmed", data.data);
+      setSosmed(data.data);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
-  const refreshSosmed = () => getSosmed()
+  const refreshSosmed = () => getSosmed();
 
   React.useEffect(() => {
-    getSosmed()
-  }, [])
+    getSosmed();
+  }, []);
 
   const initialValueOutlet = {
     name: "",
@@ -124,7 +124,7 @@ export const OutletTab = ({
     close_hour: "",
     vacation: "",
     sosmed: [],
-    sosmed_name: "",
+    sosmed_name: ""
   };
 
   const OutletSchema = Yup.object().shape({
@@ -165,33 +165,33 @@ export const OutletTab = ({
         maxSizeMB: 0.5,
         maxWidthOrHeight: 1920,
         useWebWorker: true
-      }
-      console.log("ini adalah value tambah formik outlet", values)
-      const locationPointer = JSON.parse(localStorage.getItem("addLocation"))
+      };
+      console.log("ini adalah value tambah formik outlet", values);
+      const locationPointer = JSON.parse(localStorage.getItem("addLocation"));
       const formData = new FormData();
       formData.append("name", values.name);
-      if(values.location_id) {
+      if (values.location_id) {
         formData.append("location_id", values.location_id);
       }
-      if(values.province) {
+      if (values.province) {
         formData.append("province", values.province);
       }
-      if(values.city) {
+      if (values.city) {
         formData.append("city", values.city);
       }
-      if(values.location) {
+      if (values.location) {
         formData.append("location", values.location);
       }
       formData.append("status", values.status);
       if (locationPointer) {
-        formData.append("latitude", locationPointer.lat); 
+        formData.append("latitude", locationPointer.lat);
       }
       if (locationPointer) {
         formData.append("longitude", locationPointer.lng);
       }
-      formData.append("payment_description", values.payment_description)
+      formData.append("payment_description", values.payment_description);
       if (photo) {
-        console.log("photo apaan", photo)
+        console.log("photo apaan", photo);
         formData.append("outlet", photo);
       }
       if (values.address) formData.append("address", values.address);
@@ -202,23 +202,43 @@ export const OutletTab = ({
       const API_URL = process.env.REACT_APP_API_URL;
       try {
         enableLoading();
-        const {data} = await axios.post(`${API_URL}/api/v1/outlet/create-development`, formData);
-        // console.log("data create outlet", data.data)
+        const { data } = await axios.post(
+          `${API_URL}/api/v1/outlet/create-development`,
+          formData
+        );
+        console.log("data create outlet", data.data);
         if (values.open_days || values.open_hour || values.close_hour) {
-          const time = {}
-          if(values.open_days) time.open_days = values.open_days
-          if(values.open_hour) time.open_hour = values.open_hour
-          if(values.close_hour) time.close_hour = values.close_hour
-          if(values.vacation)  time.vacation = values.vacation
+          const time = {};
+          if (values.open_days) time.open_days = values.open_days;
+          if (values.open_hour) time.open_hour = values.open_hour;
+          if (values.close_hour) time.close_hour = values.close_hour;
+          if (values.vacation) time.vacation = values.vacation;
 
           // console.log("masuk ketika open days dan open hour true", time)
-          await axios.patch(`${API_URL}/api/v1/outlet/open-time/${data.data.id}`, time);
+          await axios.patch(
+            `${API_URL}/api/v1/outlet/open-time/${data.data.id}`,
+            time
+          );
+        }
+        if (values.sosmed) {
+          const dataSosmed = {};
+          console.log("dataSosmed", dataSosmed);
+          if (values.sosmed_name) {
+            dataSosmed.sosmed_name = values.sosmed_name;
+          } else {
+            dataSosmed.sosmed_name = null;
+          }
+          if (values.sosmed) dataSosmed.sosmed = JSON.stringify(values.sosmed);
+          await axios.patch(
+            `${API_URL}/api/v1/outlet/setting-template/${data.data.id}`,
+            dataSosmed
+          );
         }
         handleRefresh();
         disableLoading();
         cancelAddModalOutlet();
-        localStorage.removeItem("addLocation")
-        localStorage.removeItem("location")
+        localStorage.removeItem("addLocation");
+        localStorage.removeItem("location");
       } catch (err) {
         disableLoading();
       }
@@ -230,68 +250,78 @@ export const OutletTab = ({
     initialValues: initialValueOutlet,
     validationSchema: OutletSchema,
     onSubmit: async (values) => {
-      const locationPointer = JSON.parse(localStorage.getItem("addLocation"))
-      console.log('ini data di edit', values)
+      const locationPointer = JSON.parse(localStorage.getItem("addLocation"));
+      console.log("ini data di edit", values);
       const formData = new FormData();
       formData.append("name", values.name);
-      if(values.location_id) {
+      if (values.location_id) {
         formData.append("location_id", values.location_id);
       }
-      if(values.province) {
+      if (values.province) {
         formData.append("province", values.province);
       }
-      if(values.city) {
+      if (values.city) {
         formData.append("city", values.city);
       }
-      if(values.location) {
+      if (values.location) {
         formData.append("location", values.location);
       }
       formData.append("status", values.status);
-      if(locationPointer) {
+      if (locationPointer) {
         formData.append("latitude", locationPointer.lat);
       }
-      if(locationPointer) {
+      if (locationPointer) {
         formData.append("longitude", locationPointer.lng);
       }
-      formData.append("payment_description", values.payment_description)
+      formData.append("payment_description", values.payment_description);
       // console.log('ini photonya', photo)
       if (photo.name) {
         formData.append("outlet", photo);
       }
       if (values.address) formData.append("address", values.address);
       if (values.postcode) formData.append("postcode", values.postcode);
-      if (values.phone_number) formData.append("phone_number", values.phone_number);
+      if (values.phone_number)
+        formData.append("phone_number", values.phone_number);
 
       const API_URL = process.env.REACT_APP_API_URL;
 
       try {
         enableLoading();
-        await axios.put(`${API_URL}/api/v1/outlet/update-development/${values.id}`, formData);
+        await axios.put(
+          `${API_URL}/api/v1/outlet/update-development/${values.id}`,
+          formData
+        );
         if (values.open_days || values.open_hour || values.close_hour) {
-          const time = {}
-          if(values.open_days) time.open_days = values.open_days
-          if(values.open_hour) time.open_hour = values.open_hour
-          if(values.close_hour) time.close_hour = values.close_hour
-          if(values.vacation)  time.vacation = values.vacation
+          const time = {};
+          if (values.open_days) time.open_days = values.open_days;
+          if (values.open_hour) time.open_hour = values.open_hour;
+          if (values.close_hour) time.close_hour = values.close_hour;
+          if (values.vacation) time.vacation = values.vacation;
           // console.log("masuk ketika open days dan open hour true", time)
-          await axios.patch(`${API_URL}/api/v1/outlet/open-time/${values.id}`, time);
+          await axios.patch(
+            `${API_URL}/api/v1/outlet/open-time/${values.id}`,
+            time
+          );
         }
-        if(values.sosmed) {
-          const dataSosmed = {}
-          console.log("dataSosmed", dataSosmed)
-          if(values.sosmed_name) {
-            dataSosmed.sosmed_name = values.sosmed_name
+        if (values.sosmed) {
+          const dataSosmed = {};
+          console.log("dataSosmed", dataSosmed);
+          if (values.sosmed_name) {
+            dataSosmed.sosmed_name = values.sosmed_name;
           } else {
-            dataSosmed.sosmed_name = null
+            dataSosmed.sosmed_name = null;
           }
-          if(values.sosmed) dataSosmed.sosmed = JSON.stringify(values.sosmed)
-          await axios.patch(`${API_URL}/api/v1/outlet/setting-template/${values.id}`, dataSosmed);
+          if (values.sosmed) dataSosmed.sosmed = JSON.stringify(values.sosmed);
+          await axios.patch(
+            `${API_URL}/api/v1/outlet/setting-template/${values.id}`,
+            dataSosmed
+          );
         }
         handleRefresh();
         disableLoading();
         cancelEditModalOutlet();
-        localStorage.removeItem("addLocation")
-        localStorage.removeItem("location")
+        localStorage.removeItem("addLocation");
+        localStorage.removeItem("location");
       } catch (err) {
         disableLoading();
       }
@@ -327,58 +357,66 @@ export const OutletTab = ({
     return "";
   };
 
-  const handleChangeSosmed = (value, formik)=> {
-    console.log("handleChangeSosmed", value)
-    if(value) {
-      const result = value.map(val => val.value)
-      formik.setFieldValue("sosmed", result)
+  const handleChangeSosmed = (value, formik) => {
+    console.log("handleChangeSosmed", value);
+    if (value) {
+      const result = value.map((val) => val.value);
+      formik.setFieldValue("sosmed", result);
     } else {
-      formik.setFieldValue("sosmed", [])
+      formik.setFieldValue("sosmed", []);
     }
-  }
+  };
 
   const showAddModalOutlet = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
-    const dataSubscription = await axios.get(`${API_URL}/api/v1/subscription`)
-    const userInfo = JSON.parse(localStorage.getItem("user_info"))
-    const subscription = dataSubscription.data.data.find(item => {
-      return item.business_id === userInfo.business_id
-    })
+    const dataSubscription = await axios.get(`${API_URL}/api/v1/subscription`);
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+    const subscription = dataSubscription.data.data.find((item) => {
+      return item.business_id === userInfo.business_id;
+    });
     if (subscription) {
-      console.log("sisa outlet", subscription.outlet_limit - dataOutlets().length)
+      console.log(
+        "sisa outlet",
+        subscription.outlet_limit - dataOutlets().length
+      );
       if (subscription.outlet_limit === 0) {
-        console.log("unlimited outlet")
-        setStateAddModal(true)
+        console.log("unlimited outlet");
+        setStateAddModal(true);
       } else if (subscription.outlet_limit - dataOutlets().length <= 0) {
-        console.log("sudah habis")
-        setAlertOutletLimit(true)
+        console.log("sudah habis");
+        setAlertOutletLimit(true);
       } else {
-        console.log("kuota outlet masin", subscription.outlet_limit - dataOutlets().length)
-        setStateAddModal(true)
+        console.log(
+          "kuota outlet masin",
+          subscription.outlet_limit - dataOutlets().length
+        );
+        setStateAddModal(true);
       }
     }
   };
   const cancelAddModalOutlet = () => {
+    console.log("cancelAddModalOutlet");
     formikOutlet.resetForm();
+    setPhotoPreview("");
     setStateAddModal(false);
-    localStorage.removeItem("location")
-    localStorage.removeItem("addLocation")
+    localStorage.removeItem("location");
+    localStorage.removeItem("addLocation");
   };
 
   const showEditModalOutlet = (data) => {
     const API_URL = process.env.REACT_APP_API_URL;
     // console.log('ini adalah data yang mau di edit', data)
-    setPhoto(data.image ? `${API_URL}/${data.image}` : "")
-    setPhotoPreview(data.image ? `${API_URL}/${data.image}` : "")
+    setPhoto(data.image ? `${API_URL}/${data.image}` : "");
+    setPhotoPreview(data.image ? `${API_URL}/${data.image}` : "");
     setTimingState({
       start_hour: data?.open_hour,
       end_hour: data?.close_hour
-    })
-    setStateVacation(data?.vacation)
-    console.log("showEditModalOutlet", data)
+    });
+    setStateVacation(data?.vacation);
+    console.log("showEditModalOutlet", data);
 
-    if(data.location_id) {
-      console.log("ketika data.location_id nya masuk")
+    if (data.location_id) {
+      console.log("ketika data.location_id nya masuk");
       formikOutletEdit.setValues({
         id: data.id,
         name: data.name,
@@ -392,7 +430,7 @@ export const OutletTab = ({
         location_id: data.location_id,
         status: data.status,
         open_days: data.open_days ? JSON.parse(data.open_days) : [],
-        open_hour: data?.open_hour, 
+        open_hour: data?.open_hour,
         close_hour: data?.close_hour,
         vacation: data?.vacation,
         sosmed: data.sosmed,
@@ -400,25 +438,25 @@ export const OutletTab = ({
       });
       const province_id = data.province_id;
       const city_id = data.city_id;
-  
+
       formikOutletEdit.setFieldValue("province_id", province_id);
-  
+
       const provinces = [...allProvinces];
       const [cities] = provinces
         .filter((item) => item.id === parseInt(province_id))
         .map((item) => item.Cities);
       setAllCities(cities);
-  
+
       formikOutletEdit.setFieldValue("city_id", city_id);
-  
+
       const [locations] = cities
         .filter((item) => item.id === parseInt(city_id))
         .map((item) => item.Locations);
       setAllLocations(locations);
-  
+
       setStateEditModal(true);
     } else {
-      console.log("ketika data.location_id nya TIDAK masuk")
+      console.log("ketika data.location_id nya TIDAK masuk");
       formikOutletEdit.setValues({
         id: data.id,
         name: data.name,
@@ -432,7 +470,7 @@ export const OutletTab = ({
         location: data.location,
         status: data.status,
         open_days: data.open_days ? JSON.parse(data.open_days) : [],
-        open_hour: data?.open_hour, 
+        open_hour: data?.open_hour,
         close_hour: data?.close_hour,
         vacation: data?.vacation,
         sosmed: data.sosmed,
@@ -440,25 +478,26 @@ export const OutletTab = ({
       });
       setStateEditModal(true);
     }
-    
+
     const location = {
       lng: data.longitude,
       lat: data.latitude
-    }
-    localStorage.setItem("location", JSON.stringify(location))
+    };
+    localStorage.setItem("location", JSON.stringify(location));
   };
 
   const cancelEditModalOutlet = () => {
     formikOutletEdit.resetForm();
+    setPhotoPreview("");
     setAllCities([]);
     setAllLocations([]);
     setStateEditModal(false);
-    localStorage.removeItem("addLocation")
-    localStorage.removeItem("location")
+    localStorage.removeItem("addLocation");
+    localStorage.removeItem("location");
   };
 
   const cancelAlertOutletLimit = () => {
-    setAlertOutletLimit(false)
+    setAlertOutletLimit(false);
   };
 
   const showDeleteModalOutlet = (data) => {
@@ -517,16 +556,16 @@ export const OutletTab = ({
 
     if (file.length) {
       const reader = new FileReader();
-      reader.onload = () =>{
-        if(reader.readyState === 2){
-          console.log("reader.result", reader.result)
+      reader.onload = () => {
+        if (reader.readyState === 2) {
+          console.log("reader.result", reader.result);
           setPhotoPreview(reader.result);
         }
-      }
-      reader.readAsDataURL(file[0])
+      };
+      reader.readAsDataURL(file[0]);
       img = file[0];
-      console.log("img", img)
-      setPhoto(img)
+      console.log("img", img);
+      setPhoto(img);
     } else {
       preview = "";
       setAlertPhoto("file is too large or not supported");
@@ -553,9 +592,7 @@ export const OutletTab = ({
         `${API_URL}/api/v1/outlet${filterOutlet}`
       );
       // console.log('ini data outlet', data.data)
-      setPhoto(
-        `${data.data.image ? `${API_URL}/${data.data.image}` : ""}`
-      )
+      setPhoto(`${data.data.image ? `${API_URL}/${data.data.image}` : ""}`);
       // console.log("ini photonya boeowww", `${API_URL}/${data.data.image}`)
       setAllOutlets(data.data);
     } catch (err) {
@@ -567,22 +604,22 @@ export const OutletTab = ({
     setTimingState({
       ...e,
       start_hour: dayjs(e).format(),
-      end_hour: timingState.end_hour,
-    })
-  }
+      end_hour: timingState.end_hour
+    });
+  };
 
   const handleSetEndHour = (e) => {
     setTimingState({
       ...e,
       start_hour: timingState.start_hour,
-      end_hour: dayjs(e).format(),
-    })
-  }
+      end_hour: dayjs(e).format()
+    });
+  };
 
   const handleSetVacation = (status) => {
-    console.log("set vacation", status)
-    setStateVacation(status)
-  }
+    console.log("set vacation", status);
+    setStateVacation(status);
+  };
 
   React.useEffect(() => {
     getOutlets(debouncedSearch, filter);
@@ -647,15 +684,15 @@ export const OutletTab = ({
   const dataOutlets = () => {
     return allOutlets.map((item, index) => {
       // console.log("ini item apa", item)
-      if(item.Location) {
-        console.log("jika locationnya ada")
+      if (item.Location) {
+        console.log("jika locationnya ada");
         const location = `${item.Location.name}, ${item.Location.City.name}, ${item.Location.City.Province.name}`;
         const capitalize = location
           .toLowerCase()
           .split(" ")
           .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
           .join(" ");
-  
+
         return {
           id: item.id,
           no: index + 1,
@@ -683,7 +720,7 @@ export const OutletTab = ({
           sosmed_name: item.sosmed_name
         };
       } else {
-        console.log("jika tidak ada")
+        console.log("jika tidak ada");
         return {
           id: item.id,
           no: index + 1,
@@ -712,7 +749,7 @@ export const OutletTab = ({
     });
   };
 
-  console.log("dataOutlet", dataOutlets())
+  console.log("dataOutlet", dataOutlets());
 
   const ExpandableComponent = ({ data }) => {
     const keys = [
@@ -798,7 +835,9 @@ export const OutletTab = ({
         latitudeLongitude={latitudeLongitude}
         stateModal={stateEditModal}
         cancelModal={cancelEditModalOutlet}
-        title={`${t("editOutlet")} - ${formikOutletEdit.getFieldProps("name").value}`}
+        title={`${t("editOutlet")} - ${
+          formikOutletEdit.getFieldProps("name").value
+        }`}
         loading={loading}
         formikOutlet={formikOutletEdit}
         validationOutlet={validationOutletEdit}
@@ -828,7 +867,9 @@ export const OutletTab = ({
         t={t}
         state={stateDeleteModal}
         closeModal={cancelDeleteModalOutlet}
-        title={`${t("deleteOutlet")} - ${formikOutlet.getFieldProps("name").value}`}
+        title={`${t("deleteOutlet")} - ${
+          formikOutlet.getFieldProps("name").value
+        }`}
         body={t("areYouSureWantToDelete?")}
         loading={loading}
         buttonColor="danger"

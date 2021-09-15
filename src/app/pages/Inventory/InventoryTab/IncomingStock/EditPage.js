@@ -339,7 +339,7 @@ export const EditIncomingStockPage = ({ location, match }) => {
                   <h6>{t("expiredDate")}</h6>
                 </Col>
 
-                <Col sm={1}></Col>
+                {/* <Col sm={1}></Col> */}
               </Row>
 
               <FormikProvider value={formikStock}>
@@ -550,14 +550,14 @@ export const EditIncomingStockPage = ({ location, match }) => {
                                   </Form.Group>
                                 </Col>
                               )}
-                              <Col sm={1}>
+                              {/* <Col sm={1}>
                                 <Button
                                   onClick={() => arrayHelpers.remove(index)}
                                   variant="danger"
                                 >
                                   <Delete />
                                 </Button>
-                              </Col>
+                              </Col> */}
                             </Row>
                           ) : null
                         )}

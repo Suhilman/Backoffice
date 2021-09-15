@@ -16,6 +16,8 @@ export const IngredientPage = () => {
   const [allUnits, setAllUnits] = React.useState([]);
   const [allMaterials, setAllMaterials] = React.useState([]);
 
+  const [recipeTab, setRecipeTab] = React.useState("");
+
   const [refresh, setRefresh] = React.useState(0);
   const handleRefresh = () => setRefresh((state) => state + 1);
 
@@ -61,6 +63,28 @@ export const IngredientPage = () => {
     }
   };
 
+  const handleTypeBusiness = async () => {
+    try {
+      const localData = JSON.parse(localStorage.getItem("user_info"));
+
+      let nameRecipeTab;
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/business/${localData.business_id}`
+      );
+      if (data.data.business_type_id == 1) nameRecipeTab = "assembly";
+      if (data.data.business_type_id == 2) nameRecipeTab = "recipe";
+      if (data.data.business_type_id == 3) nameRecipeTab = "assembly";
+
+      console.log("nameRecipeTab", nameRecipeTab);
+
+      setRecipeTab(nameRecipeTab);
+
+      console.log();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   React.useEffect(() => {
     getCategories();
     getUnits();
@@ -69,6 +93,7 @@ export const IngredientPage = () => {
   React.useEffect(() => {
     getOutlet();
     getMaterial();
+    handleTypeBusiness();
   }, []);
 
   return (
@@ -84,7 +109,7 @@ export const IngredientPage = () => {
         />
       </Tab>
 
-      <Tab eventKey="recipe" title={t("recipe")}>
+      <Tab eventKey="recipe" title={t(recipeTab)}>
         <RecipeTab
           t={t}
           allOutlets={allOutlets}

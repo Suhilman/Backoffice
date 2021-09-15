@@ -31,7 +31,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
   const [photo, setPhoto] = React.useState("");
   const [photoPreview, setPhotoPreview] = React.useState("");
   const [alertPhoto, setAlertPhoto] = React.useState("");
-  const [idMethod, setIdMethod] = React.useState(null)
+  const [idMethod, setIdMethod] = React.useState(null);
   const [allOutlets, setAllOutlets] = React.useState([]);
 
   const [allPaymentMethods, setAllPaymentMethods] = React.useState([]);
@@ -49,7 +49,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/outlet`);
-      console.log("get outlets", data.data)
+      console.log("get outlets paymentTab", data.data);
       setAllOutlets(data.data);
     } catch (err) {
       console.log(err);
@@ -59,7 +59,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
   const handleSelectOutlet = (value, formik) => {
     if (value) {
       const outlet = value.map((item) => item.value);
-      console.log("outletnya", outlet)
+      console.log("outletnya", outlet);
       formik.setFieldValue("outlet_id", outlet);
     } else {
       formik.setFieldValue("outlet_id", []);
@@ -74,22 +74,25 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       const { data } = await axios.get(
         `${API_URL}/api/v1/payment-method${filterPayment}`
       );
-      console.log("${API_URL}/api/v1/payment-method${filterPayment}", data.data)
+      console.log(
+        "${API_URL}/api/v1/payment-method${filterPayment}",
+        data.data
+      );
       setAllPaymentMethods(data.data);
     } catch (err) {
       setAllPaymentMethods([]);
     }
   };
   const refreshDelete = () => {
-    console.log("refresh delete")
-    setPhotoPreview("")
-    setPhoto("")
-  }
+    console.log("refresh delete");
+    setPhotoPreview("");
+    setPhoto("");
+  };
   const getPaymentMethodTypes = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/payment-method-type`);
-      console.log("${API_URL}/api/v1/payment-method-type", data.data)
+      console.log("${API_URL}/api/v1/payment-method-type", data.data);
       setAllTypes(data.data);
     } catch (err) {
       console.log(err);
@@ -102,8 +105,8 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
 
   React.useEffect(() => {
     getPaymentMethodTypes();
-    getOutlets()
-  }, []);
+    getOutlets();
+  }, [refresh]);
 
   const handleSearch = (e) => setSearch(e.target.value);
   const handleFilter = (e) => {
@@ -145,7 +148,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
     initialValues: initialValuePaymentCreate,
     validationSchema: PaymentSchemaCreate,
     onSubmit: async (values) => {
-      console.log("values tambah", values)
+      console.log("values tambah", values);
       const paymentMethodData = new FormData();
       paymentMethodData.append("name", values.name);
       paymentMethodData.append(
@@ -160,7 +163,10 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       const API_URL = process.env.REACT_APP_API_URL;
       try {
         enableLoading();
-        await axios.post(`${API_URL}/api/v1/payment-method/create-development`, paymentMethodData);
+        await axios.post(
+          `${API_URL}/api/v1/payment-method/create-development`,
+          paymentMethodData
+        );
         handleRefresh();
         disableLoading();
         cancelAddModalPayment();
@@ -208,7 +214,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       );
       paymentMethodData.append("mdr", values.mdr);
       paymentMethodData.append("status", values.status);
-      paymentMethodData.append("outlet_id", values.outlet_id)
+      paymentMethodData.append("outlet_id", values.outlet_id);
       if (photo) paymentMethodData.append("qrImage", photo);
 
       const API_URL = process.env.REACT_APP_API_URL;
@@ -258,20 +264,20 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
   };
 
   const showAddModalPayment = (data) => {
-    setStateAddModal(true)
-    setState("Create")
+    setStateAddModal(true);
+    setState("Create");
   };
   const cancelAddModalPayment = () => {
     formikPayment.resetForm();
     setPhoto("");
     setPhotoPreview("");
     setStateAddModal(false);
-    setState("")
+    setState("");
   };
 
   const showEditModalPayment = (data) => {
-    console.log("data yang mau di edit", data)
-    setState("Edit")
+    console.log("data yang mau di edit", data);
+    setState("Edit");
     formikPaymentEdit.setValues({
       id: data.id,
       name: data.name,
@@ -284,7 +290,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
 
     if (data.qr_image) {
       const API_URL = process.env.REACT_APP_API_URL;
-      setIdMethod(data.id)
+      setIdMethod(data.id);
       setPhoto(`${API_URL}${data.qr_image}`);
       setPhotoPreview(`${API_URL}${data.qr_image}`);
     }
@@ -296,7 +302,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
     setPhoto("");
     setPhotoPreview("");
     setStateEditModal(false);
-    setState("")
+    setState("");
   };
   const showDeleteModalPayment = (data) => {
     formikPayment.setFieldValue("id", data.id);
@@ -355,16 +361,16 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
 
     if (file.length) {
       const reader = new FileReader();
-      reader.onload = () =>{
-        if(reader.readyState === 2){
-          console.log("reader.result", reader.result)
+      reader.onload = () => {
+        if (reader.readyState === 2) {
+          console.log("reader.result", reader.result);
           setPhotoPreview(reader.result);
         }
-      }
-      reader.readAsDataURL(file[0])
+      };
+      reader.readAsDataURL(file[0]);
       img = file[0];
-      console.log("img", img)
-      setPhoto(img)
+      console.log("img", img);
+      setPhoto(img);
     } else {
       preview = "";
       setAlertPhoto("file is too large or not supported");
@@ -469,7 +475,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
     });
   };
 
-  console.log("allPaymentMethods", allPaymentMethods)
+  console.log("allPaymentMethods", allPaymentMethods);
 
   return (
     <Row>
@@ -537,7 +543,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
                 style={{ marginLeft: "0.5rem" }}
                 onClick={showAddModalPayment}
               >
-                  {t("addNewPaymentMethod")}
+                {t("addNewPaymentMethod")}
               </Button>
             </div>
           </div>
