@@ -166,12 +166,12 @@ export function UserProfileDropdown() {
       no: 2,
       key: "en",
       language: "English"
-    },
-    {
-      no: 3,
-      key: "cn",
-      language: "Chinese"
     }
+    // {
+    //   no: 3,
+    //   key: "cn",
+    //   language: "Chinese"
+    // }
   ];
 
   const { t, i18n } = useTranslation();
