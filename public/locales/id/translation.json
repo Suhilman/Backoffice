@@ -920,5 +920,6 @@
   "areYouSureWantToAddOutcomingStock": "Apakah Anda yakin ingin menambah stok yang keluar?",
   "endDateMustBeGreaterThanTheStartDate": "tanggal akhir harus lebih besar dari tanggal mulai",
   "applyMultiply": "Terapkan Kalikan",
-  "assembly": "Perakitan"
+  "assembly": "Perakitan",
+  "salesChannel": "Saluran Penjualan"
 }

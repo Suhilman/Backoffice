@@ -20,6 +20,7 @@ import accountIcon from "../../../../../images/icons8-search-account-256.png";
 import commissionIcon from "../../../../../images/icons8-sales-performance-52.png";
 import subscriptionIcon from "../../../../../images/icons8-subscription-100.png";
 import paymentIcon from "../../../../../images/icons8-mobile-payment-90.png";
+import paymentSalesChannel from "../../../../../images/icons8-sales-64.png";
 import aboutIcon from "../../../../../images/icons8-about-500.png";
 import axios from "axios";
 
@@ -572,6 +573,15 @@ function AsideMenuList(props) {
               <img src={paymentIcon} alt="Icon Payment" />
             </div>
             <span className="menu-text">{t("payment")}</span>
+          </NavLink>
+        </li>
+
+        <li className={`menu-item ${getMenuItemActive("/sales-channel", false)}`}>
+          <NavLink className="menu-link" to="/sales-channel">
+            <div className="wrapper-icon">
+              <img src={paymentSalesChannel} alt="Icon Sales Channel" />
+            </div>
+            <span className="menu-text">{t("salesChannel")}</span>
           </NavLink>
         </li>
 

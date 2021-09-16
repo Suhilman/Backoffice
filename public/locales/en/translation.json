@@ -920,5 +920,6 @@
     "areYouSureWantToAddOutcomingStock": "Are You Sure Want To Add Outoming Stock?",
     "endDateMustBeGreaterThanTheStartDate": "end date must be greater than the start date",
     "applyMultiply": "Apply Multiply",
-    "assembly": "Assembly"
+    "assembly": "Assembly",
+    "salesChannel": "Sales Channel"
 }

@@ -66,6 +66,7 @@ import AddGroupCommission from "./pages/Commission/AddGroupCommission"
 import EditGroupCommission from "./pages/Commission/EditGroupCommission"
 import NotificationExpired from "./components/NotificationExpired"
 import About from "./pages/About/AboutPage"
+import { SalesChannelPage } from './pages/SalesChannel/SalesChannelPage'
 
 export default function BasePage() {
   const [currPrivileges, setCurrPrivileges] = React.useState({
@@ -82,7 +83,8 @@ export default function BasePage() {
     commission_management: false,
     subscription: true,
     payment_module: true,
-    about: true
+    about: true,
+    sales_channel: true
   });
 
   const localData = JSON.parse(localStorage.getItem("user_info"));
@@ -572,6 +574,14 @@ export default function BasePage() {
           exact={false}
           path="/about"
           component={About}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.sales_channel}
+          isRoute={true}
+          exact={false}
+          path="/sales-channel"
+          component={SalesChannelPage}
         />
 
         <ContentRoute path="/account" component={AccountPage} />
