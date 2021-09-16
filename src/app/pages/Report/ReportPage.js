@@ -68,18 +68,7 @@ export const ReportPage = () => {
   const [stateCustom, setStateCustom] = React.useState(false);
   const [status, setStatus] = React.useState("");
   const { t } = useTranslation();
-
-  const handleFilename = (date) => {
-    const day = date.split("-")[2]
-    const toInt = parseInt(day) - 1
-    const result = `${date.split("-")[0]}-${date.split("-")[1]}-${toInt}`
-    setEndDateFilename(result)
-  }
-
-  React.useEffect(() => {
-    handleFilename(endDate)
-  }, [endDate])
-
+  
   const tabData = [
     {
       no: 1,
@@ -304,6 +293,10 @@ export const ReportPage = () => {
         .add(1, "days")
         .format("YYYY-MM-DD")
     );
+    setEndDateFilename(
+      dayjs(endRange)
+      .format("YYYY-MM-DD")
+    )
     setStateCustom(false);
   };
 
