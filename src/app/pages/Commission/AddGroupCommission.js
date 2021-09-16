@@ -131,7 +131,7 @@ const AddGroupCommission = ({location}) => {
   });
 
   const optionsStaff = allStaff.map((value) => {
-    if(value.outlet_id === formikCommission.values.outlet_id) {
+    if(parseInt(value.outlet_id) === formikCommission.values.outlet_id) {
       return value
     } else {
       return ""
@@ -144,7 +144,7 @@ const AddGroupCommission = ({location}) => {
   )
 
   const optionsProduct = allProducts.map((value) => {
-    if(value.outlet_id === formikCommission.values.outlet_id) {
+    if(parseInt(value.outlet_id) === formikCommission.values.outlet_id) {
       return value
     } else {
       return ""

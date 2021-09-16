@@ -194,7 +194,7 @@ const EditGroupCommission = ({location, match}) => {
 
 
   const optionsStaff = allStaff.map((value) => {
-    if(value.outlet_id === formikCommission.values.outlet_id) {
+    if(parseInt(value.outlet_id) === formikCommission.values.outlet_id) {
       return value
     } else {
       return ""
@@ -214,7 +214,7 @@ const EditGroupCommission = ({location, match}) => {
     (value) => value.label === type_total )
 
   const optionsProduct = allProducts.map((value) => {
-    if(value.outlet_id === formikCommission.values.outlet_id) {
+    if(parseInt(value.outlet_id) === formikCommission.values.outlet_id) {
       return value
     } else {
       return ""

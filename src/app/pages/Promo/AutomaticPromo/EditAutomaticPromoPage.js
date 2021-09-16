@@ -306,6 +306,7 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
       }
 
       try {
+        console.log("formData", formData)
         enableLoading();
         await axios.put(
           `${API_URL}/api/v1/automatic-promo/update-development/${promoId}`,
@@ -314,6 +315,7 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
         disableLoading();
         history.push("/promo/automatic-promo");
       } catch (err) {
+        console.log("err update", err)
         setAlert(err.response?.data.message || err.message);
         disableLoading();
       }
