@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 // import { Search } from "@material-ui/icons";
 // import useDebounce from "../../hooks/useDebounce";
 
-const StockReport = ({ selectedOutlet, startDate, endDate }) => {
+const StockReport = ({ selectedOutlet, startDate, endDate, endDateFilename }) => {
   // const [alert, setAlert] = React.useState("");
   // const [loading, setLoading] = React.useState(false);
   const { t } = useTranslation();
@@ -224,7 +224,7 @@ const StockReport = ({ selectedOutlet, startDate, endDate }) => {
           <thead>
             <tr>
               <th>{t("date")}</th>
-              <td>{`${startDate} - ${endDate}`}</td>
+              <td>{`${startDate} - ${endDateFilename}`}</td>
             </tr>
           </thead>
           <tbody>

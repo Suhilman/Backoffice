@@ -13,7 +13,8 @@ export const TransactionHistoryTab = ({
   startDate,
   endDate,
   status,
-  refresh
+  refresh,
+  endDateFilename
 }) => {
   const [allTransactions, setAllTransactions] = React.useState([]);
   const [currency, setCurrency] = React.useState("")
@@ -229,7 +230,7 @@ export const TransactionHistoryTab = ({
             <tr>
               <th>{t("date")}</th>
               <td>
-                {startDate} - {endDate}
+                {startDate} - {endDateFilename}
               </td>
             </tr>
             <tr>

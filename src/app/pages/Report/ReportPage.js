@@ -581,6 +581,7 @@ export const ReportPage = () => {
                     selectedOutlet={selectedOutlet}
                     startDate={startDate}
                     endDate={endDate}
+                    endDateFilename={endDateFilename}
                     startTime={startTime}
                     endTime={endTime}
                     status={status}

@@ -7,7 +7,7 @@ import DataTable from "react-data-table-component";
 
 import "../style.css";
 
-export const AttendanceTab = ({ selectedOutlet, startDate, endDate }) => {
+export const AttendanceTab = ({ selectedOutlet, startDate, endDate, endDateFilename }) => {
   const [allAttendances, setAllAttendances] = React.useState([]);
   const [reports, setReports] = React.useState([
     {
@@ -187,7 +187,7 @@ export const AttendanceTab = ({ selectedOutlet, startDate, endDate }) => {
             <tr>
               <th>{t("date")}</th>
               <td>
-                {startDate} - {endDate}
+                {startDate} - {endDateFilename}
               </td>
             </tr>
           </thead>

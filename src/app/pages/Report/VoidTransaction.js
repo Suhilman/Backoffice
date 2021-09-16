@@ -7,7 +7,7 @@ import "../style.css";
 import { Table } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
-const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
+const VoidTransaction = ({ selectedOutlet, startDate, endDate, endDateFilename }) => {
   const { t } = useTranslation();
   const [voidTransaction, setVoidTransaction] = useState([]);
   const [currency, setCurrency] = React.useState("")
@@ -138,7 +138,7 @@ const VoidTransaction = ({ selectedOutlet, startDate, endDate }) => {
           <thead>
             <tr>
               <th>{t("date")}</th>
-              <td>{`${startDate} - ${endDate}`}</td>
+              <td>{`${startDate} - ${endDateFilename}`}</td>
             </tr>
           </thead>
           <tbody>

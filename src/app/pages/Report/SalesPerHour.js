@@ -14,7 +14,8 @@ const SalesPerHour = ({
   startTime,
   endTime,
   refresh,
-  showMdr
+  showMdr,
+  endDateFilename
 }) => {
   const [salesPerHour, setSalesPerHour] = useState([]);
   const [currency, setCurrency] = React.useState("")
@@ -230,7 +231,7 @@ const SalesPerHour = ({
           <thead>
             <tr>
               <th>Tanggal</th>
-              <td>{`${startDate} - ${endDate}`}</td>
+              <td>{`${startDate} - ${endDateFilename}`}</td>
             </tr>
           </thead>
           <tbody>

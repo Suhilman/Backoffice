@@ -6,7 +6,7 @@ import rupiahFormat from "rupiah-format";
 import { useTranslation } from "react-i18next";
 import "../style.css";
 import NumberFormat from 'react-number-format'
-export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate }) => {
+export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate, endDateFilename }) => {
   const [allPromoSales, setAllPromoSales] = React.useState([]);
   const { t } = useTranslation();
   const [currency, setCurrency] = React.useState("")
@@ -253,7 +253,7 @@ export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate }) => {
           <thead>
             <tr>
               <th>{t("date")}</th>
-              <td>{`${startDate} - ${endDate}`}</td>
+              <td>{`${startDate} - ${endDateFilename}`}</td>
             </tr>
           </thead>
           <tbody>

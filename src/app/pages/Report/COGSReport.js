@@ -6,7 +6,7 @@ import NumberFormat from 'react-number-format'
 import "../style.css";
 import { Table } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-const COGSReport = ({ selectedOutlet, startDate, endDate }) => {
+const COGSReport = ({ selectedOutlet, startDate, endDate, endDateFilename }) => {
   const { t } = useTranslation();
   const [currency, setCurrency] = React.useState("")
   const handleCurrency = async () => {
@@ -142,7 +142,7 @@ const COGSReport = ({ selectedOutlet, startDate, endDate }) => {
           <thead>
             <tr>
               <th>{t("date")}</th>
-              <td>{`${startDate} - ${endDate}`}</td>
+              <td>{`${startDate} - ${endDateFilename}`}</td>
             </tr>
           </thead>
           <tbody>

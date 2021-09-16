@@ -6,7 +6,7 @@ import NumberFormat from 'react-number-format'
 import "../style.css";
 import { Table } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-const ProfitReport = ({ selectedOutlet, startDate, endDate }) => {
+const ProfitReport = ({ selectedOutlet, startDate, endDate, endDateFilename }) => {
   const { t } = useTranslation();
   const [profitReport, setProfitReport] = useState([]);
   const [currency, setCurrency] = React.useState("")
@@ -147,7 +147,7 @@ const ProfitReport = ({ selectedOutlet, startDate, endDate }) => {
           <thead>
             <tr>
               <th>{t("date")}</th>
-              <td>{`${startDate} - ${endDate}`}</td>
+              <td>{`${startDate} - ${endDateFilename}`}</td>
             </tr>
           </thead>
           <tbody>

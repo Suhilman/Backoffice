@@ -7,7 +7,7 @@ import NumberFormat from 'react-number-format'
 import { useTranslation } from "react-i18next";
 import "../style.css";
 
-export const RecapTab = ({ selectedOutlet, startDate, endDate }) => {
+export const RecapTab = ({ selectedOutlet, startDate, endDate, endDateFilename }) => {
   const [allRecaps, setAllRecaps] = React.useState([]);
   const { t } = useTranslation();
   const [currency, setCurrency] = React.useState("")
@@ -153,7 +153,7 @@ export const RecapTab = ({ selectedOutlet, startDate, endDate }) => {
           <thead>
             <tr>
               <th>{t("date")}</th>
-              <td>{`${startDate} - ${endDate}`}</td>
+              <td>{`${startDate} - ${endDateFilename}`}</td>
             </tr>
           </thead>
           <tbody>

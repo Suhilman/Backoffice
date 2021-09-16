@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import "../style.css";
 import NumberFormat from 'react-number-format'
 
-export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate, refresh }) => {
+export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate, refresh, endDateFilename }) => {
   const [allTransactions, setAllTransactions] = React.useState([]);
   const [currency, setCurrency] = React.useState("")
 
@@ -440,7 +440,7 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate, refresh })
           <thead>
             <tr>
               <th>{t("date")}</th>
-              <td>{`${startDate} - ${endDate}`}</td>
+              <td>{`${startDate} - ${endDateFilename}`}</td>
             </tr>
           </thead>
           <tbody>

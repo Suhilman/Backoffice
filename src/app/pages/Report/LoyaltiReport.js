@@ -4,7 +4,7 @@ import { Row, Col, ListGroup } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import dayjs from "dayjs";
 
-const LoyaltiReport = ({selectedOutlet, startDate, endDate}) => {
+const LoyaltiReport = ({selectedOutlet, startDate, endDate, endDateFilename}) => {
      const kolom = [
        "No",
        "Nama Produk",
@@ -53,7 +53,7 @@ const LoyaltiReport = ({selectedOutlet, startDate, endDate}) => {
           <thead>
             <tr>
               <th>Tanggal</th>
-              <td>{`${startDate} - ${endDate}`}</td>
+              <td>{`${startDate} - ${endDateFilename}`}</td>
             </tr>
           </thead>
           <tbody>
