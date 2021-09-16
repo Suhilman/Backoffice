@@ -172,7 +172,7 @@ const InventoryIngredientTab = ({
         stock_id: values.stock_id,
         is_sold: values.is_sold
       };
-      // console.log('data edit', materialData)
+      console.log('data edit', materialData)
       try {
         const API_URL = process.env.REACT_APP_API_URL;
         enableLoading();
@@ -254,7 +254,8 @@ const InventoryIngredientTab = ({
       raw_material_category_id: data.raw_material_category_id,
       stock: data.stock,
       unit_id: data.unit_id,
-      price_per_unit: data.stocks[0].price_per_unit,
+      // price_per_unit: data.stocks[0].price_per_unit,
+      price_per_unit: data.price_per_unit,
       calorie_per_unit: data.calorie_per_unit,
       calorie_unit: data.calorie_unit,
       notes: data.notes,
@@ -373,7 +374,8 @@ const InventoryIngredientTab = ({
       notes: item.notes,
       stock_id: stock_initial ? stock_initial.id : "",
       stocks: item.Stocks,
-      is_sold: item.Product ? true : false
+      is_sold: item.Product ? true : false,
+      price_per_unit: item.price_per_unit
     };
   });
 

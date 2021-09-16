@@ -35,6 +35,7 @@ export const IngredientPage = () => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/raw-material`);
+      console.log("getMaterial", data.data)
       setAllMaterials(data.data);
     } catch (err) {
       setAllMaterials([]);
