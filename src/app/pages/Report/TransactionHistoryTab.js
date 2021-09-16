@@ -122,7 +122,7 @@ export const TransactionHistoryTab = ({
       width: "50px"
     },
     {
-      name: `${t("receiptID")}`,
+      name: `${t("receiptId")}`,
       selector: "receipt_id",
       sortable: true
     },
