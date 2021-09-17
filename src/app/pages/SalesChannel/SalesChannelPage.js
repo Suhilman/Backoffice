@@ -49,13 +49,17 @@ export const SalesChannelPage = () => {
     setShowModal(true)
   }
 
+  const handleOpenModal = () => setShowModal(true)
+
   return (
     <>
     <ModalSalesChannel 
       show={showModal}
-      handleClose={handleClose}
+      close={handleClose}
       platform={platform}
       t={t}
+      outletId={outletId}
+      handleOpenModal={handleOpenModal}
     />
       <Paper elevation={2} style={{ padding: "1rem", height: "fit-content" }}>
         <div className="headerPage mb-5">
@@ -152,14 +156,6 @@ export const SalesChannelPage = () => {
               </Row>
               <Row style={{marginBottom: '30px'}}>
                 <Col className="d-flex align-items-end">
-                  <div className={styles.containerZilingo}>
-                    <div
-                      className={`${styles.wrapperZilingo} ${styles.hoverEffect}`}
-                      onClick={() => handlePlatform("Zilingo")}
-                    >
-                      <img src={logoZilingo} alt="Logo Zilingo" />
-                    </div>
-                  </div>
                   <div className={styles.containerZalora}>
                     <div
                       className={`${styles.wrapperZalora} ${styles.hoverEffect}`}
@@ -167,6 +163,14 @@ export const SalesChannelPage = () => {
                     >
                       <img src={logoZalora} alt="Logo Zalora" />
                     </div>
+                  </div>
+                  <div className={styles.containerZilingo}>
+                    {/* <div
+                      className={`${styles.wrapperZilingo} ${styles.hoverEffect}`}
+                      onClick={() => handlePlatform("Zilingo")}
+                    >
+                      <img src={logoZilingo} alt="Logo Zilingo" />
+                    </div> */}
                   </div>
                   <div></div>
                 </Col>

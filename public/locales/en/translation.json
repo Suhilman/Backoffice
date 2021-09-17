@@ -924,5 +924,6 @@
     "salesChannel": "Sales Channel",
     "addAccount": "Add Account",
     "enterYourDomainNameIn": "Enter your domain name in",
-    "enterNewAccount": "Enter new account"
+    "enterNewAccount": "Enter new account",
+    "successfullyAddedAccountPleaseWaitForLeverageByBeetpos": "Successfully added account, please wait for leverage by beetpos"
 }

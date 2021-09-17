@@ -924,5 +924,6 @@
   "salesChannel": "Saluran Penjualan",
   "addAccount": "Tambah Akun",
   "enterYourDomainNameIn": "Masukkan nama domain anda di",
-  "enterNewAccount": "Masukkan akun baru"
+  "enterNewAccount": "Masukkan akun baru",
+  "successfullyAddedAccountPleaseWaitForLeverageByBeetpos": "Berhasil tambahkan akun, mohon menunggu verifikasi oleh beetpos"
 }

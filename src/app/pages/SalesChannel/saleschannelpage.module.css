@@ -111,3 +111,16 @@
 .box:hover{
   transform: scale(1.02);
 }
+
+.wrapperAccount{
+  font-weight: 600;
+  text-align: center;
+  padding: 15px;
+  border-radius: 5px;
+  background-color: rgb(231, 231, 231);
+  cursor: pointer;
+}
+.wrapperAccount:hover{
+  transform: scale(1.02);
+  box-shadow: 0 8px 6px -4px rgb(209, 209, 209);
+}

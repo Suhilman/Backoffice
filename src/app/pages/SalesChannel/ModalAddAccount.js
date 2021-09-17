@@ -1,13 +1,10 @@
 import React, {useState} from "react";
 import { Modal, Button, Spinner, Form, Row, Col, Alert } from "react-bootstrap";
 import styles from "./saleschannelpage.module.css";
+import axios from 'axios'
 
-const ModalAddAccount = ({ showPlatform, closePlatform, platform, t }) => {
-  const [account, setAccount] = useState("")
-
-  const handleSave = () => {
-    console.log("Akun nya", account)
-  }
+const ModalAddAccount = ({ showPlatform, closePlatform, platform, t, handleSave,handleAccountName }) => {
+  const API_URL = process.env.REACT_APP_API_URL;
   return (
     <div>
       <Modal show={showPlatform} onHide={closePlatform}>
@@ -23,7 +20,7 @@ const ModalAddAccount = ({ showPlatform, closePlatform, platform, t }) => {
               placeholder={t("enterNewAccount")}
               name="add_account"
               required
-              onChange={(e) => setAccount(e.target.value)}
+              onChange={(e) => handleAccountName(e.target.value)}
             />
           </Form.Group>
           {/* <div className="d-flex justify-content-end">
