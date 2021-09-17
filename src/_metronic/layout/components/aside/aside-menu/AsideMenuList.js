@@ -42,6 +42,7 @@ function AsideMenuList(props) {
   const [managementSections, setManagementSections] = React.useState([]);
 
   const [kitchenModul, setKitchenModul] = React.useState("");
+  const [showIntegrate, setShowIntegrate] = React.useState(false)
 
   const location = useLocation();
   const getMenuItemActive = (url, hasSubmenu = false) => {
@@ -64,6 +65,7 @@ function AsideMenuList(props) {
 
       console.log("nameKithcenModul", nameKithcenModul);
 
+      setShowIntegrate(data.data.ecommerce_integrate)
       setKitchenModul(nameKithcenModul);
 
       console.log();
@@ -576,14 +578,16 @@ function AsideMenuList(props) {
           </NavLink>
         </li>
 
-        <li className={`menu-item ${getMenuItemActive("/sales-channel", false)}`}>
-          <NavLink className="menu-link" to="/sales-channel">
-            <div className="wrapper-icon">
-              <img src={paymentSalesChannel} alt="Icon Sales Channel" />
-            </div>
-            <span className="menu-text">{t("salesChannel")}</span>
-          </NavLink>
-        </li>
+        {showIntegrate ? (
+          <li className={`menu-item ${getMenuItemActive("/sales-channel", false)}`}>
+            <NavLink className="menu-link" to="/sales-channel">
+              <div className="wrapper-icon">
+                <img src={paymentSalesChannel} alt="Icon Sales Channel" />
+              </div>
+              <span className="menu-text">{t("salesChannel")}</span>
+            </NavLink>
+          </li>) 
+        : null }
 
         <li className={`menu-item ${getMenuItemActive("/about", false)}`}>
           <NavLink className="menu-link" to="/about">

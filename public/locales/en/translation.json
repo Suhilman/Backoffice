@@ -921,5 +921,8 @@
     "endDateMustBeGreaterThanTheStartDate": "end date must be greater than the start date",
     "applyMultiply": "Apply Multiply",
     "assembly": "Assembly",
-    "salesChannel": "Sales Channel"
+    "salesChannel": "Sales Channel",
+    "addAccount": "Add Account",
+    "enterYourDomainNameIn": "Enter your domain name in",
+    "enterNewAccount": "Enter new account"
 }

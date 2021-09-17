@@ -921,5 +921,8 @@
   "endDateMustBeGreaterThanTheStartDate": "tanggal akhir harus lebih besar dari tanggal mulai",
   "applyMultiply": "Terapkan Kalikan",
   "assembly": "Perakitan",
-  "salesChannel": "Saluran Penjualan"
+  "salesChannel": "Saluran Penjualan",
+  "addAccount": "Tambah Akun",
+  "enterYourDomainNameIn": "Masukkan nama domain anda di",
+  "enterNewAccount": "Masukkan akun baru"
 }
