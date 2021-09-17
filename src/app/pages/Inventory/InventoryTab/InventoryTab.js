@@ -101,6 +101,7 @@ const InventoryTab = ({ refresh, t }) => {
   ];
 
   const dataInventory = inventory.map((item, index) => {
+    console.log("item apa saja", item)
     let adjusment = 0;
     let incoming_stock = 0;
     let outcoming_stock = 0;
@@ -138,13 +139,16 @@ const InventoryTab = ({ refresh, t }) => {
       incoming_stock,
       outcoming_stock,
       adjusment,
-      stocks: item.Stocks
+      stocks: item.Stocks,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt
     };
   });
 
   const ExpandableComponent = ({ data }) => {
     const stockData = data.stocks.map((item) => {
       return {
+        id: item.id,
         batch: item.Incoming_Stock
           ? item.Incoming_Stock.code
           : item.Transfer_Stock
@@ -157,6 +161,8 @@ const InventoryTab = ({ refresh, t }) => {
           : "-"
       };
     });
+    stockData.sort((a,b)=>a.id-b.id);
+    console.log("stockData", stockData)
 
     return (
       <>
