@@ -184,8 +184,7 @@ export const AddProductPage = ({ location }) => {
         formData.append("max_range", values.max_range);
       }
 
-      if (values.groupAddons.length)
-        formData.append("groupAddons", JSON.stringify(values.groupAddons));
+      if (values.groupAddons.length) formData.append("groupAddons", JSON.stringify(values.groupAddons));
       if (values.barcode) formData.append("barcode", values.barcode);
       if (values.sku) formData.append("sku", values.sku);
       if (values.description)
@@ -248,7 +247,8 @@ export const AddProductPage = ({ location }) => {
   };
 
   const cancelModalAddons = () => {
-    if (!formikProduct.values.groupAddons.length) {
+    // if (!formikProduct.values.groupAddons.length) {
+    if (!savedAddons.group_name || !savedAddons.group_type || !savedAddons.addons[0].name || !savedAddons.addons[0].price) {
       formikProduct.setFieldValue("groupAddons", []);
     } else {
       formikProduct.setFieldValue("groupAddons", savedAddons);
