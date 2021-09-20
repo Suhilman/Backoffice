@@ -124,3 +124,14 @@
   transform: scale(1.02);
   box-shadow: 0 8px 6px -4px rgb(209, 209, 209);
 }
+
+.inputAccountName{
+  width: 100%;
+  border: none;
+  background-color: rgb(231, 231, 231);
+  text-align: center;
+}
+
+.inputAccountName:focus{
+  outline: none;
+}

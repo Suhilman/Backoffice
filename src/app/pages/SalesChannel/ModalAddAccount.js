@@ -28,7 +28,7 @@ const ModalAddAccount = ({ showPlatform, closePlatform, platform, t, handleSave,
           </div> */}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={handleSave}>
+          <Button variant="primary" onClick={() => handleSave(false)}>
           {t('addAccount')}
           </Button>
         </Modal.Footer>

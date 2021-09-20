@@ -37,7 +37,6 @@ const ModalSalesChannel = ({ show, close, platform, t, outletId, handleOpenModal
     console.log("handleClose")
     setAccountName("")
     setHasAccount(false)
-    handleRefresh()
     close()
   }
 
@@ -74,11 +73,17 @@ const ModalSalesChannel = ({ show, close, platform, t, outletId, handleOpenModal
     handleOutletId(outletId, platform);
   }, [outletId, platform, refresh]);
 
-  const handleSave = async () => {
+  const handleSave = async (name) => {
     try {
+      let currAccount;
+      if (name) {
+        currAccount = name
+      } else {
+        currAccount = account
+      }
       const lowerCase = platform.toLowerCase() + "_url";
       await axios.put(`${API_URL}/api/v1/sales-channel/${outletId}`,{
-        [lowerCase]: account
+        [lowerCase]: currAccount
       })
       toast.success(t('successfullyAddedAccountPleaseWaitForLeverageByBeetpos'), {
         position: "top-right",
@@ -97,6 +102,10 @@ const ModalSalesChannel = ({ show, close, platform, t, outletId, handleOpenModal
     }
   }
   
+  const handleupdate = (name) => {
+    handleSave(name)
+  }
+
   const handleAccountName = (name) => setAccount(name)
 
   return (
@@ -118,7 +127,10 @@ const ModalSalesChannel = ({ show, close, platform, t, outletId, handleOpenModal
         <Modal.Body>
           {hasAccount ? (
             <div className={styles.wrapperAccount}>
-              {accountName}
+              <>
+              <input className={styles.inputAccountName} type="text" defaultValue={accountName} onBlur={(e) => handleupdate(e.target.value)}/>
+              {/* {accountName} */}
+              </>
             </div>
           ) : (
             <div className={styles.box} onClick={openPlatform}>
