@@ -18,7 +18,8 @@ const RecipeTab = ({
   allCategories,
   refresh,
   handleRefresh,
-  t
+  t,
+  totalRecipePrice
 }) => {
   const [alert, setAlert] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -118,7 +119,7 @@ const RecipeTab = ({
       sortable: true
     },
     {
-      name: `${t("totalRecipePrice")}`,
+      name: `${t(totalRecipePrice)}`,
       selector: "total_recipe_price",
       sortable: true
     },

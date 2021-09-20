@@ -17,6 +17,7 @@ export const IngredientPage = () => {
   const [allMaterials, setAllMaterials] = React.useState([]);
 
   const [recipeTab, setRecipeTab] = React.useState("");
+  const [totalRecipePrice, setTotalRecipePrice] = React.useState(null);
 
   const [refresh, setRefresh] = React.useState(0);
   const handleRefresh = () => setRefresh((state) => state + 1);
@@ -69,15 +70,26 @@ export const IngredientPage = () => {
       const localData = JSON.parse(localStorage.getItem("user_info"));
 
       let nameRecipeTab;
+      let totalRecipePrice;
       const { data } = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/v1/business/${localData.business_id}`
       );
-      if (data.data.business_type_id == 1) nameRecipeTab = "assembly";
-      if (data.data.business_type_id == 2) nameRecipeTab = "recipe";
-      if (data.data.business_type_id == 3) nameRecipeTab = "assembly";
+      if (data.data.business_type_id == 1) {
+        nameRecipeTab = "assembly";
+        totalRecipePrice = "totalAssemblyPrice"
+      }
+      if (data.data.business_type_id == 2) {
+        nameRecipeTab = "recipe";
+        totalRecipePrice = "totalRecipePrice"
+      }
+      if (data.data.business_type_id == 3) {
+        nameRecipeTab = "assembly";
+        totalRecipePrice = "totalAssemblyPrice"
+      }
 
       console.log("nameRecipeTab", nameRecipeTab);
 
+      setTotalRecipePrice(totalRecipePrice)
       setRecipeTab(nameRecipeTab);
 
       console.log();
@@ -119,6 +131,7 @@ export const IngredientPage = () => {
           allCategories={allCategories}
           refresh={refresh}
           handleRefresh={handleRefresh}
+          totalRecipePrice={totalRecipePrice}
         />
       </Tab>
 
