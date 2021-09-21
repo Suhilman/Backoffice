@@ -16,7 +16,7 @@ import useDebounce from "../../../hooks/useDebounce";
 
 import "../../style.css";
 
-export const SalesTypeTab = ({ handleRefresh, refresh, t }) => {
+export const SalesTypeTab = ({ handleRefresh, refresh, t, optionsEcommerce, showOptionEcommerce }) => {
   const [loading, setLoading] = React.useState(false);
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
@@ -55,6 +55,7 @@ export const SalesTypeTab = ({ handleRefresh, refresh, t }) => {
 
   const initialValueSalesType = {
     name: "",
+    ecommerce_name: "",
     require_table: false,
     is_booking: false,
     is_delivery: false,
@@ -185,10 +186,10 @@ export const SalesTypeTab = ({ handleRefresh, refresh, t }) => {
   };
 
   const showEditModalSalesType = (data) => {
-    console.log("showEditModalSalesType", data)
     formikSalesTypeEdit.setValues({
       id: data.id,
       name: data.name,
+      ecommerce_name: data.ecommerce_name,
       require_table: data.require_table,
       is_booking: data.is_booking,
       is_delivery: data.is_delivery,
@@ -286,6 +287,7 @@ export const SalesTypeTab = ({ handleRefresh, refresh, t }) => {
         id: item.id,
         no: index + 1,
         name: item.name,
+        ecommerce_name: item.ecommerce,
         require_table: item.require_table,
         is_booking: item.is_booking,
         is_delivery: item.is_delivery,
@@ -308,6 +310,8 @@ export const SalesTypeTab = ({ handleRefresh, refresh, t }) => {
         alert={alert}
         hidden={hidden}
         handleHidden={handleHidden}
+        showOptionEcommerce={showOptionEcommerce}
+        optionsEcommerce={optionsEcommerce}
       />
 
       <ModalSalesType
@@ -323,6 +327,8 @@ export const SalesTypeTab = ({ handleRefresh, refresh, t }) => {
         alert={alert}
         hidden={hidden}
         handleHidden={handleHidden}
+        showOptionEcommerce={showOptionEcommerce}
+        optionsEcommerce={optionsEcommerce}
       />
 
       <ShowConfirmModal

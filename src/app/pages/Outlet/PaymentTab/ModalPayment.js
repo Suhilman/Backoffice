@@ -1,5 +1,5 @@
 import React from "react";
-import axios from 'axios'
+import axios from "axios";
 import Select from "react-select";
 
 import {
@@ -33,7 +33,9 @@ const ModalPayment = ({
   idMethod,
   allOutlets,
   handleSelectOutlet,
-  state
+  state,
+  optionsEcommerce,
+  showOptionEcommerce
 }) => {
   const API_URL = process.env.REACT_APP_API_URL;
   // console.log("state apaan nih", state)
@@ -46,14 +48,16 @@ const ModalPayment = ({
   });
   const handleDelete = async () => {
     try {
-      const reuslt = await axios.get(`${API_URL}/api/v1/payment-method/delete-qrcode/${idMethod}`)
-      console.log("reuslt", reuslt)
-      refreshDelete()
+      const reuslt = await axios.get(
+        `${API_URL}/api/v1/payment-method/delete-qrcode/${idMethod}`
+      );
+      console.log("reuslt", reuslt);
+      refreshDelete();
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
-  
+  };
+
   const optionsOutlet = allOutlets.map((item) => {
     return { value: item.id, label: item.name };
   });
@@ -63,13 +67,16 @@ const ModalPayment = ({
   // const defaultValue = optionsOutlet.find(
   //   (val) => val.value === formikRecipe.values.outlet_id
   // );
-  
-  console.log("formikPayment.getFieldProps.outlet_id", formikPayment.values.outlet_id === 0)
-  console.log("defaultValue", defaultValue)
-  console.log("sebelum optionsOutlet", optionsOutlet)
-  optionsOutlet.unshift({value: 1, label: 'All Outlets'})
-  console.log("sesudah optionsOutlet", optionsOutlet)
-  console.log("allOutlets", allOutlets)
+
+  console.log(
+    "formikPayment.getFieldProps.outlet_id",
+    formikPayment.values.outlet_id === 0
+  );
+  console.log("defaultValue", defaultValue);
+  console.log("sebelum optionsOutlet", optionsOutlet);
+  optionsOutlet.unshift({ value: 1, label: "All Outlets" });
+  console.log("sesudah optionsOutlet", optionsOutlet);
+  console.log("allOutlets", allOutlets);
   // console.log("defaultValue", defaultValue)
 
   return (
@@ -83,41 +90,42 @@ const ModalPayment = ({
             <Col>
               <Form.Group>
                 <Form.Label>{t("outlet")}:</Form.Label>
-                {
-                  state === "Edit" || formikPayment.values.outlet_id === 0 ? (
-                    <Form.Control
-                      as="select"
-                      name="outlet_id"
-                      {...formikPayment.getFieldProps("outlet_id")}
-                      className={validationPayment("outlet_id")}
-                      required
-                    >
-                      <option value="" disabled hidden>
-                        {t("chooseAType")}
-                      </option>
-                      {optionsOutlet?.length
-                        ? optionsOutlet.map((item) => {
-                            return (
-                              <option key={item.value} value={item.value}>
-                                {item.label}
-                              </option>
-                            );
-                          })
-                        : ""}
-                    </Form.Control>
-                  ) : (
-                    <Select
-                      options={optionsOutlet}
-                      isMulti
-                      name="outlet_id"
-                      className="basic-multi-select"
-                      classNamePrefix="select"
-                      onChange={(value) => handleSelectOutlet(value, formikPayment)}
-                      // defaultValue={defaultValue}
-                    />
-                  )
-                }
-                {formikPayment.touched.outlet_id && formikPayment.errors.outlet_id ? (
+                {state === "Edit" || formikPayment.values.outlet_id === 0 ? (
+                  <Form.Control
+                    as="select"
+                    name="outlet_id"
+                    {...formikPayment.getFieldProps("outlet_id")}
+                    className={validationPayment("outlet_id")}
+                    required
+                  >
+                    <option value="" disabled hidden>
+                      {t("chooseAType")}
+                    </option>
+                    {optionsOutlet?.length
+                      ? optionsOutlet.map((item) => {
+                          return (
+                            <option key={item.value} value={item.value}>
+                              {item.label}
+                            </option>
+                          );
+                        })
+                      : ""}
+                  </Form.Control>
+                ) : (
+                  <Select
+                    options={optionsOutlet}
+                    isMulti
+                    name="outlet_id"
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    onChange={(value) =>
+                      handleSelectOutlet(value, formikPayment)
+                    }
+                    // defaultValue={defaultValue}
+                  />
+                )}
+                {formikPayment.touched.outlet_id &&
+                formikPayment.errors.outlet_id ? (
                   <div className="fv-plugins-message-container">
                     <div className="fv-help-block">
                       {formikPayment.errors.outlet_id}
@@ -163,6 +171,36 @@ const ModalPayment = ({
             </Col>
           </Row>
 
+          {showOptionEcommerce ? (
+            <Row>
+              <Col>
+                <Form.Group>
+                  <Form.Label>{t("selectEcommerce")}:</Form.Label>
+                  <Form.Control
+                    as="select"
+                    name="ecommerce_name"
+                    {...formikPayment.getFieldProps("ecommerce_name")}
+                    className={validationPayment("ecommerce_name")}
+                    required
+                  >
+                    <option value="" disabled hidden>
+                      {t("chooseAEcommerce")}
+                    </option>
+                    {optionsEcommerce?.length
+                      ? optionsEcommerce.map((item) => {
+                          return (
+                            <option key={item.id} value={item.name}>
+                              {item.name}
+                            </option>
+                          );
+                        })
+                      : ""}
+                  </Form.Control>
+                </Form.Group>
+              </Col>
+            </Row>
+          ) : null}
+          
           <Row>
             <Col>
               <Form.Group>
@@ -229,9 +267,7 @@ const ModalPayment = ({
                   <input {...getInputProps()} />
                   {!photoPreview || photoPreview == null ? (
                     <>
-                      <p>
-                        {t("dragAndDrop")}
-                      </p>
+                      <p>{t("dragAndDrop")}</p>
                       <p style={{ color: "gray" }}>{t("fileSizeLimit")}</p>
                     </>
                   ) : (
@@ -260,9 +296,11 @@ const ModalPayment = ({
           </Row>
           {photo ? (
             <Row className="justify-content-md-center">
-              <div className="btn btn-danger" onClick={handleDelete}>Delete QR Code</div>
+              <div className="btn btn-danger" onClick={handleDelete}>
+                Delete QR Code
+              </div>
             </Row>
-          ) : null }
+          ) : null}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>

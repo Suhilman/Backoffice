@@ -14,6 +14,8 @@ export const OutletPage = () => {
   const [allProvinces, setAllProvinces] = React.useState([]);
   const [allTaxes, setAllTaxes] = React.useState([]);
   const [refresh, setRefresh] = React.useState(0);
+  const [showOptionEcommerce, setShowOptionEcommerce] = React.useState(false)
+  const [optionsEcommerce, setOptionsEcommerce] = React.useState([])
   const { t } = useTranslation();
   const handleRefresh = () => setRefresh((state) => state + 1);
 
@@ -39,6 +41,36 @@ export const OutletPage = () => {
     }
   };
 
+  const handleEcommerceIntegrate = async () => {
+    try {
+      const localData = JSON.parse(localStorage.getItem("user_info"));
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/business/${localData.business_id}`
+      );
+      if (data.data.ecommerce_integrate) {
+        setShowOptionEcommerce(true)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleOptionEcommerce = async () => {
+    try {
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/ecommerce-list`
+      );
+      setOptionsEcommerce(data.data.rows)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  React.useEffect(() => {
+    handleEcommerceIntegrate()
+    handleOptionEcommerce()
+  }, [])
+
   React.useEffect(() => {
     getProvinces();
     getTaxes();
@@ -60,11 +92,22 @@ export const OutletPage = () => {
       </Tab>
 
       <Tab eventKey="payment" title={t("payment")}>
-        <PaymentTab handleRefresh={handleRefresh} refresh={refresh}/>
+        <PaymentTab 
+          handleRefresh={handleRefresh} 
+          refresh={refresh}
+          showOptionEcommerce={showOptionEcommerce}
+          optionsEcommerce={optionsEcommerce}
+        />
       </Tab>
 
       <Tab eventKey="sales-type" title={t("salesType")}>
-        <SalesTypeTab handleRefresh={handleRefresh} refresh={refresh} t={t}/>
+        <SalesTypeTab 
+          handleRefresh={handleRefresh} 
+          refresh={refresh} 
+          t={t}
+          showOptionEcommerce={showOptionEcommerce}
+          optionsEcommerce={optionsEcommerce}
+        />
       </Tab>
 
       <Tab eventKey="table-management" title={t("tableManagement")}>

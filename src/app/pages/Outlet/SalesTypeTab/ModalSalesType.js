@@ -18,7 +18,6 @@ import {
   FormGroup
 } from "@material-ui/core";
 
-
 import "../../style.css";
 
 const ModalPayment = ({
@@ -31,7 +30,9 @@ const ModalPayment = ({
   alert,
   t,
   handleHidden,
-  hidden
+  hidden,
+  showOptionEcommerce,
+  optionsEcommerce
 }) => {
   return (
     <Modal show={stateModal} onHide={cancelModal} size="sm">
@@ -64,6 +65,36 @@ const ModalPayment = ({
               </Form.Group>
             </Col>
           </Row>
+
+          {showOptionEcommerce ? (
+            <Row>
+              <Col>
+                <Form.Group>
+                  <Form.Label>{t("selectEcommerce")}:</Form.Label>
+                  <Form.Control
+                    as="select"
+                    name="ecommerce_name"
+                    {...formikSalesType.getFieldProps("ecommerce_name")}
+                    className={validationSalesType("ecommerce_name")}
+                    required
+                  >
+                    <option value="" disabled hidden>
+                      {t("chooseAEcommerce")}
+                    </option>
+                    {optionsEcommerce?.length
+                      ? optionsEcommerce.map((item) => {
+                          return (
+                            <option key={item.id} value={item.name}>
+                              {item.name}
+                            </option>
+                          );
+                        })
+                      : ""}
+                  </Form.Control>
+                </Form.Group>
+              </Col>
+            </Row>
+          ) : null}
 
           <Row>
             <Col>
@@ -153,7 +184,6 @@ const ModalPayment = ({
                 />
               </Form.Group>
 
-              
               <Form.Group>
                 <div>
                   <Form.Label>{t("hideInEmenu")}</Form.Label>
@@ -167,14 +197,17 @@ const ModalPayment = ({
                         color="primary"
                         checked={hidden === "Active" ? true : false}
                         onChange={(e) => {
-                          console.log("switch hidden", e.target.value)
+                          console.log("switch hidden", e.target.value);
                           if (hidden === e.target.value) {
                             if (hidden === "Active") {
                               handleHidden("Inactive");
-                              formikSalesType.setFieldValue("hidden", "Inactive")
+                              formikSalesType.setFieldValue(
+                                "hidden",
+                                "Inactive"
+                              );
                             } else {
                               handleHidden("Active");
-                              formikSalesType.setFieldValue("hidden", "Active")
+                              formikSalesType.setFieldValue("hidden", "Active");
                             }
                           }
                         }}
@@ -189,7 +222,7 @@ const ModalPayment = ({
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={cancelModal}>
-          {t("cancel")}
+            {t("cancel")}
           </Button>
           <Button variant="primary" type="submit">
             {loading ? (

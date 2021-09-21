@@ -21,7 +21,7 @@ import useDebounce from "../../../hooks/useDebounce";
 
 import "../../style.css";
 
-export const PaymentTab = ({ handleRefresh, refresh }) => {
+export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, optionsEcommerce }) => {
   const [loading, setLoading] = React.useState(false);
   const [state, setState] = React.useState("");
   const [stateAddModal, setStateAddModal] = React.useState(false);
@@ -119,6 +119,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
   const initialValuePaymentCreate = {
     name: "",
     payment_method_type_id: "",
+    ecommerce_name: "",
     mdr: "",
     status: "active",
     outlet_id: []
@@ -157,6 +158,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       );
       paymentMethodData.append("mdr", values.mdr);
       paymentMethodData.append("status", values.status);
+      paymentMethodData.append("ecommerce_name", values.ecommerce_name);
       paymentMethodData.append("outlet_id", JSON.stringify(values.outlet_id));
       if (photo) paymentMethodData.append("qrImage", photo);
 
@@ -179,6 +181,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
   const initialValuePaymentEdit = {
     name: "",
     payment_method_type_id: "",
+    ecommerce_name: "",
     mdr: "",
     status: "active"
   };
@@ -211,6 +214,10 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       paymentMethodData.append(
         "payment_method_type_id",
         values.payment_method_type_id
+      );
+      paymentMethodData.append(
+        "ecommerce_name",
+        values.ecommerce_name
       );
       paymentMethodData.append("mdr", values.mdr);
       paymentMethodData.append("status", values.status);
@@ -283,6 +290,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
       name: data.name,
       payment_method_type_id: data.type_id,
       // mdr: parseInt(data.mdr.slice(0, -1)),
+      ecommerce_name: data.ecommerce,
       mdr: parseFloat(data.mdr),
       status: data.status,
       outlet_id: data.outlet_id
@@ -466,6 +474,7 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
         name: item.name,
         type: item.Payment_Method_Type.name,
         type_id: item.payment_method_type_id,
+        ecommerce: item.ecommerce,
         mdr: item.mdr + "%",
         outlet: item.Outlet ? item.Outlet.name : "All Outlet",
         qr_image: item.qr_image,
@@ -495,6 +504,8 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
         alertPhoto={alertPhoto}
         photoPreview={photoPreview}
         photo={photo}
+        showOptionEcommerce={showOptionEcommerce}
+        optionsEcommerce={optionsEcommerce}
       />
 
       <ModalPayment
@@ -517,6 +528,8 @@ export const PaymentTab = ({ handleRefresh, refresh }) => {
         alertPhoto={alertPhoto}
         photoPreview={photoPreview}
         photo={photo}
+        showOptionEcommerce={showOptionEcommerce}
+        optionsEcommerce={optionsEcommerce}
       />
 
       <ShowConfirmModal
