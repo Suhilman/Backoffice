@@ -150,7 +150,7 @@ export const TransferStockPage = () => {
       width: "50px"
     },
     {
-      name: `${t("transferStokID")}`,
+      name: `${t("transferStockID")}`,
       selector: "code",
       sortable: true
     },
