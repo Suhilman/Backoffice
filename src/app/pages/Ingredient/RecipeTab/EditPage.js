@@ -26,6 +26,7 @@ export const EditRecipePage = ({ location, match }) => {
   const [alert, setAlert] = React.useState("");
   const [currTotalPrice, setCurrTotalPrice] = React.useState(0);
   const [currTotalCalorie, setCurrTotalCalorie] = React.useState(0);
+  const [totalIngrendients, setTotalIngrendients] = React.useState([])
 
   const [valueMaterial, setValueMaterial] = React.useState({})
 
@@ -262,9 +263,21 @@ export const EditRecipePage = ({ location, match }) => {
     (init, curr) => (init += curr.ingredient_price),
     0
   );
-
-  console.log("initialValueRecipe", initialValueRecipe.total_cogs);
-  console.log("total cogs", total_cogs);
+  
+  const calculateIngerndients = (index, value) => {
+    const temp_data = totalIngrendients
+    temp_data[index] = value
+    setTotalIngrendients(temp_data)
+    console.log("temp_data", temp_data)
+    const result = temp_data.reduce((acc, curr) => {
+      return acc + parseInt(curr)
+    }, 0)
+    console.log("calculateIngerndients", result)
+    formikRecipe.setFieldValue(
+      `total_ingredient_price`,
+      result
+    );
+  }
 
   return (
     <>
@@ -503,6 +516,8 @@ export const EditRecipePage = ({ location, match }) => {
                                                 price
                                               );
 
+                                              calculateIngerndients(index, price)
+                                                
                                               const rawMaterial = optionsRaw(
                                                 index
                                               ).find(
@@ -579,6 +594,7 @@ export const EditRecipePage = ({ location, match }) => {
                                                 `materials[${index}].ingredient_price`,
                                                 price
                                               );
+                                              calculateIngerndients(index, price)
                                             }}
                                             required
                                           />
@@ -714,6 +730,7 @@ export const EditRecipePage = ({ location, match }) => {
                                                 `materials[${index}].total_price`,
                                                 value
                                               );
+                                              calculateIngerndients(index, value)
                                             }}
                                             required
                                           />
