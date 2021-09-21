@@ -161,10 +161,10 @@ const RecipeTab = ({
   console.log("allRecipes", allRecipes)
 
   const dataUnit = allRecipes.map((item, index) => {
-    const total_nutrition = item.Recipe_Materials?.reduce(
-      (init, curr) => (init += curr.calorie_per_unit || 0),
-      0
-    );
+    // const total_nutrition = item.Recipe_Materials?.reduce(
+    //   (init, curr) => (init += curr.calorie_per_unit || 0),
+    //   0
+    // );
     // const total_recipe_price = item.Recipe_Materials?.reduce(
     //   (init, curr) => (init += curr.ingredient_price || 0),
     //   0
@@ -174,7 +174,7 @@ const RecipeTab = ({
       no: index + 1,
       name: item.Product?.name || "-",
       raw_material: item.Recipe_Materials?.length || 0,
-      total_nutrition: total_nutrition || 0,
+      total_nutrition: item.total_calorie || 0,
       total_recipe_price: item.total_ingredient_price,
       outlet_id: item.outlet_id,
       product_id: item.product_id,

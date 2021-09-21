@@ -26,6 +26,8 @@ export const EditRecipePage = ({ location, match }) => {
   const [alert, setAlert] = React.useState("");
   const [currTotalPrice, setCurrTotalPrice] = React.useState(0);
   const [currTotalCalorie, setCurrTotalCalorie] = React.useState(0);
+
+  const [totalCalorie, setTotalCalorie] = React.useState([])
   const [totalIngrendients, setTotalIngrendients] = React.useState([])
 
   const [valueMaterial, setValueMaterial] = React.useState({})
@@ -104,11 +106,11 @@ export const EditRecipePage = ({ location, match }) => {
     initialValues: initialValueRecipe,
     validationSchema: RecipeSchema,
     onSubmit: async (values) => {
-      const resultCalorie = handleTotalCalorie();
+      // const resultCalorie = handleTotalCalorie();
       const recipeData = {
         outlet_id: values.outlet_id,
         product_id: values.product_id,
-        total_calorie: resultCalorie,
+        total_calorie: values.total_calorie,
         total_cogs: values.total_ingredient_price,
         total_ingredient_price: values.total_ingredient_price,
         notes: values.notes || "",
@@ -264,7 +266,21 @@ export const EditRecipePage = ({ location, match }) => {
     0
   );
   
+  React.useEffect(() => {
+    if(currRecipe.materials.length) {
+      const containerIngrendient = []
+      const containerCalorie = []
+      currRecipe.materials.map(value => {
+        containerIngrendient.push(value.ingredient_price)
+        containerCalorie.push(value.calorie_per_unit)
+      })
+      setTotalIngrendients(containerIngrendient)
+      setTotalCalorie(containerCalorie)
+    }
+  }, [])
+
   const calculateIngerndients = (index, value) => {
+    console.log("totalIngrendients", totalIngrendients)
     const temp_data = totalIngrendients
     temp_data[index] = value
     setTotalIngrendients(temp_data)
@@ -272,9 +288,22 @@ export const EditRecipePage = ({ location, match }) => {
     const result = temp_data.reduce((acc, curr) => {
       return acc + parseInt(curr)
     }, 0)
-    console.log("calculateIngerndients", result)
     formikRecipe.setFieldValue(
       `total_ingredient_price`,
+      result
+    );
+  }
+
+  const calculateCalorie = (index, value) => {
+    const temp_data = totalCalorie
+    temp_data[index] = value
+    setTotalCalorie(temp_data)
+    console.log("temp_data", temp_data)
+    const result = temp_data.reduce((acc, curr) => {
+      return acc + parseInt(curr)
+    }, 0)
+    formikRecipe.setFieldValue(
+      `total_calorie`,
       result
     );
   }
@@ -515,9 +544,6 @@ export const EditRecipePage = ({ location, match }) => {
                                                 `materials[${index}].ingredient_price`,
                                                 price
                                               );
-
-                                              calculateIngerndients(index, price)
-                                                
                                               const rawMaterial = optionsRaw(
                                                 index
                                               ).find(
@@ -544,6 +570,9 @@ export const EditRecipePage = ({ location, match }) => {
                                                 `materials[${index}].calorie_per_unit`,
                                                 calorie
                                               );
+
+                                              calculateIngerndients(index, price)
+                                              calculateCalorie(index, calorie)
                                             }}
                                           />
                                           {formikRecipe.touched.materials &&
@@ -595,6 +624,7 @@ export const EditRecipePage = ({ location, match }) => {
                                                 price
                                               );
                                               calculateIngerndients(index, price)
+                                              calculateCalorie(index, calorie)
                                             }}
                                             required
                                           />
@@ -695,6 +725,7 @@ export const EditRecipePage = ({ location, match }) => {
                                                 `materials[${index}].calorie`,
                                                 value
                                               );
+                                              calculateCalorie(index, value)
                                             }}
                                             required
                                           />
@@ -869,10 +900,6 @@ export const EditRecipePage = ({ location, match }) => {
                     type="number"
                     name="total_calorie"
                     {...formikRecipe.getFieldProps("total_calorie")}
-                    value={formikRecipe.values.materials.reduce(
-                      (init, curr) => (init += curr.calorie_per_unit),
-                      0
-                    )}
                   />
                 </Col>
                 <Col>
