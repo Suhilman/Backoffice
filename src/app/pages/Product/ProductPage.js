@@ -22,6 +22,7 @@ export const ProductPage = () => {
   const [allUnit, setAllUnit] = React.useState([]);
   const [allMaterials, setAllMaterials] = React.useState([]);
   const API_URL = process.env.REACT_APP_API_URL;
+  const userInfo = JSON.parse(localStorage.getItem("user_info"));
 
   const getOutlet = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -146,6 +147,7 @@ export const ProductPage = () => {
             allMaterials={allMaterials}
             refresh={refresh}
             handleRefresh={handleRefresh}
+            userInfo={userInfo}
           />
         </Tab>
 

@@ -51,7 +51,8 @@ const FormTemplate = ({
   expiredDate,
   handleExpiredDate,
   hasExpiredDate,
-  handleHasExpired
+  handleHasExpired,
+  hideFeature
 }) => {
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
@@ -523,46 +524,48 @@ const FormTemplate = ({
                 ) : null}
               </Form.Group>
 
-              <Form.Group>
-                <Form.Label style={{ marginRight: "1rem" }}>
-                  {t("expiredDate")}
-                </Form.Label>
-                <FormControlLabel
-                  value={hasExpiredDate}
-                  name="has_expired"
-                  control={
-                    <Switch
-                      color="primary"
-                      checked={hasExpiredDate}
-                      onChange={handleHasExpired}
-                      disabled={formikProduct.values.has_stock ? false : true}
-                    />
-                  }
-                />
-
-                <InputGroup>
-                  <DatePicker
-                    name="expired_date"
-                    selected={expiredDate}
-                    onChange={handleExpiredDate}
-                    customInput={<CustomInputDate />}
+              {hideFeature.expired ? (
+                <Form.Group>
+                  <Form.Label style={{ marginRight: "1rem" }}>
+                    {t("expiredDate")}
+                  </Form.Label>
+                  <FormControlLabel
+                    value={hasExpiredDate}
+                    name="has_expired"
+                    control={
+                      <Switch
+                        color="primary"
+                        checked={hasExpiredDate}
+                        onChange={handleHasExpired}
+                        disabled={formikProduct.values.has_stock ? false : true}
+                      />
+                    }
                   />
 
-                  <InputGroup.Append>
-                    <InputGroup.Text>
-                      <CalendarToday />
-                    </InputGroup.Text>
-                  </InputGroup.Append>
-                </InputGroup>
-                {formikProduct.touched.expired_date &&
-                formikProduct.errors.expired_date ? (
-                  <div className="fv-plugins-message-container">
-                    <div className="fv-help-block">
-                      {formikProduct.errors.expired_date}
+                  <InputGroup>
+                    <DatePicker
+                      name="expired_date"
+                      selected={expiredDate}
+                      onChange={handleExpiredDate}
+                      customInput={<CustomInputDate />}
+                    />
+
+                    <InputGroup.Append>
+                      <InputGroup.Text>
+                        <CalendarToday />
+                      </InputGroup.Text>
+                    </InputGroup.Append>
+                  </InputGroup>
+                  {formikProduct.touched.expired_date &&
+                  formikProduct.errors.expired_date ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikProduct.errors.expired_date}
+                      </div>
                     </div>
-                  </div>
-                ) : null}
-              </Form.Group>
+                  ) : null}
+                </Form.Group>
+              ) : null}
             </div>
 
             <Form.Group>
@@ -615,61 +618,63 @@ const FormTemplate = ({
               )}
             </Form.Group>
 
-            <Form.Group>
-              <Form.Label>{t("productType")}*</Form.Label>
-              <Row style={{ padding: "1rem" }}>
-                {[
-                  {
-                    name: `${t("noRecipe")}`,
-                    value: false,
-                    checked: formikProduct.values.has_recipe ? false : true
-                  },
-                  {
-                    name: `${t("withRecipe")}`,
-                    value: true,
-                    checked: formikProduct.values.has_recipe ? true : false
-                  }
-                ].map((item, index) => {
-                  return (
-                    <Col
-                      key={index}
-                      className="box"
-                      style={{ marginRight: "1rem" }}
-                    >
-                      <Row>
-                        <Col md={3}>
-                          <Form.Check
-                            type="radio"
-                            name="has_recipe"
-                            value={formikProduct.values.has_recipe}
-                            onChange={(e) => {
-                              const { value } = e.target;
+            {hideFeature.recipe ? (
+              <Form.Group>
+                <Form.Label>{t("productType")}*</Form.Label>
+                <Row style={{ padding: "1rem" }}>
+                  {[
+                    {
+                      name: `${t("noRecipe")}`,
+                      value: false,
+                      checked: formikProduct.values.has_recipe ? false : true
+                    },
+                    {
+                      name: `${t("withRecipe")}`,
+                      value: true,
+                      checked: formikProduct.values.has_recipe ? true : false
+                    }
+                  ].map((item, index) => {
+                    return (
+                      <Col
+                        key={index}
+                        className="box"
+                        style={{ marginRight: "1rem" }}
+                      >
+                        <Row>
+                          <Col md={3}>
+                            <Form.Check
+                              type="radio"
+                              name="has_recipe"
+                              value={formikProduct.values.has_recipe}
+                              onChange={(e) => {
+                                const { value } = e.target;
 
-                              if (value === "true") {
-                                formikProduct.setFieldValue(
-                                  "has_recipe",
-                                  false
-                                );
-                                formikProduct.setFieldValue("recipe_id", null);
-                              } else {
-                                formikProduct.setFieldValue("has_recipe", true);
-                              }
-                            }}
-                            checked={item.checked}
-                            className={validationProduct("has_recipe")}
-                            required
-                            feedback={formikProduct.errors.has_recipe}
-                          />
-                        </Col>
-                        <Col>
-                          <Row>{item.name}</Row>
-                        </Col>
-                      </Row>
-                    </Col>
-                  );
-                })}
-              </Row>
-            </Form.Group>
+                                if (value === "true") {
+                                  formikProduct.setFieldValue(
+                                    "has_recipe",
+                                    false
+                                  );
+                                  formikProduct.setFieldValue("recipe_id", null);
+                                } else {
+                                  formikProduct.setFieldValue("has_recipe", true);
+                                }
+                              }}
+                              checked={item.checked}
+                              className={validationProduct("has_recipe")}
+                              required
+                              feedback={formikProduct.errors.has_recipe}
+                            />
+                          </Col>
+                          <Col>
+                            <Row>{item.name}</Row>
+                          </Col>
+                        </Row>
+                      </Col>
+                    );
+                  })}
+                </Row>
+              </Form.Group>
+            ) : null}
 
             <Form.Group>
               <Form.Label>{t("productAddOns")}</Form.Label>

@@ -927,5 +927,6 @@
   "enterNewAccount": "Masukkan akun baru",
   "successfullyAddedAccountPleaseWaitForLeverageByBeetpos": "Berhasil tambahkan akun, mohon menunggu verifikasi oleh beetpos",
   "selectEcommerce": "Pilih Ecommerce",
-  "chooseAEcommerce": "Memilih Ecommerce"
+  "chooseAEcommerce": "Memilih Ecommerce",
+  "bundleDescription": "Deskripsi Paket"
 }

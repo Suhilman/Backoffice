@@ -23,7 +23,8 @@ export const EditProductPage = ({ match, location }) => {
     allUnit,
     allMaterials,
     currProduct,
-    groupAddons
+    groupAddons,
+    hideFeature,
   } = location.state;
   const history = useHistory();
   const API_URL = process.env.REACT_APP_API_URL;
@@ -317,6 +318,7 @@ export const EditProductPage = ({ match, location }) => {
     (val) => val.value === formikProduct.values.supplier_id
   );
   useEffect(() => {
+    console.log("hideFeature", hideFeature)
     getAllSupplier()
   }, [])
   const optionsUnit = allUnit.map((item) => {
@@ -393,6 +395,7 @@ export const EditProductPage = ({ match, location }) => {
           handleExpiredDate={handleExpiredDate}
           hasExpiredDate={hasExpiredDate}
           handleHasExpired={handleHasExpired}
+          hideFeature={hideFeature}
         />
       </Col>
     </Row>

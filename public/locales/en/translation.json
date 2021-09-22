@@ -928,5 +928,6 @@
     "successfullyAddedAccountPleaseWaitForLeverageByBeetpos": "Successfully added account, please wait for leverage by beetpos",
     "totalAssemblyPrice": "Total Assembly Price",
     "selectEcommerce": "Select Ecommerce",
-    "chooseAEcommerce": "Choose a Ecommerce"
+    "chooseAEcommerce": "Choose a Ecommerce",
+    "bundleDescription": "Bundle Description"
 }

@@ -44,7 +44,8 @@ const ProductTab = ({
   allOutlets,
   allTaxes,
   allUnit,
-  allMaterials
+  allMaterials,
+  userInfo
 }) => {
   const [loading, setLoading] = React.useState(false);
   const [showConfirm, setShowConfirm] = React.useState(false);
@@ -73,6 +74,11 @@ const ProductTab = ({
   const [multiSelect, setMultiSelect] = React.useState(false);
   const [clearRows, setClearRows] = React.useState(true);
   const [selectedData, setSelectedData] = React.useState([]);
+
+  const [hideFeature, setHideFeature] = React.useState({
+    expired: false,
+    recipe: false
+  })
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
@@ -151,7 +157,40 @@ const ProductTab = ({
     setCurrency(data.data.Currency.name)
   }
 
+  
+  const handleSubscriptionPartition = async () => {
+    try {
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${userInfo.business_id}`
+      );
+
+      let recipe;
+      let expired;
+
+      if(data.data[0].subscription_partition_id === 3) {
+        recipe = true
+        expired = true
+      }
+      if(data.data[0].subscription_partition_id === 2) {
+        recipe = false
+        expired = true
+
+      }
+      if(data.data[0].subscription_partition_id === 1) {
+        recipe = false
+        expired = false
+      }
+      setHideFeature({
+        expired,
+        recipe
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   React.useEffect(() => {
+    handleSubscriptionPartition()
     handleCurrency()
   }, [])
 
@@ -417,7 +456,8 @@ const ProductTab = ({
                     currProduct: rows.currProduct,
                     groupAddons: rows.groupAddons,
                     bundleItems: rows.bundleItems,
-                    initial_stock_id: rows.initial_stock_id
+                    initial_stock_id: rows.initial_stock_id,
+                    hideFeature
                   }
                 }}
               >
@@ -664,6 +704,7 @@ const ProductTab = ({
         allOutlets={allOutlets}
         handleFile={handleFile}
         filename={filename}
+        hideFeature={hideFeature}
       />
 
       <ExportModal 
@@ -673,6 +714,7 @@ const ProductTab = ({
         optionsOutlet={optionsOutlet}
         handleExports={handleExports}
         dataProduct={dataProduct}
+        hideFeature={hideFeature}
       />
 
       <Col md={12}>
@@ -704,7 +746,9 @@ const ProductTab = ({
                           allTaxes,
                           allOutlets,
                           allUnit,
-                          allMaterials
+                          allMaterials,
+                          userInfo,
+                          hideFeature
                         }
                       }}
                       className="btn btn-primary"
