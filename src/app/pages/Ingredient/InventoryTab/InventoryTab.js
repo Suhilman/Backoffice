@@ -371,7 +371,7 @@ const InventoryIngredientTab = ({
       unit_name: item.Unit?.name || "-",
       calorie_per_unit: item.calorie_per_unit,
       calorie_unit: item.calorie_unit,
-      notes: item.notes,
+      notes: item.notes || "-",
       stock_id: stock_initial ? stock_initial.id : "",
       stocks: item.Stocks,
       is_sold: item.Product ? true : false,
