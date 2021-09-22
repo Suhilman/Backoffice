@@ -13,6 +13,7 @@ const initialValues = {
 };
 
 function ForgotPassword(props) {
+  const { t } = useTranslation();
   const { intl } = props;
   const [isRequested, setIsRequested] = useState(false);
   const ForgotPasswordSchema = Yup.object().shape({
@@ -38,7 +39,6 @@ function ForgotPassword(props) {
 
     return "";
   };
-  const { t } = useTranslation();
 
   const formik = useFormik({
     initialValues,
