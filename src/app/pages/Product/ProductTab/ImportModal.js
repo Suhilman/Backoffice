@@ -11,7 +11,8 @@ const ConfirmModal = ({
   formikImportProduct,
   allOutlets,
   handleFile,
-  filename
+  filename,
+  subscriptionType
 }) => {
   const handleSelectOutlet = (value) => {
     if (value) {
@@ -37,8 +38,12 @@ const ConfirmModal = ({
 
   const handleDownload = () => {
     const API_URL = process.env.REACT_APP_API_URL;
+    let template;
+    if(subscriptionType === 1) template = "templates/template-product-basic.xlsx"
+    if(subscriptionType === 2) template = "templates/template-product-standard.xlsx"
+    if(subscriptionType === 3) template = "templates/template-product-complete.xlsx"
     const newWindow = window.open(
-      `${API_URL}/templates/template-product.xlsx`,
+      `${API_URL}/${template}`,
       "_blank",
       "noopener,noreferrer"
     );

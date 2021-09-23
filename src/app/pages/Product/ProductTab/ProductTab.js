@@ -79,6 +79,7 @@ const ProductTab = ({
     expired: false,
     recipe: false
   })
+  const [subscriptionType, setSubscriptionType] = React.useState(null)
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
@@ -180,6 +181,7 @@ const ProductTab = ({
         recipe = false
         expired = false
       }
+      setSubscriptionType(data.data[0].subscription_partition_id)
       setHideFeature({
         expired,
         recipe
@@ -553,6 +555,7 @@ const ProductTab = ({
             throw new Error("there is product without sku");
           }
         }
+        console.log("product nya", merged.flat(1))
         await axios.post(`${API_URL}/api/v1/product/bulk-create`, {
           products: merged.flat(1)
         });
@@ -584,9 +587,11 @@ const ProductTab = ({
     setFilename(file[0].name);
     ExcelRenderer(file[0], (err, resp) => {
       if (err) {
+        console.log("handleFile", err)
         setAlert(err);
       } else {
         const { rows } = resp;
+        console.log("handleFile", rows)
         const keys = [
           "name",
           "description",
@@ -635,6 +640,7 @@ const ProductTab = ({
             unit: obj.unit,
             expired_date: getJsDateFromExcel(obj.expired_date)
           });
+          console.log("data excel", data)
         });
         formikImportProduct.setFieldValue("products", data);
       }
@@ -704,7 +710,7 @@ const ProductTab = ({
         allOutlets={allOutlets}
         handleFile={handleFile}
         filename={filename}
-        hideFeature={hideFeature}
+        subscriptionType={subscriptionType}
       />
 
       <ExportModal 
