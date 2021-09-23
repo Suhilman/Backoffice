@@ -42,6 +42,8 @@ import RawMaterial from "./RawMaterialTab"
 import CommissionReport from "./CommissionReport";
 
 export const ReportPage = () => {
+  const { t } = useTranslation();
+
   const [tabs, setTabs] = React.useState(1);
   const [startTime, setStartTime] = React.useState(new Date());
   const [endTime, setEndTime] = React.useState(new Date());
@@ -67,137 +69,111 @@ export const ReportPage = () => {
 
   const [stateCustom, setStateCustom] = React.useState(false);
   const [status, setStatus] = React.useState("");
-  const { t } = useTranslation();
-  
-  const tabData = [
-    {
-      no: 1,
-      title: `${t("salesSummary")}`,
-      table: "table-summary",
-      filename: `transaksi-penjualan-produk_${startDate}-${endDateFilename}`,
-      Component: SalesSummaryTab
-    },
-    {
-      no: 2,
-      title: `${t("paymentMethod")}`,
-      table: "table-payment",
-      filename: `payment-method_${startDate}-${endDateFilename}`,
-      Component: PaymentMethodTab
-    },
-    {
-      no: 3,
-      title: `${t("salesType")}`,
-      table: "table-sales",
-      filename: `sales-type_${startDate}-${endDateFilename}`,
-      Component: SalesTypeTab
-    },
-    {
-      no: 4,
-      title: `${t("categorySales")}`,
-      table: "table-category",
-      filename: `table-category_${startDate}-${endDateFilename}`,
-      Component: CategorySalesTab
-    },
-    {
-      no: 5,
-      title: `${t("transactionHistory")}`,
-      table: "table-history-transaction",
-      filename: `riwayat-transaksi_${startDate}-${endDateFilename}`,
-      Component: TransactionHistoryTab
-    },
-    {
-      no: 6,
-      title: `${t("attendance")}`,
-      table: "table-attendance-report",
-      filename: `laporan-absensi_${startDate}-${endDateFilename}`,
-      Component: AttendanceTab
-    },
-    {
-      no: 7,
-      title: `${t("discountSales")}`,
-      table: "table-discount",
-      filename: `laporan-diskon_${startDate}-${endDateFilename}`,
-      Component: DiscountSalesTab
-    },
-    {
-      no: 8,
-      title: `${t("recap")}`,
-      table: "table-recap",
-      filename: `laporan-rekap_${startDate}-${endDateFilename}`,
-      Component: RecapTab
-    },
-    {
-      no: 9,
-      title: `${t("salesPerProduct")}`,
-      table: "table-sales-per-product",
-      filename: `laporan-penjualan-per-produk_${startDate}-${endDateFilename}`,
-      Component: SalesPerProductTab
-    },
-    {
-      no: 10,
-      title: `${t("costOfGoodSold")}`,
-      table: "table-cogs",
-      filename: `laporan-COGS_${startDate}-${endDateFilename}`,
-      Component: COGSReport
-    },
-    {
-      no: 11,
-      title: `${t("profitCalculation")}`,
-      table: "table-profit",
-      filename: `laporan-perhitunga-laba_${startDate}-${endDateFilename}`,
-      Component: ProfitReport
-    },
-    {
-      no: 12,
-      title: `${t("staffTransaction")}`,
-      table: "table-staff-transaction",
-      filename: `laporan-penjualan-staff_${startDate}-${endDateFilename}`,
-      Component: StaffTransaction
-    },
-    {
-      no: 13,
-      title: `${t("voidTransaction")}`,
-      table: "table-void",
-      filename: `laporan-transaksi-void/refund_${startDate}-${endDateFilename}`,
-      Component: VoidTransaction
-    },
-    {
-      no: 14,
-      title: `${t("salesPerHour")}`,
-      table: "table-sales-per-hour",
-      filename: `laporan-transaksi-penjualan-per-jam_${startDate}-${endDateFilename}`,
-      Component: SalesPerHour
-    },
-    {
-      no: 15,
-      title: `${t("stockReport")}`,
-      table: "table-stock",
-      filename: `laporan-stock-barang_${startDate}-${endDateFilename}`,
-      Component: StockReport
-    },
-    {
-      no: 16,
-      title: `${t("rawMaterial")}`,
-      table: "table-raw-material-report",
-      filename: `raw_material_report_${startDate}-${endDateFilename}`,
-      Component: RawMaterial
-    },
-    {
-      no: 17,
-      title: `${t("commissionReport")}`,
-      table: "table-commission-report",
-      filename: `commission_report${startDate}-${endDateFilename}`,
-      Component: CommissionReport
-    },
-    // {
-    //   no: 16,
-    //   title: "Loyalty report",
-    //   table: "table-loyalty",
-    //   filename: `laporan-loyalty_${startDate}-${endDate}`,
-    //   Component: LoyaltiReport
-    // }
-  ];
-
+  const [hideFeature, setHideFeature] = React.useState({
+    mdr: false
+  })
+  const [tabData, setTabData] = React.useState(
+    [
+      {
+        no: 1,
+        title: `${t("salesSummary")}`,
+        table: "table-summary",
+        filename: `transaksi-penjualan-produk_${startDate}-${endDateFilename}`,
+        Component: SalesSummaryTab
+      },
+      {
+        no: 2,
+        title: `${t("paymentMethod")}`,
+        table: "table-payment",
+        filename: `payment-method_${startDate}-${endDateFilename}`,
+        Component: PaymentMethodTab
+      },
+      {
+        no: 3,
+        title: `${t("salesType")}`,
+        table: "table-sales",
+        filename: `sales-type_${startDate}-${endDateFilename}`,
+        Component: SalesTypeTab
+      },
+      {
+        no: 4,
+        title: `${t("categorySales")}`,
+        table: "table-category",
+        filename: `table-category_${startDate}-${endDateFilename}`,
+        Component: CategorySalesTab
+      },
+      {
+        no: 5,
+        title: `${t("transactionHistory")}`,
+        table: "table-history-transaction",
+        filename: `riwayat-transaksi_${startDate}-${endDateFilename}`,
+        Component: TransactionHistoryTab
+      },
+      {
+        no: 8,
+        title: `${t("recap")}`,
+        table: "table-recap",
+        filename: `laporan-rekap_${startDate}-${endDateFilename}`,
+        Component: RecapTab
+      },
+      {
+        no: 9,
+        title: `${t("salesPerProduct")}`,
+        table: "table-sales-per-product",
+        filename: `laporan-penjualan-per-produk_${startDate}-${endDateFilename}`,
+        Component: SalesPerProductTab
+      },
+      {
+        no: 10,
+        title: `${t("costOfGoodSold")}`,
+        table: "table-cogs",
+        filename: `laporan-COGS_${startDate}-${endDateFilename}`,
+        Component: COGSReport
+      },
+      {
+        no: 11,
+        title: `${t("profitCalculation")}`,
+        table: "table-profit",
+        filename: `laporan-perhitunga-laba_${startDate}-${endDateFilename}`,
+        Component: ProfitReport
+      },
+      {
+        no: 12,
+        title: `${t("staffTransaction")}`,
+        table: "table-staff-transaction",
+        filename: `laporan-penjualan-staff_${startDate}-${endDateFilename}`,
+        Component: StaffTransaction
+      },
+      {
+        no: 13,
+        title: `${t("voidTransaction")}`,
+        table: "table-void",
+        filename: `laporan-transaksi-void/refund_${startDate}-${endDateFilename}`,
+        Component: VoidTransaction
+      },
+      {
+        no: 14,
+        title: `${t("salesPerHour")}`,
+        table: "table-sales-per-hour",
+        filename: `laporan-transaksi-penjualan-per-jam_${startDate}-${endDateFilename}`,
+        Component: SalesPerHour
+      },
+      {
+        no: 15,
+        title: `${t("stockReport")}`,
+        table: "table-stock",
+        filename: `laporan-stock-barang_${startDate}-${endDateFilename}`,
+        Component: StockReport
+      },
+      // {
+      //   no: 16,
+      //   title: "Loyalty report",
+      //   table: "table-loyalty",
+      //   filename: `laporan-loyalty_${startDate}-${endDate}`,
+      //   Component: LoyaltiReport
+      // }
+    ]
+  )  
   const handleRefresh = () => setRefresh((state) => state + 1)
 
   const getBusiness = async () => {
@@ -240,8 +216,66 @@ export const ReportPage = () => {
       console.log(err);
     }
   };
+  
+  const handleSubscriptionPartition = async () => {
+    try {
+      const tempTabData = tabData
+      const userInfo = JSON.parse(localStorage.getItem("user_info"));
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${userInfo.business_id}`
+      );
+
+      let mdr;
+
+      if(data.data[0].subscription_partition_id === 3) {
+        mdr = true
+        tempTabData.splice(5, 0, {
+          no: 6,
+          title: `${t("attendance")}`,
+          table: "table-attendance-report",
+          filename: `laporan-absensi_${startDate}-${endDateFilename}`,
+          Component: AttendanceTab
+        })
+        tempTabData.splice(6, 0, {
+          no: 7,
+          title: `${t("discountSales")}`,
+          table: "table-discount",
+          filename: `laporan-diskon_${startDate}-${endDateFilename}`,
+          Component: DiscountSalesTab
+        })
+        tempTabData.splice(15, 0, {
+          no: 16,
+          title: `${t("rawMaterial")}`,
+          table: "table-raw-material-report",
+          filename: `raw_material_report_${startDate}-${endDateFilename}`,
+          Component: RawMaterial
+        })
+        tempTabData.splice(16, 0, {
+          no: 17,
+          title: `${t("commissionReport")}`,
+          table: "table-commission-report",
+          filename: `commission_report${startDate}-${endDateFilename}`,
+          Component: CommissionReport
+        })
+      }
+      if(data.data[0].subscription_partition_id === 2) {
+        mdr = true
+      }
+      if(data.data[0].subscription_partition_id === 1) {
+        mdr = false
+      }
+
+      setTabData(tempTabData)
+      setHideFeature({
+        mdr
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   React.useEffect(() => {
+    handleSubscriptionPartition()
     getBusiness()
     getOutlets();
   }, []);
@@ -352,31 +386,33 @@ export const ReportPage = () => {
 
               <div className="headerEnd">
                 <Row>
-                  <div className="d-flex align-items-center">
-                    <Form.Label className="mr-1">{t("mdr")}</Form.Label>
-                    <FormControl component="fieldset">
-                      <FormGroup aria-label="position" row>
-                        <FormControlLabel
-                          value={showMdr}
-                          control={
-                            <Switch
-                              color="primary"
-                              checked={showMdr === "Active" ? true : false}
-                              onChange={(e) => {
-                                if (showMdr === e.target.value) {
-                                  if (showMdr === "Active") {
-                                    handleShowMdr("Inactive");
-                                  } else {
-                                    handleShowMdr("Active");
+                  {hideFeature.mdr ? (
+                    <div className="d-flex align-items-center">
+                      <Form.Label className="mr-1">{t("mdr")}</Form.Label>
+                      <FormControl component="fieldset">
+                        <FormGroup aria-label="position" row>
+                          <FormControlLabel
+                            value={showMdr}
+                            control={
+                              <Switch
+                                color="primary"
+                                checked={showMdr === "Active" ? true : false}
+                                onChange={(e) => {
+                                  if (showMdr === e.target.value) {
+                                    if (showMdr === "Active") {
+                                      handleShowMdr("Inactive");
+                                    } else {
+                                      handleShowMdr("Active");
+                                    }
                                   }
-                                }
-                              }}
-                            />
-                          }
-                        />
-                      </FormGroup>
-                    </FormControl>
-                  </div>
+                                }}
+                              />
+                            }
+                          />
+                        </FormGroup>
+                      </FormControl>
+                    </div>
+                  ) : null }
                   <DropdownButton
                     title={
                       tabData.find((item) => item.no === parseInt(tabs))

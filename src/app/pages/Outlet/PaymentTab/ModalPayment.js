@@ -35,7 +35,8 @@ const ModalPayment = ({
   handleSelectOutlet,
   state,
   optionsEcommerce,
-  showOptionEcommerce
+  showOptionEcommerce,
+  hideFeature
 }) => {
   const API_URL = process.env.REACT_APP_API_URL;
   // console.log("state apaan nih", state)
@@ -224,36 +225,38 @@ const ModalPayment = ({
             </Col>
           </Row>
 
-          <Row>
-            <Col>
-              <Form.Group>
-                <Form.Label>{t("mdr")}:</Form.Label>
-                <InputGroup className="pb-3">
-                  <InputGroup.Prepend>
-                    <InputGroup.Text style={{ background: "transparent" }}>
-                      %
-                    </InputGroup.Text>
-                  </InputGroup.Prepend>
-                  <Form.Control
-                    type="number"
-                    name="mdr"
-                    placeholder="Enter MDR"
-                    {...formikPayment.getFieldProps("mdr")}
-                    className={validationPayment("mdr")}
-                    required
-                  />
-                </InputGroup>
-                {formikPayment.touched.mdr && formikPayment.errors.mdr ? (
-                  <div className="fv-plugins-message-container">
-                    <div className="fv-help-block">
-                      {formikPayment.errors.mdr}
+          {hideFeature.mdr ? (
+            <Row>
+              <Col>
+                <Form.Group>
+                  <Form.Label>{t("mdr")}:</Form.Label>
+                  <InputGroup className="pb-3">
+                    <InputGroup.Prepend>
+                      <InputGroup.Text style={{ background: "transparent" }}>
+                        %
+                      </InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <Form.Control
+                      type="number"
+                      name="mdr"
+                      placeholder="Enter MDR"
+                      {...formikPayment.getFieldProps("mdr")}
+                      className={validationPayment("mdr")}
+                      required
+                    />
+                  </InputGroup>
+                  {formikPayment.touched.mdr && formikPayment.errors.mdr ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikPayment.errors.mdr}
+                      </div>
                     </div>
-                  </div>
-                ) : null}
-              </Form.Group>
-            </Col>
-          </Row>
-
+                  ) : null}
+                </Form.Group>
+              </Col>
+            </Row>
+          ) : null}
+          
           <Row>
             <Col>
               <Form.Group>

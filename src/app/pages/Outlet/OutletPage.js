@@ -18,6 +18,9 @@ export const OutletPage = () => {
   const [optionsEcommerce, setOptionsEcommerce] = React.useState([])
   const { t } = useTranslation();
   const handleRefresh = () => setRefresh((state) => state + 1);
+  const [hideFeature, setHideFeature] = React.useState({
+    mdr: false
+  })
 
   const getProvinces = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -66,7 +69,34 @@ export const OutletPage = () => {
     }
   }
 
+  const handleSubscriptionPartition = async () => {
+    try {
+      const userInfo = JSON.parse(localStorage.getItem("user_info"));
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${userInfo.business_id}`
+      );
+
+      let mdr;
+
+      if(data.data[0].subscription_partition_id === 3) {
+        mdr = true
+      }
+      if(data.data[0].subscription_partition_id === 2) {
+        mdr = true
+      }
+      if(data.data[0].subscription_partition_id === 1) {
+        mdr = false
+      }
+      setHideFeature({
+        mdr
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   React.useEffect(() => {
+    handleSubscriptionPartition()
     handleEcommerceIntegrate()
     handleOptionEcommerce()
   }, [])
@@ -97,6 +127,7 @@ export const OutletPage = () => {
           refresh={refresh}
           showOptionEcommerce={showOptionEcommerce}
           optionsEcommerce={optionsEcommerce}
+          hideFeature={hideFeature}
         />
       </Tab>
 

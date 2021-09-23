@@ -21,7 +21,7 @@ import useDebounce from "../../../hooks/useDebounce";
 
 import "../../style.css";
 
-export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, optionsEcommerce }) => {
+export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, optionsEcommerce, hideFeature }) => {
   const [loading, setLoading] = React.useState(false);
   const [state, setState] = React.useState("");
   const [stateAddModal, setStateAddModal] = React.useState(false);
@@ -120,7 +120,7 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
     name: "",
     payment_method_type_id: "",
     ecommerce_name: "",
-    mdr: "",
+    mdr: 0,
     status: "active",
     outlet_id: []
   };
@@ -137,7 +137,8 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
     mdr: Yup.number()
       // .integer()
       // .min(0)
-      .required(`${t("pleaseInputAMdr")}`),
+      // .required(`${t("pleaseInputAMdr")}`)
+      ,
     status: Yup.string()
       .matches(/(active|inactive)/)
       .required(`${t("pleaseInputAStatus")}`),
@@ -413,7 +414,8 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
     {
       name: `${t("mdr")}`,
       selector: "mdr",
-      sortable: true
+      sortable: true,
+      omit: hideFeature.mdr ? false : true
     },
     {
       name: `${t("status")}`,
@@ -506,6 +508,7 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
         photo={photo}
         showOptionEcommerce={showOptionEcommerce}
         optionsEcommerce={optionsEcommerce}
+        hideFeature={hideFeature}
       />
 
       <ModalPayment
@@ -530,6 +533,7 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
         photo={photo}
         showOptionEcommerce={showOptionEcommerce}
         optionsEcommerce={optionsEcommerce}
+        hideFeature={hideFeature}
       />
 
       <ShowConfirmModal
