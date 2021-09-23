@@ -7,7 +7,7 @@ import NumberFormat from 'react-number-format';
 import rupiahFormat from "rupiah-format";
 import Moment from 'react-moment';
 import { useTranslation } from "react-i18next";
-const ExportModal = ({state, closeModal, optionsOutlet, handleExports, loading, dataProduct, hideFeature}) => {
+const ExportModal = ({state, closeModal, optionsOutlet, handleExports, loading, dataProduct, showFeature}) => {
   const { t } = useTranslation();
 
   const [fileName, setFileName] = React.useState("")
@@ -104,12 +104,12 @@ const ExportModal = ({state, closeModal, optionsOutlet, handleExports, loading, 
                       <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("purchasePrice")}</th>
                       <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("favorite")}</th>
                       <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("category")}</th>
-                      {hideFeature.recipe ? (
+                      {showFeature.recipe ? (
                         <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("withRecipe")}</th>
                       ) : null}
                       <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("stock")}</th>
                       <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("unit")}</th>
-                      {hideFeature.expired ? (
+                      {showFeature.expired ? (
                         <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("expiredDate")}</th>
                       ) : null}
                     </tr>
@@ -125,12 +125,12 @@ const ExportModal = ({state, closeModal, optionsOutlet, handleExports, loading, 
                         <td>{value.price_purchase ? <NumberFormat value={value.price_purchase} displayType={'text'} thousandSeparator={true} prefix={currency} /> : "-"}</td>
                         <td>{value.is_favorite ? "Is Favorite" : "-"}</td>
                         <td>{value.Product_Category === null ? "-" : value.Product_Category.name}</td>
-                        {hideFeature.recipe ? (
+                        {showFeature.recipe ? (
                           <td>{value.recipe_id ? "With Recipe" : "-"}</td>
                         ) : null}
                         <td>{value.stock ? value.stock : "-"}</td>
                         <td>{value.Unit === null ? "-" : value.Unit.name}</td>
-                        {hideFeature.expired ? (
+                        {showFeature.expired ? (
                           <td>{value.Stocks.length > 0 ? <Moment format="YYYY/MM/DD" date={value.Stocks[0].expired_date} /> : "-"}</td>
                         ) : null}
                       </tr>

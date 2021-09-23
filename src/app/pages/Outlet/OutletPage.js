@@ -18,7 +18,7 @@ export const OutletPage = () => {
   const [optionsEcommerce, setOptionsEcommerce] = React.useState([])
   const { t } = useTranslation();
   const handleRefresh = () => setRefresh((state) => state + 1);
-  const [hideFeature, setHideFeature] = React.useState({
+  const [showFeature, setShowFeature] = React.useState({
     mdr: false
   })
 
@@ -87,7 +87,7 @@ export const OutletPage = () => {
       if(data.data[0].subscription_partition_id === 1) {
         mdr = false
       }
-      setHideFeature({
+      setShowFeature({
         mdr
       })
     } catch (error) {
@@ -127,7 +127,7 @@ export const OutletPage = () => {
           refresh={refresh}
           showOptionEcommerce={showOptionEcommerce}
           optionsEcommerce={optionsEcommerce}
-          hideFeature={hideFeature}
+          showFeature={showFeature}
         />
       </Tab>
 

@@ -36,7 +36,7 @@ const ModalPayment = ({
   state,
   optionsEcommerce,
   showOptionEcommerce,
-  hideFeature
+  showFeature
 }) => {
   const API_URL = process.env.REACT_APP_API_URL;
   // console.log("state apaan nih", state)
@@ -225,7 +225,7 @@ const ModalPayment = ({
             </Col>
           </Row>
 
-          {hideFeature.mdr ? (
+          {showFeature.mdr ? (
             <Row>
               <Col>
                 <Form.Group>

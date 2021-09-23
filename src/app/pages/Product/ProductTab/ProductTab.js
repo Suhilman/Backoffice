@@ -75,7 +75,8 @@ const ProductTab = ({
   const [clearRows, setClearRows] = React.useState(true);
   const [selectedData, setSelectedData] = React.useState([]);
 
-  const [hideFeature, setHideFeature] = React.useState({
+  const [showFeature, setShowFeature] = React.useState({
+    supplier: false,
     expired: false,
     recipe: false
   })
@@ -165,24 +166,28 @@ const ProductTab = ({
         `${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${userInfo.business_id}`
       );
 
+      let supplier;
       let recipe;
       let expired;
 
       if(data.data[0].subscription_partition_id === 3) {
+        supplier = true
         recipe = true
         expired = true
       }
       if(data.data[0].subscription_partition_id === 2) {
+        supplier = true
         recipe = false
         expired = true
-
       }
       if(data.data[0].subscription_partition_id === 1) {
+        supplier = false
         recipe = false
         expired = false
       }
       setSubscriptionType(data.data[0].subscription_partition_id)
-      setHideFeature({
+      setShowFeature({
+        supplier,
         expired,
         recipe
       })
@@ -459,7 +464,7 @@ const ProductTab = ({
                     groupAddons: rows.groupAddons,
                     bundleItems: rows.bundleItems,
                     initial_stock_id: rows.initial_stock_id,
-                    hideFeature
+                    showFeature
                   }
                 }}
               >
@@ -601,11 +606,18 @@ const ProductTab = ({
           "price",
           "is_favorite",
           "category",
-          "with_recipe",
+          // "with_recipe",
           "stock",
           "unit",
-          "expired_date"
+          // "expired_date"
         ];
+        if(subscriptionType === 3) {
+          keys.splice(8, 0, "with_recipe")
+          keys.splice(11, 0, "expired_date")
+        }
+        if(subscriptionType === 2) {
+          keys.splice(11, 0, "expired_date")
+        }
         const data = [];
         const obj = {};
         rows.slice(4).map((j) => {
@@ -640,7 +652,7 @@ const ProductTab = ({
             unit: obj.unit,
             expired_date: getJsDateFromExcel(obj.expired_date)
           });
-          console.log("data excel", data)
+          // console.log("data excel", data)
         });
         formikImportProduct.setFieldValue("products", data);
       }
@@ -720,7 +732,7 @@ const ProductTab = ({
         optionsOutlet={optionsOutlet}
         handleExports={handleExports}
         dataProduct={dataProduct}
-        hideFeature={hideFeature}
+        showFeature={showFeature}
       />
 
       <Col md={12}>
@@ -754,7 +766,7 @@ const ProductTab = ({
                           allUnit,
                           allMaterials,
                           userInfo,
-                          hideFeature
+                          showFeature
                         }
                       }}
                       className="btn btn-primary"

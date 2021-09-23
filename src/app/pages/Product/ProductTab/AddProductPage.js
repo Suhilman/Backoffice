@@ -19,7 +19,7 @@ export const AddProductPage = ({ location }) => {
     allCategories,
     allTaxes,
     allMaterials,
-    hideFeature
+    showFeature
   } = location.state;
   const { t } = useTranslation();
   const [photo, setPhoto] = React.useState("");
@@ -358,7 +358,7 @@ export const AddProductPage = ({ location }) => {
     setAllUnit(data.data)
   }
   useEffect(() => {
-    console.log("hideFeature", hideFeature)
+    console.log("showFeature", showFeature)
     handleAllUnit()
   }, [])
   return (
@@ -401,7 +401,7 @@ export const AddProductPage = ({ location }) => {
           handleExpiredDate={handleExpiredDate}
           hasExpiredDate={hasExpiredDate}
           handleHasExpired={handleHasExpired}
-          hideFeature={hideFeature}
+          showFeature={showFeature}
         />
       </Col>
     </Row>

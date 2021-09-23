@@ -69,7 +69,7 @@ export const ReportPage = () => {
 
   const [stateCustom, setStateCustom] = React.useState(false);
   const [status, setStatus] = React.useState("");
-  const [hideFeature, setHideFeature] = React.useState({
+  const [showFeature, setShowFeature] = React.useState({
     mdr: false
   })
   const [tabData, setTabData] = React.useState(
@@ -266,7 +266,7 @@ export const ReportPage = () => {
       }
 
       setTabData(tempTabData)
-      setHideFeature({
+      setShowFeature({
         mdr
       })
     } catch (error) {
@@ -386,7 +386,7 @@ export const ReportPage = () => {
 
               <div className="headerEnd">
                 <Row>
-                  {hideFeature.mdr ? (
+                  {showFeature.mdr ? (
                     <div className="d-flex align-items-center">
                       <Form.Label className="mr-1">{t("mdr")}</Form.Label>
                       <FormControl component="fieldset">

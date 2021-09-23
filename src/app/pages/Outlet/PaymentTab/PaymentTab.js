@@ -21,7 +21,7 @@ import useDebounce from "../../../hooks/useDebounce";
 
 import "../../style.css";
 
-export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, optionsEcommerce, hideFeature }) => {
+export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, optionsEcommerce, showFeature }) => {
   const [loading, setLoading] = React.useState(false);
   const [state, setState] = React.useState("");
   const [stateAddModal, setStateAddModal] = React.useState(false);
@@ -415,7 +415,7 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
       name: `${t("mdr")}`,
       selector: "mdr",
       sortable: true,
-      omit: hideFeature.mdr ? false : true
+      omit: showFeature.mdr ? false : true
     },
     {
       name: `${t("status")}`,
@@ -508,7 +508,7 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
         photo={photo}
         showOptionEcommerce={showOptionEcommerce}
         optionsEcommerce={optionsEcommerce}
-        hideFeature={hideFeature}
+        showFeature={showFeature}
       />
 
       <ModalPayment
@@ -533,7 +533,7 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
         photo={photo}
         showOptionEcommerce={showOptionEcommerce}
         optionsEcommerce={optionsEcommerce}
-        hideFeature={hideFeature}
+        showFeature={showFeature}
       />
 
       <ShowConfirmModal

@@ -52,7 +52,7 @@ const FormTemplate = ({
   handleExpiredDate,
   hasExpiredDate,
   handleHasExpired,
-  hideFeature
+  showFeature
 }) => {
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
@@ -423,35 +423,37 @@ const FormTemplate = ({
               ) : null}
             </Form.Group>
 
-            <Form.Group>
-              <Form.Label>{t("supplier")}<span className="text-muted ml-1"></span></Form.Label>
-              <Select
-                options={optionsSupplier}
-                defaultValue={defaultValueSupplier}
-                name="supplier_id"
-                className="basic-single"
-                classNamePrefix="select"
-                onChange={(value) =>{
-                  formikProduct.setFieldValue(
-                    "supplier_id",
-                    value.value
-                  )
-                  formikProduct.setFieldValue(
-                    "supplier",
-                    value.label
-                  )
-                }
-                }
-              />
-              {formikProduct.touched.supplier_id &&
-              formikProduct.errors.supplier_id ? (
-                <div className="fv-plugins-message-container">
-                  <div className="fv-help-block">
-                    {formikProduct.errors.supplier_id}
+            {showFeature.supplier ? (
+              <Form.Group>
+                <Form.Label>{t("supplier")}<span className="text-muted ml-1"></span></Form.Label>
+                <Select
+                  options={optionsSupplier}
+                  defaultValue={defaultValueSupplier}
+                  name="supplier_id"
+                  className="basic-single"
+                  classNamePrefix="select"
+                  onChange={(value) =>{
+                    formikProduct.setFieldValue(
+                      "supplier_id",
+                      value.value
+                    )
+                    formikProduct.setFieldValue(
+                      "supplier",
+                      value.label
+                    )
+                  }
+                  }
+                />
+                {formikProduct.touched.supplier_id &&
+                formikProduct.errors.supplier_id ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikProduct.errors.supplier_id}
+                    </div>
                   </div>
-                </div>
-              ) : null}
-            </Form.Group>
+                ) : null}
+              </Form.Group>
+            ) : null }
 
             <Form.Group style={{ margin: 0 }}>
               <Form.Label style={{ alignSelf: "center", marginRight: "1rem" }}>
@@ -524,7 +526,7 @@ const FormTemplate = ({
                 ) : null}
               </Form.Group>
 
-              {hideFeature.expired ? (
+              {showFeature.expired ? (
                 <Form.Group>
                   <Form.Label style={{ marginRight: "1rem" }}>
                     {t("expiredDate")}
@@ -618,7 +620,7 @@ const FormTemplate = ({
               )}
             </Form.Group>
 
-            {hideFeature.recipe ? (
+            {showFeature.recipe ? (
               <Form.Group>
                 <Form.Label>{t("productType")}*</Form.Label>
                 <Row style={{ padding: "1rem" }}>
