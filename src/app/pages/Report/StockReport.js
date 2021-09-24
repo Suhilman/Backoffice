@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 // import { Search } from "@material-ui/icons";
 // import useDebounce from "../../hooks/useDebounce";
 
-const StockReport = ({ selectedOutlet, startDate, endDate, endDateFilename }) => {
+const StockReport = ({ selectedOutlet, startDate, endDate, endDateFilename, subscriptionPartitoin }) => {
   // const [alert, setAlert] = React.useState("");
   // const [loading, setLoading] = React.useState(false);
   const { t } = useTranslation();
@@ -75,7 +75,8 @@ const StockReport = ({ selectedOutlet, startDate, endDate, endDateFilename }) =>
     {
       name: `${t("startingStock")}`,
       selector: "stock_starting",
-      sortable: true
+      sortable: true,
+      omit: (subscriptionPartitoin === 3) ? false : (subscriptionPartitoin === 2) ? false : true
     },
     {
       name: `${t("currentStock")}`,
@@ -85,17 +86,20 @@ const StockReport = ({ selectedOutlet, startDate, endDate, endDateFilename }) =>
     {
       name: `${t("incomingStock")}`,
       selector: "incoming_stock",
-      sortable: true
+      sortable: true,
+      omit: (subscriptionPartitoin === 3) ? false : (subscriptionPartitoin === 2) ? false : true
     },
     {
       name: `${t("outcomingStock")}`,
       selector: "outcoming_stock",
-      sortable: true
+      sortable: true,
+      omit: (subscriptionPartitoin === 3) ? false : (subscriptionPartitoin === 2) ? false : true
     },
     {
       name: `${t("adjusment")}`,
       selector: "adjusment",
-      sortable: true
+      sortable: true,
+      omit: (subscriptionPartitoin === 3) ? false : (subscriptionPartitoin === 2) ? false : true
     }
   ];
 

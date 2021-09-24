@@ -72,6 +72,9 @@ export const ReportPage = () => {
   const [showFeature, setShowFeature] = React.useState({
     mdr: false
   })
+
+  const [subscriptionPartitoin, setSubscriptionPartitoin] = React.useState(null)
+
   const [tabData, setTabData] = React.useState(
     [
       {
@@ -269,6 +272,7 @@ export const ReportPage = () => {
       setShowFeature({
         mdr
       })
+      setSubscriptionPartitoin(data.data[0].subscription_partition_id)
     } catch (error) {
       console.log(error)
     }
@@ -623,6 +627,7 @@ export const ReportPage = () => {
                     status={status}
                     refresh={refresh}
                     showMdr={showMdr}
+                    subscriptionPartitoin={subscriptionPartitoin}
                   />
                 );
               } else {
