@@ -52,8 +52,11 @@ const FormTemplate = ({
   handleExpiredDate,
   hasExpiredDate,
   handleHasExpired,
-  showFeature
+  showFeature,
+  handleSelectWeight,
+  defaultWeight
 }) => {
+  console.log("defaultWeight", defaultWeight)
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
     maxSize: 3 * 1000 * 1000,
@@ -216,7 +219,107 @@ const FormTemplate = ({
                 </div>
               ) : null}
             </Form.Group>
+            
+            <Row>
+              <Col>
+                {defaultWeight ? (
+                <Form.Group>
+                  <Form.Label>{t("weight")}<span className="ml-2">
+                  (
+                  <select 
+                    id="cars"
+                    defaultValue={defaultWeight}
+                    className="select-unit"
+                    onChange={(e) => handleSelectWeight(e)}
+                  >
+                    <option value="gram">{t("gram")}</option>
+                    <option value="kg">{t("kg")}</option>
+                  </select>
+                  )
+                  </span>
+                  </Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="weight"
+                    {...formikProduct.getFieldProps("weight")}
+                    className={validationProduct("weight")}
+                    required
+                  />
+                  {formikProduct.touched.weight &&
+                  formikProduct.errors.weight ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikProduct.errors.weight}
+                      </div>
+                    </div>
+                  ) : null}
+                </Form.Group>
+              ) : null}
+              </Col>
+              <Col>
+                <Form.Group>
+                  <Form.Label>{t("length")}<span className="text-muted ml-2">({t("cm")})</span></Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="length"
+                    {...formikProduct.getFieldProps("length")}
+                    className={validationProduct("length")}
+                    required
+                  />
+                  {formikProduct.touched.length &&
+                  formikProduct.errors.length ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikProduct.errors.length}
+                      </div>
+                    </div>
+                  ) : null}
+                </Form.Group>
+              </Col>
+            </Row>
 
+            <Row>
+              <Col>
+                <Form.Group>
+                  <Form.Label>{t("width")}<span className="text-muted ml-2">({t("cm")})</span></Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="width"
+                    {...formikProduct.getFieldProps("width")}
+                    className={validationProduct("width")}
+                    required
+                  />
+                  {formikProduct.touched.width &&
+                  formikProduct.errors.width ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikProduct.errors.width}
+                      </div>
+                    </div>
+                  ) : null}
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group>
+                  <Form.Label>{t("height")}<span className="text-muted ml-2">({t("cm")})</span></Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="height"
+                    {...formikProduct.getFieldProps("height")}
+                    className={validationProduct("height")}
+                    required
+                  />
+                  {formikProduct.touched.height &&
+                  formikProduct.errors.height ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikProduct.errors.height}
+                      </div>
+                    </div>
+                  ) : null}
+                </Form.Group>
+              </Col>
+            </Row>
             {/* <Form.Group>
               <Form.Label>{t("markupPrice")}<span className="text-muted ml-1"></span></Form.Label>
               <Form.Control

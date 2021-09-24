@@ -49,6 +49,8 @@ export const EditProductPage = ({ match, location }) => {
   const [hasExpiredDate, setHasExpiredDate] = React.useState(
     currStock && currStock.expired_date ? true : false
   );
+  const [defaultWeight, setDefaultWeight] = React.useState("")
+
   console.log("ini currProduct", currProduct)
   const product = {
     outlet_id: currProduct.outlet_id,
@@ -75,7 +77,11 @@ export const EditProductPage = ({ match, location }) => {
     unit_id: currProduct.unit_id || "",
     expired_date: currProduct.expired_date,
     description: currProduct.description || "",
-    groupAddons
+    groupAddons, 
+    weight: currProduct.weight < 1 ? currProduct.weight * 1000 : currProduct.weight, 
+    length: currProduct.length, 
+    width: currProduct.width, 
+    height: currProduct.height
   };
 
   const [addonsInitial, setAddonsinitial] = React.useState(groupAddons);
@@ -161,7 +167,8 @@ export const EditProductPage = ({ match, location }) => {
         useWebWorker: true
       }
       console.log("ini data formik edit", values)
-      
+      console.log("defaultWeight", defaultWeight)
+
       const API_URL = process.env.REACT_APP_API_URL;
       const currStock = currProduct.Stocks.find((item) => item.is_initial);
 
@@ -213,6 +220,18 @@ export const EditProductPage = ({ match, location }) => {
       if (values.recipe_id) formData.append("recipe_id", values.recipe_id);
       if (values.product_tax_id)
         formData.append("product_tax_id", values.product_tax_id);
+      if(values.weight) {
+        let resultWeight
+        if(defaultWeight === 'gram') {
+          resultWeight = values.weight / 1000
+        } else {
+          resultWeight = values.weight
+        }
+        formData.append("weight", resultWeight);
+      }
+      if (values.length) formData.append("length", values.length)
+      if (values.width) formData.append("width", values.width)
+      if (values.height) formData.append("height", values.height)
 
       try {
         enableLoading();
@@ -317,10 +336,22 @@ export const EditProductPage = ({ match, location }) => {
   const defaultValueSupplier = optionsSupplier.find(
     (val) => val.value === formikProduct.values.supplier_id
   );
+
   useEffect(() => {
     console.log("showFeature", showFeature)
+    if(currProduct.weight) {
+      console.log("currProduct.weight", currProduct.weight)
+      if(currProduct.weight < 1) {
+        console.log("masuk ke gram")
+        setDefaultWeight("gram")
+      } else {
+        console.log("masuk ke kg")
+        setDefaultWeight("kg")
+      }
+    }
     getAllSupplier()
   }, [])
+  
   const optionsUnit = allUnit.map((item) => {
     return { value: item.id, label: item.name };
   });
@@ -353,7 +384,9 @@ export const EditProductPage = ({ match, location }) => {
       setExpiredDate("");
     }
   };
-
+  const handleSelectWeight = (e) => {
+    setDefaultWeight(e.target.value)
+  }
   return (
     <Row>
       <ModalManageAddons
@@ -396,6 +429,8 @@ export const EditProductPage = ({ match, location }) => {
           hasExpiredDate={hasExpiredDate}
           handleHasExpired={handleHasExpired}
           showFeature={showFeature}
+          handleSelectWeight={handleSelectWeight}
+          defaultWeight={defaultWeight}
         />
       </Col>
     </Row>

@@ -37,6 +37,13 @@ canvas {
   max-width: 700px;
 }
 
+select.select-unit {
+  border: none;
+  outline: none;
+  color: rgb(108,117,129)
+  /* text-align: center; */
+}
+
 .business-name-qr-outlet-min-25, .outlet-name-qr-outlet-min-25, .table-name-qr-outlet-min-25 {
   text-align: center;
   color: black;

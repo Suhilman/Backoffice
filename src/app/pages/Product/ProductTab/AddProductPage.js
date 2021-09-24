@@ -32,6 +32,7 @@ export const AddProductPage = ({ location }) => {
   const [expiredDate, setExpiredDate] = React.useState("");
   const [hasExpiredDate, setHasExpiredDate] = React.useState(false);
   const [allUnit, setAllUnit] = React.useState([])
+  const [defaultWeight, setDefaultWeight] = React.useState("kg")
 
   const [savedAddons, setSavedAddons] = React.useState([
     {
@@ -76,7 +77,11 @@ export const AddProductPage = ({ location }) => {
     unit_id: "",
     expired_date: "",
     description: "",
-    groupAddons: []
+    groupAddons: [],
+    weight: 0,
+    length: 0,
+    width: 0,
+    height: 0
   };
 
   const ProductSchema = Yup.object().shape({
@@ -212,6 +217,18 @@ export const AddProductPage = ({ location }) => {
       if (values.recipe_id) formData.append("recipe_id", values.recipe_id);
       if (values.product_tax_id)
         formData.append("product_tax_id", values.product_tax_id);
+      if(values.weight) {
+        let resultWeight
+        if(defaultWeight === 'gram') {
+          resultWeight = values.weight / 1000
+        } else {
+          resultWeight = values.weight
+        }
+        formData.append("weight", resultWeight);
+      }
+      if (values.length) formData.append("length", values.length)
+      if (values.width) formData.append("width", values.width)
+      if (values.height) formData.append("height", values.height)
 
       try {
         enableLoading();
@@ -361,6 +378,11 @@ export const AddProductPage = ({ location }) => {
     console.log("showFeature", showFeature)
     handleAllUnit()
   }, [])
+
+  const handleSelectWeight = (e) => {
+    setDefaultWeight(e.target.value)
+  }
+
   return (
     <Row>
       <ModalManageAddons
@@ -402,6 +424,8 @@ export const AddProductPage = ({ location }) => {
           hasExpiredDate={hasExpiredDate}
           handleHasExpired={handleHasExpired}
           showFeature={showFeature}
+          handleSelectWeight={handleSelectWeight}
+          defaultWeight={defaultWeight}
         />
       </Col>
     </Row>

@@ -928,5 +928,12 @@
   "successfullyAddedAccountPleaseWaitForLeverageByBeetpos": "Berhasil tambahkan akun, mohon menunggu verifikasi oleh beetpos",
   "selectEcommerce": "Pilih Ecommerce",
   "chooseAEcommerce": "Memilih Ecommerce",
-  "bundleDescription": "Deskripsi Paket"
+  "bundleDescription": "Deskripsi Paket",
+  "weight": "Berat",
+  "length": "Panjang",
+  "width": "Lebar",
+  "height": "Tinggi",
+  "gram": "gram",
+  "cm": "cm",
+  "kg": "kg"
 }

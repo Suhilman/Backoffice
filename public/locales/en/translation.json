@@ -929,5 +929,12 @@
     "totalAssemblyPrice": "Total Assembly Price",
     "selectEcommerce": "Select Ecommerce",
     "chooseAEcommerce": "Choose a Ecommerce",
-    "bundleDescription": "Bundle Description"
+    "bundleDescription": "Bundle Description",
+    "weight": "Weight",
+    "length": "Length",
+    "width": "Width",
+    "height": "Height",
+    "gram": "grams",
+    "cm": "cm",
+    "kg": "kg"
 }
