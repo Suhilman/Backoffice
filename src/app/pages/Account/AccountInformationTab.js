@@ -30,6 +30,9 @@ export const AccountInformation = () => {
     new_pin: "",
     pin_confirmation: ""
   });
+  const [refresh, setRefresh] = React.useState(0)
+  const handleRefresh = () => setRefresh((state) => state + 1)
+
   const userInfo = JSON.parse(localStorage.getItem("user_info"));
   const isOwner = userInfo.owner_id ? true : false;
 
@@ -122,6 +125,7 @@ export const AccountInformation = () => {
       try {
         enableLoading();
         await request;
+        handleRefresh()
         disableLoading();
         closeModal();
       } catch (err) {
@@ -200,7 +204,7 @@ export const AccountInformation = () => {
 
   React.useEffect(() => {
     getUserInfo(userInfo, isOwner);
-  }, []);
+  }, [refresh]);
 
   const allFields = [
     {
