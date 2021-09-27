@@ -936,5 +936,9 @@
     "height": "Height",
     "gram": "grams",
     "cm": "cm",
-    "kg": "kg"
+    "kg": "kg",
+    "salesOrder": "Sales Order",
+    "addSalesOrder": "Add Sales Order",
+    "soNumber": "S.O Number",
+    "chooseCustomer": "Choose Customer"
 }

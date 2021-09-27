@@ -935,5 +935,9 @@
   "height": "Tinggi",
   "gram": "gram",
   "cm": "cm",
-  "kg": "kg"
+  "kg": "kg",
+  "salesOrder": "Order Penjualan",
+  "addSalesOrder": "Tambah Order Penjualan",
+  "soNumber": "Nomor S.O",
+  "chooseCustomer": "Pilih Customer"
 }

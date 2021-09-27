@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import InventoryTab from "./InventoryTab/InventoryTab";
 import SupplierTab from "./SupplierTab/SupplierTab";
 import PurchaseTab from "./PurchaseOrderTab/PurchaseOrderPage";
+import SalesTab from "./SalesOrderTab/SalesOrderPage";
 
 export const InventoryPage = () => {
   const [tabs, setTabs] = React.useState("inventory");
@@ -25,6 +26,10 @@ export const InventoryPage = () => {
 
       <Tab eventKey="purchase" title={t("purchaseOrder")}>
         <PurchaseTab t={t} refresh={refresh} handleRefresh={handleRefresh} />
+      </Tab>
+
+      <Tab eventKey="sales" title={t("salesOrder")}>
+        <SalesTab t={t} refresh={refresh} handleRefresh={handleRefresh} />
       </Tab>
     </Tabs>
   );

@@ -41,7 +41,9 @@ import { StockOpnamePage } from "./pages/Inventory/InventoryTab/StockOpname/Stoc
 import { AddStockOpnamePage } from "./pages/Inventory/InventoryTab/StockOpname/AddPage";
 import { DetailStockOpnamePage } from "./pages/Inventory/InventoryTab/StockOpname/DetailPage";
 import { AddPurchaseOrderPage } from "./pages/Inventory/PurchaseOrderTab/AddPage";
+import { AddSalesOrderPage } from "./pages/Inventory/SalesOrderTab/AddPage";
 import { DetailPurchaseOrderPage } from "./pages/Inventory/PurchaseOrderTab/DetailPage";
+import { DetailSalesOrderPage } from "./pages/Inventory/SalesOrderTab/DetailPage";
 import { IngredientPage } from "./pages/Ingredient/IngredientPage";
 import { EditRecipePage } from "./pages/Ingredient/RecipeTab/EditPage";
 import { IncomingMaterialPage } from "./pages/Ingredient/InventoryTab/IncomingStock/IncomingMaterialPage";
@@ -308,6 +310,21 @@ export default function BasePage() {
           exact={true}
           path="/inventory/purchase-order/:orderId"
           component={DetailPurchaseOrderPage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory/sales-order/add"
+          component={AddSalesOrderPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory/sales-order/:orderId"
+          component={DetailSalesOrderPage}
         />
 
         <ProtectedRoute
