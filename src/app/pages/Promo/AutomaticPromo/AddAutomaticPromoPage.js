@@ -81,7 +81,8 @@ export const AddAutomaticPromoPage = ({ location }) => {
     xy_product_y_id: [],
     xy_amount_x: 0,
     xy_amount_y: 0,
-    xy_apply_multiply: false
+    xy_apply_multiply: false,
+    quantity_apply_multiply: false
   };
 
   // schema
@@ -157,7 +158,9 @@ export const AddAutomaticPromoPage = ({ location }) => {
     xy_amount_y: Yup.number()
       .min(1, `${t("minimum1Character")}`)
       .required(`${t("pleaseInputAmountY")}`),
-    xy_apply_multiply: Yup.boolean()
+    xy_apply_multiply: Yup.boolean(),
+    quantity_apply_multiply: Yup.boolean()
+    
   });
 
   const formikPromoQuantity = useFormik({
@@ -184,6 +187,7 @@ export const AddAutomaticPromoPage = ({ location }) => {
         formData.append("quantity_value", values.quantity_value);
         formData.append("quantity_type", values.quantity_type);
         formData.append("quantity_amount", values.quantity_amount);
+        formData.append("quantity_apply_multiply", values.quantity_apply_multiply);
 
         if (values.description) formData.append("description", values.description);
         if (photo) {

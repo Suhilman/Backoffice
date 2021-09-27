@@ -66,13 +66,15 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
   };
 
   // quantity
+  console.log("promoData", promoData)
   const initialValuePromoQuantity = {
     ...valueTimeLocation,
     type: promoData.type,
     quantity_product_id: promoData.Automatic_Promo_Quantity?.product_id,
     quantity_type: promoData.Automatic_Promo_Quantity?.type,
     quantity_value: promoData.Automatic_Promo_Quantity?.value,
-    quantity_amount: promoData.Automatic_Promo_Quantity?.amount
+    quantity_amount: promoData.Automatic_Promo_Quantity?.amount,
+    quantity_apply_multiply: promoData.Automatic_Promo_Quantity?.apply_multiply
   };
 
   // transaction
@@ -200,6 +202,7 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
       formData.append("quantity_value", values.quantity_value);
       formData.append("quantity_type", values.quantity_type);
       formData.append("quantity_amount", values.quantity_amount);
+      formData.append("quantity_apply_multiply", values.quantity_apply_multiply);
 
       if (values.description) formData.append("description", values.description);
       if (photo.name) {

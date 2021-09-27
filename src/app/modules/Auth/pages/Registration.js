@@ -227,7 +227,7 @@ function Registration(props) {
           { headers: { Authorization: accessToken } }
         );
         const now = new Date()
-        now.setDate(now.getDate()+14)
+        now.setDate(now.getDate()+30)
         const dataSubscription = {
           subscription_type_id: 10,
           expired_date: now,

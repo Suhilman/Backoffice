@@ -124,7 +124,7 @@ const QuantityTab = ({
                     </Form.Group>
                   </Col>
 
-                  <Col sm={4}>
+                  <Col sm={2}>
                     <Form.Group>
                       <Form.Label>{t("productAmount")}:</Form.Label>
                       <Form.Control
@@ -187,6 +187,19 @@ const QuantityTab = ({
                           </div>
                         </div>
                       ) : null}
+                    </Form.Group>
+                  </Col>
+                  <Col sm={2}>
+                    <Form.Group>
+                      <Form.Label>{t("applyMultiply")}:</Form.Label>
+                      <Form.Check
+                        type="checkbox"
+                        name="quantity_apply_multiply"
+                        {...formikPromo.getFieldProps("quantity_apply_multiply")}
+                        checked={
+                          formikPromo.getFieldProps("quantity_apply_multiply").value
+                        }
+                      />
                     </Form.Group>
                   </Col>
                 </Row>
