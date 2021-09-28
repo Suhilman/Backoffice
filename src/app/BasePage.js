@@ -44,6 +44,7 @@ import { AddPurchaseOrderPage } from "./pages/Inventory/PurchaseOrderTab/AddPage
 import { AddSalesOrderPage } from "./pages/Inventory/SalesOrderTab/AddPage";
 import { DetailPurchaseOrderPage } from "./pages/Inventory/PurchaseOrderTab/DetailPage";
 import { DetailSalesOrderPage } from "./pages/Inventory/SalesOrderTab/DetailPage";
+import { EditSalesOrderPage } from "./pages/Inventory/SalesOrderTab/EditPage";
 import { IngredientPage } from "./pages/Ingredient/IngredientPage";
 import { EditRecipePage } from "./pages/Ingredient/RecipeTab/EditPage";
 import { IncomingMaterialPage } from "./pages/Ingredient/InventoryTab/IncomingStock/IncomingMaterialPage";
@@ -318,6 +319,13 @@ export default function BasePage() {
           exact={true}
           path="/inventory/sales-order/add"
           component={AddSalesOrderPage}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.inventory_management}
+          isRoute={false}
+          exact={true}
+          path="/inventory/edit-sales-order/:orderId"
+          component={EditSalesOrderPage}
         />
         <ProtectedRoute
           isAllowed={currPrivileges.inventory_management}

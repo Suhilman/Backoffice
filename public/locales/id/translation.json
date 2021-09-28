@@ -939,5 +939,6 @@
   "salesOrder": "Order Penjualan",
   "addSalesOrder": "Tambah Order Penjualan",
   "soNumber": "Nomor S.O",
-  "chooseCustomer": "Pilih Customer"
+  "chooseCustomer": "Pilih Customer",
+  "editSalesOrder": "Ubah Order Penjualan"
 }

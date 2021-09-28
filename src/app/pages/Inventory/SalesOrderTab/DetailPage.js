@@ -22,7 +22,7 @@ export const DetailSalesOrderPage = ({ match }) => {
 
   dayjs.extend(localizedFormat)
 
-  const [purchaseOrder, setPurchaseOrder] = React.useState("");
+  const [SalesOrder, setSalesOrder] = React.useState("");
   const [dateTime, setDateTime] = React.useState("")
   const [dataToPdf, setDataToPdf] = React.useState({})
   const [currency, setCurrency] = React.useState("")
@@ -32,11 +32,12 @@ export const DetailSalesOrderPage = ({ match }) => {
 
     try {
       const data = await axios.get(
-        `${API_URL}/api/v1/purchase-order/${id}`
+        `${API_URL}/api/v1/sales-order/${id}`
       );
+      console.log("data sales order", data.data)
       if (data.request.status === 200) {
-        const resultSupplier = await axios.get(
-          `${API_URL}/api/v1/supplier/${data.data.data.supplier_id}`
+        const resultCustomer = await axios.get(
+          `${API_URL}/api/v1/customer/${data.data.data.customer_id}`
         )
         const resultBusiness = await axios.get(
           `${API_URL}/api/v1/business/${data.data.data.business_id}`
@@ -45,38 +46,23 @@ export const DetailSalesOrderPage = ({ match }) => {
           const resultOwner = await axios.get(
             `${API_URL}/api/v1/owner/${resultBusiness.data.data.owner_id}`
           )
-          const totalTagihan = []
-          data.data.data.Purchase_Order_Products.map(value => {
-            totalTagihan.push(value.total_price)
-          })
-          const reducer = (accumulator, currentValue) => accumulator + currentValue;
           const allData = {
             dataPembelian: data.data.data.date,
-            tagihan: totalTagihan.reduce(reducer),
-            // orderPurchase: data.data.data.Purchase_Order_Products,
-            // hargaUnit: data.data.data.Purchase_Order_Products[0].price,
-            // kuantitas: data.data.data.Purchase_Order_Products[0].quantity,
-            // produk: data.data.data.Purchase_Order_Products[0].Product.name,
-            namaSupplier: resultSupplier.data.data.name,
-            alamatSupplier: resultSupplier.data.data.address,
-            nomorTeleponSupplier: resultSupplier.data.data.phone_number,
-            emailSupplier: resultSupplier.data.data.email,
+            // orderPurchase: data.data.data.Sales_Order_Products,
+            // hargaUnit: data.data.data.Sales_Order_Products[0].price,
+            // kuantitas: data.data.data.Sales_Order_Products[0].quantity,
+            // produk: data.data.data.Sales_Order_Products[0].Product.name,
+            namaCustomer: resultCustomer.data.data.name,
+            alamatCustomer: resultCustomer.data.data.address,
+            nomorTeleponCustomer: resultCustomer.data.data.phone_number,
+            emailCustomer: resultCustomer.data.data.email,
             namaBusiness: resultBusiness.data.data.name,
             alamatBusiness: `${resultBusiness.data.data.Location.name}, ${resultBusiness.data.data.Location.City.name} ${resultBusiness.data.data.Location.City.Province.name}`,
             emailBusiness: resultOwner.data.data.email
           }
           setDataToPdf(allData)
-          setPurchaseOrder(data.data.data)
+          setSalesOrder(data.data.data)
           const dt = new Date();
-          console.log(`${
-            (dt.getMonth()+1).toString().padStart(2, '0')}/${
-            dt.getDate().toString().padStart(2, '0')}/${
-            dt.getFullYear().toString().padStart(4, '0')}-${
-            dt.getHours().toString().padStart(2, '0')}:${
-            dt.getMinutes().toString().padStart(2, '0')}:${
-            dt.getSeconds().toString().padStart(2, '0')}`
-          );
-          console.log("data.data.data", data.data.data)
           setDateTime(`${
             (dt.getMonth()+1).toString().padStart(2, '0')}-${
             dt.getDate().toString().padStart(2, '0')}-${
@@ -89,10 +75,10 @@ export const DetailSalesOrderPage = ({ match }) => {
         console.log('something went wrong')
       }
     } catch (err) {
-      console.log(err);
+      console.log("error sales order", err);
     }
   };
-  // console.log('ini semua data', purchaseOrder.Purchase_Order_Products)
+  // console.log('ini semua data', SalesOrder.Sales_Order_Products)
 
   React.useEffect(() => {
     getPurchaseOrder(orderId);
@@ -149,17 +135,17 @@ export const DetailSalesOrderPage = ({ match }) => {
   const options = {
     orientation: 'landscape'
   };
-  console.log("purchaseOrder", purchaseOrder)
+  console.log("SalesOrder", SalesOrder)
   const setFileName = () => {
-    if(purchaseOrder) {
-      return `Purchase-Order_${dataToPdf.namaBusiness}_${purchaseOrder.Outlet.name}_${dateTime}`
+    if(SalesOrder) {
+      return `Purchase-Order_${dataToPdf.namaBusiness}_${SalesOrder.Outlet.name}_${dateTime}`
     }
   }
   const fileName = setFileName()
   console.log("fileName", fileName)
 
-  const dataOrder = purchaseOrder
-    ? purchaseOrder.Purchase_Order_Products.map((item, index) => {
+  const dataOrder = SalesOrder
+    ? SalesOrder.Sales_Order_Products.map((item, index) => {
         return {
           product_name: item.Product.name,
           quantity: item.quantity,
@@ -174,7 +160,7 @@ export const DetailSalesOrderPage = ({ match }) => {
           <div className="container">
             <div className="row justify-content-between mb-5">
               <div className="col-md-6">
-                <h1 className="mb-3">{t("purchaseOrder")}</h1>
+                <h1 className="mb-3">{t("SalesOrder")}</h1>
                 <div className="d-flex justify-content-between">
                   <h4>{t("purchaseDate")}</h4>
                   <p className="text-mute">{dayjs(dataToPdf.dataPembelian).format("LLLL")}</p>
@@ -192,10 +178,10 @@ export const DetailSalesOrderPage = ({ match }) => {
             <div className="row mt-5">
               <div className="col-md-4">
                 <h4 className="font-weight-bold">{t("to")}</h4>
-                <h6>{dataToPdf.namaSupplier}</h6>
-                <h6>{dataToPdf.alamatSupplier}</h6>
-                <h6>{dataToPdf.nomorTelephoneSupplier}</h6>
-                <h6>{dataToPdf.emailSupplier}</h6>
+                <h6>{dataToPdf.namaCustomer}</h6>
+                <h6>{dataToPdf.alamatCustomer}</h6>
+                <h6>{dataToPdf.nomorTelephoneCustomer}</h6>
+                <h6>{dataToPdf.emailCustomer}</h6>
               </div>
               <div className="col-md-8">
                 <h4 className="font-weight-bold">{t("buyer")}</h4>
@@ -216,8 +202,8 @@ export const DetailSalesOrderPage = ({ match }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {purchaseOrder ? 
-                      purchaseOrder.Purchase_Order_Products.map((item) => 
+                    {SalesOrder ? 
+                      SalesOrder.Sales_Order_Products.map((item) => 
                         <tr>
                           <td>{item.Product.name}</td>
                           <td>{item.quantity}</td>
@@ -247,7 +233,7 @@ export const DetailSalesOrderPage = ({ match }) => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>{t("purchaseOrderDetailSummary")}</h3>
+                <h3>{t("SalesOrderDetailSummary")}</h3>
               </div>
               <div className="headerEnd">
                 <Link
@@ -274,8 +260,8 @@ export const DetailSalesOrderPage = ({ match }) => {
                         <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("price")} {currency}</th>
                         <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("priceTotal")} {currency}</th>
                       </tr>
-                      {purchaseOrder ? (
-                      purchaseOrder.Purchase_Order_Products.map(item => 
+                      {SalesOrder ? (
+                      SalesOrder.Sales_Order_Products.map(item => 
                         <tr>
                           <td>{item.Product.name}</td>
                           <td>{item.quantity}</td>
@@ -305,10 +291,10 @@ export const DetailSalesOrderPage = ({ match }) => {
             >
               <Col sm={3}>
                 <Form.Group>
-                  <Form.Label>P.O ID:</Form.Label>
+                  <Form.Label>S.O ID:</Form.Label>
                   <Form.Control
                     type="text"
-                    value={purchaseOrder ? purchaseOrder.code : "-"}
+                    value={SalesOrder ? SalesOrder.code : "-"}
                     disabled
                   />
                 </Form.Group>
@@ -317,7 +303,7 @@ export const DetailSalesOrderPage = ({ match }) => {
                   <Form.Label>{t("poNumber")}:</Form.Label>
                   <Form.Control
                     type="text"
-                    value={purchaseOrder ? purchaseOrder.po_number : "-"}
+                    value={SalesOrder ? SalesOrder.so_number : "-"}
                     disabled
                   />
                 </Form.Group>
@@ -326,7 +312,7 @@ export const DetailSalesOrderPage = ({ match }) => {
                   <Form.Label>{t("location")}:</Form.Label>
                   <Form.Control
                     type="text"
-                    value={purchaseOrder ? purchaseOrder.Outlet?.name : "-"}
+                    value={SalesOrder ? SalesOrder.Outlet?.name : "-"}
                     disabled
                   />
                 </Form.Group>
@@ -336,8 +322,8 @@ export const DetailSalesOrderPage = ({ match }) => {
                   <Form.Control
                     type="text"
                     value={
-                      purchaseOrder
-                        ? dayjs(purchaseOrder.date).format("DD/MM/YYYY")
+                      SalesOrder
+                        ? dayjs(SalesOrder.date).format("DD/MM/YYYY")
                         : "-"
                     }
                     disabled
@@ -350,7 +336,7 @@ export const DetailSalesOrderPage = ({ match }) => {
                   <Form.Label>{t("supplier")}:</Form.Label>
                   <Form.Control
                     type="text"
-                    value={purchaseOrder ? purchaseOrder.Supplier.name : "-"}
+                    value={SalesOrder ? SalesOrder.Customer.name : "-"}
                     disabled
                   />
                 </Form.Group>
@@ -360,7 +346,7 @@ export const DetailSalesOrderPage = ({ match }) => {
                   <Form.Control
                     as="textarea"
                     name="notes"
-                    value={purchaseOrder?.notes || "-"}
+                    value={SalesOrder?.notes || "-"}
                     disabled
                   />
                 </Form.Group>

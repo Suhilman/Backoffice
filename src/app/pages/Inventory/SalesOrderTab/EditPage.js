@@ -22,9 +22,10 @@ import { Paper } from "@material-ui/core";
 import DatePicker from "react-datepicker";
 import { CalendarToday, Delete } from "@material-ui/icons";
 
-export const AddSalesOrderPage = ({ location }) => {
+export const EditSalesOrderPage = ({ location, match }) => {
   const history = useHistory();
   const { allOutlets, allProducts, allCustomers } = location.state;
+  const { orderId } = match.params;
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
@@ -33,6 +34,10 @@ export const AddSalesOrderPage = ({ location }) => {
   const [optionProduct, setOptionProduct] = React.useState([])
   const [saveAsDraft, setSaveAsDraft] = React.useState(false);
   const [paymentMethods, setPaymentMethods] = React.useState([])
+  const [salesOrder, setSalesOrder] = React.useState({})
+  const [arrayDefaultProduct, setArrayDefaultProduct] = React.useState([])
+
+  // const [defaultValueOutlet, setDefaultValueOutlet] = React.useState({})
 
   const user_info = JSON.parse(localStorage.getItem('user_info'))
   const API_URL = process.env.REACT_APP_API_URL;
@@ -189,14 +194,13 @@ export const AddSalesOrderPage = ({ location }) => {
         orderData.so_number = values.so_number;
       }
 
-      console.log("data yang akan dikirim", values)
+      console.log("data yang akan diubah", values)
       try {
         enableLoading();
-        // await axios.post(`${API_URL}/api/v1/purchase-order`, orderData);
         if(saveAsDraft) {
           orderData.status = 'pending'
           console.log("orderData", orderData)
-          await axios.post(`${API_URL}/api/v1/sales-order/create-development`, orderData);
+          // await axios.post(`${API_URL}/api/v1/sales-order/create-development`, orderData);
         } else {
           const sumTotalPrice = tempItems.reduce((acc, curr) => {
             return acc + curr.price_total
@@ -224,7 +228,7 @@ export const AddSalesOrderPage = ({ location }) => {
           orderData.items = tempItems
           orderData.payment_method_id = values.payment_method_id
           console.log("orderData", orderData)
-          await axios.post(`${API_URL}/api/v1/transaction`, orderData);
+          // await axios.post(`${API_URL}/api/v1/transaction`, orderData);
         }
         disableLoading();
         history.push("/inventory");
@@ -309,10 +313,80 @@ export const AddSalesOrderPage = ({ location }) => {
     return { value: item.id, label: item.name };
   });
 
+  const defaultOutlet = optionsOutlet.find(value => {
+    return value.value === parseInt(formikOrder.values.outlet_id)
+  })
+
+  const defaultPayment = paymentMethods.find(value => {
+    return value.value === parseInt(formikOrder.values.payment_method_id)
+  })
+
+  console.log("defaultPayment", defaultPayment)
+
   const handleSaveDraft = () => {
     setSaveAsDraft(true);
     formikOrder.submitForm();
   };
+
+  const handleSalesOrder = async (orderId) => {
+    try {
+      const {data} = await axios.get(`${API_URL}/api/v1/sales-order/${orderId}`)
+      formikOrder.setValues({
+        outlet_id: data.data.outlet_id,
+        payment_method_id: data.data.payment_method_id,
+        customer_id: data.data.customer_id,
+        so_number: data.data.so_number,
+        notes: data.data.notes || "-",
+        date: data.data.date,
+        generated: data.data.generated,
+        items: data.data.Sales_Order_Products
+      });
+      await handleOptionPayment(data.data.outlet_id)
+      setSalesOrder(data.data)
+      const filterProduct = allProducts.filter(
+        (val) => val.outlet_id === parseInt(data.data.outlet_id)
+      )
+      if(filterProduct) {
+        const optionProduct = filterProduct.map(value => {
+          return {
+            value: value.id,
+            label: value.name
+          }
+        })
+        setOptionProduct(optionProduct)
+        const container_default_product = []
+        data.data.Sales_Order_Products.map(value => {
+          optionProduct.map(value2 => {
+            if(value.product_id == value2.value) {
+              container_default_product.push({
+                value: value.product_id,
+                label: value.Product?.name
+              })
+            }
+          })
+        })
+
+        console.log("container_default_product", container_default_product)
+
+        setArrayDefaultProduct(container_default_product)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  React.useEffect(() => {
+    handleSalesOrder(orderId)
+  }, [orderId])
+
+  console.log("defaultOutlet", defaultOutlet)
+
+  const defaultProduct = (idx) => {
+    console.log("arrayDefaultProduct", arrayDefaultProduct[idx])
+    return arrayDefaultProduct[idx]
+  }
+
+  console.log("defaultProduct", defaultProduct(0))
 
   return (
     <Row>
@@ -321,7 +395,7 @@ export const AddSalesOrderPage = ({ location }) => {
           <Form noValidate onSubmit={formikOrder.handleSubmit}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>{t("addSalesOrder")}</h3>
+                <h3>{t("editSalesOrder")}</h3>
               </div>
               <div className="headerEnd">
                 <Link to="/inventory">
@@ -362,100 +436,53 @@ export const AddSalesOrderPage = ({ location }) => {
                   <Form.Label>{t("soNumber")}</Form.Label>
                   <Form.Control
                     type="text"
-                    name="so_number"
-                    {...formikOrder.getFieldProps("so_number")}
-                    className={validationOrder("so_number")}
-                    disabled={
-                      formikOrder.getFieldProps("generated").value
-                        ? true
-                        : false
-                    }
-                    required
+                    value={salesOrder ? salesOrder.code : "-"}
+                    disabled
                   />
-                  <Form.Check
-                    type="checkbox"
-                    label={t('generateBySystem')}
-                    style={{ marginTop: "0.5rem" }}
-                    {...formikOrder.getFieldProps("generated")}
-                    checked={
-                      formikOrder.getFieldProps("generated").value
-                        ? true
-                        : false
-                    }
-                    onChange={(e) => {
-                      const { value } = e.target;
-                      if (value === "true") {
-                        formikOrder.setFieldValue("generated", false);
-                      } else {
-                        formikOrder.setFieldValue("generated", true);
-                      }
-                      formikOrder.setFieldValue("so_number", "");
-                    }}
-                  />
-                  {formikOrder.touched.so_number &&
-                  formikOrder.errors.so_number ? (
-                    <div className="fv-plugins-message-container">
-                      <div className="fv-help-block">
-                        {formikOrder.errors.so_number}
-                      </div>
-                    </div>
-                  ) : null}
                 </Form.Group>
+                  
+                {defaultOutlet ? (
+                  <Form.Group>
+                    <Form.Label>{t("outlet")}</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={defaultOutlet.label || "-"}
+                      disabled
+                    />
+                    {formikOrder.touched.outlet_id &&
+                    formikOrder.errors.outlet_id ? (
+                      <div className="fv-plugins-message-container">
+                        <div className="fv-help-block">
+                          {formikOrder.errors.outlet_id}
+                        </div>
+                      </div>
+                    ) : null}
+                  </Form.Group>
+                ) : null }
 
-                <Form.Group>
-                  <Form.Label>{t("outlet")}</Form.Label>
-                  <Select
-                    options={optionsOutlet}
-                    name="outlet_id"
-                    className="basic-single"
-                    classNamePrefix="select"
-                    onChange={(value) =>{
-                      handleOptionPayment(value.value)
-                      const filterProduct = allProducts.filter(
-                        (val) => val.outlet_id === parseInt(value.value)
-                      )
-                      if(filterProduct) {
-                        const optionProduct = filterProduct.map(value => {
-                          return {
-                            value: value.id,
-                            label: value.name
-                          }
-                        })
-                        setOptionProduct(optionProduct)
-                      }
-                      formikOrder.setFieldValue("outlet_id", value.value)
-                    }}
-                  />
-                  {formikOrder.touched.outlet_id &&
-                  formikOrder.errors.outlet_id ? (
-                    <div className="fv-plugins-message-container">
-                      <div className="fv-help-block">
-                        {formikOrder.errors.outlet_id}
+                {defaultPayment ? (
+                  <Form.Group>
+                    <Form.Label>{t("paymentMethod")}</Form.Label>
+                    <Select
+                      options={paymentMethods}
+                      defaultValue={defaultPayment}
+                      name="payment_method_id"
+                      className="basic-single"
+                      classNamePrefix="select"
+                      onChange={(value) =>{
+                        formikOrder.setFieldValue("payment_method_id", value.value)
+                      }}
+                    />
+                    {formikOrder.touched.payment_method_id &&
+                    formikOrder.errors.payment_method_id ? (
+                      <div className="fv-plugins-message-container">
+                        <div className="fv-help-block">
+                          {formikOrder.errors.payment_method_id}
+                        </div>
                       </div>
-                    </div>
-                  ) : null}
-                </Form.Group>
-
-                <Form.Group>
-                  <Form.Label>{t("paymentMethod")}</Form.Label>
-                  <Select
-                    options={paymentMethods}
-                    name="payment_method_id"
-                    className="basic-single"
-                    classNamePrefix="select"
-                    onChange={(value) =>{
-                      formikOrder.setFieldValue("payment_method_id", value.value)
-                    }}
-                  />
-                  {formikOrder.touched.payment_method_id &&
-                  formikOrder.errors.payment_method_id ? (
-                    <div className="fv-plugins-message-container">
-                      <div className="fv-help-block">
-                        {formikOrder.errors.payment_method_id}
-                      </div>
-                    </div>
-                  ) : null}
-                </Form.Group>
+                    ) : null}
+                  </Form.Group>
+                ) : null }
 
                 <Form.Group>
                   <Form.Label>{t("date")}:</Form.Label>
@@ -562,9 +589,11 @@ export const AddSalesOrderPage = ({ location }) => {
                             return (
                               <Row key={index}>
                                 <Col>
+                                {defaultProduct(index) ? (
                                   <Form.Group>
                                     <Select
                                       options={optionProduct}
+                                      defaultValue={defaultProduct(index)}
                                       name={`items[${index}].product_id`}
                                       className="basic-single"
                                       classNamePrefix="select"
@@ -602,6 +631,7 @@ export const AddSalesOrderPage = ({ location }) => {
                                       </div>
                                     ) : null}
                                   </Form.Group>
+                                ) : null }
                                 </Col>
                                 <Col>
                                   <Form.Group>

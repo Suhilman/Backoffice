@@ -186,6 +186,11 @@ const PurchaseOrderPage = ({ refresh, handleRefresh, t }) => {
       sortable: true
     },
     {
+      name: `${t("status")}`,
+      selector: "status",
+      sortable: true
+    },
+    {
       name: `${t("actions")}`,
       cell: (rows) => {
         return (
@@ -207,6 +212,20 @@ const PurchaseOrderPage = ({ refresh, handleRefresh, t }) => {
               >
                 <Dropdown.Item as="button">Detail</Dropdown.Item>
               </Link>
+              {rows.status === 'pending' ? (
+                <Link
+                  to={{
+                    pathname: `/inventory/edit-sales-order/${rows.id}`,
+                    state: {
+                      allOutlets,
+                      allProducts,
+                      allCustomers
+                    }
+                  }}
+                >
+                  <Dropdown.Item as="button">{t("edit")}</Dropdown.Item>
+                </Link>
+              ) : null}
               {/* <Dropdown.Item as="button" onClick={() => handleGetPDF(rows.id)}>
                 Save to PDF
               </Dropdown.Item> */}
@@ -227,7 +246,8 @@ const PurchaseOrderPage = ({ refresh, handleRefresh, t }) => {
       code: item.code,
       customer_name: item.Customer.name,
       so_number: item.so_number,
-      date: dayjs(item.date).format("DD/MM/YYYY")
+      date: dayjs(item.date).format("DD/MM/YYYY"),
+      status: item.status
     };
   });
 
@@ -267,7 +287,7 @@ const PurchaseOrderPage = ({ refresh, handleRefresh, t }) => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>{t("purhcaseOrder")}</h3>
+                <h3>{t("salesOrder")}</h3>
               </div>
               <div className="headerEnd">
                 <Link
