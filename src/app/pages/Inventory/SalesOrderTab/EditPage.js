@@ -153,35 +153,6 @@ export const EditSalesOrderPage = ({ location, match }) => {
     initialValues: initialValueOrder,
     validationSchema: OrderSchema,
     onSubmit: async (values) => {
-      const salesType = await handleSalesType(API_URL)
-      const charge = await handleCharge(API_URL, values.outlet_id)
-      const tax = await handleTax(API_URL, values.outlet_id)
-
-      console.log("salesType", salesType)
-      console.log("charge", charge)
-
-      const tempItems = []
-
-      values.items.map(value => {
-        const price_service = charge ? Math.round(value.total_price * parseFloat(charge / 100)) : 0
-        console.log("price_service", price_service)
-        console.log("charge", charge)
-        console.log("value.total_price", value.total_price)
-        tempItems.push({
-          sales_type_id: salesType.id,
-          product_id: value.product_id,
-          quantity: value.quantity,
-          price_product: value.price,
-          price_discount: 0,
-          price_service,
-          price_addons_total: 0,
-          price_total: (value.price + 0 + price_service) * value.quantity,
-          notes: ""
-        })
-      })
-
-      console.log("tempItems", tempItems)
-
       const orderData = {
         outlet_id: values.outlet_id,
         customer_id: values.customer_id,
@@ -197,39 +168,7 @@ export const EditSalesOrderPage = ({ location, match }) => {
       console.log("data yang akan diubah", values)
       try {
         enableLoading();
-        if(saveAsDraft) {
-          orderData.status = 'pending'
-          console.log("orderData", orderData)
-          // await axios.post(`${API_URL}/api/v1/sales-order/create-development`, orderData);
-        } else {
-          const sumTotalPrice = tempItems.reduce((acc, curr) => {
-            return acc + curr.price_total
-          }, 0)
-          const PaymentTax = tax ? Math.round(sumTotalPrice * parseFloat(tax / 100)) : 0
-          const PaymentService = charge ? Math.round(sumTotalPrice * parseFloat(charge / 100)) : 0
-          const receipt_id = 'S.O' +
-          values.outlet_id +
-          ':' +
-          values.customer_id || null +
-          ':' +
-          dayjs(new Date()).format('YYYY/MM/DD:HH:mm:ss')
-
-          orderData.status = 'done'
-          orderData.amount = sumTotalPrice
-          orderData.payment_change = 0
-          orderData.payment_discount = 0
-          orderData.payment_tax = PaymentTax
-          orderData.payment_service = PaymentService
-          orderData.payment_total = sumTotalPrice + PaymentTax + PaymentService - 0
-          orderData.custom_price = 0
-          orderData.custom_price_tax = 0
-          orderData.promo  = null
-          orderData.receipt_id  = receipt_id
-          orderData.items = tempItems
-          orderData.payment_method_id = values.payment_method_id
-          console.log("orderData", orderData)
-          // await axios.post(`${API_URL}/api/v1/transaction`, orderData);
-        }
+        await axios.put(`${API_URL}/api/v1/sales-order/${orderId}`, orderData);
         disableLoading();
         history.push("/inventory");
       } catch (err) {
@@ -401,30 +340,17 @@ export const EditSalesOrderPage = ({ location, match }) => {
                 <Link to="/inventory">
                   <Button variant="secondary">{t("cancel")}</Button>
                 </Link>
-                <Dropdown as={ButtonGroup} style={{ marginLeft: "0.5rem" }}>
-                  <Button
-                    variant="primary"
-                    style={{ marginLeft: "0.5rem" }}
-                    type="submit"
-                  >
-                    {loading ? (
-                      <Spinner animation="border" variant="light" size="sm" />
-                    ) : (
-                      `${t("save")}`
-                    )}
-                  </Button>
-
-                  <Dropdown.Toggle split variant="primary" />
-
-                  <Dropdown.Menu>
-                    <Dropdown.Item
-                      variant="primary"
-                      onClick={handleSaveDraft}
-                    >
-                      {t("saveAsDraft")}
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
+                <Button
+                  variant="primary"
+                  style={{ marginLeft: "0.5rem" }}
+                  type="submit"
+                >
+                  {loading ? (
+                    <Spinner animation="border" variant="light" size="sm" />
+                  ) : (
+                    `${t("save")}`
+                  )}
+                </Button>
               </div>
             </div>
 
