@@ -144,7 +144,9 @@ const ModalOutlet = ({
     console.log("Content was updated:", e.target.getContent());
   };
   useEffect(() => {
-    setConditionCountry(localStorage.getItem("checkCountry"));
+    // option provinsi
+    // setConditionCountry(localStorage.getItem("checkCountry"));
+    setConditionCountry("true");
     setPaymentDescription(
       formikOutlet.getFieldProps("payment_description").value
     );
