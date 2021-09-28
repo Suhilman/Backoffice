@@ -105,7 +105,7 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
       .max(50, `${t("maximum50Character")}`)
       .required(`${t("pleaseInputAName")}`),
     value: Yup.number()
-      .integer()
+      // .integer()
       // .min(1)
       .required(`${t("pleaseInputValue")}`),
     tax_type_id: Yup.number()
@@ -200,7 +200,8 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
     formikTaxEdit.setValues({
       id: data.id,
       name: data.name,
-      value: parseInt(data.amount.slice(0, -1)),
+      // value: parseInt(data.amount.slice(0, -1)),
+      value: parseFloat(data.amount),
       tax_type_id: data.tax_type_id,
       outlet_id: data.outlet_id
     });
@@ -302,13 +303,14 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
 
   const dataTaxes = () => {
     return allTaxTypes.map((item, index) => {
+      console.log("item.value", item.value)
       return {
         id: item.id,
         no: index + 1,
         name: item.name,
         type: item.Tax_Type.name,
         tax_type_id: item.tax_type_id,
-        amount: item.value + "%",
+        amount: parseFloat(item.value) + "%",
         outlet_id: item.Outlet_Taxes.map((item) => item.outlet_id)
       };
     });

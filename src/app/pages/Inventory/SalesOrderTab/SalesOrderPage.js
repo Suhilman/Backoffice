@@ -39,7 +39,7 @@ const PurchaseOrderPage = ({ refresh, handleRefresh, t }) => {
   });
   const [urlPdf, setUrlPdf] = React.useState("");
 
-  const [purchaseOrder, setPurchaseOrder] = React.useState([]);
+  const [salesOrder, setSalesOrder] = React.useState([]);
   const [allOutlets, setAllOutlets] = React.useState([]);
   const [allProducts, setAllProducts] = React.useState([]);
   const [allCustomers, setAllCustomers] = React.useState([]);
@@ -50,11 +50,13 @@ const PurchaseOrderPage = ({ refresh, handleRefresh, t }) => {
 
     try {
       const { data } = await axios.get(
-        `${API_URL}/api/v1/purchase-order${filterStock}`
+        `${API_URL}/api/v1/sales-order`
       );
-      setPurchaseOrder(data.data);
+      console.log("getPurchaseOrder", data.data)
+      setSalesOrder(data.data);
     } catch (err) {
-      setPurchaseOrder([]);
+      console.log("error getPurchaseOrder", err)
+      setSalesOrder([]);
     }
   };
 
@@ -164,18 +166,18 @@ const PurchaseOrderPage = ({ refresh, handleRefresh, t }) => {
       width: "50px"
     },
     {
-      name: "P.O ID",
+      name: "S.O ID",
       selector: "code",
       sortable: true
     },
     {
-      name: `${t("supplierName")}`,
-      selector: "supplier_name",
+      name: `${t("customerName")}`,
+      selector: "customer_name",
       sortable: true
     },
     {
-      name: `${t("poNumber")}`,
-      selector: "po_number",
+      name: `${t("soNumber")}`,
+      selector: "so_number",
       sortable: true
     },
     {
@@ -218,13 +220,13 @@ const PurchaseOrderPage = ({ refresh, handleRefresh, t }) => {
     }
   ];
 
-  const dataOrder = purchaseOrder.map((item, index) => {
+  const dataOrder = salesOrder.map((item, index) => {
     return {
       id: item.id,
       no: index + 1,
       code: item.code,
-      supplier_name: item.Supplier.name,
-      po_number: item.po_number,
+      customer_name: item.Customer.name,
+      so_number: item.so_number,
       date: dayjs(item.date).format("DD/MM/YYYY")
     };
   });

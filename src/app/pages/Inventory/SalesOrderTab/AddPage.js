@@ -4,6 +4,8 @@ import { Link, useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import { useFormik, FormikProvider, FieldArray } from "formik";
 import { useTranslation } from "react-i18next";
+import Select from "react-select";
+import dayjs from 'dayjs'
 
 import {
   Button,
@@ -12,7 +14,9 @@ import {
   Col,
   Alert,
   Spinner,
-  InputGroup
+  InputGroup,
+  ButtonGroup,
+  Dropdown
 } from "react-bootstrap";
 import { Paper } from "@material-ui/core";
 import DatePicker from "react-datepicker";
@@ -27,6 +31,7 @@ export const AddSalesOrderPage = ({ location }) => {
 
   const [startDate, setStartDate] = React.useState(new Date());
   const [optionProduct, setOptionProduct] = React.useState([])
+  const [saveAsDraft, setSaveAsDraft] = React.useState(false);
 
   const initialValueOrder = {
     outlet_id: "",
@@ -77,11 +82,97 @@ export const AddSalesOrderPage = ({ location }) => {
     )
   });
 
+  const handleSalesType =  async (API_URL) => {
+    try {
+      const user_info = JSON.parse(localStorage.getItem('user_info'))
+      const { data } = await axios.get(`${API_URL}/api/v1/sales-type/guest?business_id=${user_info.business_id}`)
+      let result = {}
+      data.data.map(value => {
+        if(!value.is_booking || !value.require_table || value.is_delivery) {
+          result = value
+        }
+        if(!value.is_booking || !value.require_table || !value.is_delivery) {
+          result = value
+        }
+      })
+      return result
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleCharge = async (API_URL, outlet_id) => {
+    try {
+      const {data} = await axios.get(`${API_URL}/api/v1/tax`)
+      console.log("handleCharge", data.data)
+      let result = []
+      data.data.map(value => {
+        if(value.tax_type_id === 2) {
+          result.push(value)
+        }
+      })
+      const reduce = result.reduce((acc, curr) => {
+        return acc + curr.value
+      }, 0)
+      return reduce
+    } catch (error) {
+      console.log(error)
+      return false
+    }
+  }
+
+  const handleTax = async (API_URL, outlet_id) => {
+    try {
+      const {data} = await axios.get(`${API_URL}/api/v1/tax`)
+      let result = []
+      data.data.map(value => {
+        if(value.tax_type_id === 1) {
+          result.push(value)
+        }
+      })
+      const reduce = result.reduce((acc, curr) => {
+        return acc + curr.value
+      }, 0)
+      return reduce
+    } catch (error) {
+      console.log(error)
+      return false
+    }
+  }
+
   const formikOrder = useFormik({
     initialValues: initialValueOrder,
     validationSchema: OrderSchema,
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
+      const salesType = await handleSalesType(API_URL)
+      const charge = await handleCharge(API_URL, values.outlet_id)
+      const tax = await handleTax(API_URL, values.outlet_id)
+
+      console.log("salesType", salesType)
+      console.log("charge", charge)
+
+      const tempItems = []
+
+      values.items.map(value => {
+        const price_service = charge ? Math.round(value.total_price * parseFloat(charge)) : 0
+        console.log("price_service", price_service)
+        console.log("charge", charge)
+        console.log("value.total_price", value.total_price)
+        tempItems.push({
+          sales_type_id: salesType.id,
+          product_id: value.product_id,
+          quantity: value.quantity,
+          price_product: value.price,
+          price_discount: 0,
+          price_service,
+          price_addons_total: 0,
+          price_total: (value.price + 0 + price_service) * value.quantity,
+          notes: ""
+        })
+      })
+
+      console.log("tempItems", tempItems)
 
       const orderData = {
         outlet_id: values.outlet_id,
@@ -96,11 +187,40 @@ export const AddSalesOrderPage = ({ location }) => {
       }
 
       console.log("data yang akan dikirim", values)
-      console.log("orderData", orderData)
       try {
         enableLoading();
         // await axios.post(`${API_URL}/api/v1/purchase-order`, orderData);
-        // await axios.post(`${API_URL}/api/v1/purchase-order/create-development`, orderData);
+        if(saveAsDraft) {
+          orderData.status = 'pending'
+          console.log("orderData", orderData)
+          await axios.post(`${API_URL}/api/v1/sales-order/create-development`, orderData);
+        } else {
+          const sumTotalPrice = tempItems.reduce((acc, curr) => {
+            return acc + curr.price_total
+          }, 0)
+          const PaymentTax = tax ? Math.round(sumTotalPrice * parseFloat(tax)) : sumTotalPrice
+          const PaymentService = charge ? Math.round(sumTotalPrice * parseFloat(charge)) : 0
+          const receipt_id = 'S.O' +
+          values.outlet_id +
+          ':' +
+          values.customer_id || null +
+          ':' +
+          dayjs(new Date()).format('YYYY/MM/DD:HH:mm:ss')
+
+          orderData.status = 'done'
+          orderData.amount = sumTotalPrice
+          orderData.payment_discount = 0
+          orderData.payment_tax = PaymentTax
+          orderData.payment_service = PaymentService
+          orderData.payment_total = sumTotalPrice + PaymentTax + PaymentService - 0
+          orderData.custom_price = 0
+          orderData.custom_price_tax = 0
+          orderData.promo  = null
+          orderData.receipt_id  = receipt_id
+          orderData.items = tempItems
+          console.log("orderData", orderData)
+          await axios.post(`${API_URL}/api/v1/transaction`, orderData);
+        }
         disableLoading();
         history.push("/inventory");
       } catch (err) {
@@ -157,6 +277,15 @@ export const AddSalesOrderPage = ({ location }) => {
     );
   };
 
+  const optionsOutlet = allOutlets.map((item) => {
+    return { value: item.id, label: item.name };
+  });
+
+  const handleSaveDraft = () => {
+    setSaveAsDraft(true);
+    formikOrder.submitForm();
+  };
+
   return (
     <Row>
       <Col>
@@ -170,17 +299,30 @@ export const AddSalesOrderPage = ({ location }) => {
                 <Link to="/inventory">
                   <Button variant="secondary">{t("cancel")}</Button>
                 </Link>
-                <Button
-                  variant="primary"
-                  style={{ marginLeft: "0.5rem" }}
-                  type="submit"
-                >
-                  {loading ? (
-                    <Spinner animation="border" variant="light" size="sm" />
-                  ) : (
-                    `${t("save")}`
-                  )}
-                </Button>
+                <Dropdown as={ButtonGroup} style={{ marginLeft: "0.5rem" }}>
+                  <Button
+                    variant="primary"
+                    style={{ marginLeft: "0.5rem" }}
+                    type="submit"
+                  >
+                    {loading ? (
+                      <Spinner animation="border" variant="light" size="sm" />
+                    ) : (
+                      `${t("save")}`
+                    )}
+                  </Button>
+
+                  <Dropdown.Toggle split variant="primary" />
+
+                  <Dropdown.Menu>
+                    <Dropdown.Item
+                      variant="primary"
+                      onClick={handleSaveDraft}
+                    >
+                      {t("saveAsDraft")}
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
               </div>
             </div>
 
@@ -234,25 +376,29 @@ export const AddSalesOrderPage = ({ location }) => {
 
                 <Form.Group>
                   <Form.Label>{t("outlet")}</Form.Label>
-                  <Form.Control
-                    as="select"
+                  <Select
+                    options={optionsOutlet}
                     name="outlet_id"
-                    {...formikOrder.getFieldProps("outlet_id")}
-                    className={validationOrder("outlet_id")}
-                    required
-                    onChange={(e) => console.log("outlet id", e.target.value)}
-                  >
-                    <option value={""} disabled hidden>
-                      {t("chooseOutlet")}
-                    </option>
-                    {allOutlets.map((item) => {
-                      return (
-                        <option key={item.id} value={item.id}>
-                          {item.name}
-                        </option>
-                      );
-                    })}
-                  </Form.Control>
+                    className="basic-single"
+                    classNamePrefix="select"
+                    onChange={(value) =>{
+                      console.log("outlet_id", value)
+                      console.log("allProducts", allProducts)
+                      const filterProduct = allProducts.filter(
+                        (val) => val.outlet_id === parseInt(value.value)
+                      )
+                      if(filterProduct) {
+                        const optionProduct = filterProduct.map(value => {
+                          return {
+                            value: value.id,
+                            label: value.name
+                          }
+                        })
+                        setOptionProduct(optionProduct)
+                      }
+                      formikOrder.setFieldValue("outlet_id", value.value)
+                    }}
+                  />
                   {formikOrder.touched.outlet_id &&
                   formikOrder.errors.outlet_id ? (
                     <div className="fv-plugins-message-container">
@@ -369,28 +515,33 @@ export const AddSalesOrderPage = ({ location }) => {
                               <Row key={index}>
                                 <Col>
                                   <Form.Group>
-                                    <Form.Control
-                                      as="select"
+                                    <Select
+                                      options={optionProduct}
                                       name={`items[${index}].product_id`}
-                                      {...formikOrder.getFieldProps(
-                                        `items[${index}].product_id`
-                                      )}
-                                      onChange={(value) => {
-                                        console.log("Product Id", value)
-                                      }}
-                                      required
-                                    >
-                                      <option value="" disabled hidden>
-                                        {t("chooseProduct")}
-                                      </option>
-                                      {optionProduct.map((item) => {
-                                        return (
-                                          <option key={item.id} value={item.id}>
-                                            {item.name}
-                                          </option>
+                                      className="basic-single"
+                                      classNamePrefix="select"
+                                      onChange={(value) =>{
+                                        const selectProduct = allProducts.find(
+                                          (val) => val.id === parseInt(value.value)
+                                        )
+                                        formikOrder.setFieldValue(
+                                          `items[${index}].product_id`,
+                                          value.value
                                         );
-                                      })}
-                                    </Form.Control>
+                                        formikOrder.setFieldValue(
+                                          `items[${index}].quantity`,
+                                          1
+                                        );
+                                        formikOrder.setFieldValue(
+                                          `items[${index}].price`,
+                                          selectProduct.price
+                                        )
+                                        formikOrder.setFieldValue(
+                                          `items[${index}].total_price`,
+                                          selectProduct.price
+                                        )
+                                      }}
+                                    />
                                     {formikOrder.touched.items &&
                                     formikOrder.errors.items ? (
                                       <div className="fv-plugins-message-container">
