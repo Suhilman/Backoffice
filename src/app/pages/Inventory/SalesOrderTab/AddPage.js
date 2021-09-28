@@ -32,9 +32,14 @@ export const AddSalesOrderPage = ({ location }) => {
   const [startDate, setStartDate] = React.useState(new Date());
   const [optionProduct, setOptionProduct] = React.useState([])
   const [saveAsDraft, setSaveAsDraft] = React.useState(false);
+  const [paymentMethods, setPaymentMethods] = React.useState([])
+
+  const user_info = JSON.parse(localStorage.getItem('user_info'))
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const initialValueOrder = {
     outlet_id: "",
+    payment_method_id: "",
     customer_id: "",
     so_number: "",
     notes: "",
@@ -84,7 +89,6 @@ export const AddSalesOrderPage = ({ location }) => {
 
   const handleSalesType =  async (API_URL) => {
     try {
-      const user_info = JSON.parse(localStorage.getItem('user_info'))
       const { data } = await axios.get(`${API_URL}/api/v1/sales-type/guest?business_id=${user_info.business_id}`)
       let result = {}
       data.data.map(value => {
@@ -144,7 +148,6 @@ export const AddSalesOrderPage = ({ location }) => {
     initialValues: initialValueOrder,
     validationSchema: OrderSchema,
     onSubmit: async (values) => {
-      const API_URL = process.env.REACT_APP_API_URL;
       const salesType = await handleSalesType(API_URL)
       const charge = await handleCharge(API_URL, values.outlet_id)
       const tax = await handleTax(API_URL, values.outlet_id)
@@ -209,6 +212,7 @@ export const AddSalesOrderPage = ({ location }) => {
 
           orderData.status = 'done'
           orderData.amount = sumTotalPrice
+          orderData.payment_change = 0
           orderData.payment_discount = 0
           orderData.payment_tax = PaymentTax
           orderData.payment_service = PaymentService
@@ -218,6 +222,7 @@ export const AddSalesOrderPage = ({ location }) => {
           orderData.promo  = null
           orderData.receipt_id  = receipt_id
           orderData.items = tempItems
+          orderData.payment_method_id = values.payment_method_id
           console.log("orderData", orderData)
           await axios.post(`${API_URL}/api/v1/transaction`, orderData);
         }
@@ -265,6 +270,29 @@ export const AddSalesOrderPage = ({ location }) => {
     formikOrder.setFieldValue(`items[${idx}].quantity`, value);
     formikOrder.setFieldValue(`items[${idx}].total_price`, total_price);
   };
+
+  const handleOptionPayment = async(outlet_id) => {
+    try {
+      const {data} = await axios.get(`${API_URL}/api/v1/payment-method/development?businessId=${user_info.business_id}`)
+      console.log("data.data.rows", data.data.rows)
+      if(data.data.rows) {
+        const filterOutlet = data.data.rows.filter(value => {
+          return value.outlet_id === parseInt(outlet_id) || value.outlet_id === null
+        })
+        const dataArray = filterOutlet
+        const resOption = dataArray.map(value => {
+          return {
+            value: value.id,
+            label: value.name
+          }
+        })
+        console.log("resOption", resOption)
+        setPaymentMethods(resOption)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const CustomInputDate = ({ value, onClick }) => {
     return (
@@ -382,8 +410,7 @@ export const AddSalesOrderPage = ({ location }) => {
                     className="basic-single"
                     classNamePrefix="select"
                     onChange={(value) =>{
-                      console.log("outlet_id", value)
-                      console.log("allProducts", allProducts)
+                      handleOptionPayment(value.value)
                       const filterProduct = allProducts.filter(
                         (val) => val.outlet_id === parseInt(value.value)
                       )
@@ -404,6 +431,27 @@ export const AddSalesOrderPage = ({ location }) => {
                     <div className="fv-plugins-message-container">
                       <div className="fv-help-block">
                         {formikOrder.errors.outlet_id}
+                      </div>
+                    </div>
+                  ) : null}
+                </Form.Group>
+
+                <Form.Group>
+                  <Form.Label>{t("paymentMethod")}</Form.Label>
+                  <Select
+                    options={paymentMethods}
+                    name="payment_method_id"
+                    className="basic-single"
+                    classNamePrefix="select"
+                    onChange={(value) =>{
+                      formikOrder.setFieldValue("payment_method_id", value.value)
+                    }}
+                  />
+                  {formikOrder.touched.payment_method_id &&
+                  formikOrder.errors.payment_method_id ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikOrder.errors.payment_method_id}
                       </div>
                     </div>
                   ) : null}
