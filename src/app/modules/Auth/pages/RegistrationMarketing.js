@@ -14,6 +14,16 @@ import dayjs from "dayjs";
 import ReCAPTCHA from "react-google-recaptcha";
 import styles from "./registrationmarketing.module.css";
 
+import LogoBeetpos from '../../../../images/logo beetPOS new.png'
+import LogoTwitter from '../../../../images/twitter-480.png'
+import LogoInstagram from '../../../../images/instagram-480.png'
+import LogoFacebook from '../../../../images/facebook-500.png'
+
+import LogoLocation from '../../../../images/location-512.png'
+import LogoPhone from '../../../../images/phone-90.png'
+import LogoWhatsapp from '../../../../images/whatsapp-240.png'
+import LogoEmail from '../../../../images/email-512.png'
+
 import ModalVerify from "../components/ModalVerify";
 import ModalPersonal from "../components/ModalPersonal";
 import ModalRegister from "../components/ModalRegister";
@@ -783,7 +793,7 @@ const RegistrationMarketing = () => {
       <div className={styles.containerContent}>
         <div className={styles.containerBox}>
           <div className="row">
-            <div className="col-md-4" style={{paddingRight: 0, marginRight: 0}}>
+            <div className={`col-md-5 ${styles.colMd5}`} >
               <div className={styles.leftColumn}>
                 <div className="text-center mb-10 mb-lg-20">
                   <h3 className="register-to-beetpos">Register to BeetPOS</h3>
@@ -1138,7 +1148,7 @@ const RegistrationMarketing = () => {
               </div>
             </div>
             
-            <div className="col-md-8" style={{paddingLeft: 0, marginLeft: 0}}>
+            <div className={`col-md-7 ${styles.colMd7}`} style={{paddingLeft: 0, marginLeft: 0}}>
               <div className={styles.rightColumn}>
                 <div className={styles.rightColumnTop}>
                 </div>
@@ -1161,7 +1171,113 @@ const RegistrationMarketing = () => {
       </div>
       <footer className={styles.containerFooter}>
         <div className={styles.contentFooter}>
-          Footernya bree
+          <div className="row">
+            <div className="col-md-3">
+              <div className={styles.wrapperLogoBeetpos}>
+                <img src={LogoBeetpos} alt="Logo Beetpo" />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className={styles.titleFooter}>
+                Kategori Bisnis
+              </div>
+              <div className="row mt-2">
+                <div className="col">
+                  <div className={styles.contentTitleFooter}>Service</div>
+                  <div className={styles.contentTitleFooter}>Restaurant</div>
+                  <div className={styles.contentTitleFooter}>Retail</div>
+                </div>
+                <div className="col">
+                  <div className={styles.contentTitleFooter}>Toko Butik</div>
+                  <div className={styles.contentTitleFooter}>Toko Elektronik</div>
+                  <div className={styles.contentTitleFooter}>Toko Serba Ada</div>
+                  <div className={styles.contentTitleFooter}>Toko Vape</div>
+                  <div className={styles.contentTitleFooter}>Laundry</div>
+                  <div className={styles.contentTitleFooter}>Car Wash</div>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className={styles.titleFooter}>
+                BeetPOS
+              </div>
+              <div className="row mt-2">
+                <div className="col">
+                  <div className={styles.contentTitleFooter}>Tentang Kami</div>
+                  <div className={styles.contentTitleFooter}>Hubungi Kami</div>
+                  <div className={styles.contentTitleFooter}>Afiliasi</div>
+                  <div className={styles.contentTitleFooter}>Blog</div>
+                  <div className={styles.contentTitleFooter}>Ketentuan Layanan</div>
+                  <div className={styles.contentTitleFooter}>Kebijakan Privasi</div>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className={styles.titleFooter}>
+                Tetap Terhubung dengan Kami
+              </div>
+              <div className="d-flex mt-2">
+                <div className={styles.wrapperLogoSosmed}>
+                  <img src={LogoFacebook} alt="Logo Facebook" />
+                </div>
+                <div className={styles.wrapperLogoSosmed}>
+                  <img src={LogoInstagram} alt="Logo Instagram" />
+                </div>
+                <div className={styles.wrapperLogoSosmed}>
+                  <img src={LogoTwitter} alt="Logo Twitter" />
+                </div>
+              </div>
+              <div className="d-flex mt-2">
+                <div className="mr-2">
+                  <div className={styles.wrapperLogoTitle}>
+                    <img src={LogoLocation} alt="Logo Location" />
+                  </div>
+                </div>
+                <div>
+                  <div className={styles.title16}>Kantor Pusat</div>
+                  <div className={styles.contentTitleFooter}>
+                    Jl. Green Lake City Boulevard Rukan Cordoba, RT.007/RW.009, Petir, Kec. Cipondoh, Kota Jakarta Barat, Banten 15147
+                  </div>
+                </div>
+              </div>
+              <div className="d-flex align-items-end mt-2">
+                <div className="mr-2">
+                  <div className={styles.wrapperLogoTitle}>
+                    <img src={LogoPhone} alt="Logo Location" />
+                  </div>
+                </div>
+                <div className={styles.contentTitleFooter}>
+                  (021) 54313924
+                </div>
+              </div>
+              <div className="d-flex align-items-end mt-2">
+                <div className="mr-2">
+                  <div className={styles.wrapperLogoTitle}>
+                    <img src={LogoWhatsapp} alt="Logo Whatsapp" />
+                  </div>
+                </div>
+                <div className={styles.contentTitleFooter}>
+                  (021) 54313924
+                </div>
+              </div>
+              <div className="d-flex align-items-end mt-2">
+                <div className="mr-2">
+                  <div className={styles.wrapperLogoTitle}>
+                    <img src={LogoEmail} alt="Logo Email" />
+                  </div>
+                </div>
+                <div className={styles.contentTitleFooter}>
+                  hello@lifetech.co.id
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr style={{height: '1px' ,backgroundColor: 'white'}}/>
+          <div className="row justify-content-end">
+            <div className={styles.copyRight}>
+              &copy; 2021 BeetPOS. PT Lifetech Tanpa Batas. All Rights Reserved
+            </div>
+          </div>
         </div>
       </footer>
     </>
