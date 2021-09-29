@@ -13,6 +13,7 @@ import BasePage from "./BasePage";
 import { Logout, AuthPage } from "./modules/Auth";
 import ErrorsPage from "./modules/ErrorsExamples/ErrorsPage";
 import { ChangePassword } from "./pages/Auth/ChangePassword";
+import  RegistrationMarketing from "./modules/Auth/pages/RegistrationMarketing";
 import PaymentDoku from "./pages/Payment/DOKU/CCandVA/PaymentDoku";
 import SignOn from "./pages/Payment/DOKU/QRIS/SignOn"
 import GenerateQRString from "./pages/Payment/DOKU/QRIS/GenerateQRString"
@@ -28,6 +29,7 @@ export function Routes() {
 
   return (
     <Switch>
+      <Route path="/auth/registration-backoffice" component={RegistrationMarketing} />
       <Route path="/auth/change-password" component={ChangePassword} />
       <Route path="/payment/doku" component={PaymentDoku} />
       <Route path="/payment/sign-on" component={SignOn} />
