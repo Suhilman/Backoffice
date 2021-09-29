@@ -217,7 +217,7 @@ const RegistrationMarketing = () => {
         { headers: { Authorization: accessToken } }
       );
       const now = new Date();
-      now.setDate(now.getDate() + 30);
+      now.setDate(now.getDate() + 14);
       const dataSubscription = {
         subscription_type_id: 10,
         expired_date: now,
@@ -790,6 +790,91 @@ const RegistrationMarketing = () => {
 
   return (
     <>
+      <ModalVerify
+        handleSendWhatsapp={handleSendWhatsapp}
+        handleSendEmail={handleSendEmail}
+        changePhoneNumber={changePhoneNumber}
+        statusWhatsapp={statusWhatsapp}
+        statusEmail={statusEmail}
+        showVerifyModal={showVerifyModal}
+        messageNotSent={messageNotSent}
+        closeVerifyModal={closeVerifyModal}
+        alertModal={alertModal}
+        phonenumber={phonenumber}
+        sentEmail={sentEmail}
+        handleVerifyModal={handleVerifyModal}
+        code={code}
+        checkCode={checkCode}
+        loading={loading}
+        second={second}
+        handleResendCode={handleResendCode}
+        verification_code={verificationCode}
+        changeEmail={changeEmail}
+        methodSendOTP={methodSendOTP}
+      />
+
+      <ModalPersonal
+        registerSuccess={registerSuccess}
+        showModalPersonal={showModalPersonal}
+        closeVerifyModal={closeVerifyModal}
+        alertModal={alertModal}
+      />
+
+      <ModalSendOTP
+        loading={loading}
+        closeOTPModal={closeOTPModal}
+        openOTPModal={openOTPModal}
+        showOTPModal={showOTPModal}
+        handleMethodSentOTP={handleMethodSentOTP}
+      />
+
+      <ModalRegister
+        showBusinessModal={showBusinessModal}
+        closeBusinessModal={closeBusinessModal}
+        alertModal={alertModal}
+        loading={loading}
+        allBusinessTypes={allBusinessTypes}
+        allProvinces={allProvinces}
+        allCities={allCities}
+        allLocations={allLocations}
+        formikBusiness={formikBusiness}
+        validationBusiness={validationBusiness}
+        handleProvince={handleProvince}
+        handleCity={handleCity}
+        cancel={rollbackRegist}
+        cancelLoading={cancelLoading}
+      />
+      <nav className={styles.containerNavbar}>
+        <div className={styles.navLeft}>
+          <div className={styles.wrapperLogoBeetpos}>
+            <img src={LogoBeetpos} alt="Logo Beetpos" />
+          </div>
+        </div>
+        <div className={styles.navMid}>
+          <div className={styles.menuNavbar}>Point Of Sale</div>
+          <div className={styles.menuNavbar}>Go Onlie</div>
+          <div className={styles.menuNavbar}>Harga</div>
+          <div className={styles.menuNavbar}>Perangkat</div>
+          <div className={styles.menuNavbar}>Lainya</div>
+        </div>
+        <div className={styles.navRight}>
+          <Link to="/auth/login">
+            <button 
+              type="button"
+              className="btn btn-primary px-9 py-4 my-3 mx-4"
+            >
+              Login
+            </button>
+          </Link>
+          <button
+            type="button"
+            className="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-4"
+          >
+            Sign Up
+          </button>
+        </div>
+      </nav>
+      
       <div className={styles.containerContent}>
         <div className={styles.containerBox}>
           <div className="row">
@@ -1174,7 +1259,7 @@ const RegistrationMarketing = () => {
           <div className="row">
             <div className="col-md-3">
               <div className={styles.wrapperLogoBeetpos}>
-                <img src={LogoBeetpos} alt="Logo Beetpo" />
+                <img src={LogoBeetpos} alt="Logo Beetpos" />
               </div>
             </div>
             <div className="col-md-3">
@@ -1235,7 +1320,7 @@ const RegistrationMarketing = () => {
                 </div>
                 <div>
                   <div className={styles.title16}>Kantor Pusat</div>
-                  <div className={styles.contentTitleFooter}>
+                  <div className={styles.address}>
                     Jl. Green Lake City Boulevard Rukan Cordoba, RT.007/RW.009, Petir, Kec. Cipondoh, Kota Jakarta Barat, Banten 15147
                   </div>
                 </div>
@@ -1272,7 +1357,7 @@ const RegistrationMarketing = () => {
               </div>
             </div>
           </div>
-          <hr style={{height: '1px' ,backgroundColor: 'white'}}/>
+          <hr style={{height: '1px' ,backgroundColor: 'white', margin: "20px 0"}}/>
           <div className="row justify-content-end">
             <div className={styles.copyRight}>
               &copy; 2021 BeetPOS. PT Lifetech Tanpa Batas. All Rights Reserved
