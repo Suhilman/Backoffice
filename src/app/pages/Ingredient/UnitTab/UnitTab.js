@@ -54,12 +54,14 @@ const UnitTab = ({ refresh, handleRefresh, t }) => {
   const UnitSchema = Yup.object().shape({
     name: Yup.string()
       .min(1, `${t("minimum1Character")}`)
+      .max(25, `${t("maximum25Character")}`)
       .required(`${t("pleaseInputName")}`)
   });
 
   const UnitEditSchema = Yup.object().shape({
     name: Yup.string()
       .min(1, `${t("minimum1Character")}`)
+      .max(25, `${t("maximum25Character")}`)
       .required(`${t("pleaseInputName")}`)
   });
 
@@ -218,7 +220,8 @@ const UnitTab = ({ refresh, handleRefresh, t }) => {
     {
       name: `${t("name")}`,
       selector: "name",
-      sortable: true
+      sortable: true,
+      wrap: true,
     },
     {
       name: `${t("unitConvertion")}`,

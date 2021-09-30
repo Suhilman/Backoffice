@@ -942,5 +942,7 @@
   "chooseCustomer": "Pilih Customer",
   "editSalesOrder": "Ubah Order Penjualan",
   "maximum15Character": "Maksimal 15 Karakter",
-  "passwordDontMatch": "Kata Sandi Tidak Cocok"
+  "passwordDontMatch": "Kata Sandi Tidak Cocok",
+  "maximum25Character": "Maksimal 25 Karakter",
+  "pleaseChooseAType": "Silahkan Pilih Tipe"
 }
