@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useLayoutEffect } from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import { connect } from "react-redux";
@@ -33,8 +33,22 @@ import * as auth from "../_redux/authRedux";
 import { register, cancelRegistration } from "../_redux/authCrud";
 
 import IconThick from '../../../../images/checkmark-384.png'
+import NavDropdown from '../components/NavDropdown'
 
 toast.configure();
+
+function useWindowSize() {
+  const [size, setSize] = useState([0, 0]);
+  useLayoutEffect(() => {
+    function updateSize() {
+      setSize([window.innerWidth, window.innerHeight]);
+    }
+    window.addEventListener('resize', updateSize);
+    updateSize();
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+  return size;
+}
 
 const RegistrationMarketing = () => {
   const initialValues = {
@@ -57,7 +71,13 @@ const RegistrationMarketing = () => {
   const [loading, setLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
 
+  const [width, height] = useWindowSize();
+  const [showNavDropdown, setShowDropdown] = useState(false)
+
   const [expiredApp, setExpiredApp] = useState(false);
+
+  const openNavDropdown = () => setShowDropdown(true)
+  const closeNavDropdown = () => setShowDropdown(false)
 
   // expired_app
   const handleExpiredApp = () => {
@@ -846,34 +866,56 @@ const RegistrationMarketing = () => {
         cancel={rollbackRegist}
         cancelLoading={cancelLoading}
       />
+
+      <NavDropdown
+        state={showNavDropdown}
+        handleClose={closeNavDropdown}
+      />
+
       <nav className={styles.containerNavbar}>
         <div className={styles.navLeft}>
-          <div className={styles.wrapperLogoBeetpos}>
-            <img src={LogoBeetpos} alt="Logo Beetpos" />
-          </div>
+          {width > 768 ? (
+            <div className={styles.wrapperLogoBeetpos}>
+              <img src={LogoBeetpos} alt="Logo Beetpos" />
+            </div>
+          ) : (
+            <div onClick={openNavDropdown}>===</div>
+          )}
         </div>
         <div className={styles.navMid}>
-          <div className={styles.menuNavbar}>Point Of Sale</div>
-          <div className={styles.menuNavbar}>Go Onlie</div>
-          <div className={styles.menuNavbar}>Harga</div>
-          <div className={styles.menuNavbar}>Perangkat</div>
-          <div className={styles.menuNavbar}>Lainya</div>
+          {width > 768 ? (
+            <>
+              <div className={styles.menuNavbar}>Point Of Sale</div>
+              <div className={styles.menuNavbar}>Go Onlie</div>
+              <div className={styles.menuNavbar}>Harga</div>
+              <div className={styles.menuNavbar}>Perangkat</div>
+              <div className={styles.menuNavbar}>Lainya</div>
+            </>
+          ) : null }
         </div>
         <div className={styles.navRight}>
-          <Link to="/auth/login">
-            <button 
-              type="button"
-              className="btn btn-primary px-9 py-4 my-3 mx-4"
-            >
-              Login
-            </button>
-          </Link>
-          <button
-            type="button"
-            className="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-4"
-          >
-            Sign Up
-          </button>
+          {width > 768 ? (
+            <>
+              <Link to="/auth/login">
+              <button 
+                type="button"
+                className="btn btn-primary px-9 py-4 my-3 mx-4"
+              >
+                Login
+              </button>
+              </Link>
+              <button
+                type="button"
+                className="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-4"
+              >
+                Sign Up
+              </button>
+            </>
+          ) : (
+            <div className={styles.wrapperLogoBeetpos}>
+              <img src={LogoBeetpos} alt="Logo Beetpos" />
+            </div>
+          )}
         </div>
       </nav>
       
