@@ -24,6 +24,8 @@ import LogoPhone from '../../../../images/phone-90.png'
 import LogoWhatsapp from '../../../../images/whatsapp-240.png'
 import LogoEmail from '../../../../images/email-512.png'
 
+import IconMenu from '../../../../images/menu-384.png'
+
 import ModalVerify from "../components/ModalVerify";
 import ModalPersonal from "../components/ModalPersonal";
 import ModalRegister from "../components/ModalRegister";
@@ -879,7 +881,9 @@ const RegistrationMarketing = () => {
               <img src={LogoBeetpos} alt="Logo Beetpos" />
             </div>
           ) : (
-            <div onClick={openNavDropdown}>===</div>
+            <div onClick={openNavDropdown}>
+              <img src={IconMenu} alt="Icon Menu" width={30} height={30}/>
+            </div>
           )}
         </div>
         <div className={styles.navMid}>

@@ -1,12 +1,15 @@
 .containerNavDropdown{
   position: absolute;
-  width: 0;
+  width: 0vh;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.842);
-  z-index: 99999;
+  transition: 0.5s;
 }
 .containerNavDropdown.show{
+  padding: 10px 15px;
   width: 100vw;
+  background-color: rgb(255, 255, 255);
+  z-index: 99999;
+  transition: 0.5s;
 }
 .containerNavbar{
   position: fixed;
@@ -22,7 +25,8 @@
 }
 
 .wrapperIconClose{
-  width: 40px;
+  width: 35px;
+  height: 35px;
 }
 
 .menuNavbar{
@@ -107,6 +111,7 @@
 .wrapperLogoBeetpos{
   width: 200px;
   object-fit: contain;
+  margin-bottom: 20px;
 }
 .wrapperLogoBeetpos > img{
   width: 100%;
@@ -163,6 +168,48 @@
     justify-content: space-between;
   }
   .wrapperLogoBeetpos{
+    width: 180px;
+  }
+  .wrapperIconClose{
+    width: 45px;
+    height: 45px;
+  }
+  .MenuNavDropdown{
+    padding: 18px 15px;
+    font-size: 24px;
+    font-weight: 600;
+  }
+  .buttonLogin{
+    width: 100%;
+    border-radius: 10px;
+    margin: 20px 0;
+    padding: 5px 0;
+    font-size: 16px;
+  }
+  .buttonSignup{
+    width: 100%;
+    border-radius: 10px;
+    padding: 5px 0;
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .wrapperLogoBeetpos{
     width: 150px;
+  }
+  .wrapperIconClose{
+    width: 35px;
+    height: 35px;
+  }
+  .MenuNavDropdown{
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .buttonLogin{
+    font-size: 14px;
+  }
+  .buttonSignup{
+    font-size: 14px;
   }
 }
