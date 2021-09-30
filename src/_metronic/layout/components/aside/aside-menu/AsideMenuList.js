@@ -569,16 +569,16 @@ function AsideMenuList(props) {
           </NavLink>
         </li> */}
 
-        <li className={`menu-item ${getMenuItemActive("/payment", false)}`}>
+        {/* <li className={`menu-item ${getMenuItemActive("/payment", false)}`}>
           <NavLink className="menu-link" to="/payment">
             <div className="wrapper-icon">
               <img src={paymentIcon} alt="Icon Payment" />
             </div>
             <span className="menu-text">{t("payment")}</span>
           </NavLink>
-        </li>
+        </li> */}
 
-        {showIntegrate ? (
+        {/* {showIntegrate ? (
           <li className={`menu-item ${getMenuItemActive("/sales-channel", false)}`}>
             <NavLink className="menu-link" to="/sales-channel">
               <div className="wrapper-icon">
@@ -587,7 +587,7 @@ function AsideMenuList(props) {
               <span className="menu-text">{t("salesChannel")}</span>
             </NavLink>
           </li>) 
-        : null }
+        : null } */}
 
         <li className={`menu-item ${getMenuItemActive("/about", false)}`}>
           <NavLink className="menu-link" to="/about">
