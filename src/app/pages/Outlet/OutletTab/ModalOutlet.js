@@ -287,7 +287,7 @@ const ModalOutlet = ({
                       onChange={(e) => handleProvince(e, formikOutlet)}
                       onBlur={(e) => handleProvince(e, formikOutlet)}
                       className={validationOutlet("province_id")}
-                      required
+                      // required
                     >
                       <option value="" disabled hidden>
                         {t("chooseAProvince")}
@@ -346,7 +346,7 @@ const ModalOutlet = ({
                       onChange={(e) => handleCity(e, formikOutlet)}
                       onBlur={(e) => handleCity(e, formikOutlet)}
                       className={validationOutlet("city_id")}
-                      required
+                      // required
                     >
                       <option value="" disabled hidden>
                         {t("chooseACity")}
@@ -404,7 +404,7 @@ const ModalOutlet = ({
                       name="location_id"
                       {...formikOutlet.getFieldProps("location_id")}
                       className={validationOutlet("location_id")}
-                      required
+                      // required
                     >
                       <option value="" disabled hidden>
                         {t("chooseALocation")}
