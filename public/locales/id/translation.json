@@ -940,5 +940,7 @@
   "addSalesOrder": "Tambah Order Penjualan",
   "soNumber": "Nomor S.O",
   "chooseCustomer": "Pilih Customer",
-  "editSalesOrder": "Ubah Order Penjualan"
+  "editSalesOrder": "Ubah Order Penjualan",
+  "maximum15Character": "Maksimal 15 Karakter",
+  "passwordDontMatch": "Kata Sandi Tidak Cocok"
 }

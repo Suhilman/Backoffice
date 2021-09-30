@@ -93,7 +93,9 @@ export const DetailStaffPage = ({ match, location }) => {
     email: Yup.string()
       .email()
       .required(`${t("pleaseInputAnEmail")}`),
-    phone_number: Yup.number().typeError(`${t("pleaseInputANumberOnly")}`)
+    phone_number: Yup.string()
+    .max(15, `${t("maximum15Character")}`)
+    .typeError(`${t("pleaseInputANumberOnly")}`)
   });
 
   const formikStaff = useFormik({

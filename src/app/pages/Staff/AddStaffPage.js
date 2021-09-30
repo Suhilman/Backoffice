@@ -68,7 +68,9 @@ export const AddStaffPage = ({ location }) => {
     email: Yup.string()
       .email()
       .required(`${t("pleaseInputAnEmail")}`),
-    phone_number: Yup.number().typeError(`${t("pleaseInputANumberOnly")}`),
+    phone_number: Yup.string()
+      .typeError(`${t("pleaseInputANumberOnly")}`)
+      .max(15, `${t("maximum15Character")}`),
     password: Yup.string()
       .matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!#%*?&]{8,20}$/,
@@ -79,7 +81,7 @@ export const AddStaffPage = ({ location }) => {
       .oneOf([Yup.ref("password"), null], `${t("passwordDoNotMatch")}`)
       .required(`${t("PleaseInputAPasswordConfirmation")}`),
     pin: Yup.string()
-      .matches(/^\d+$/, `${t("pinMustBeNumber")}`)
+      .matches(/^\d+$/, `${t("pinMustBeNumbers")}`)
       .min(6)
       .max(6)
       .required(`${t("pleaseInputAPin")}`)
