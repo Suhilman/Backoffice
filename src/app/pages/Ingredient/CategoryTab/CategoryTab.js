@@ -46,13 +46,15 @@ const CategoryTab = ({ refresh, handleRefresh }) => {
 
   const CategorySchema = Yup.object().shape({
     name: Yup.string()
-      .min(1, "Minimum 1 character")
+      .min(1, `${t("minimum1Character")}`)
+      .max(25, `${t("maximum25Character")}`)
       .required(`${t("pleaseInputName")}`)
   });
 
   const CategoryEditSchema = Yup.object().shape({
     name: Yup.string()
-      .min(1, "Minimum 1 character")
+      .min(1, `${t("minimum1Character")}`)
+      .max(25, `${t("maximum25Character")}`)
       .required(`${t("pleaseInputName")}`)
   });
 
@@ -225,7 +227,8 @@ const CategoryTab = ({ refresh, handleRefresh }) => {
     {
       name: `${t("name")}`,
       selector: "name",
-      sortable: true
+      sortable: true,
+      wrap: true
     },
     {
       name: `${t("numberOfRawMaterial")}`,

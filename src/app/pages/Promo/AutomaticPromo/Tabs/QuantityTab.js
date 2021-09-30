@@ -145,7 +145,7 @@ const QuantityTab = ({
                     </Form.Group>
                   </Col>
 
-                  <Col sm={2}>
+                  <Col sm={4}>
                     <Form.Group>
                       <Form.Label>{t("discountType")}:</Form.Label>
                       <Form.Control
@@ -189,7 +189,7 @@ const QuantityTab = ({
                       ) : null}
                     </Form.Group>
                   </Col>
-                  <Col sm={2}>
+                  {/* <Col sm={2}>
                     <Form.Group>
                       <Form.Label>{t("applyMultiply")}:</Form.Label>
                       <Form.Check
@@ -201,7 +201,7 @@ const QuantityTab = ({
                         }
                       />
                     </Form.Group>
-                  </Col>
+                  </Col> */}
                 </Row>
               </Col>
             </Row>

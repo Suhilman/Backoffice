@@ -40,7 +40,9 @@ export const AccountInformation = () => {
     email: Yup.string()
       .email()
       .required(`${t("pleaseInputAnEmail")}`),
-    phone_number: Yup.number().typeError("Please input a number only"),
+    phone_number: Yup.string()
+      .max(15, `${t("maximum15Character")}`)
+      .typeError("Please input a number only"),
     old_password: Yup.string()
       .matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!#%*?&]{8,20}$/,

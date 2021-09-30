@@ -941,5 +941,9 @@
     "addSalesOrder": "Add Sales Order",
     "soNumber": "S.O Number",
     "chooseCustomer": "Choose Customer",
-    "editSalesOrder": "Edit Sales Order"
+    "editSalesOrder": "Edit Sales Order",
+    "maximum15Character": "Maximum 15 Character",
+    "passwordDontMatch": "Password Dont Match",
+    "maximum25Character": "Maximum 25 Character",
+    "pleaseChooseAType": "Please Choose a Type"
 }

@@ -136,7 +136,7 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
       .required(`${t("pleaseInputAPaymentMethodType")}`),
     mdr: Yup.number()
       // .integer()
-      // .min(0)
+      .min(0)
       // .required(`${t("pleaseInputAMdr")}`)
       ,
     status: Yup.string()
@@ -198,7 +198,7 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
       .required(`${t("pleaseInputAPaymentMethodType")}`),
     mdr: Yup.number()
       // .integer()
-      // .min(0)
+      .min(0)
       .required(`${t("pleaseInputAMdr")}`),
     status: Yup.string()
       .matches(/(active|inactive)/)
