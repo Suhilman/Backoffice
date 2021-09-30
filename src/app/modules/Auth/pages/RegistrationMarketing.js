@@ -811,6 +811,7 @@ const RegistrationMarketing = () => {
         verification_code={verificationCode}
         changeEmail={changeEmail}
         methodSendOTP={methodSendOTP}
+        centered={true}
       />
 
       <ModalPersonal
@@ -826,6 +827,7 @@ const RegistrationMarketing = () => {
         openOTPModal={openOTPModal}
         showOTPModal={showOTPModal}
         handleMethodSentOTP={handleMethodSentOTP}
+        centered={true}
       />
 
       <ModalRegister

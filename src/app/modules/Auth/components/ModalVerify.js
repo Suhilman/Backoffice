@@ -22,7 +22,8 @@ const ModalVerify = ({
   statusWhatsapp,
   statusEmail,
   messageNotSent,
-  methodSendOTP
+  methodSendOTP,
+  centered
 }) => {
   const [showVerifyCode, setShowVerifyCode] = React.useState(false)
   const [editPhoneNumber, setEditPhoneNumber] = React.useState(false)
@@ -63,7 +64,7 @@ const ModalVerify = ({
   }
   
   return (
-    <Modal show={showVerifyModal} onHide={hanldeHide}>
+    <Modal show={showVerifyModal} onHide={hanldeHide} centered={centered}>
       <Modal.Header closeButton>
         <Modal.Title>Account Verification</Modal.Title>
       </Modal.Header>

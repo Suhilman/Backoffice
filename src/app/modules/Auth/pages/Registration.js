@@ -778,6 +778,7 @@ function Registration(props) {
         verification_code={verificationCode}
         changeEmail={changeEmail}
         methodSendOTP={methodSendOTP}
+        centered={false}
       />
 
       <ModalPersonal
@@ -793,6 +794,7 @@ function Registration(props) {
         openOTPModal={openOTPModal}
         showOTPModal={showOTPModal}
         handleMethodSentOTP={handleMethodSentOTP}
+        centered={false}
       />
 
       <ModalRegister
