@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import ExportExcel from "react-html-table-to-excel";
@@ -13,19 +13,24 @@ import localizedFormat from 'dayjs/plugin/localizedFormat'
 import { Paper } from "@material-ui/core";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import DataTable from "react-data-table-component";
+import ConfirmModal from "../../../components/ConfirmModal";
 
 export const DetailSalesOrderPage = ({ match }) => {
   const { orderId } = match.params;
   const { t } = useTranslation();
+  const user_info = JSON.parse(localStorage.getItem('user_info'))
 
   const ref = React.createRef()
 
   dayjs.extend(localizedFormat)
+  const history = useHistory();
 
+  const [showConfirm, setShowConfirm] = React.useState(false);
   const [SalesOrder, setSalesOrder] = React.useState("");
   const [dateTime, setDateTime] = React.useState("")
   const [dataToPdf, setDataToPdf] = React.useState({})
   const [currency, setCurrency] = React.useState("")
+  const [loading, setLoading] = React.useState(false);
 
   const getPurchaseOrder = async (id) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -119,6 +124,12 @@ export const DetailSalesOrderPage = ({ match }) => {
     }
   ];
 
+  const handleShowConfirm = () => {
+    // console.log("gak manusiawi")
+    setShowConfirm(true)
+  }
+
+
   const handleExportPdf = () => {
     // console.log('hello pdf')
     const doc = new jsPDF({
@@ -144,6 +155,152 @@ export const DetailSalesOrderPage = ({ match }) => {
   const fileName = setFileName()
   console.log("fileName", fileName)
 
+  const enableLoading = () => setLoading(true);
+  const disableLoading = () => setLoading(false);
+
+  const handleSalesType =  async (API_URL) => {
+    try {
+      const { data } = await axios.get(`${API_URL}/api/v1/sales-type/guest?business_id=${user_info.business_id}`)
+      let result = {}
+      data.data.map(value => {
+        if(!value.is_booking || !value.require_table || value.is_delivery) {
+          result = value
+        }
+        if(!value.is_booking || !value.require_table || !value.is_delivery) {
+          result = value
+        }
+      })
+      return result
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleCharge = async (API_URL, outlet_id) => {
+    try {
+      const {data} = await axios.get(`${API_URL}/api/v1/tax`)
+      console.log("handleCharge", data.data)
+      let result = []
+      data.data.map(value => {
+        if(value.tax_type_id === 2) {
+          result.push(value)
+        }
+      })
+      const reduce = result.reduce((acc, curr) => {
+        return acc + curr.value
+      }, 0)
+      return reduce
+    } catch (error) {
+      console.log(error)
+      return false
+    }
+  }
+
+  const handleTax = async (API_URL, outlet_id) => {
+    try {
+      const {data} = await axios.get(`${API_URL}/api/v1/tax`)
+      let result = []
+      data.data.map(value => {
+        if(value.tax_type_id === 1) {
+          result.push(value)
+        }
+      })
+      const reduce = result.reduce((acc, curr) => {
+        return acc + curr.value
+      }, 0)
+      return reduce
+    } catch (error) {
+      console.log(error)
+      return false
+    }
+  }
+
+  const handleStatus = async () => {
+    try {
+      enableLoading();
+      const API_URL = process.env.REACT_APP_API_URL;
+      await axios.patch(`${API_URL}/api/v1/sales-order/${orderId}`, {
+        status: 'done'
+      });
+      
+      const salesType = await handleSalesType(API_URL)
+      const charge = await handleCharge(API_URL, SalesOrder.outlet_id)
+      const tax = await handleTax(API_URL, SalesOrder.outlet_id)
+
+      console.log("salesType", salesType)
+      console.log("charge", charge)
+
+      const tempItems = []
+      SalesOrder.Sales_Order_Products.map(value => {
+        const price_service = charge ? Math.round(value.total_price * parseFloat(charge / 100)) : 0
+        tempItems.push({
+          sales_type_id: salesType.id,
+          product_id: value.product_id,
+          quantity: value.quantity,
+          price_product: value.price,
+          price_discount: 0,
+          price_service,
+          price_addons_total: 0,
+          price_total: (value.price + 0 + price_service) * value.quantity,
+          notes: ""
+        })
+      })
+      const orderData = {
+        outlet_id: SalesOrder.outlet_id,
+        customer_id: SalesOrder.customer_id,
+        notes: SalesOrder.notes,
+        date: SalesOrder.date,
+        items: SalesOrder.items
+      };
+
+      if (SalesOrder.so_number) {
+        orderData.so_number = SalesOrder.so_number;
+      }
+
+      const sumTotalPrice = tempItems.reduce((acc, curr) => {
+        return acc + curr.price_total
+      }, 0)
+      const PaymentTax = tax ? Math.round(sumTotalPrice * parseFloat(tax / 100)) : 0
+      const PaymentService = charge ? Math.round(sumTotalPrice * parseFloat(charge / 100)) : 0
+      const receipt_id = 'S.O' +
+      SalesOrder.outlet_id +
+      ':' +
+      SalesOrder.customer_id || null +
+      ':' +
+      dayjs(new Date()).format('YYYY/MM/DD:HH:mm:ss')
+
+      orderData.status = 'done'
+      orderData.amount = sumTotalPrice
+      orderData.payment_change = 0
+      orderData.payment_discount = 0
+      orderData.payment_tax = PaymentTax
+      orderData.payment_service = PaymentService
+      orderData.payment_total = sumTotalPrice + PaymentTax + PaymentService - 0
+      orderData.custom_price = 0
+      orderData.custom_price_tax = 0
+      orderData.promo  = null
+      orderData.receipt_id  = receipt_id
+      orderData.items = tempItems
+      orderData.payment_method_id = SalesOrder.payment_method_id
+      orderData.status = 'done'
+
+      console.log("orderData", orderData)
+
+      await axios.post(`${API_URL}/api/v1/transaction`, orderData);
+      disableLoading();
+      history.push("/inventory");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const closeConfirmModal = () => setShowConfirm(false);
+
+  const handleConfirm = () => {
+    handleStatus();
+    closeConfirmModal();
+  };
+
   const dataOrder = SalesOrder
     ? SalesOrder.Sales_Order_Products.map((item, index) => {
         return {
@@ -156,6 +313,15 @@ export const DetailSalesOrderPage = ({ match }) => {
     : [];
   return (
     <>
+      <ConfirmModal
+        title={t("confirm")}
+        body={t("areYouSureWantToAddIncomingStock")}
+        buttonColor="warning"
+        handleClick={handleConfirm}
+        state={showConfirm}
+        closeModal={closeConfirmModal}
+        loading={loading}
+      />
       <div className="style-pdf" style={{width: 1100, height: "fit-content", color: "black solid"}} ref={ref}>
           <div className="container">
             <div className="row justify-content-between mb-5">
@@ -233,9 +399,21 @@ export const DetailSalesOrderPage = ({ match }) => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>{t("SalesOrderDetailSummary")}</h3>
+                <h3>{t("salesOrderDetailSummary")}</h3>
               </div>
               <div className="headerEnd">
+                <Button
+                  className="btn"
+                  className={
+                    SalesOrder.status === "done"
+                      ? "btn-secondary"
+                      : "btn-primary"
+                  }
+                  disabled={SalesOrder.status === "done"}
+                  onClick={handleShowConfirm}
+                >
+                  {t(SalesOrder.status)}
+                </Button>
                 <Link
                   to={{
                     pathname: "/inventory"

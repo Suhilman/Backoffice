@@ -28,9 +28,9 @@ export const InventoryPage = () => {
         <PurchaseTab t={t} refresh={refresh} handleRefresh={handleRefresh} />
       </Tab>
 
-      {/* <Tab eventKey="sales" title={t("salesOrder")}>
+      <Tab eventKey="sales" title={t("salesOrder")}>
         <SalesTab t={t} refresh={refresh} handleRefresh={handleRefresh} />
-      </Tab> */}
+      </Tab>
     </Tabs>
   );
 };

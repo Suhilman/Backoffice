@@ -120,7 +120,7 @@ const PurchaseOrderPage = ({ refresh, handleRefresh, t }) => {
 
     try {
       enableLoading();
-      await axios.delete(`${API_URL}/api/v1/purchase-order/${id}`);
+      await axios.delete(`${API_URL}/api/v1/sales-order/${id}`);
       handleRefresh();
       disableLoading();
       closeDeleteModal();

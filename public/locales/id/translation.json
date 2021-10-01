@@ -926,6 +926,7 @@
   "enterYourDomainNameIn": "Masukkan nama domain anda di",
   "enterNewAccount": "Masukkan akun baru",
   "successfullyAddedAccountPleaseWaitForLeverageByBeetpos": "Berhasil tambahkan akun, mohon menunggu verifikasi oleh beetpos",
+  "totalAssemblyPrice": "Total Harga Perakitan",
   "selectEcommerce": "Pilih Ecommerce",
   "chooseAEcommerce": "Memilih Ecommerce",
   "bundleDescription": "Deskripsi Paket",
@@ -944,5 +945,6 @@
   "maximum15Character": "Maksimal 15 Karakter",
   "passwordDontMatch": "Kata Sandi Tidak Cocok",
   "maximum25Character": "Maksimal 25 Karakter",
-  "pleaseChooseAType": "Silahkan Pilih Tipe"
+  "pleaseChooseAType": "Silahkan Pilih Tipe",
+  "salesOrderDetailSummary": "Ringkasan Detail Pesanan Penjualan"
 }
