@@ -16,11 +16,11 @@ const NavDropdown = ({state, handleClose}) => {
                   <div className={styles.wrapperLogoBeetpos}>
                     <img src={LogoBeetpos} alt="Logo Beetpos" />
                   </div>
-                  <div className={styles.MenuNavDropdown}>Point Of Sale</div>
+                  {/* <div className={styles.MenuNavDropdown}>Point Of Sale</div>
                   <div className={styles.MenuNavDropdown}>Go Onlie</div>
                   <div className={styles.MenuNavDropdown}>Harga</div>
                   <div className={styles.MenuNavDropdown}>Perangkat</div>
-                  <div className={styles.MenuNavDropdown}>Lainya</div>
+                  <div className={styles.MenuNavDropdown}>Lainya</div> */}
                 </div>
                 <div className="d-flex justify-content-end">
                   <div className={styles.wrapperIconClose} onClick={handleClose}>
@@ -37,12 +37,12 @@ const NavDropdown = ({state, handleClose}) => {
                   Login
                 </div>
               </Link>
-              <div
+              {/* <div
                 type="button"
                 className={`${styles.buttonSignup} btn btn-light-primary`}
               >
                 Sign Up
-              </div>
+              </div> */}
             </>
           ) : null }
         </div>

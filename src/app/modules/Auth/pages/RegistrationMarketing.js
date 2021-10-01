@@ -882,18 +882,20 @@ const RegistrationMarketing = () => {
             </div>
           ) : (
             <div onClick={openNavDropdown}>
-              <img src={IconMenu} alt="Icon Menu" width={30} height={30}/>
+              <div className={styles.wrapperIconMenu}>
+                <img src={IconMenu} alt="Icon Menu" width={30} height={30}/>
+              </div>
             </div>
           )}
         </div>
         <div className={styles.navMid}>
           {width > 768 ? (
             <>
-              <div className={styles.menuNavbar}>Point Of Sale</div>
+              {/* <div className={styles.menuNavbar}>Point Of Sale</div>
               <div className={styles.menuNavbar}>Go Onlie</div>
               <div className={styles.menuNavbar}>Harga</div>
               <div className={styles.menuNavbar}>Perangkat</div>
-              <div className={styles.menuNavbar}>Lainya</div>
+              <div className={styles.menuNavbar}>Lainya</div> */}
             </>
           ) : null }
         </div>
@@ -908,12 +910,12 @@ const RegistrationMarketing = () => {
                 Login
               </button>
               </Link>
-              <button
+              {/* <button
                 type="button"
                 className="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-4"
               >
                 Sign Up
-              </button>
+              </button> */}
             </>
           ) : (
             <div className={styles.wrapperLogoBeetpos}>
