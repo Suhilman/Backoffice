@@ -947,5 +947,8 @@
     "maximum25Character": "Maximum 25 Character",
     "pleaseChooseAType": "Please Choose a Type",
     "salesOrderDetailSummary": "Sales Order Detail Summary",
-    "exportSalesOrderResult": "Export Sales Order Result"
+    "exportSalesOrderResult": "Export Sales Order Result",
+    "pleaseInputBlibliAuth": "Please Input Blibli Auth",
+    "pleaseInputBlibliStoreId": "Please Input Blibli StoreId",
+    "successfullyInputCredentials": "Successfully Input Credentials"
 }

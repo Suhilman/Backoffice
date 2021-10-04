@@ -947,5 +947,8 @@
   "maximum25Character": "Maksimal 25 Karakter",
   "pleaseChooseAType": "Silahkan Pilih Tipe",
   "salesOrderDetailSummary": "Ringkasan Detail Pesanan Penjualan",
-  "exportSalesOrderResult": "Ekspor Hasil Pesanan Penjualan"
+  "exportSalesOrderResult": "Ekspor Hasil Pesanan Penjualan",
+  "pleaseInputBlibliAuth": "Silahkan Masukan Blibli Auth",
+  "pleaseInputBlibliStoreId": "Silahkan Masukan Blibli StoreId",
+  "successfullyInputCredentials": "Berhasil Memasukkan Kredensial"
 }

@@ -16,6 +16,7 @@ import logoZilingo from "../../../images/zilingo.png";
 import logoZalora from "../../../images/zalora.png";
 
 import ModalSalesChannel from './ModalSalesChannel'
+import ModalBlibli from "./ModalBlibli";
 
 export const SalesChannelPage = () => {
   const { t } = useTranslation();
@@ -23,6 +24,8 @@ export const SalesChannelPage = () => {
   const [allOutlets, setAllOutlets] = useState([]);
   const [outletId, setOutletId] = useState();
   const [showModal, setShowModal] = useState(false)
+  const [showModalBlibli, setShowModalBlibli] = useState(false)
+
   const [platform, setPlatform] = useState()
 
   const getOutlets = async () => {
@@ -44,9 +47,14 @@ export const SalesChannelPage = () => {
   }, []);
 
   const handleClose = () => setShowModal(false)
+  const handleCloseBlibli = () => setShowModalBlibli(false)
   const handlePlatform = (name) => {
     setPlatform(name)
-    setShowModal(true)
+    if(name === 'Blibli') {
+      setShowModalBlibli(true)
+    } else {
+      setShowModal(true)
+    }
   }
 
   const handleOpenModal = () => setShowModal(true)
@@ -61,6 +69,16 @@ export const SalesChannelPage = () => {
       outletId={outletId}
       handleOpenModal={handleOpenModal}
     />
+
+    <ModalBlibli
+      show={showModalBlibli}
+      close={handleCloseBlibli}
+      platform={platform}
+      t={t}
+      outletId={outletId}
+      handleOpenModal={handleOpenModal}
+    />
+
       <Paper elevation={2} style={{ padding: "1rem", height: "fit-content" }}>
         <div className="headerPage mb-5">
           <div className="headerStart">
