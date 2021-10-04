@@ -93,22 +93,22 @@ export const PromoPage = () => {
         let activePromos = [];
         if (item.name === t("specialPromo")) {
           activePromos = item.Promos.filter(
-            (val) => val.Special_Promo.status === "active"
+            (val) => val.Special_Promo?.status === "active"
           );
         }
         if (item.name === t("automaticPromo")) {
           activePromos = item.Promos.filter(
-            (val) => val.Automatic_Promo.status === "active"
+            (val) => val.Automatic_Promo?.status === "active"
           );
         }
         if (item.name === t("voucherPromo")) {
           activePromos = item.Promos.filter(
-            (val) => val.Voucher_Promo.status === "active"
+            (val) => val.Voucher_Promo?.status === "active"
           );
         }
         if (item.name === t("point/LoyaltySystem")) {
           activePromos = item.Promos.filter(
-            (val) => val.Loyalty_Promo.status === "active"
+            (val) => val.Loyalty_Promo?.status === "active"
           );
         }
 
