@@ -149,7 +149,7 @@ export const DetailSalesOrderPage = ({ match }) => {
   console.log("SalesOrder", SalesOrder)
   const setFileName = () => {
     if(SalesOrder) {
-      return `Purchase-Order_${dataToPdf.namaBusiness}_${SalesOrder.Outlet.name}_${dateTime}`
+      return `Sales-Order_${dataToPdf.namaBusiness}_${SalesOrder.Outlet.name}_${dateTime}`
     }
   }
   const fileName = setFileName()
@@ -430,7 +430,7 @@ export const DetailSalesOrderPage = ({ match }) => {
                   <div style={{ display: "none" }}>
                     <table id="table-to-xls">
                       <tr>
-                        <th>{t("exportPurchaseOrderResult")}</th>
+                        <th>{t("exportSalesOrderResult")}</th>
                       </tr>
                       <tr>
                         <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("products")}</th>

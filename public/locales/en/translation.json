@@ -946,5 +946,6 @@
     "passwordDontMatch": "Password Dont Match",
     "maximum25Character": "Maximum 25 Character",
     "pleaseChooseAType": "Please Choose a Type",
-    "salesOrderDetailSummary": "Sales Order Detail Summary"
+    "salesOrderDetailSummary": "Sales Order Detail Summary",
+    "exportSalesOrderResult": "Export Sales Order Result"
 }

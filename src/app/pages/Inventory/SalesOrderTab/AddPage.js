@@ -506,7 +506,8 @@ export const AddSalesOrderPage = ({ location }) => {
                     {allCustomers.map((item) => {
                       return (
                         <option key={item.id} value={item.id}>
-                          {`${item.name}  -  ${item.address ? item.address : null}  -  ${item.email ? item.email : null}`}
+                          {/* {`${item.name}  -  ${item.address ? item.address : null}  -  ${item.email ? item.email : null}`} */}
+                          {item.name} - {item.address ? item.address : null}  -  {item.email ? item.email : null}
                         </option>
                       );
                     })}

@@ -946,5 +946,6 @@
   "passwordDontMatch": "Kata Sandi Tidak Cocok",
   "maximum25Character": "Maksimal 25 Karakter",
   "pleaseChooseAType": "Silahkan Pilih Tipe",
-  "salesOrderDetailSummary": "Ringkasan Detail Pesanan Penjualan"
+  "salesOrderDetailSummary": "Ringkasan Detail Pesanan Penjualan",
+  "exportSalesOrderResult": "Ekspor Hasil Pesanan Penjualan"
 }
