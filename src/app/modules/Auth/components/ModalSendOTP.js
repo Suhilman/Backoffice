@@ -9,10 +9,10 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import './style.css'
 
-const ModalSendOTP = ({loading, showOTPModal, closeButton, handleMethodSentOTP}) => {
+const ModalSendOTP = ({loading, showOTPModal, closeButton, handleMethodSentOTP, centered}) => {
   return (
     <div>
-      <Modal show={showOTPModal}>
+      <Modal show={showOTPModal} centered={centered}>
         <Modal.Header>
           <Modal.Title>Sent OTP to :</Modal.Title>
         </Modal.Header>

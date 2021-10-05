@@ -945,5 +945,13 @@
     "maximum15Character": "Maximum 15 Character",
     "passwordDontMatch": "Password Dont Match",
     "maximum25Character": "Maximum 25 Character",
-    "pleaseChooseAType": "Please Choose a Type"
+    "pleaseChooseAType": "Please Choose a Type",
+    "salesOrderDetailSummary": "Sales Order Detail Summary",
+    "exportSalesOrderResult": "Export Sales Order Result",
+    "pleaseInputBlibliAuth": "Please Input Blibli Auth",
+    "pleaseInputBlibliStoreId": "Please Input Blibli StoreId",
+    "successfullyInputCredentials": "Successfully Input Credentials",
+    "thereIsProductWithoutNameOrSku": "There is Product Without Name or SKU",
+    "thereIsProductWithoutPrice": "There is Product Without Price",
+    "thereIsProductWithoutCategory": "There is Product Without Category"
 }

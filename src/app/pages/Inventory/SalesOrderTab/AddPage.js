@@ -26,6 +26,8 @@ export const AddSalesOrderPage = ({ location }) => {
   const history = useHistory();
   const { allOutlets, allProducts, allCustomers } = location.state;
 
+  console.log("allCustomers", allCustomers)
+
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
 
@@ -185,11 +187,14 @@ export const AddSalesOrderPage = ({ location }) => {
         items: values.items
       };
 
+      orderData.payment_method_id = values.payment_method_id
+
       if (values.so_number) {
         orderData.so_number = values.so_number;
       }
 
       console.log("data yang akan dikirim", values)
+      
       try {
         enableLoading();
         // await axios.post(`${API_URL}/api/v1/purchase-order`, orderData);
@@ -222,8 +227,9 @@ export const AddSalesOrderPage = ({ location }) => {
           orderData.promo  = null
           orderData.receipt_id  = receipt_id
           orderData.items = tempItems
-          orderData.payment_method_id = values.payment_method_id
+          orderData.status = 'done'
           console.log("orderData", orderData)
+          await axios.post(`${API_URL}/api/v1/sales-order/create-development`, orderData);
           await axios.post(`${API_URL}/api/v1/transaction`, orderData);
         }
         disableLoading();
@@ -500,7 +506,8 @@ export const AddSalesOrderPage = ({ location }) => {
                     {allCustomers.map((item) => {
                       return (
                         <option key={item.id} value={item.id}>
-                          {item.name}
+                          {/* {`${item.name}  -  ${item.address ? item.address : null}  -  ${item.email ? item.email : null}`} */}
+                          {item.name} - {item.address ? item.address : null}  -  {item.email ? item.email : null}
                         </option>
                       );
                     })}

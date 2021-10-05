@@ -8,22 +8,22 @@ import { injectIntl } from "react-intl";
 import { useTranslation } from "react-i18next";
 import { Form } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import './style.css'
-import dayjs from 'dayjs'
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./style.css";
+import dayjs from "dayjs";
 
 import ReCAPTCHA from "react-google-recaptcha";
 
 import ModalVerify from "../components/ModalVerify";
 import ModalPersonal from "../components/ModalPersonal";
 import ModalRegister from "../components/ModalRegister";
-import ModalSendOTP from '../components/ModalSendOTP';
+import ModalSendOTP from "../components/ModalSendOTP";
 
 import * as auth from "../_redux/authRedux";
 import { register, cancelRegistration } from "../_redux/authCrud";
 
-toast.configure()
+toast.configure();
 
 const initialValues = {
   name: "",
@@ -40,26 +40,26 @@ const initialValues = {
 };
 
 function Registration(props) {
-  const history = useHistory()
+  const history = useHistory();
 
   const API_URL = process.env.REACT_APP_API_URL;
   const { intl } = props;
   const [loading, setLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
 
-  const [expiredApp, setExpiredApp] = useState(false)
+  const [expiredApp, setExpiredApp] = useState(false);
 
   // expired_app
   const handleExpiredApp = () => {
-    const dateNow = new Date()
-    const dateNowFormat = dayjs(dateNow)
-    const dateExpired = dayjs('2021-08-26')
-    const resDate = dateExpired.diff(dateNowFormat, 'day')
-    console.log("resDate", resDate)
-    if(resDate < 1) {
-      setExpiredApp(true)
+    const dateNow = new Date();
+    const dateNowFormat = dayjs(dateNow);
+    const dateExpired = dayjs("2021-08-26");
+    const resDate = dateExpired.diff(dateNowFormat, "day");
+    console.log("resDate", resDate);
+    if (resDate < 1) {
+      setExpiredApp(true);
     }
-  }
+  };
   // React.useEffect(() => {
   //   handleExpiredApp()
   // }, [])
@@ -143,7 +143,7 @@ function Registration(props) {
     acceptTerms: Yup.bool().required("You must accept the terms and conditions")
   });
 
-  const [dataSentOTP, setDataSentOTP] = useState({})
+  const [dataSentOTP, setDataSentOTP] = useState({});
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [showVerifyModal, setShowVerifyModal] = useState(false);
   const [showBusinessModal, setShowBusinessModal] = useState(false);
@@ -156,19 +156,19 @@ function Registration(props) {
   const [allProvinces, setAllProvinces] = useState([]);
   const [allCities, setAllCities] = useState([]);
   const [allLocations, setAllLocations] = useState([]);
-  const [dataFormik, setDataFormik] = useState({})
-  const [statusWhatsapp, setStatusWhatsapp] = useState(false)
-  const [statusEmail, setStatusEmail] = useState(false)
-  const [messageNotSent, setMessageNotSent] = React.useState(false)
-  const [showModalPersonal, setShowModalPersonal] = React.useState(false)
-  const [methodSendOTP, setMethodSendOTP] = React.useState("")
+  const [dataFormik, setDataFormik] = useState({});
+  const [statusWhatsapp, setStatusWhatsapp] = useState(false);
+  const [statusEmail, setStatusEmail] = useState(false);
+  const [messageNotSent, setMessageNotSent] = React.useState(false);
+  const [showModalPersonal, setShowModalPersonal] = React.useState(false);
+  const [methodSendOTP, setMethodSendOTP] = React.useState("");
 
   const [code, setCode] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
-  const [sentEmail, setSentEmail] = useState("")
+  const [sentEmail, setSentEmail] = useState("");
 
-  const changePhoneNumber = (number) => setPhonenumber(number)
-  const changeEmail = (email) => setSentEmail(email)
+  const changePhoneNumber = (number) => setPhonenumber(number);
+  const changeEmail = (email) => setSentEmail(email);
 
   const initialValueBusiness = {
     business_type_id: "",
@@ -203,76 +203,78 @@ function Registration(props) {
 
   const handleFormikBusiness = async (values, accessToken) => {
     const API_URL = process.env.REACT_APP_API_URL;
-      try {
-        setAlertModal("");
-        const userInfo = JSON.parse(localStorage.getItem("user_info"));
+    try {
+      setAlertModal("");
+      const userInfo = JSON.parse(localStorage.getItem("user_info"));
 
-        const { data } = await axios.get(`${API_URL}/api/v1/outlet`, {
+      const { data } = await axios.get(`${API_URL}/api/v1/outlet`, {
+        headers: { Authorization: accessToken }
+      });
+
+      const outlet_id = data.data[0].id;
+      const businessData = {
+        business_type_id: values.business_type_id,
+        location_id: values.business_location_id
+      };
+
+      const outletData = {
+        location_id: values.outlet_location_id
+      };
+
+      await axios.patch(
+        `${API_URL}/api/v1/business/${userInfo.business_id}`,
+        businessData,
+        { headers: { Authorization: accessToken } }
+      );
+      const now = new Date();
+      now.setDate(now.getDate() + 30);
+      const dataSubscription = {
+        subscription_type_id: 10,
+        expired_date: now,
+        status: "active"
+      };
+      await axios.post(`${API_URL}/api/v1/subscription`, dataSubscription, {
+        headers: { Authorization: accessToken }
+      });
+
+      const resPartition = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${userInfo.business_id}`,
+        {
           headers: { Authorization: accessToken }
-        });
-
-        const outlet_id = data.data[0].id;
-        const businessData = {
-          business_type_id: values.business_type_id,
-          location_id: values.business_location_id
-        };
-
-        const outletData = {
-          location_id: values.outlet_location_id
-        };
-
-        await axios.patch(
-          `${API_URL}/api/v1/business/${userInfo.business_id}`,
-          businessData,
-          { headers: { Authorization: accessToken } }
-        );
-        const now = new Date()
-        now.setDate(now.getDate()+30)
-        const dataSubscription = {
-          subscription_type_id: 10,
-          expired_date: now,
-          status: "active"
         }
-        await axios.post(`${API_URL}/api/v1/subscription`,
-          dataSubscription,
-          { headers: { Authorization: accessToken } }
-        )
-        
+      );
 
-        const resPartition = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${userInfo.business_id}`, {
-          headers: { Authorization: accessToken } 
-        })
+      userInfo.subscription_partition_id =
+        resPartition.data.data[0].subscription_partition_id;
 
-        userInfo.subscription_partition_id = resPartition.data.data[0].subscription_partition_id
+      localStorage.setItem("user_info", JSON.stringify(userInfo));
 
-        localStorage.setItem("user_info", JSON.stringify(userInfo));
-
-        await axios.patch(`${API_URL}/api/v1/outlet/${outlet_id}`, outletData, {
-          headers: { Authorization: accessToken }
-        });
-        verifyAccount();
-        // disableLoading();
-        history.push('/login')
-        toast.success(`Register success, please login`, {
-          position: "top-right",
-          autoClose: 4500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        // props.register(token.split(" ")[1]);
-        // setShowModalPersonal(true)
-      } catch (err) {
-        setAlertModal(err.response.data.message);
-        disableLoading();
-      }
-  }
+      await axios.patch(`${API_URL}/api/v1/outlet/${outlet_id}`, outletData, {
+        headers: { Authorization: accessToken }
+      });
+      verifyAccount();
+      // disableLoading();
+      history.push("/login");
+      toast.success(`Register success, please login`, {
+        position: "top-right",
+        autoClose: 4500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+      // props.register(token.split(" ")[1]);
+      // setShowModalPersonal(true)
+    } catch (err) {
+      setAlertModal(err.response.data.message);
+      disableLoading();
+    }
+  };
 
   const registerSuccess = () => {
     props.register(token.split(" ")[1]);
-  }
+  };
 
   const formikBusiness = useFormik({
     enableReinitialize: true,
@@ -325,10 +327,7 @@ function Registration(props) {
       return "is-invalid";
     }
 
-    if (
-      formik.touched[fieldname] &&
-      !formik.errors[fieldname]
-    ) {
+    if (formik.touched[fieldname] && !formik.errors[fieldname]) {
       return "is-valid";
     }
 
@@ -343,9 +342,9 @@ function Registration(props) {
   const openOTPModal = () => setShowOTPModal(true);
 
   const handleCaptcha = (value) => {
-    console.log("handle captcha")
-    console.log("value handle captcha", value)
-    setCaptchaToken(value)
+    console.log("handle captcha");
+    console.log("value handle captcha", value);
+    setCaptchaToken(value);
   };
 
   React.useEffect(() => {
@@ -372,12 +371,12 @@ function Registration(props) {
   const disableLoading = () => setLoading(false);
 
   const handleResendCode = (phone, verify_code, email) => {
-    if(methodSendOTP === 'whatsapp') {
-      handleSendWhatsapp(phone, verify_code)
+    if (methodSendOTP === "whatsapp") {
+      handleSendWhatsapp(phone, verify_code);
       setSecond(15);
     }
-    if(methodSendOTP === 'gmail') {
-      handleSendEmail(email, verify_code)
+    if (methodSendOTP === "gmail") {
+      handleSendEmail(email, verify_code);
       setSecond(15);
     }
   };
@@ -395,72 +394,81 @@ function Registration(props) {
   };
 
   const handleMethodSentOTP = async (param) => {
-    setMethodSendOTP(param)
-    console.log("dataSentOTP", dataSentOTP)
-    if(param === 'whatsapp') {
+    setMethodSendOTP(param);
+    console.log("dataSentOTP", dataSentOTP);
+    if (param === "whatsapp") {
       setSecond(15);
-      const resSendWhatsapp = await handleSendWhatsapp(dataSentOTP.phoneNumber, dataSentOTP.verifyCode)
-      if(resSendWhatsapp) {
-        console.log("send message whatsapp success")
-        closeOTPModal()
+      const resSendWhatsapp = await handleSendWhatsapp(
+        dataSentOTP.phoneNumber,
+        dataSentOTP.verifyCode
+      );
+      if (resSendWhatsapp) {
+        console.log("send message whatsapp success");
+        closeOTPModal();
         openVerifyModal();
         setTimeout(() => {
-          setMessageNotSent(true)
+          setMessageNotSent(true);
         }, 50000);
       } else {
-        console.log("send message whatsapp failed")
-        setMethodSendOTP("gmail")
-        setSentEmail(formik.values.email)
-        await handleSendEmail(formik.values.email, dataSentOTP.verifyCode)
-        closeOTPModal()
+        console.log("send message whatsapp failed");
+        setMethodSendOTP("gmail");
+        setSentEmail(formik.values.email);
+        await handleSendEmail(formik.values.email, dataSentOTP.verifyCode);
+        closeOTPModal();
         openVerifyModal();
         setTimeout(() => {
-          setMessageNotSent(true)
+          setMessageNotSent(true);
         }, 50000);
-        toast.info(`Send whatsapp failed, please check your email ${formik.values.email} for verification`, {
-          position: "top-right",
-          autoClose: 15000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.info(
+          `Send whatsapp failed, please check your email ${formik.values.email} for verification`,
+          {
+            position: "top-right",
+            autoClose: 15000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined
+          }
+        );
       }
     }
-    if (param === 'gmail') {
-      setSentEmail(formik.values.email)
-      const resSendEmail = await handleSendEmail(formik.values.email, dataSentOTP.verifyCode)
-      if(resSendEmail) {
-        closeOTPModal()
+    if (param === "gmail") {
+      setSentEmail(formik.values.email);
+      const resSendEmail = await handleSendEmail(
+        formik.values.email,
+        dataSentOTP.verifyCode
+      );
+      if (resSendEmail) {
+        closeOTPModal();
         openVerifyModal();
         setTimeout(() => {
-          setMessageNotSent(true)
+          setMessageNotSent(true);
         }, 50000);
-        toast.success('Verification code sent', {
+        toast.success("Verification code sent", {
           position: "top-right",
           autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-          progress: undefined,
+          progress: undefined
         });
       } else {
-        setStatusEmail(false)
-        toast.info('Verification code not sent', {
+        setStatusEmail(false);
+        toast.info("Verification code not sent", {
           position: "top-right",
           autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-          progress: undefined,
+          progress: undefined
         });
-        console.log("send email error")
+        console.log("send email error");
       }
     }
-  }
+  };
 
   const formik = useFormik({
     initialValues,
@@ -468,7 +476,7 @@ function Registration(props) {
     onSubmit: (values, { setStatus, setSubmitting }) => {
       enableLoading();
       setPhonenumber(values.phone_number.toString());
-      setDataFormik(values)
+      setDataFormik(values);
       register(
         values.email,
         values.name,
@@ -489,47 +497,51 @@ function Registration(props) {
             maximumAge: 0
           };
 
-          const success = async (pos) =>  {
+          const success = async (pos) => {
             try {
               const crd = pos.coords;
               // console.log('Your current position is:');
               // console.log(`Latitude : ${crd.latitude}`);
               // console.log(`Longitude: ${crd.longitude}`);
               // console.log(`More or less ${crd.accuracy} meters.`);
-              const result = await axios.get(`${API_URL}/api/v1/outlet/get-address?latitude=${parseFloat(crd.latitude)}&longitude=${parseFloat(crd.longitude)}`)
-              console.log("country address", result.data.resultAddress.address)
-              const checkCountry = result.data.resultAddress.address.includes("Indonesia");
+              const result = await axios.get(
+                `${API_URL}/api/v1/outlet/get-address?latitude=${parseFloat(
+                  crd.latitude
+                )}&longitude=${parseFloat(crd.longitude)}`
+              );
+              console.log("country address", result.data.resultAddress.address);
+              const checkCountry = result.data.resultAddress.address.includes(
+                "Indonesia"
+              );
               // console.log("true kah", checkCountry)
-              if(checkCountry) {
+              if (checkCountry) {
                 localStorage.setItem("checkCountry", true);
               } else {
                 localStorage.setItem("checkCountry", false);
               }
             } catch (error) {
               localStorage.setItem("checkCountry", true);
-              console.error(error)
+              console.error(error);
             }
-          }
-          
+          };
+
           const error = (err) => {
             console.warn(`ERROR(${err.code}): ${err.message}`);
-          }
-          
-          navigator.geolocation.getCurrentPosition(success, error, options)
+          };
+
+          navigator.geolocation.getCurrentPosition(success, error, options);
 
           // End Check Country
 
           localStorage.setItem("user_info", JSON.stringify(owner));
-          
+
           if (!owner.is_verified) {
             // pilih sent otp via gmail atau whatsapp
-            setDataSentOTP(
-              {
-                phoneNumber: values.phone_number.toString(),
-                verifyCode: owner.verification_code
-              }
-            )
-            openOTPModal()
+            setDataSentOTP({
+              phoneNumber: values.phone_number.toString(),
+              verifyCode: owner.verification_code
+            });
+            openOTPModal();
             setSubmitting(false);
             setSecond(15);
 
@@ -545,7 +557,7 @@ function Registration(props) {
         .catch((err) => {
           // console.log('ini error formik', err)
           setSubmitting(false);
-          console.log("err.response", err.response)
+          console.log("err.response", err.response);
           // setStatus(err.response.data.message);
           disableLoading();
         });
@@ -561,23 +573,23 @@ function Registration(props) {
       // })
       // console.log("response send whatsapp ==>", sendWhatsapp)
 
-      const tempSplit = phone.split('')
-      console.log("tempSplit", tempSplit)
+      const tempSplit = phone.split("");
+      console.log("tempSplit", tempSplit);
       if (tempSplit[0] == 0 || tempSplit[0].length == 0) {
-        tempSplit[0] = "62"
+        tempSplit[0] = "62";
       } else if (tempSplit[0] == 8) {
-        tempSplit.unshift(62)
+        tempSplit.unshift(62);
       }
-      const resultPhone = tempSplit.join('')
+      const resultPhone = tempSplit.join("");
 
-      console.log("resultPhone", resultPhone)
+      console.log("resultPhone", resultPhone);
       const dataSend = {
-        message : `
+        message: `
           Verify Code = ${verifyCode}\nPowered By Beetpos
         `,
-        phone : resultPhone,
-        device : "backoffice_test3"
-      }
+        phone: resultPhone,
+        device: "backoffice_test3"
+      };
 
       // https://nordicapis.com/10-free-to-use-cors-proxies/
       // Menggunakan proxy thinsproxy agar melewati cors origin
@@ -588,49 +600,54 @@ function Registration(props) {
       // })
 
       // Menggunakan proxy cors-anywhere agar melewati cors origin
-      const sendMessage = await axios.post('shttps://cors-anywhere.herokuapp.com/http://139.59.244.237:3001/api/v1/messaging/sendText', dataSend, {
-        headers: {
-          "x-api-key" : "EalYHzTieQVwZ83XnrPv"
+      const sendMessage = await axios.post(
+        "shttps://cors-anywhere.herokuapp.com/http://139.59.244.237:3001/api/v1/messaging/sendText",
+        dataSend,
+        {
+          headers: {
+            "x-api-key": "EalYHzTieQVwZ83XnrPv"
+          }
         }
-      })
+      );
 
-      console.log("sendMessage =========>", sendMessage)
+      console.log("sendMessage =========>", sendMessage);
 
       // status whatsapp untuk cek response server error tidak
-      setStatusWhatsapp(true)
-      console.log("send whataspp berhasil")
-      toast.success('Verification code sent', {
+      setStatusWhatsapp(true);
+      console.log("send whataspp berhasil");
+      toast.success("Verification code sent", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined,
+        progress: undefined
       });
-      return true
+      return true;
     } catch (error) {
-      console.log("send whataspp error")
-      console.log(error)
+      console.log("send whataspp error");
+      console.log(error);
 
       // status whatsapp untuk cek response server error tidak
-      setStatusWhatsapp(false)
-      return false
+      setStatusWhatsapp(false);
+      return false;
     }
-  }
+  };
 
   const handleSendEmail = async (email, verifyCode) => {
     try {
-      await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/send-email/verify-otp?email=${email}&verifyCode=${verifyCode}`, 
+      await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/send-email/verify-otp?email=${email}&verifyCode=${verifyCode}`,
         { headers: { Authorization: token } }
-      )
-      setStatusEmail(true)
-      return true
+      );
+      setStatusEmail(true);
+      return true;
     } catch (error) {
-      console.log("error", error)
-      return false
+      console.log("error", error);
+      return false;
     }
-  }
+  };
 
   const handleProvince = (e) => {
     if (!e.target.value) {
@@ -691,9 +708,9 @@ function Registration(props) {
   };
 
   useEffect(() => {
-    getBusinessTypes()
-    getProvinces()
-  }, [])
+    getBusinessTypes();
+    getProvinces();
+  }, []);
 
   const verifyAccount = async () => {
     try {
@@ -705,7 +722,7 @@ function Registration(props) {
         { code },
         { headers: { Authorization: token } }
       );
-      console.log("verify modal")
+      console.log("verify modal");
       disableLoading();
       closeVerifyModal();
       // openBusinessModal();
@@ -731,7 +748,7 @@ function Registration(props) {
         { headers: { Authorization: token } }
       );
       // closeVerifyModal();
-      handleFormikBusiness(dataFormik, token)
+      handleFormikBusiness(dataFormik, token);
     } catch (err) {
       setAlertModal(err.response?.data.message);
       disableLoading();
@@ -761,6 +778,7 @@ function Registration(props) {
         verification_code={verificationCode}
         changeEmail={changeEmail}
         methodSendOTP={methodSendOTP}
+        centered={false}
       />
 
       <ModalPersonal
@@ -776,6 +794,7 @@ function Registration(props) {
         openOTPModal={openOTPModal}
         showOTPModal={showOTPModal}
         handleMethodSentOTP={handleMethodSentOTP}
+        centered={false}
       />
 
       <ModalRegister
@@ -820,9 +839,7 @@ function Registration(props) {
           <input
             placeholder="Business Name"
             type="text"
-            className={`form-control py-5 px-6 ${getInputClasses(
-              "name"
-            )}`}
+            className={`form-control py-5 px-6 ${getInputClasses("name")}`}
             name="name"
             {...formik.getFieldProps("name")}
           />
@@ -839,9 +856,7 @@ function Registration(props) {
           <input
             placeholder="Email"
             type="email"
-            className={`form-control py-5 px-6 ${getInputClasses(
-              "email"
-            )}`}
+            className={`form-control py-5 px-6 ${getInputClasses("email")}`}
             name="email"
             {...formik.getFieldProps("email")}
           />
@@ -873,164 +888,162 @@ function Registration(props) {
         {/* end: Phone number */}
 
         {/* Start business location */}
-          <Form.Group>
-            {/* <Form.Label>Select Business Type</Form.Label> */}
-            <Form.Control
-              as="select"
-              name="business_type_id"
-              {...formik.getFieldProps("business_type_id")}
-              className={validationBusiness("business_type_id")}
-              required
-            >
-              <option value="" disabled hidden>
-                Choose Business Type
-              </option>
+        <Form.Group>
+          {/* <Form.Label>Select Business Type</Form.Label> */}
+          <Form.Control
+            as="select"
+            name="business_type_id"
+            {...formik.getFieldProps("business_type_id")}
+            className={validationBusiness("business_type_id")}
+            required
+          >
+            <option value="" disabled hidden>
+              Choose Business Type
+            </option>
 
-              {allBusinessTypes.map((item) => {
-                return (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                );
-              })}
-            </Form.Control>
-            {formik.touched.business_type_id &&
-            formik.errors.business_type_id ? (
-              <div className="fv-plugins-message-container">
-                <div className="fv-help-block">
-                  {formik.errors.business_type_id}
-                </div>
+            {allBusinessTypes.map((item) => {
+              return (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              );
+            })}
+          </Form.Control>
+          {formik.touched.business_type_id && formik.errors.business_type_id ? (
+            <div className="fv-plugins-message-container">
+              <div className="fv-help-block">
+                {formik.errors.business_type_id}
               </div>
-            ) : null}
-          </Form.Group>
+            </div>
+          ) : null}
+        </Form.Group>
 
-          <Form.Group>
-            {/* <Form.Label>Select Province</Form.Label> */}
-            <Form.Control
-              as="select"
-              name="business_province_id"
-              {...formik.getFieldProps("business_province_id")}
-              onChange={handleProvince}
-              onBlur={handleProvince}
-              className={validationBusiness("business_province_id")}
-              required
-            >
-              <option value="" disabled hidden>
-                Choose Province
-              </option>
+        <Form.Group>
+          {/* <Form.Label>Select Province</Form.Label> */}
+          <Form.Control
+            as="select"
+            name="business_province_id"
+            {...formik.getFieldProps("business_province_id")}
+            onChange={handleProvince}
+            onBlur={handleProvince}
+            className={validationBusiness("business_province_id")}
+            required
+          >
+            <option value="" disabled hidden>
+              Choose Province
+            </option>
 
-              {allProvinces.map((item) => {
-                return (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                );
-              })}
-            </Form.Control>
-            {formik.touched.business_province_id &&
-            formik.errors.business_province_id ? (
-              <div className="fv-plugins-message-container">
-                <div className="fv-help-block">
-                  {formik.errors.business_province_id}
-                </div>
+            {allProvinces.map((item) => {
+              return (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              );
+            })}
+          </Form.Control>
+          {formik.touched.business_province_id &&
+          formik.errors.business_province_id ? (
+            <div className="fv-plugins-message-container">
+              <div className="fv-help-block">
+                {formik.errors.business_province_id}
               </div>
-            ) : null}
-          </Form.Group>
+            </div>
+          ) : null}
+        </Form.Group>
 
-          <Form.Group>
-            {/* <Form.Label>Select City</Form.Label> */}
-            <Form.Control
-              as="select"
-              name="business_city_id"
-              {...formik.getFieldProps("business_city_id")}
-              onChange={handleCity}
-              onBlur={handleCity}
-              className={validationBusiness("business_city_id")}
-              required
-            >
-              <option value="" disabled hidden>
-                Choose City
-              </option>
+        <Form.Group>
+          {/* <Form.Label>Select City</Form.Label> */}
+          <Form.Control
+            as="select"
+            name="business_city_id"
+            {...formik.getFieldProps("business_city_id")}
+            onChange={handleCity}
+            onBlur={handleCity}
+            className={validationBusiness("business_city_id")}
+            required
+          >
+            <option value="" disabled hidden>
+              Choose City
+            </option>
 
-              {allCities.map((item) => {
-                return (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                );
-              })}
-            </Form.Control>
-            {formik.touched.business_city_id &&
-            formik.errors.business_city_id ? (
-              <div className="fv-plugins-message-container">
-                <div className="fv-help-block">
-                  {formik.errors.business_city_id}
-                </div>
+            {allCities.map((item) => {
+              return (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              );
+            })}
+          </Form.Control>
+          {formik.touched.business_city_id && formik.errors.business_city_id ? (
+            <div className="fv-plugins-message-container">
+              <div className="fv-help-block">
+                {formik.errors.business_city_id}
               </div>
-            ) : null}
-          </Form.Group>
+            </div>
+          ) : null}
+        </Form.Group>
 
-          <Form.Group>
-            {/* <Form.Label>Select Location</Form.Label> */}
-            <Form.Control
-              as="select"
-              name="business_location_id"
-              {...formik.getFieldProps("business_location_id")}
-              className={validationBusiness("business_location_id")}
-              required
-            >
-              <option value="" disabled hidden>
-                Choose Location
-              </option>
+        <Form.Group>
+          {/* <Form.Label>Select Location</Form.Label> */}
+          <Form.Control
+            as="select"
+            name="business_location_id"
+            {...formik.getFieldProps("business_location_id")}
+            className={validationBusiness("business_location_id")}
+            required
+          >
+            <option value="" disabled hidden>
+              Choose Location
+            </option>
 
-              {allLocations.map((item) => {
-                return (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                );
-              })}
-            </Form.Control>
-            {formik.touched.business_location_id &&
-            formik.errors.business_location_id ? (
-              <div className="fv-plugins-message-container">
-                <div className="fv-help-block">
-                  {formik.errors.business_location_id}
-                </div>
+            {allLocations.map((item) => {
+              return (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              );
+            })}
+          </Form.Control>
+          {formik.touched.business_location_id &&
+          formik.errors.business_location_id ? (
+            <div className="fv-plugins-message-container">
+              <div className="fv-help-block">
+                {formik.errors.business_location_id}
               </div>
-            ) : null}
-          </Form.Group>
+            </div>
+          ) : null}
+        </Form.Group>
 
-          <Form.Group>
-            {/* <Form.Label>Select Outlet Location</Form.Label> */}
-            <Form.Control
-              as="select"
-              name="outlet_location_id"
-              {...formik.getFieldProps("outlet_location_id")}
-              className={validationBusiness("outlet_location_id")}
-              required
-            >
-              <option value="" disabled hidden>
-                Choose Outlet Location
-              </option>
+        <Form.Group>
+          {/* <Form.Label>Select Outlet Location</Form.Label> */}
+          <Form.Control
+            as="select"
+            name="outlet_location_id"
+            {...formik.getFieldProps("outlet_location_id")}
+            className={validationBusiness("outlet_location_id")}
+            required
+          >
+            <option value="" disabled hidden>
+              Choose Outlet Location
+            </option>
 
-              {allLocations.map((item) => {
-                return (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                );
-              })}
-            </Form.Control>
-            {formik.touched.outlet_location_id &&
-            formik.errors.outlet_location_id ? (
-              <div className="fv-plugins-message-container">
-                <div className="fv-help-block">
-                  {formik.errors.outlet_location_id}
-                </div>
+            {allLocations.map((item) => {
+              return (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              );
+            })}
+          </Form.Control>
+          {formik.touched.outlet_location_id &&
+          formik.errors.outlet_location_id ? (
+            <div className="fv-plugins-message-container">
+              <div className="fv-help-block">
+                {formik.errors.outlet_location_id}
               </div>
-            ) : null}
-          </Form.Group>
+            </div>
+          ) : null}
+        </Form.Group>
         {/* End business location*/}
 
         {/* begin: Password */}
@@ -1038,9 +1051,7 @@ function Registration(props) {
           <input
             placeholder="Password"
             type="password"
-            className={`form-control py-5 px-6 ${getInputClasses(
-              "password"
-            )}`}
+            className={`form-control py-5 px-6 ${getInputClasses("password")}`}
             name="password"
             {...formik.getFieldProps("password")}
           />
@@ -1103,7 +1114,9 @@ function Registration(props) {
         <div className="form-group d-flex flex-wrap flex-center">
           <button
             type="submit"
-            disabled={formik.isSubmitting || !formik.values.acceptTerms || expiredApp}
+            disabled={
+              formik.isSubmitting || !formik.values.acceptTerms || expiredApp
+            }
             className="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4"
           >
             <span>Submit</span>

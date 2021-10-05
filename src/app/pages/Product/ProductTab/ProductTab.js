@@ -521,32 +521,39 @@ const ProductTab = ({
 
       try {
         if (!values.outlet_id.length) {
-          throw new Error(`${t("minimum1Character")}`);
+          throw new Error(`${t("pleaseChooseOutlet")}`);
         }
 
         const merged = values.outlet_id.map((item) => {
           const output = [];
           for (const val of values.products) {
-            if(val.name && val.sku)
-            {
-            const obj = {
-              ...val,
-              outlet_id: item,
-              stock: val.stock === "-" ? 0 : val.stock,
-              expired_date: val.expired_date
-                ? dayjs(val.expired_date)
-                    .subtract(1, "days")
-                    .format("YYYY-MM-DD")
-                : ""
-            };
-            obj.sku = obj.sku.toString();
-            // if (!val.barcode) delete obj.barcode;
-            // if (!val.category) delete obj.category;
-            if (!val.with_recipe) delete obj.with_recipe;
-            if (!val.stock) delete obj.stock;
-            if (!val.unit) delete obj.unit;
-            if (!val.expired_date) delete obj.expired_date;
-            output.push(obj);
+            if(val.name && val.sku) {
+              console.log("val.price_purchase", val.price_purchase)
+              console.log("val.price", val.price)
+              if(!val.price_purchase) throw new Error(t('thereIsProductWithoutPrice'));
+              if(!val.category) throw new Error(t('thereIsProductWithoutCategory'));
+
+              const obj = {
+                ...val,
+                outlet_id: item,
+                stock: val.stock === "-" ? 0 : val.stock,
+                expired_date: val.expired_date
+                  ? dayjs(val.expired_date)
+                      .subtract(1, "days")
+                      .format("YYYY-MM-DD")
+                  : ""
+              };
+              obj.sku = obj.sku.toString();
+              // if (!val.barcode) delete obj.barcode;
+              // if (!val.category) delete obj.category;
+              if (!val.with_recipe) delete obj.with_recipe;
+              if (!val.stock) delete obj.stock;
+              if (!val.unit) delete obj.unit;
+              if (!val.expired_date) delete obj.expired_date;
+              output.push(obj);
+            } else {
+              console.log("SKU atau Nama produk tidak ada")
+              throw new Error(t('thereIsProductWithoutNameOrSku'));
             }
           }
           return output;
