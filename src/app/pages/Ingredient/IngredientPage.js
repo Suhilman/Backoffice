@@ -143,14 +143,14 @@ export const IngredientPage = () => {
         <UnitTab refresh={refresh} handleRefresh={handleRefresh} />
       </Tab> */}
 
-      <Tab eventKey="unit-conversion" title={t("unitConvertion")}>
+      {/* <Tab eventKey="unit-conversion" title={t("unitConvertion")}>
         <UnitConversionTab
           t={t}
           allUnits={allUnits}
           refresh={refresh}
           handleRefresh={handleRefresh}
         />
-      </Tab>
+      </Tab> */}
     </Tabs>
   );
 };

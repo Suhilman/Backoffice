@@ -950,5 +950,8 @@
     "exportSalesOrderResult": "Export Sales Order Result",
     "pleaseInputBlibliAuth": "Please Input Blibli Auth",
     "pleaseInputBlibliStoreId": "Please Input Blibli StoreId",
-    "successfullyInputCredentials": "Successfully Input Credentials"
+    "successfullyInputCredentials": "Successfully Input Credentials",
+    "thereIsProductWithoutNameOrSku": "There is Product Without Name or SKU",
+    "thereIsProductWithoutPrice": "There is Product Without Price",
+    "thereIsProductWithoutCategory": "There is Product Without Category"
 }

@@ -652,7 +652,7 @@ export const EditSalesOrderPage = ({ location, match }) => {
                             );
                           })}
 
-                          <Row style={{ padding: "1rem" }}>
+                          {/* <Row style={{ padding: "1rem" }}>
                             <Button
                               onClick={() =>
                                 arrayHelpers.push(initialValueOrder.items[0])
@@ -661,7 +661,7 @@ export const EditSalesOrderPage = ({ location, match }) => {
                             >
                               + {t("addAnotherProduct")}
                             </Button>
-                          </Row>
+                          </Row> */}
                         </div>
                       );
                     }}

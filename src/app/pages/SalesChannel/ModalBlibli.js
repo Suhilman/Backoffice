@@ -126,6 +126,7 @@ const ModalBlibli = ({ show, close, platform, t, outletId, handleOpenModal }) =>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <Form.Label>Blibli Auth :</Form.Label>
           {credentials.blibli_auth ? (
             <div className={styles.wrapperCredentialsExist}>
               <input className={styles.inputCredentialsExist} type="text" defaultValue={credentials.blibli_auth} onBlur={(e) => handleupdate(e.target.value, 'auth')}/>
@@ -135,12 +136,14 @@ const ModalBlibli = ({ show, close, platform, t, outletId, handleOpenModal }) =>
               <input className={styles.inputCredentialsNew} type="text" placeholder={t('pleaseInputBlibliAuth')} onBlur={(e) => handleupdate(e.target.value, 'auth')}/>
             </div>
           )}
+
+          <Form.Label className="mt-2">Store Id :</Form.Label>
           {credentials.blibli_store_id ? (
-            <div className={`${styles.wrapperCredentialsExist} mt-2`}>
+            <div className={styles.wrapperCredentialsExist}>
               <input className={styles.inputCredentialsExist} type="text" defaultValue={credentials.blibli_store_id} onBlur={(e) => handleupdate(e.target.value, 'store_id')}/>
             </div>
           ) : (
-            <div className={`${styles.wrapperCredentialsNew} mt-2`}>
+            <div className={styles.wrapperCredentialsNew}>
               <input className={styles.inputCredentialsNew} type="text" placeholder={t('pleaseInputBlibliStoreId')} onBlur={(e) => handleupdate(e.target.value, 'store_id')}/>
             </div>
           )}
