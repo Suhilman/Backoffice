@@ -953,5 +953,7 @@
     "successfullyInputCredentials": "Successfully Input Credentials",
     "thereIsProductWithoutNameOrSku": "There is Product Without Name or SKU",
     "thereIsProductWithoutPrice": "There is Product Without Price",
-    "thereIsProductWithoutCategory": "There is Product Without Category"
+    "thereIsProductWithoutCategory": "There is Product Without Category",
+    "settingSyncEcommerce": "Setting Sync Ecommerce",
+    "syncProduct": "Sync Product"
 }

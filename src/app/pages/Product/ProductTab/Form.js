@@ -54,7 +54,9 @@ const FormTemplate = ({
   handleHasExpired,
   showFeature,
   handleSelectWeight,
-  defaultWeight
+  defaultWeight,
+  handleOptionSync,
+  syncEcommerce
 }) => {
   console.log("defaultWeight", defaultWeight)
   const { getRootProps, getInputProps } = useDropzone({
@@ -119,9 +121,10 @@ const FormTemplate = ({
                 name="outlet_id"
                 className="basic-single"
                 classNamePrefix="select"
-                onChange={(value) =>
+                onChange={(value) =>{
+                  handleOptionSync(value.value)
                   formikProduct.setFieldValue("outlet_id", value.value)
-                }
+                }}
               />
               {formikProduct.touched.outlet_id &&
               formikProduct.errors.outlet_id ? (
@@ -488,6 +491,57 @@ const FormTemplate = ({
                 </div>
               ) : null}
             </Form.Group>
+
+            <Form.Group style={{ margin: 0 }}>
+              <Form.Label style={{ alignSelf: "center", marginRight: "1rem" }}>
+                  {t('settingSyncEcommerce')}
+              </Form.Label>
+            </Form.Group>
+
+            <div className="box" style={{ marginBottom: "1rem" }}>
+              {formikProduct.getFieldProps("sync_ecommerce").value.map((value, index) => {
+                if(value.show) {
+                  return (
+                    <Form.Group style={{margin: 0}}>
+                      <Form.Label style={{ alignSelf: "center", marginRight: "1rem" }}>
+                        {value.name}
+                      </Form.Label>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            key={value.id}
+                            color="primary"
+                            checked={value.allow}
+                            value={value.name}
+                            onChange={(e) => {
+                              const { value } = e.target;
+
+                              console.log("value", value)
+
+                              const allowValue = formikProduct.getFieldProps("sync_ecommerce").value.find(
+                                (val) => val.name === value
+                              );
+                              console.log("allowValue", allowValue)
+                              if (allowValue.allow) {
+                                formikProduct.setFieldValue(
+                                  `sync_ecommerce[${index}].allow`,
+                                  false
+                                );
+                              } else {
+                                formikProduct.setFieldValue(
+                                  `sync_ecommerce[${index}].allow`,
+                                  true
+                                );
+                              }
+                            }}
+                          />
+                        }
+                      />
+                    </Form.Group>
+                  )
+                }
+              })}
+            </div>
           </Col>
 
           <Col>

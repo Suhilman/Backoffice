@@ -953,5 +953,7 @@
   "successfullyInputCredentials": "Berhasil Memasukkan Kredensial",
   "thereIsProductWithoutNameOrSku": "Ada Produk Tanpa Nama atau SKU",
   "thereIsProductWithoutPrice": "Ada Produk Tanpa Harga",
-  "thereIsProductWithoutCategory": "Ada Produk Tanpa Kategori"
+  "thereIsProductWithoutCategory": "Ada Produk Tanpa Kategori",
+  "settingSyncEcommerce": "Setting Sync Ecommerce",
+  "syncProduct": "Sinkron Produk"
 }

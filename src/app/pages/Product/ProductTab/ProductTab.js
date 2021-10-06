@@ -33,6 +33,7 @@ import useDebounce from "../../../hooks/useDebounce";
 import ConfirmModal from "../../../components/ConfirmModal";
 import ImportModal from "./ImportModal";
 import ExportModal from "./ExportModal"
+import LogoSync from "../../../../images/cloud-sync-100.png"
 
 import "../../style.css";
 
@@ -755,6 +756,23 @@ const ProductTab = ({
             <div className="headerEnd" style={{ display: "flex" }}>
               {!multiSelect ? (
                 <>
+                  {/* <div style={{width: '150px'}} className="mr-2">
+                    <Select
+                      placeholder={<div>{t('syncProduct')}</div>}
+                      options={optionsOutlet}
+                      // defaultValue={defaultValueOutlet}
+                      name="outlet_id"
+                      className="basic-single"
+                      classNamePrefix="select"
+                      onChange={(value) =>{
+                        console.log("value.value", value.value)
+                      }}
+                    />
+                  </div> */}
+
+                  <div className="btn btn-info mr-2">
+                    {t('syncProduct')}
+                  </div>
                   <Button style={{ marginRight: "0.5rem" }} variant="secondary" onClick={() => setStateExport(true)}>
                     {t("export")}
                   </Button>

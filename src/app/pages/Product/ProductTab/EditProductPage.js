@@ -50,6 +50,7 @@ export const EditProductPage = ({ match, location }) => {
     currStock && currStock.expired_date ? true : false
   );
   const [defaultWeight, setDefaultWeight] = React.useState("")
+  const [syncEcommerce, setSyncEcommerce] = React.useState([])
 
   console.log("ini currProduct", currProduct)
   const product = {
@@ -81,7 +82,8 @@ export const EditProductPage = ({ match, location }) => {
     weight: currProduct.weight < 1 ? currProduct.weight * 1000 : currProduct.weight, 
     length: currProduct.length, 
     width: currProduct.width, 
-    height: currProduct.height
+    height: currProduct.height,
+    sync_ecommerce: []
   };
 
   const [addonsInitial, setAddonsinitial] = React.useState(groupAddons);
@@ -232,6 +234,7 @@ export const EditProductPage = ({ match, location }) => {
       if (values.length) formData.append("length", values.length)
       if (values.width) formData.append("width", values.width)
       if (values.height) formData.append("height", values.height)
+      formData.append("sync_ecommerce", JSON.stringify(values.sync_ecommerce))
 
       try {
         enableLoading();
@@ -338,20 +341,48 @@ export const EditProductPage = ({ match, location }) => {
   );
 
   useEffect(() => {
-    console.log("showFeature", showFeature)
     if(currProduct.weight) {
-      console.log("currProduct.weight", currProduct.weight)
       if(currProduct.weight < 1) {
-        console.log("masuk ke gram")
         setDefaultWeight("gram")
       } else {
-        console.log("masuk ke kg")
         setDefaultWeight("kg")
       }
     }
     getAllSupplier()
   }, [])
   
+  const getSyncEcommerce = async (currProduct) => {
+    try {
+      const {data} = await axios.get(`${API_URL}/api/v1/outlet/credentials/${currProduct.outlet_id}`)
+
+      const onConnect = []
+
+      if (currProduct.lazada_connect) onConnect.push("lazada_connect")
+      if (currProduct.tokopedia_connect) onConnect.push("tokopedia_connect")
+      if (currProduct.blibli_connect) onConnect.push("blibli_connect")
+      if (currProduct.jdid_connect) onConnect.push("jdid_connect")
+      if (currProduct.shopee_connect) onConnect.push("shopee_connect")
+      if (currProduct.bukalapak_connect) onConnect.push("bukalapak_connect")
+      if (currProduct.zalora_connect) onConnect.push("zalora_connect")
+
+      onConnect.map(value => {
+        data.data.map(value2 => {
+          if(value === value2.key) {
+            value2.allow = true
+          }
+        })
+      })
+
+      formikProduct.setFieldValue("sync_ecommerce", data.data);
+    } catch (error) {
+      console.log("error", error)
+    }
+  }
+
+  useEffect(() => {
+    getSyncEcommerce(currProduct)
+  }, [currProduct])
+
   const optionsUnit = allUnit.map((item) => {
     return { value: item.id, label: item.name };
   });
@@ -387,6 +418,11 @@ export const EditProductPage = ({ match, location }) => {
   const handleSelectWeight = (e) => {
     setDefaultWeight(e.target.value)
   }
+
+  const handleOptionSync = async (outlet_id) => {
+    console.log("handleOptionSync")
+  }
+
   return (
     <Row>
       <ModalManageAddons
@@ -431,6 +467,8 @@ export const EditProductPage = ({ match, location }) => {
           showFeature={showFeature}
           handleSelectWeight={handleSelectWeight}
           defaultWeight={defaultWeight}
+          handleOptionSync={handleOptionSync}
+          syncEcommerce={syncEcommerce}
         />
       </Col>
     </Row>

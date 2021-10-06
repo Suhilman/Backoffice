@@ -34,6 +34,8 @@ export const AddProductPage = ({ location }) => {
   const [allUnit, setAllUnit] = React.useState([])
   const [defaultWeight, setDefaultWeight] = React.useState("kg")
 
+  const [syncEcommerce, setSyncEcommerce] = React.useState([])
+
   const [savedAddons, setSavedAddons] = React.useState([
     {
       group_name: "",
@@ -81,7 +83,8 @@ export const AddProductPage = ({ location }) => {
     weight: 0,
     length: 0,
     width: 0,
-    height: 0
+    height: 0,
+    sync_ecommerce: []
   };
 
   const ProductSchema = Yup.object().shape({
@@ -229,7 +232,7 @@ export const AddProductPage = ({ location }) => {
       if (values.length) formData.append("length", values.length)
       if (values.width) formData.append("width", values.width)
       if (values.height) formData.append("height", values.height)
-
+      formData.append("sync_ecommerce", JSON.stringify(values.sync_ecommerce))
       try {
         enableLoading();
         await axios.post(`${API_URL}/api/v1/product/create-development`, formData);
@@ -331,6 +334,7 @@ export const AddProductPage = ({ location }) => {
       console.log(error)
     }
   }
+
   const optionsSupplier = allSupplier.map((item) => {
     return { value: item.id, label: item.name };
   });
@@ -383,6 +387,18 @@ export const AddProductPage = ({ location }) => {
     setDefaultWeight(e.target.value)
   }
 
+  const handleOptionSync = async (outlet_id) => {
+    try {
+      const {data} = await axios.get(`${API_URL}/api/v1/outlet/credentials/${outlet_id}`)
+      console.log("handleOptionSync", data.data)
+      formikProduct.setFieldValue("sync_ecommerce", data.data);
+
+      setSyncEcommerce(data.data)
+    } catch (error) {
+     console.log("error getSyncEcommerce", error) 
+    }
+  }
+
   return (
     <Row>
       <ModalManageAddons
@@ -426,6 +442,8 @@ export const AddProductPage = ({ location }) => {
           showFeature={showFeature}
           handleSelectWeight={handleSelectWeight}
           defaultWeight={defaultWeight}
+          handleOptionSync={handleOptionSync}
+          syncEcommerce={syncEcommerce}
         />
       </Col>
     </Row>
