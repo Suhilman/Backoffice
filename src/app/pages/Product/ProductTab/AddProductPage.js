@@ -35,6 +35,7 @@ export const AddProductPage = ({ location }) => {
   const [defaultWeight, setDefaultWeight] = React.useState("kg")
 
   const [syncEcommerce, setSyncEcommerce] = React.useState([])
+  const [thereShowSync, setThereShowSync] = React.useState(false)
 
   const [savedAddons, setSavedAddons] = React.useState([
     {
@@ -392,7 +393,14 @@ export const AddProductPage = ({ location }) => {
       const {data} = await axios.get(`${API_URL}/api/v1/outlet/credentials/${outlet_id}`)
       console.log("handleOptionSync", data.data)
       formikProduct.setFieldValue("sync_ecommerce", data.data);
+      let temp_boolean;
+      data.data.map(value => {
+        if(value.show) {
+          temp_boolean = true
+        }
+      })
 
+      setThereShowSync(temp_boolean)
       setSyncEcommerce(data.data)
     } catch (error) {
      console.log("error getSyncEcommerce", error) 
@@ -444,6 +452,7 @@ export const AddProductPage = ({ location }) => {
           defaultWeight={defaultWeight}
           handleOptionSync={handleOptionSync}
           syncEcommerce={syncEcommerce}
+          thereShowSync={thereShowSync}
         />
       </Col>
     </Row>

@@ -52,7 +52,8 @@ export const EditProductPage = ({ match, location }) => {
   const [defaultWeight, setDefaultWeight] = React.useState("")
   const [syncEcommerce, setSyncEcommerce] = React.useState([])
 
-  console.log("ini currProduct", currProduct)
+  const [thereShowSync, setThereShowSync] = React.useState(false)
+
   const product = {
     outlet_id: currProduct.outlet_id,
     name: currProduct.name,
@@ -365,14 +366,20 @@ export const EditProductPage = ({ match, location }) => {
       if (currProduct.bukalapak_connect) onConnect.push("bukalapak_connect")
       if (currProduct.zalora_connect) onConnect.push("zalora_connect")
 
+      let temp_boolean;
+
       onConnect.map(value => {
         data.data.map(value2 => {
           if(value === value2.key) {
             value2.allow = true
           }
+          if(value2.show) {
+            temp_boolean = true
+          }
         })
       })
 
+      setThereShowSync(temp_boolean)
       formikProduct.setFieldValue("sync_ecommerce", data.data);
     } catch (error) {
       console.log("error", error)
@@ -420,7 +427,21 @@ export const EditProductPage = ({ match, location }) => {
   }
 
   const handleOptionSync = async (outlet_id) => {
-    console.log("handleOptionSync")
+    try {
+      const {data} = await axios.get(`${API_URL}/api/v1/outlet/credentials/${outlet_id}`)
+      formikProduct.setFieldValue("sync_ecommerce", data.data);
+      let temp_boolean;
+      data.data.map(value => {
+        if(value.show) {
+          temp_boolean = true
+        }
+      })
+
+      setThereShowSync(temp_boolean)
+      setSyncEcommerce(data.data)
+    } catch (error) {
+      
+    }
   }
 
   return (
@@ -469,6 +490,7 @@ export const EditProductPage = ({ match, location }) => {
           defaultWeight={defaultWeight}
           handleOptionSync={handleOptionSync}
           syncEcommerce={syncEcommerce}
+          thereShowSync={thereShowSync}
         />
       </Col>
     </Row>

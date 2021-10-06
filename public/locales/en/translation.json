@@ -955,5 +955,8 @@
     "thereIsProductWithoutPrice": "There is Product Without Price",
     "thereIsProductWithoutCategory": "There is Product Without Category",
     "settingSyncEcommerce": "Setting Sync Ecommerce",
-    "syncProduct": "Sync Product"
+    "syncProduct": "Sync Product",
+    "toSyncToOtherEommerce": "Untuk sinkron ke E-Commerce lainnya mohon isi data form Sales Channel dan pastikan SKU produk dengan SKU Merchant E-Commerce sama.",
+    "synsBlibliProductSuccess": "Syns Blibli Product Success",
+    "pleaseSelectAnOutletToSyncProducts": "Please select an outlet to sync products"
 }

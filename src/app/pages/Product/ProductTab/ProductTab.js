@@ -33,6 +33,7 @@ import useDebounce from "../../../hooks/useDebounce";
 import ConfirmModal from "../../../components/ConfirmModal";
 import ImportModal from "./ImportModal";
 import ExportModal from "./ExportModal"
+import ModalSync from "./ModalSync";
 import LogoSync from "../../../../images/cloud-sync-100.png"
 
 import "../../style.css";
@@ -53,6 +54,9 @@ const ProductTab = ({
   const [showConfirmBulk, setShowConfirmBulk] = React.useState(false);
   const [stateImport, setStateImport] = React.useState(false);
   const [stateExport, setStateExport] = React.useState(false);
+  const [stateModalSync, setStateModalSync] = React.useState(false);
+  const [productOfOutlet, setProductOfOutlet] = React.useState([])
+
   const [alert, setAlert] = React.useState("");
   const [filename, setFilename] = React.useState("");
   const [outletProduct, setOutletProduct] = React.useState([])
@@ -593,6 +597,11 @@ const ProductTab = ({
     setStateExport(false);
     setDataProduct([])
   };
+
+  const handleCloseModalSync = () => {
+    setStateModalSync(false);
+    setDataProduct([])
+  };
   const getJsDateFromExcel = (excelDate) => {
     return new Date((excelDate - (25567 + 1)) * 86400 * 1000);
   };
@@ -666,6 +675,18 @@ const ProductTab = ({
       }
     });
   };
+
+  const handleOptionOutlet = async (outlet_id) => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    try {
+      const { data } = await axios.get(
+        `${API_URL}/api/v1/product?outlet_id=${outlet_id}`
+      );
+      setProductOfOutlet(data.data)
+    } catch (err) {
+      setAllProducts([]);
+    }
+  }
 
   const ExpandableComponent = ({ data }) => {
     const keys = [
@@ -743,6 +764,18 @@ const ProductTab = ({
         showFeature={showFeature}
       />
 
+      <ModalSync 
+        loading={loading}
+        state={stateModalSync}
+        closeModal={handleCloseModalSync}
+        optionsOutlet={optionsOutlet}
+        handleExports={handleExports}
+        dataProduct={dataProduct}
+        showFeature={showFeature}
+        handleOptionOutlet={handleOptionOutlet}
+        productOfOutlet={productOfOutlet}
+      />
+
       <Col md={12}>
         <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
           <div className="headerPage">
@@ -770,7 +803,7 @@ const ProductTab = ({
                     />
                   </div> */}
 
-                  <div className="btn btn-info mr-2">
+                  <div className="btn btn-info mr-2" onClick={() => setStateModalSync(true)}>
                     {t('syncProduct')}
                   </div>
                   <Button style={{ marginRight: "0.5rem" }} variant="secondary" onClick={() => setStateExport(true)}>

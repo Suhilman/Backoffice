@@ -56,7 +56,8 @@ const FormTemplate = ({
   handleSelectWeight,
   defaultWeight,
   handleOptionSync,
-  syncEcommerce
+  syncEcommerce,
+  thereShowSync
 }) => {
   console.log("defaultWeight", defaultWeight)
   const { getRootProps, getInputProps } = useDropzone({
@@ -492,56 +493,62 @@ const FormTemplate = ({
               ) : null}
             </Form.Group>
 
-            <Form.Group style={{ margin: 0 }}>
-              <Form.Label style={{ alignSelf: "center", marginRight: "1rem" }}>
-                  {t('settingSyncEcommerce')}
-              </Form.Label>
-            </Form.Group>
+            {thereShowSync ? (
+              <>
+              <Form.Group style={{ margin: 0 }}>
+                <Form.Label style={{ alignSelf: "center", marginRight: "1rem" }}>
+                    {t('settingSyncEcommerce')}
+                </Form.Label>
+              </Form.Group>
+              <small className="text-muted">{t('toSyncToOtherEommerce')}</small>
 
-            <div className="box" style={{ marginBottom: "1rem" }}>
-              {formikProduct.getFieldProps("sync_ecommerce").value.map((value, index) => {
-                if(value.show) {
-                  return (
-                    <Form.Group style={{margin: 0}}>
-                      <Form.Label style={{ alignSelf: "center", marginRight: "1rem" }}>
-                        {value.name}
-                      </Form.Label>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            key={value.id}
-                            color="primary"
-                            checked={value.allow}
-                            value={value.name}
-                            onChange={(e) => {
-                              const { value } = e.target;
+              <div className="box" style={{ marginBottom: "1rem" }}>
+                {formikProduct.getFieldProps("sync_ecommerce").value.map((value, index) => {
+                  console.log("sync_ecommerce", value)
+                  if(value.show) {
+                    return (
+                      <Form.Group style={{margin: 0}}>
+                        <Form.Label style={{ alignSelf: "center", marginRight: "1rem" }}>
+                          {value.name}
+                        </Form.Label>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              key={value.id}
+                              color="primary"
+                              checked={value.allow}
+                              value={value.name}
+                              onChange={(e) => {
+                                const { value } = e.target;
 
-                              console.log("value", value)
+                                console.log("value", value)
 
-                              const allowValue = formikProduct.getFieldProps("sync_ecommerce").value.find(
-                                (val) => val.name === value
-                              );
-                              console.log("allowValue", allowValue)
-                              if (allowValue.allow) {
-                                formikProduct.setFieldValue(
-                                  `sync_ecommerce[${index}].allow`,
-                                  false
+                                const allowValue = formikProduct.getFieldProps("sync_ecommerce").value.find(
+                                  (val) => val.name === value
                                 );
-                              } else {
-                                formikProduct.setFieldValue(
-                                  `sync_ecommerce[${index}].allow`,
-                                  true
-                                );
-                              }
-                            }}
-                          />
-                        }
-                      />
-                    </Form.Group>
-                  )
-                }
-              })}
-            </div>
+                                console.log("allowValue", allowValue)
+                                if (allowValue.allow) {
+                                  formikProduct.setFieldValue(
+                                    `sync_ecommerce[${index}].allow`,
+                                    false
+                                  );
+                                } else {
+                                  formikProduct.setFieldValue(
+                                    `sync_ecommerce[${index}].allow`,
+                                    true
+                                  );
+                                }
+                              }}
+                            />
+                          }
+                        />
+                      </Form.Group>
+                    )
+                  }
+                })}
+              </div>
+              </>
+            ) : null }
           </Col>
 
           <Col>
