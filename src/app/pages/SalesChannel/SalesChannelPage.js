@@ -154,14 +154,14 @@ export const SalesChannelPage = () => {
                       <img src={logoBlibli} alt="Logo Blibli" />
                     </div>
                   </div>
-                  <div className={styles.containerLazada}>
+                  {/* <div className={styles.containerLazada}>
                     <div
                       className={`${styles.wrapperLazada} ${styles.hoverEffect}`}
                       onClick={() => handlePlatform("Lazada")}
                     >
                       <img src={logoLazada} alt="Logo Lazada" />
                     </div>
-                  </div>
+                  </div> */}
                   <div className={styles.containerJDid}>
                     <div
                       className={`${styles.wrapperJDid} ${styles.hoverEffect}`}
@@ -170,10 +170,7 @@ export const SalesChannelPage = () => {
                       <img src={logoJdid} alt="Logo JDid" />
                     </div>
                   </div>
-                </Col>
-              </Row>
-              <Row style={{marginBottom: '30px'}}>
-                <Col className="d-flex align-items-end">
+                  
                   <div className={styles.containerZalora}>
                     <div
                       className={`${styles.wrapperZalora} ${styles.hoverEffect}`}
@@ -182,6 +179,18 @@ export const SalesChannelPage = () => {
                       <img src={logoZalora} alt="Logo Zalora" />
                     </div>
                   </div>
+                </Col>
+              </Row>
+              <Row style={{marginBottom: '30px'}}>
+                <Col className="d-flex align-items-end">
+                  {/* <div className={styles.containerZalora}>
+                    <div
+                      className={`${styles.wrapperZalora} ${styles.hoverEffect}`}
+                      onClick={() => handlePlatform("Zalora")}
+                    >
+                      <img src={logoZalora} alt="Logo Zalora" />
+                    </div>
+                  </div> */}
                   <div className={styles.containerZilingo}>
                     {/* <div
                       className={`${styles.wrapperZilingo} ${styles.hoverEffect}`}

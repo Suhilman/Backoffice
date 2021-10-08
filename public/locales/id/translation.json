@@ -958,5 +958,6 @@
   "syncProduct": "Sinkron Produk",
   "toSyncToOtherEommerce": "Untuk sinkron ke E-Commerce lainnya mohon isi data form Sales Channel dan pastikan SKU produk dengan SKU Merchant E-Commerce sama.",
   "synsBlibliProductSuccess": "Sinkron Produk Blibli Sukses",
-  "pleaseSelectAnOutletToSyncProducts": "Silahkan pilih outlet untuk sinkron produk"
+  "pleaseSelectAnOutletToSyncProducts": "Silahkan pilih outlet untuk sinkron produk",
+  "theOutletIsNotIntegratedWithBlibli": "The Outlet Is Not Integrated With Blibli"
 }

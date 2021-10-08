@@ -23,6 +23,7 @@ const ModalSync = ({
   showFeature,
   handleOptionOutlet,
   productOfOutlet,
+  tempOptionOutlet
 }) => {
   const { t } = useTranslation();
 
@@ -34,6 +35,8 @@ const ModalSync = ({
   const [currProduct, setCurrProduct] = React.useState([])
 
   const [outletId, setOutletId] = React.useState(null)
+  const [outletWithIntegrate, setOutletWithIntegrate] = React.useState([])
+  const [alert, setAlert] = React.useState("");
 
   const handleCurrency = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -56,6 +59,21 @@ const ModalSync = ({
     setCurrProduct(uniqueArray)
   };
 
+  const optionOutletIntegrate = (alOutlet) => {
+    console.log("optionOutletIntegrate", alOutlet)
+    const result = []
+    alOutlet.map(value => {
+      if(value.blibli_store_id && value.blibli_auth) {
+        result.push(value)
+      }
+    })
+    const optionsOutlet = result.map((item) => {
+      return { value: item.id, label: item.name };
+    });
+    console.log("optionsOutlet", optionsOutlet)
+    setOutletWithIntegrate(optionsOutlet)
+  }
+
   React.useEffect(() => {
     handleCurrency();
   }, []);
@@ -63,6 +81,10 @@ const ModalSync = ({
   React.useEffect(() => {
     handleFilename();
   }, [dataProduct]);
+
+  React.useEffect(() => {
+    optionOutletIntegrate(tempOptionOutlet)
+  }, [tempOptionOutlet])
 
   const productData = [
     {
@@ -117,57 +139,75 @@ const ModalSync = ({
     }
   ];
 
+  const checkOutletIntegrate = () => {
+    const currOutlet = tempOptionOutlet.find(
+      (val) => val.id == outletId
+    )
+    console.log("currOutlet", currOutlet)
+    if(currOutlet.blibli_store_id && currOutlet.blibli_auth) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   const handleSyncBlili = async () => {
     try {
-      const request_id = `Lifetech - ${outletId} - ${moment(new Date()).format("YYYYMMDDHHmmss")}`
-      const container_gdnsku_blibli = []
-      const send_list_product_blibli = {
-        requestId: request_id,
-        outlet_id: outletId,
-        page: 0
-      }
-      const listProductBlibli = await axios.post(`${API_URL}/api/v1/blibli/get-product`, send_list_product_blibli)
-
-      const page_number = listProductBlibli.data.data.pageMetaData.pageNumber
-
-      for (let i = 0; i <= page_number ; i++) {
-        const temp_obj = {
-          ...send_list_product_blibli,
-          page: i
-        }
-        const listProductBlibli = await axios.post(`${API_URL}/api/v1/blibli/get-product`, temp_obj)
-        const temp_content = listProductBlibli.data.data.content
-        temp_content.map(async (value) => {
-          container_gdnsku_blibli.push(value.gdnSku)
-          const send_save_temp_product = {
-            requestId: request_id,
-            outlet_id: outletId,
-            sku: value.gdnSku,
-            updatedDateBlibli: value.updatedDate
-          }
-          await axios.post(`${API_URL}/api/v1/blibli/save-temp-product`, send_save_temp_product)
-        })
-      }
-      console.log("container_gdnsku_blibli", container_gdnsku_blibli)
-      container_gdnsku_blibli.map(async (value) => {
-        const send_sync_in_single = {
-          sku: value,
+      if(checkOutletIntegrate()) {
+        setAlert("")
+      
+        const request_id = `Lifetech - ${outletId} - ${moment(new Date()).format("YYYYMMDDHHmmss")}`
+        const container_gdnsku_blibli = []
+        const send_list_product_blibli = {
+          requestId: request_id,
           outlet_id: outletId,
+          page: 0
         }
-        await axios.post(`${API_URL}/api/v1/blibli/sync-in-single`, send_sync_in_single)
-      })
-      await handleOptionOutlet(outletId)
-      toast.success(t('synsBlibliProductSuccess'), {
-        position: "top-right",
-        autoClose: 4500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined
-      });
-    } catch (error) {
-      console.log("ERROR handleSyncBlili", error)
+        const listProductBlibli = await axios.post(`${API_URL}/api/v1/blibli/get-product`, send_list_product_blibli)
+  
+        const page_number = listProductBlibli.data.data.pageMetaData.pageNumber
+  
+        for (let i = 0; i <= page_number ; i++) {
+          const temp_obj = {
+            ...send_list_product_blibli,
+            page: i
+          }
+          const listProductBlibli = await axios.post(`${API_URL}/api/v1/blibli/get-product`, temp_obj)
+          const temp_content = listProductBlibli.data.data.content
+          temp_content.map(async (value) => {
+            container_gdnsku_blibli.push(value.gdnSku)
+            const send_save_temp_product = {
+              requestId: request_id,
+              outlet_id: outletId,
+              sku: value.gdnSku,
+              updatedDateBlibli: value.updatedDate
+            }
+            await axios.post(`${API_URL}/api/v1/blibli/save-temp-product`, send_save_temp_product)
+          })
+        }
+        container_gdnsku_blibli.map(async (value) => {
+          const send_sync_in_single = {
+            sku: value,
+            outlet_id: outletId,
+          }
+          await axios.post(`${API_URL}/api/v1/blibli/sync-in-single`, send_sync_in_single)
+        })
+        await handleOptionOutlet(outletId)
+        toast.success(t('synsBlibliProductSuccess'), {
+          position: "top-right",
+          autoClose: 4500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        });
+      } else {
+        throw new Error(`${t("theOutletIsNotIntegratedWithBlibli")}`)
+      }
+    } catch (err) {
+      console.log("ERROR handleSyncBlili", err)
+      setAlert(err.response?.data.message || err.message);
     }
   }
 
@@ -178,6 +218,7 @@ const ModalSync = ({
           <Modal.Title>{t("syncProduct")}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {alert ? <Alert variant="danger">{alert}</Alert> : ""}
           <Row>
             <Col>
               <small>* {t('pleaseSelectAnOutletToSyncProducts')}</small>

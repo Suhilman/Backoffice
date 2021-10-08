@@ -774,6 +774,7 @@ const ProductTab = ({
         showFeature={showFeature}
         handleOptionOutlet={handleOptionOutlet}
         productOfOutlet={productOfOutlet}
+        tempOptionOutlet={tempOptionOutlet}
       />
 
       <Col md={12}>
