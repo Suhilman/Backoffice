@@ -85,7 +85,8 @@ export const AddProductPage = ({ location }) => {
     length: 0,
     width: 0,
     height: 0,
-    sync_ecommerce: []
+    sync_ecommerce: [],
+    has_assembly: false
   };
 
   const ProductSchema = Yup.object().shape({
@@ -130,6 +131,7 @@ export const AddProductPage = ({ location }) => {
     is_favorite: Yup.boolean().required(),
     has_raw_material: Yup.boolean().required(),
     has_recipe: Yup.boolean().required(),
+    has_assembly: Yup.boolean().required(),
     has_stock: Yup.boolean().required(),
     recipe_id: Yup.number().nullable(),
     raw_material_id: Yup.number().nullable(),
@@ -233,6 +235,7 @@ export const AddProductPage = ({ location }) => {
       if (values.length) formData.append("length", values.length)
       if (values.width) formData.append("width", values.width)
       if (values.height) formData.append("height", values.height)
+      if (values.has_assembly) formData.append("has_assembly", values.has_assembly)
       formData.append("sync_ecommerce", JSON.stringify(values.sync_ecommerce))
       try {
         enableLoading();
@@ -403,7 +406,7 @@ export const AddProductPage = ({ location }) => {
       setThereShowSync(temp_boolean)
       setSyncEcommerce(data.data)
     } catch (error) {
-     console.log("error getSyncEcommerce", error) 
+      console.log("error getSyncEcommerce", error) 
     }
   }
 

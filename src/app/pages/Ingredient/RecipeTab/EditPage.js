@@ -551,6 +551,7 @@ export const EditRecipePage = ({ location, match }) => {
                                                   val.value === value.value
                                               );
 
+                                              // default calorie
                                               let calorie = 0;
                                               if (rawMaterial.calorie) {
                                                 calorie = rawMaterial.calorie;
