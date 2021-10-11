@@ -382,14 +382,14 @@ export const EditIncomingMaterialPage = ({ location, match }) => {
                                     ) : null}
                                   </Form.Group>
                                 </Col>
-                                <Col sm={1}>
+                                {/* <Col sm={1}>
                                   <Button
                                     onClick={() => arrayHelpers.remove(index)}
                                     variant="danger"
                                   >
                                     <Delete />
                                   </Button>
-                                </Col>
+                                </Col> */}
                               </Row>
                             );
                           })}
