@@ -961,6 +961,9 @@
   "pleaseSelectAnOutletToSyncProducts": "Silahkan pilih outlet untuk sinkron produk",
   "theOutletIsNotIntegratedWithBlibli": "The Outlet Is Not Integrated With Blibli",
   "productAssembly": "Perakitan Produk",
-  "noProductAssembly": "Tidak Ada Produk Perakitan",
-  "withProductAssembly": "Dengan Produk Perakitan"
+  "noProductAssembly": "Tidak Ada Perakitan Produk",
+  "withProductAssembly": "Dengan Perakitan Produk",
+  "code": "Kode",
+  "addProductAssembly": "Tambah Perakitan Produk",
+  "areYouSureWantToAddProductAssembly": "Apakah Anda yakin ingin menambah perakitan produk?"
 }

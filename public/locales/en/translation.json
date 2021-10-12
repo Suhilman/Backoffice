@@ -962,5 +962,8 @@
     "theOutletIsNotIntegratedWithBlibli": "The Outlet Is Not Integrated With Blibli",
     "productAssembly": "Product Assembly",
     "noProductAssembly": "No Product Assembly",
-    "withProductAssembly": "With Product Assembly"
+    "withProductAssembly": "With Product Assembly",
+    "code": "Code",
+    "addProductAssembly": "Add Product Assembly",
+    "areYouSureWantToAddProductAssembly": "Are You Sure Want To Add Product Assembly"
 }

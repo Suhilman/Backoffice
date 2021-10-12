@@ -153,6 +153,8 @@ const InventoryTab = ({ refresh, t }) => {
           ? item.Incoming_Stock.code
           : item.Transfer_Stock
           ? item.Transfer_Stock.code
+          : item.Product_Assembly
+          ? item.Product_Assembly.code
           : "-",
         stock: item.stock || 0,
         unit: item.Unit?.name || "-",

@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 import { Paper } from "@material-ui/core";
-import { Button, InputGroup, Form, Row, Col, Dropdown } from "react-bootstrap";
+import { Button, InputGroup, Form, Row, Col, Dropdown, ListGroup } from "react-bootstrap";
+import dayjs from "dayjs";
 import DataTable from "react-data-table-component";
 
 import { Search, MoreHoriz } from "@material-ui/icons";
@@ -35,6 +36,8 @@ const ProductAssemblyTab = ({
   });
 
   const [allRecipes, setAllRecipes] = React.useState([]);
+  const [allProductAssembly, setAllProductAssembly] = React.useState([]);
+
   const [currRecipe, setCurrRecipe] = React.useState({
     id: "",
     name: ""
@@ -53,7 +56,22 @@ const ProductAssemblyTab = ({
     }
   };
 
+  const getProductAssembly = async (search) => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const filter = `?name=${search}`;
+
+    try {
+      const { data } = await axios.get(`${API_URL}/api/v1/product-assembly${filter}`);
+      console.log('All Product Assembly', data.data)
+      setAllProductAssembly(data.data);
+    } catch (error) {
+      console.log("ERROR GET PRODUCT ASSEMBLY", error)
+      setAllProductAssembly([])
+    }
+  }
+
   React.useEffect(() => {
+    getProductAssembly(debouncedSearch)
     getRecipe(debouncedSearch);
   }, [refresh, debouncedSearch]);
 
@@ -105,23 +123,18 @@ const ProductAssemblyTab = ({
       width: "50px"
     },
     {
-      name: `${t("product")}`,
-      selector: "name",
+      name: `${t("code")}`,
+      selector: "code",
       sortable: true
     },
     {
-      name: `${t("rawMaterialUsed")}`,
-      selector: "raw_material",
+      name: `${t("date")}`,
+      selector: "date",
       sortable: true
     },
     {
-      name: `${t("totalNutrition")}`,
-      selector: "total_nutrition",
-      sortable: true
-    },
-    {
-      name: `${t(totalRecipePrice)}`,
-      selector: "total_recipe_price",
+      name: `${t("status")}`,
+      selector: "status",
       sortable: true
     },
     {
@@ -159,52 +172,80 @@ const ProductAssemblyTab = ({
     }
   ];
 
-  console.log("allRecipes", allRecipes)
 
-  const dataUnit = allRecipes.map((item, index) => {
-    // const total_nutrition = item.Recipe_Materials?.reduce(
-    //   (init, curr) => (init += curr.calorie_per_unit || 0),
-    //   0
-    // );
-    // const total_recipe_price = item.Recipe_Materials?.reduce(
-    //   (init, curr) => (init += curr.ingredient_price || 0),
-    //   0
-    // );
+  const dataUnit = allProductAssembly.map((item, index) => {
     return {
       id: item.id,
       no: index + 1,
-      name: item.Product?.name || "-",
-      raw_material: item.Recipe_Materials?.length || 0,
-      total_nutrition: item.total_calorie || 0,
-      total_recipe_price: item.total_ingredient_price,
-      outlet_id: item.outlet_id,
-      product_id: item.product_id,
-      total_calorie: item.total_calorie || 0,
-      total_ingredient_price: item.total_ingredient_price,
-      notes: item.notes,
-      materials: item.Recipe_Materials.map((val) => {
+      code: item.code,
+      date: item.date,
+      status: item.status,
+      items: item.Product_Assembly_Items.map((val) => {
         return {
           id: val.id,
-          raw_material_id: val.raw_material_id || 0,
-          quantity: val.quantity || 0,
-          unit_id: val.unit_id || 0,
-          is_custom_material: val.is_custom_material,
-          calorie_per_unit: val.calorie_per_unit || 0,
-          ingredient_price: val.ingredient_price || 0,
-          custom_material_name: val.custom_material_name,
-          custom_material_price: val.custom_material_price,
-          raw_material_category_id:
-            val.Raw_Material?.raw_material_category_id || 0
+          product_name: val.Product?.name,
+          quantity: val.quantity,
+          expired_date: val.expired_date,
+          unit_name: val.Unit?.name
         };
-      }),
-      currProduct: {
-        name: item.Product?.name,
-        price: item.Product?.price
-      }
+      })
     };
   });
 
   console.log("dataUnit", dataUnit)
+  const ExpandableComponent = ({ data }) => {
+    console.log("ExpandableComponent", data)
+    const stockData = data.items.map((item) => {
+      return {
+        id: item.id,
+        product_name: item.product_name,
+        quantity: item.quantity || "-",
+        unit: item.unit_name || "-",
+        expired_date: item.expired_date
+          ? dayjs(item.expired_date).format("DD-MMM-YYYY")
+          : "-"
+      };
+    });
+    stockData.sort((a,b)=>a.id-b.id);
+    console.log("stockData", stockData)
+
+    return (
+      <>
+        <ListGroup style={{ padding: "1rem", marginLeft: "1rem" }}>
+          <ListGroup.Item>
+            <Row>
+              <Col style={{ fontWeight: "700" }}>{t('productName')}</Col>
+              <Col style={{ fontWeight: "700" }}>{t('quantity')}</Col>
+              <Col style={{ fontWeight: "700" }}>{t('unit')}</Col>
+              <Col style={{ fontWeight: "700" }}>{t('expiredDate')}</Col>
+            </Row>
+          </ListGroup.Item>
+          {stockData.length ? (
+            stockData.map((val, index) => {
+              return (
+                <ListGroup.Item key={index}>
+                  <Row>
+                    <Col>{val.product_name}</Col>
+                    <Col>{val.quantity}</Col>
+                    <Col>{val.unit}</Col>
+                    <Col>{val.expired_date}</Col>
+                  </Row>
+                </ListGroup.Item>
+              );
+            })
+          ) : (
+            <ListGroup.Item>
+              <Row>
+                <Col>-</Col>
+                <Col>-</Col>
+                <Col>-</Col>
+              </Row>
+            </ListGroup.Item>
+          )}
+        </ListGroup>
+      </>
+    );
+  };
 
   return (
     <>
@@ -223,7 +264,7 @@ const ProductAssemblyTab = ({
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>{t("recipe")}</h3>
+                <h3>{t("productAssembly")}</h3>
               </div>
               <div className="headerEnd">
                 <Link to={{
@@ -231,7 +272,7 @@ const ProductAssemblyTab = ({
                     state: { allOutlets, allMaterials, allUnits }
                   }}>
                   <Button variant="primary">
-                    {t("addRawMaterial")}
+                    {t("addProductAssembly")}
                   </Button>
                 </Link>
               </div>
@@ -261,6 +302,8 @@ const ProductAssemblyTab = ({
               pagination
               columns={columns}
               data={dataUnit}
+              expandableRows
+              expandableRowsComponent={<ExpandableComponent />}
               style={{ minHeight: "100%" }}
             />
           </Paper>
