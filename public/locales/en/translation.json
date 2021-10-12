@@ -961,6 +961,6 @@
     "pleaseSelectAnOutletToSyncProducts": "Please select an outlet to sync products",
     "theOutletIsNotIntegratedWithBlibli": "The Outlet Is Not Integrated With Blibli",
     "productAssembly": "Product Assembly",
-    "noAssemblyProduct": "No Assembly Product",
-    "withAssemblyProduct": "With Assembly Product"
+    "noProductAssembly": "No Product Assembly",
+    "withProductAssembly": "With Product Assembly"
 }

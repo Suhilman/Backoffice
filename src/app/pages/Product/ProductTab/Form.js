@@ -844,16 +844,16 @@ const FormTemplate = ({
 
             {showFeature.has_assembly ? (
               <Form.Group>
-                <Form.Label>{t("productType")}*</Form.Label>
+                <Form.Label>{t("productAssembly")}*</Form.Label>
                 <Row style={{ padding: "1rem" }}>
                   {[
                     {
-                      name: `${t("noAssemblyProduct")}`,
+                      name: `${t("noProductAssembly")}`,
                       value: false,
                       checked: formikProduct.values.has_assembly ? false : true
                     },
                     {
-                      name: `${t("withAssemblyProduct")}`,
+                      name: `${t("withProductAssembly")}`,
                       value: true,
                       checked: formikProduct.values.has_assembly ? true : false
                     }

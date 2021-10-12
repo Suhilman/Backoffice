@@ -39,10 +39,6 @@ const ProductAssemblyTab = ({
     id: "",
     name: ""
   });
-  const [stateAddForm, setStateAddForm] = React.useState(false)
-  
-  const showAddForm = () => setStateAddForm(true)
-  const closeAddForm = () => setStateAddForm(false)
 
   const getRecipe = async (search) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -230,9 +226,14 @@ const ProductAssemblyTab = ({
                 <h3>{t("recipe")}</h3>
               </div>
               <div className="headerEnd">
-                <Button variant="primary" onClick={showAddForm}>
-                  {t("addRawMaterial")}
-                </Button>
+                <Link to={{
+                    pathname: "/ingredient-inventory/product-assembly/add",
+                    state: { allOutlets, allMaterials, allUnits }
+                  }}>
+                  <Button variant="primary">
+                    {t("addRawMaterial")}
+                  </Button>
+                </Link>
               </div>
             </div>
 

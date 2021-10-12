@@ -55,6 +55,11 @@ import { OutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/Outcoming
 import { AddOutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/AddPage";
 import { EditOutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/EditPage";
 import { DetailOutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/DetailPage";
+
+import { AddProductAssembly } from "./pages/Ingredient/ProductAssemblyTab/AddProductAssembly";
+// import { EditOutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/EditPage";
+// import { DetailOutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/DetailPage";
+
 import { TransferMaterialPage } from "./pages/Ingredient/InventoryTab/TransferStock/TransferMaterialPage";
 import { AddTransferMaterialPage } from "./pages/Ingredient/InventoryTab/TransferStock/AddPage";
 import { DetailTransferMaterialPage } from "./pages/Ingredient/InventoryTab/TransferStock/DetailPage";
@@ -447,6 +452,20 @@ export default function BasePage() {
           path="/ingredient-inventory/stock-opname/:materialId"
           component={DetailOpnameMaterialPage}
         />
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/product-assembly/add"
+          component={AddProductAssembly}
+        />
+        {/* <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/edit-product-assembly/:materialId"
+          component={EditOutcomingMaterialPage}
+        /> */}
 
         <ProtectedRoute
           isAllowed={currPrivileges.outlet_management}

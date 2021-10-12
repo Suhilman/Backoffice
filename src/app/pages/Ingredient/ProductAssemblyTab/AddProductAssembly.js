@@ -22,9 +22,9 @@ import DatePicker from "react-datepicker";
 import { CalendarToday, Delete } from "@material-ui/icons";
 import ConfirmModal from "../../../components/ConfirmModal";
 
-export const AddProductAssembly = ({ state, allOutlets, allMaterials, allUnits, closeAddForm }) => {
-  console.log("state", state)
+export const AddProductAssembly = ({ location }) => {
   const history = useHistory();
+  const { allOutlets, allMaterials, allUnits } = location.state;
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
@@ -201,7 +201,7 @@ export const AddProductAssembly = ({ state, allOutlets, allMaterials, allUnits, 
                   <h3>{t('addIncomingStock')}</h3>
                 </div>
                 <div className="headerEnd">
-                  <Button variant="secondary" onClick={closeAddForm}>{t("cancel")}</Button>
+                  <Button variant="secondary">{t("cancel")}</Button>
                   <Dropdown as={ButtonGroup} style={{ marginLeft: "0.5rem" }}>
                     <Button
                       variant="primary"
