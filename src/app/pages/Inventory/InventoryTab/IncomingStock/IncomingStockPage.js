@@ -191,21 +191,23 @@ export const IncomingStockPage = () => {
                 <Dropdown.Item as="button">{t("detail")}</Dropdown.Item>
               </Link>
               {rows.status === 'Pending' ? (
-                <Link
-                  to={{
-                    pathname: `/inventory/edit-incoming-stock/${rows.id}`,
-                    state: {
-                      allOutlets,
-                      allProducts
-                    }
-                  }}
-                >
-                  <Dropdown.Item as="button">{t("edit")}</Dropdown.Item>
-                </Link>
+                <>
+                  <Link
+                    to={{
+                      pathname: `/inventory/edit-incoming-stock/${rows.id}`,
+                      state: {
+                        allOutlets,
+                        allProducts
+                      }
+                    }}
+                  >
+                    <Dropdown.Item as="button">{t("edit")}</Dropdown.Item>
+                  </Link>
+                  <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
+                    {t("delete")}
+                  </Dropdown.Item>
+                </>
               ) : null}
-              <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                {t("delete")}
-              </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         );
