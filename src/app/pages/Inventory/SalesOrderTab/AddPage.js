@@ -173,7 +173,9 @@ export const AddSalesOrderPage = ({ location }) => {
           price_service,
           price_addons_total: 0,
           price_total: (value.price + 0 + price_service) * value.quantity,
-          notes: ""
+          notes: "",
+          price: value.price,
+          total_price: (value.price + 0 + price_service) * value.quantity
         })
       })
 
@@ -186,6 +188,7 @@ export const AddSalesOrderPage = ({ location }) => {
         date: values.date,
         items: values.items
       };
+      orderData.items = tempItems
 
       orderData.payment_method_id = values.payment_method_id
 
@@ -226,7 +229,7 @@ export const AddSalesOrderPage = ({ location }) => {
           orderData.custom_price_tax = 0
           orderData.promo  = null
           orderData.receipt_id  = receipt_id
-          orderData.items = tempItems
+          // orderData.items = tempItems
           orderData.status = 'done'
           console.log("orderData", orderData)
           await axios.post(`${API_URL}/api/v1/sales-order/create-development`, orderData);
