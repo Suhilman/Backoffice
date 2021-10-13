@@ -810,9 +810,9 @@ const ProductTab = ({
                     />
                   </div> */}
 
-                  <div className="btn btn-info mr-2" onClick={() => setStateModalSync(true)}>
+                  {/* <div className="btn btn-info mr-2" onClick={() => setStateModalSync(true)}>
                     {t('syncProduct')}
-                  </div>
+                  </div> */}
                   <Button style={{ marginRight: "0.5rem" }} variant="secondary" onClick={() => setStateExport(true)}>
                     {t("export")}
                   </Button>
