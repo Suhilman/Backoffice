@@ -223,11 +223,11 @@ const UnitTab = ({ refresh, handleRefresh, t }) => {
       sortable: true,
       wrap: true,
     },
-    {
-      name: `${t("unitConvertion")}`,
-      selector: "unit_conversion",
-      sortable: true
-    },
+    // {
+    //   name: `${t("unitConvertion")}`,
+    //   selector: "unit_conversion",
+    //   sortable: true
+    // },
     {
       name: `${t("actions")}`,
       cell: (rows) => {
