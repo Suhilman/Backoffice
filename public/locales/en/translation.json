@@ -965,5 +965,6 @@
     "withProductAssembly": "With Product Assembly",
     "code": "Code",
     "addProductAssembly": "Add Product Assembly",
-    "areYouSureWantToAddProductAssembly": "Are You Sure Want To Add Product Assembly"
+    "areYouSureWantToAddProductAssembly": "Are You Sure Want To Add Product Assembly",
+    "deleteProductAssembly": "Delete Product Assembly"
 }

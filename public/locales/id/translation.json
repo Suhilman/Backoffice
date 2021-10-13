@@ -965,5 +965,6 @@
   "withProductAssembly": "Dengan Perakitan Produk",
   "code": "Kode",
   "addProductAssembly": "Tambah Perakitan Produk",
-  "areYouSureWantToAddProductAssembly": "Apakah Anda yakin ingin menambah perakitan produk?"
+  "areYouSureWantToAddProductAssembly": "Apakah Anda yakin ingin menambah perakitan produk?",
+  "deleteProductAssembly": "Delete Product Assembly"
 }

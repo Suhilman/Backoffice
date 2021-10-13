@@ -38,7 +38,7 @@ const ProductAssemblyTab = ({
   const [allRecipes, setAllRecipes] = React.useState([]);
   const [allProductAssembly, setAllProductAssembly] = React.useState([]);
 
-  const [currRecipe, setCurrRecipe] = React.useState({
+  const [currAssembly, setCurrAssembly] = React.useState({
     id: "",
     name: ""
   });
@@ -87,9 +87,9 @@ const ProductAssemblyTab = ({
   // };
 
   const showDeleteModal = (data) => {
-    setCurrRecipe({
+    setCurrAssembly({
       id: data.id,
-      name: data.name
+      code: data.code
     });
     setStateDeleteModal(true);
   };
@@ -98,14 +98,14 @@ const ProductAssemblyTab = ({
     setStateDeleteModal(false);
   };
 
-  // console.log('ini curr recipe di recipe page', currRecipe)
+  // console.log('ini curr recipe di recipe page', currAssembly)
 
-  const handleDeleteRecipe = async (id) => {
+  const handleDeleteAssembly = async (id) => {
     const API_URL = process.env.REACT_APP_API_URL;
 
     try {
       enableLoading();
-      await axios.delete(`${API_URL}/api/v1/recipe/${id}`);
+      await axios.delete(`${API_URL}/api/v1/product-assembly/${id}`);
       handleRefresh();
       disableLoading();
       closeDeleteModal();
@@ -147,7 +147,7 @@ const ProductAssemblyTab = ({
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
-              <Link
+              {/* <Link
                 to={{
                   pathname: `/ingredient-inventory/recipe/${rows.id}`,
                   state: {
@@ -155,13 +155,26 @@ const ProductAssemblyTab = ({
                     allMaterials,
                     allUnits,
                     allCategories,
-                    currRecipe: rows
+                    currAssembly: rows
                   }
                 }}
               >
                 <Dropdown.Item as="button">{t("edit")}</Dropdown.Item>
-              </Link>
-
+              </Link> */}
+              {rows.status === 'Pending' ? (
+                <Link
+                  to={{
+                    pathname: `/ingredient-inventory/edit-incoming-stock/${rows.id}`,
+                    state: {
+                      allOutlets,
+                      allMaterials,
+                      allUnits
+                    }
+                  }}
+                >
+                  <Dropdown.Item as="button">{t("edit")}</Dropdown.Item>
+                </Link>
+              ) : null }
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
               {t("delete")}
               </Dropdown.Item>
@@ -178,8 +191,10 @@ const ProductAssemblyTab = ({
       id: item.id,
       no: index + 1,
       code: item.code,
-      date: item.date,
-      status: item.status,
+      date: item.date
+      ? dayjs(item.date).format("DD-MMM-YYYY")
+      : "-",
+      status: item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : "-",
       items: item.Product_Assembly_Items.map((val) => {
         return {
           id: val.id,
@@ -252,11 +267,11 @@ const ProductAssemblyTab = ({
       <ConfirmModal
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
-        title={`${t("deleteRecipe")} - ${currRecipe.name}`}
+        title={`${t("deleteProductAssembly")} - ${currAssembly.code}`}
         body={t("areYouSureWantToDelete?")}
         loading={loading}
         buttonColor="danger"
-        handleClick={() => handleDeleteRecipe(currRecipe.id)}
+        handleClick={() => handleDeleteAssembly(currAssembly.id)}
       />
 
       <Row>

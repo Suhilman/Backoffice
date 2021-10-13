@@ -87,7 +87,13 @@ export const AddProductAssembly = ({ location }) => {
       };
       try {
         enableLoading();
-        await axios.post(`${API_URL}/api/v1/product-assembly`, dataAssembly);
+        if(saveAsDraft) {
+          console.log("=====> masuk draft <=====")
+          await axios.post(`${API_URL}/api/v1/product-assembly/draft`, dataAssembly);
+        } else {
+          console.log("=====> TIDAK masuk draft <=====")
+          await axios.post(`${API_URL}/api/v1/product-assembly`, dataAssembly);
+        }
         disableLoading();
         history.push("/ingredient-inventory");
       } catch (err) {
@@ -235,14 +241,30 @@ export const AddProductAssembly = ({ location }) => {
       <Row style={{position: "relative"}}>
         <Col>
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
-            <Form noValidate onSubmit={handleShowConfirm}>
+            <Form noValidate>
               <div className="headerPage">
                 <div className="headerStart">
                   <h3>{t('addProductAssembly')}</h3>
                 </div>
-                <div className="headerEnd">
-                  <Button variant="secondary">{t("cancel")}</Button>
-                  <Button
+                <div className="headerEnd d-flex">
+                  <Link to="/ingredient-inventory/incoming-stock">
+                    <Button variant="secondary">{t("cancel")}</Button>
+                  </Link>
+                  <Dropdown className="ml-2">
+                    <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                      {t("save")}
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                      {loading ? (
+                        <Spinner animation="border" variant="light" size="sm" />
+                      ) : (
+                        <Dropdown.Item onClick={handleShowConfirm}>{t("save")}</Dropdown.Item>
+                      )}
+                      <Dropdown.Item onClick={handleSaveDraft}>{t("saveAsDraft")}</Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                  {/* <Button
                     variant="primary"
                     style={{ marginLeft: "0.5rem" }}
                     type="submit"
@@ -252,7 +274,7 @@ export const AddProductAssembly = ({ location }) => {
                     ) : (
                       `${t("save")}`
                     )}
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
   
