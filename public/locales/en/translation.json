@@ -966,5 +966,7 @@
     "code": "Code",
     "addProductAssembly": "Add Product Assembly",
     "areYouSureWantToAddProductAssembly": "Are You Sure Want To Add Product Assembly",
-    "deleteProductAssembly": "Delete Product Assembly"
+    "deleteProductAssembly": "Delete Product Assembly",
+    "clickHereToAuthorizationWithShopee": "click here to authorization with shopee",
+    "authorizationShopee": "Authorization Shopee"
 }

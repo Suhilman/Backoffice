@@ -17,6 +17,7 @@ import logoZalora from "../../../images/zalora.png";
 
 import ModalSalesChannel from './ModalSalesChannel'
 import ModalBlibli from "./ModalBlibli";
+import ModalShopee from "./ModalShopee";
 
 export const SalesChannelPage = () => {
   const { t } = useTranslation();
@@ -25,6 +26,7 @@ export const SalesChannelPage = () => {
   const [outletId, setOutletId] = useState();
   const [showModal, setShowModal] = useState(false)
   const [showModalBlibli, setShowModalBlibli] = useState(false)
+  const [showModalShopee, setShowModalShopee] = useState(false)
 
   const [platform, setPlatform] = useState()
 
@@ -48,11 +50,17 @@ export const SalesChannelPage = () => {
 
   const handleClose = () => setShowModal(false)
   const handleCloseBlibli = () => setShowModalBlibli(false)
+  const handleCloseShopee = () => setShowModalShopee(false)
+
   const handlePlatform = (name) => {
+    console.log("name", name)
     setPlatform(name)
     if(name === 'Blibli') {
       setShowModalBlibli(true)
-    } else {
+    } else if (name === 'Shopee') {
+      setShowModalShopee(true)
+      console.log("Masuk Shopee", name)
+    }else {
       setShowModal(true)
     }
   }
@@ -73,6 +81,15 @@ export const SalesChannelPage = () => {
     <ModalBlibli
       show={showModalBlibli}
       close={handleCloseBlibli}
+      platform={platform}
+      t={t}
+      outletId={outletId}
+      handleOpenModal={handleOpenModal}
+    />
+
+    <ModalShopee
+      show={showModalShopee}
+      close={handleCloseShopee}
       platform={platform}
       t={t}
       outletId={outletId}

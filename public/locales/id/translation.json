@@ -966,5 +966,7 @@
   "code": "Kode",
   "addProductAssembly": "Tambah Perakitan Produk",
   "areYouSureWantToAddProductAssembly": "Apakah Anda yakin ingin menambah perakitan produk?",
-  "deleteProductAssembly": "Delete Product Assembly"
+  "deleteProductAssembly": "Delete Product Assembly",
+  "clickHereToAuthorizationWithShopee": "klik di sini untuk otorisasi dengan shopee",
+  "authorizationShopee": "Otorisasi Shopee"
 }
