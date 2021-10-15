@@ -216,37 +216,27 @@ export const AddOutcomingMaterialPage = ({ location }) => {
       <Row>
         <Col>
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
-            <Form noValidate onSubmit={handleShowConfirm}>
+            <Form noValidate>
               <div className="headerPage">
                 <div className="headerStart">
                   <h3>{t("addOutcomingStock")}</h3>
                 </div>
-                <div className="headerEnd">
+                <div className="headerEnd d-flex">
                   <Link to="/ingredient-inventory/outcoming-stock">
                     <Button variant="secondary">{t("cancel")}</Button>
                   </Link>
-                  <Dropdown as={ButtonGroup} style={{ marginLeft: "0.5rem" }}>
-                    <Button
-                      variant="primary"
-                      style={{ marginLeft: "0.5rem" }}
-                      type="submit"
-                    >
+                  <Dropdown className="ml-2">
+                    <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                      {t("save")}
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
                       {loading ? (
                         <Spinner animation="border" variant="light" size="sm" />
                       ) : (
-                        `${t("save")}`
+                        <Dropdown.Item onClick={handleShowConfirm}>{t("save")}</Dropdown.Item>
                       )}
-                    </Button>
-
-                    <Dropdown.Toggle split variant="primary" />
-
-                    <Dropdown.Menu>
-                      <Dropdown.Item
-                        variant="primary"
-                        onClick={handleSaveDraft}
-                      >
-                        {t("saveAsDraft")}
-                      </Dropdown.Item>
+                      <Dropdown.Item onClick={handleSaveDraft}>{t("saveAsDraft")}</Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
