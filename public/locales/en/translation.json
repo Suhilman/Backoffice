@@ -968,5 +968,7 @@
     "areYouSureWantToAddProductAssembly": "Are You Sure Want To Add Product Assembly",
     "deleteProductAssembly": "Delete Product Assembly",
     "clickHereToAuthorizationWithShopee": "click here to authorization with shopee",
-    "authorizationShopee": "Authorization Shopee"
+    "authorizationShopee": "Authorization Shopee",
+    "detailProductAssembly": "Detail Product Assembly",
+    "editProductAssembly": "Edit Product Assembly"
 }

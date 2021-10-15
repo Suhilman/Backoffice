@@ -968,5 +968,7 @@
   "areYouSureWantToAddProductAssembly": "Apakah Anda yakin ingin menambah perakitan produk?",
   "deleteProductAssembly": "Delete Product Assembly",
   "clickHereToAuthorizationWithShopee": "klik di sini untuk otorisasi dengan shopee",
-  "authorizationShopee": "Otorisasi Shopee"
+  "authorizationShopee": "Otorisasi Shopee",
+  "detailProductAssembly": "Detail Perakitan Produk",
+  "editProductAssembly": "Ubah Perakitan Produk"
 }

@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
 import * as Yup from "yup";
+import dayjs from 'dayjs'
 import { useFormik, FormikProvider, FieldArray } from "formik";
 import Select from "react-select";
 import { useTranslation } from "react-i18next";
@@ -22,7 +23,9 @@ import DatePicker from "react-datepicker";
 import { CalendarToday, Delete } from "@material-ui/icons";
 import ConfirmModal from "../../../components/ConfirmModal";
 
-export const AddProductAssembly = ({ location }) => {
+export const EditProductAssembly = ({ location, match }) => {
+  const { materialId } = match.params;
+
   const history = useHistory();
   const { allOutlets, allMaterials, allUnits } = location.state;
   const { t } = useTranslation();
@@ -32,7 +35,9 @@ export const AddProductAssembly = ({ location }) => {
   const [showConfirm, setShowConfirm] = React.useState(false)
   const [hasUnit, setHasUnit] = React.useState(false);
 
-  const [productAssembly, setProductAssembly] = React.useState([])
+  const [currProductAssemblyItems, setCurrProductAssemblyitems] = React.useState([])
+  const [currProductAssembly, setCurrProductAssembly] = React.useState({})
+
   const [optionsRecipe, setOptionRecipe] = React.useState([])
   const [startDate, setStartDate] = React.useState(new Date());
 
@@ -52,22 +57,22 @@ export const AddProductAssembly = ({ location }) => {
   };
 
   const ProdductAssembly = Yup.object().shape({
-    outlet_id: Yup.number()
-      .integer()
-      .min(1)
-      .required(`${t("minimum1Character")}`),
-    notes: Yup.string(),
-    date: Yup.string().required(`${t("pleaseInputDate")}`),
-    items: Yup.array().of(
-      Yup.object().shape({
-        recipe_id: Yup.number()
-          .min(1)
-          .required(`${t("pleaseInputARawMaterial")}`),
-        quantity: Yup.number()
-          .min(1, `${t("minimum1Character")}`)
-          .required(`${t("pleaseInputAQuantity ")}`)
-      })
-    )
+    // outlet_id: Yup.number()
+    //   .integer()
+    //   .min(1)
+    //   .required(`${t("minimum1Character")}`),
+    // notes: Yup.string(),
+    // date: Yup.string().required(`${t("pleaseInputDate")}`),
+    // items: Yup.array().of(
+    //   Yup.object().shape({
+    //     recipe_id: Yup.number()
+    //       .min(1)
+    //       .required(`${t("pleaseInputARawMaterial")}`),
+    //     quantity: Yup.number()
+    //       .min(1, `${t("minimum1Character")}`)
+    //       .required(`${t("pleaseInputAQuantity ")}`)
+    //   })
+    // )
   });
 
   const formikProductAssembly = useFormik({
@@ -79,21 +84,15 @@ export const AddProductAssembly = ({ location }) => {
       console.log("data yang akan dikirim", values)
 
       const dataAssembly = {
-        outlet_id: values.outlet_id,
+        outlet_id: currProductAssembly.outlet_id,
         notes: values.notes,
-        date: values.date,
-        items: values.items,
-        status: "done"
+        date: currProductAssembly.date,
+        items: values.items
       };
+      console.log("dataAssembly", dataAssembly)
       try {
         enableLoading();
-        if(saveAsDraft) {
-          console.log("=====> masuk draft <=====")
-          await axios.post(`${API_URL}/api/v1/product-assembly/draft`, dataAssembly);
-        } else {
-          console.log("=====> TIDAK masuk draft <=====")
-          await axios.post(`${API_URL}/api/v1/product-assembly`, dataAssembly);
-        }
+        await axios.put(`${API_URL}/api/v1/product-assembly/${materialId}`, dataAssembly);
         disableLoading();
         history.push("/ingredient-inventory");
       } catch (err) {
@@ -164,17 +163,37 @@ export const AddProductAssembly = ({ location }) => {
     setShowConfirm(true)
   }
 
+  const getProductAssembly = async (materialId) => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    try {
+      const {data} = await axios.get(`${API_URL}/api/v1/product-assembly/${materialId}`)  
+      formikProductAssembly.setValues({
+        notes: data.data.notes || "-",
+        items: data.data.Product_Assembly_Items
+      });
+      data.data.date = data.data.date ? dayjs(data.data.date).format('YYYY-MM-DD HH:mm:ss') : "";
+      data.data.Product_Assembly_Items.map(value => {
+        const format = new Date(value.expired_date)
+        value.expired_date = format
+      })
+      setCurrProductAssemblyitems(data.data.Product_Assembly_Items)
+      setCurrProductAssembly(data.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  React.useEffect(() => {
+    getProductAssembly(materialId)
+  }, [materialId])
+
   const closeConfirmModal = () => setShowConfirm(false);
 
   const handleConfirm = () => {
+    console.log("handleConfirm")
     formikProductAssembly.handleSubmit()
     closeConfirmModal()
   };
-
-  const handleSaveDraft = () => {
-    setSaveAsDraft(true)
-    formikProductAssembly.submitForm()
-  }
 
   const handleOptionRecipe = async (outlet_id) => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -208,7 +227,7 @@ export const AddProductAssembly = ({ location }) => {
   }
 
   const handleExpiredDate = (date, idx) => {
-    productAssembly[idx] = date
+    currProductAssemblyItems[idx].expired_date = date
     formikProductAssembly.setFieldValue(`items[${idx}].expired_date`, date);
   };
 
@@ -244,37 +263,24 @@ export const AddProductAssembly = ({ location }) => {
             <Form noValidate>
               <div className="headerPage">
                 <div className="headerStart">
-                  <h3>{t('addProductAssembly')}</h3>
+                  <h3>{t('editProductAssembly')}</h3>
                 </div>
                 <div className="headerEnd d-flex">
                   <Link to="/ingredient-inventory">
                     <Button variant="secondary">{t("cancel")}</Button>
                   </Link>
-                  <Dropdown className="ml-2">
-                    <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                      {t("save")}
-                    </Dropdown.Toggle>
-
-                    <Dropdown.Menu>
-                      {loading ? (
-                        <Spinner animation="border" variant="light" size="sm" />
-                      ) : (
-                        <Dropdown.Item onClick={handleShowConfirm}>{t("save")}</Dropdown.Item>
-                      )}
-                      <Dropdown.Item onClick={handleSaveDraft}>{t("saveAsDraft")}</Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                  {/* <Button
+                  <Button
                     variant="primary"
                     style={{ marginLeft: "0.5rem" }}
                     type="submit"
+                    onClick={handleShowConfirm}
                   >
                     {loading ? (
                       <Spinner animation="border" variant="light" size="sm" />
                     ) : (
                       `${t("save")}`
                     )}
-                  </Button> */}
+                  </Button>
                 </div>
               </div>
   
@@ -283,76 +289,32 @@ export const AddProductAssembly = ({ location }) => {
               <Row style={{ padding: "1rem" }} className="lineBottom">
                 <Col sm={3}>
                   <Form.Group>
-                    <Form.Label>{t('locationOutlet')}:</Form.Label>
-                    <Select
-                      options={optionsOutlet}
-                      name="outlet_id"
-                      className="basic-single"
-                      classNamePrefix="select"
-                      onChange={(value) => {
-                        handleOptionRecipe(value.value)
-                        formikProductAssembly.setFieldValue("outlet_id", value.value);
-                        formikProductAssembly.setFieldValue("items", [
-                          {
-                            recipe_id: "",
-                            quantity: 0,
-                          }
-                        ]);
-                      }}
+                    <Form.Label>{t("location")}:</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={currProductAssembly ? currProductAssembly.Outlet?.name : "-"}
+                      disabled
                     />
-                    {formikProductAssembly.touched.outlet_id &&
-                    formikProductAssembly.errors.outlet_id ? (
-                      <div className="fv-plugins-message-container">
-                        <div className="fv-help-block">
-                          {formikProductAssembly.errors.outlet_id}
-                        </div>
-                      </div>
-                    ) : null}
                   </Form.Group>
   
                   <Form.Group>
-                    <Form.Label>{t('date')}:</Form.Label>
-                    <InputGroup>
-                      <DatePicker
-                        name="date"
-                        selected={startDate}
-                        onChange={handleDate}
-                        customInput={<CustomInputDate />}
-                        required
-                      />
-  
-                      <InputGroup.Append>
-                        <InputGroup.Text>
-                          <CalendarToday />
-                        </InputGroup.Text>
-                      </InputGroup.Append>
-                    </InputGroup>
-                    {formikProductAssembly.touched.date && formikProductAssembly.errors.date ? (
-                      <div className="fv-plugins-message-container">
-                        <div className="fv-help-block">
-                          {formikProductAssembly.errors.date}
-                        </div>
-                      </div>
-                    ) : null}
+                    <Form.Label>{t("date")}:</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={currProductAssembly?.date || "-"}
+                      disabled
+                    />
                   </Form.Group>
                 </Col>
   
                 <Col>
                   <Form.Group>
-                    <Form.Label>{t('notes')}:</Form.Label>
+                    <Form.Label>{t("notes")}:</Form.Label>
                     <Form.Control
                       as="textarea"
-                      name="notes"
-                      {...formikProductAssembly.getFieldProps("notes")}
-                      className={validationStock("notes")}
+                      name={'notes'}
+                      {...formikProductAssembly.getFieldProps('notes')}
                     />
-                    {formikProductAssembly.touched.notes && formikProductAssembly.errors.notes ? (
-                      <div className="fv-plugins-message-container">
-                        <div className="fv-help-block">
-                          {formikProductAssembly.errors.notes}
-                        </div>
-                      </div>
-                    ) : null}
                   </Form.Group>
                 </Col>
               </Row>
@@ -392,49 +354,11 @@ export const AddProductAssembly = ({ location }) => {
                                 <Row key={index}>
                                   <Col>
                                     <Form.Group>
-                                      <Select
-                                        options={optionsRecipe}
-                                        name={`items[${index}].recipe_id`}
-                                        className="basic-single"
-                                        classNamePrefix="select"
-                                        onChange={(value) => {
-                                          formikProductAssembly.setFieldValue(
-                                            `items[${index}].recipe_id`,
-                                            value.value
-                                          )
-                                          const resDate = new Date()
-                                          const tempExpiredDate = productAssembly;
-                                          tempExpiredDate[index] = resDate;
-                                          setProductAssembly(
-                                            tempExpiredDate
-                                          );
-                                          formikProductAssembly.setFieldValue(
-                                            `items[${index}].expired_date`,
-                                            resDate
-                                          )
-                                          console.log("value.unit", value.unit)
-                                          if (value.unit.id) {
-                                            formikProductAssembly.setFieldValue(
-                                              `items[${index}].unit_id`,
-                                              value.unit.id
-                                            );
-                                            setHasUnit(true);
-                                          } else {
-                                            setHasUnit(false);
-                                          }
-                                        }}
+                                      <Form.Control
+                                        type="text"
+                                        value={item.Product?.name}
+                                        disabled
                                       />
-                                      {formikProductAssembly.touched.items &&
-                                      formikProductAssembly.errors.items ? (
-                                        <div className="fv-plugins-message-container">
-                                          <div className="fv-help-block">
-                                            {
-                                              formikProductAssembly.errors.items[index]
-                                                ?.recipe_id
-                                            }
-                                          </div>
-                                        </div>
-                                      ) : null}
                                     </Form.Group>
                                   </Col>
                                   <Col>
@@ -466,32 +390,43 @@ export const AddProductAssembly = ({ location }) => {
                                       ) : null}
                                     </Form.Group>
                                   </Col>
-                                  <Col>
-                                    <Form.Group className="d-flex justify-content-center">
-                                      <DatePicker
-                                        name={`items[${index}].expired_date`}
-                                        selected={productAssembly[index]}
-                                        onChange={(date) =>
-                                          handleExpiredDate(date, index)
-                                        }
-                                        customInput={
-                                          <CustomInputExpiredDate />
-                                        }
-                                        required
-                                      />
-                                      {formikProductAssembly.touched.items &&
-                                      formikProductAssembly.errors.items ? (
-                                        <div className="fv-plugins-message-container">
-                                          <div className="fv-help-block">
-                                            {
-                                              formikProductAssembly.errors.items[index]
-                                                ?.expired_date
-                                            }
+                                  {currProductAssemblyItems[index]?.expired_date ? (  
+                                    <Col>
+                                      <Form.Group>
+                                        <DatePicker
+                                          name={`items[${index}].expired_date`}
+                                          selected={currProductAssemblyItems[index]?.expired_date}
+                                          onChange={(date) =>
+                                            handleExpiredDate(date, index)
+                                          }
+                                          customInput={<CustomInputExpiredDate />}
+                                          required
+                                        />
+                                        {formikProductAssembly.touched.items &&
+                                        formikProductAssembly.errors.items ? (
+                                          <div className="fv-plugins-message-container">
+                                            <div className="fv-help-block">
+                                              {
+                                                formikProductAssembly.errors.items[index]
+                                                  ?.expired_date
+                                              }
+                                            </div>
                                           </div>
-                                        </div>
-                                      ) : null}
-                                    </Form.Group>
-                                  </Col>
+                                        ) : null}
+                                      </Form.Group>
+                                    </Col>
+                                  ) : (
+                                    <Col>
+                                      <Form.Group>
+                                        <Form.Control
+                                          type="text"
+                                          value="-"
+                                          disabled
+                                          name="expired_date"
+                                        />
+                                      </Form.Group>
+                                    </Col>
+                                  )}
                                   {hasUnit ? (
                                     <Col>
                                       <Form.Group>
@@ -567,19 +502,19 @@ export const AddProductAssembly = ({ location }) => {
                                       ) : null}
                                     </Form.Group>
                                   </Col> */}
-                                  <Col sm={1}>
+                                  {/* <Col sm={1}>
                                     <Button
                                       onClick={() => arrayHelpers.remove(index)}
                                       variant="danger"
                                     >
                                       <Delete />
                                     </Button>
-                                  </Col>
+                                  </Col> */}
                                 </Row>
                               );
                             })}
   
-                            <Row style={{ padding: "1rem" }}>
+                            {/* <Row style={{ padding: "1rem" }}>
                               <Button
                                 onClick={() =>
                                   arrayHelpers.push(initialValueAssembly.items[0])
@@ -588,7 +523,7 @@ export const AddProductAssembly = ({ location }) => {
                               >
                                 + {t('addProductAssembly')}
                               </Button>
-                            </Row>
+                            </Row> */}
                           </div>
                         );
                       }}

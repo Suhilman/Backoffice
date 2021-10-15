@@ -161,10 +161,24 @@ const ProductAssemblyTab = ({
               >
                 <Dropdown.Item as="button">{t("edit")}</Dropdown.Item>
               </Link> */}
+              <Link
+                  to={{
+                    pathname: `/ingredient-inventory/product-assembly/${rows.id}`,
+                    state: {
+                      allOutlets,
+                      allMaterials,
+                      allUnits
+                    }
+                  }}
+                >
+              <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
+                {t("detail")}
+              </Dropdown.Item>
+              </Link>
               {rows.status === 'Pending' ? (
                 <Link
                   to={{
-                    pathname: `/ingredient-inventory/edit-incoming-stock/${rows.id}`,
+                    pathname: `/ingredient-inventory/edit-product-assembly/${rows.id}`,
                     state: {
                       allOutlets,
                       allMaterials,
