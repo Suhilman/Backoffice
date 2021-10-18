@@ -6,6 +6,25 @@ import { LayoutSplashScreen, ContentRoute } from "../_metronic/layout";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ReportPage } from "./pages/Report/ReportPage";
 
+import { SalesSummaryTab } from "./pages/Report/SalesSummaryTab";
+import { PaymentMethodTab } from "./pages/Report/PaymentMethodTab";
+import { SalesTypeTab } from "./pages/Report/SalesTypeTab";
+import { CategorySalesTab } from "./pages/Report/CategorySalesTab";
+import { TransactionHistoryTab } from "./pages/Report/TransactionHistoryTab";
+import { DiscountSalesTab } from "./pages/Report/DiscountTab";
+import { RecapTab } from "./pages/Report/RecapTab";
+import { SalesPerProductTab } from "./pages/Report/SalesPerProductTab";
+import COGSReport from "./pages/Report/COGSReport";
+import ProfitReport from "./pages/Report/ProfitReport";
+import StaffTransaction from "./pages/Report/StaffTransaction";
+import VoidTransaction from "./pages/Report/VoidTransaction";
+import SalesPerHour from "./pages/Report/SalesPerHour";
+import StockReport from "./pages/Report/StockReport";
+import RawMaterialTab from "./pages/Report/RawMaterialTab";
+import { AttendanceTab } from "./pages/Report/AttendanceTab";
+import CommissionReport from "./pages/Report/CommissionReport";
+
+
 import { StaffPage } from "./pages/Staff/StaffPage";
 import { AddStaffPage } from "./pages/Staff/AddStaffPage";
 import { DetailStaffPage } from "./pages/Staff/DetailStaffPage";
@@ -153,10 +172,138 @@ export default function BasePage() {
         <ProtectedRoute
           isAllowed={currPrivileges.view_report}
           isRoute={false}
-          exact={false}
+          exact={true}
           path="/report"
           component={ReportPage}
         />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/sales-summary"
+          component={SalesSummaryTab}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/payment-method"
+          component={PaymentMethodTab}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/sales-type"
+          component={SalesTypeTab}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/category-sales"
+          component={CategorySalesTab}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/transaction-history"
+          component={TransactionHistoryTab}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/discount-sales"
+          component={DiscountSalesTab}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/RecapTab"
+          component={RecapTab}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/sales-per-product"
+          component={SalesPerProductTab}
+        />
+        {/* <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/sales-detail"
+          component={SalesDetail}
+        /> */}
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/cost-of-gold-sold"
+          component={COGSReport}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/profit-calculation"
+          component={ProfitReport}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/staff-transaction"
+          component={StaffTransaction}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/void-transaction"
+          component={VoidTransaction}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/sales-per-hour"
+          component={SalesPerHour}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/stock-report"
+          component={StockReport}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/raw-material"
+          component={RawMaterialTab}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/AttendanceTab"
+          component={AttendanceTab}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/commisison-report"
+          component={CommissionReport}
+        />
+
 
         <ProtectedRoute
           isAllowed={currPrivileges.product_management}

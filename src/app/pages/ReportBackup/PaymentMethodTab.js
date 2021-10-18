@@ -6,35 +6,8 @@ import rupiahFormat from "rupiah-format";
 import { useTranslation } from "react-i18next";
 import "../style.css";
 import NumberFormat from 'react-number-format'
-import {
-  Switch,
-  FormGroup,
-  FormControl,
-  FormControlLabel,
-  Paper
-} from "@material-ui/core";
 
-import {
-  Dropdown,
-  Row,
-  Col,
-  DropdownButton,
-  Form,
-  InputGroup
-} from "react-bootstrap";
-
-export const PaymentMethodTab = () => {
-  const [selectedOutlet, setSelectedOutlet] = React.useState({
-    id: "",
-    name: ""
-  });
-  const [startDate, setStartDate] = React.useState(
-    dayjs().format("YYYY-MM-DD")
-  );
-  const [refresh, setRefresh] = React.useState(0)
-  const [endDate, setEndDate] = React.useState(dayjs().format("YYYY-MM-DD"));
-  const handleRefresh = () => setRefresh((state) => state + 1)
-
+export const PaymentMethodTab = ({ selectedOutlet, startDate, endDate, refresh }) => {
   const [allPaymentMethods, setAllPaymentMethods] = React.useState([]);
   const [currency, setCurrency] = React.useState("")
   const handleCurrency = async () => {
@@ -132,35 +105,28 @@ export const PaymentMethodTab = () => {
 
   return (
     <>
-      <Row>
-        <Col>
-          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
-            <Table id="table-payment" striped>
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>{t("paymentMethod")}</th>
-                  <th>{t("numberOfTransaction")}</th>
-                  <th>{t("totalCollected")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paymentMethodData().map((item, index) => {
-                  return (
-                    <tr key={index}>
-                      <td></td>
-                      <td>{item.method}</td>
-                      <td>{item.transaction}</td>
-                      <td><NumberFormat value={item.total} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-
-          </Paper>
-        </Col>
-      </Row>
+      <Table id="table-payment" striped>
+        <thead>
+          <tr>
+            <th></th>
+            <th>{t("paymentMethod")}</th>
+            <th>{t("numberOfTransaction")}</th>
+            <th>{t("totalCollected")}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {paymentMethodData().map((item, index) => {
+            return (
+              <tr key={index}>
+                <td></td>
+                <td>{item.method}</td>
+                <td>{item.transaction}</td>
+                <td><NumberFormat value={item.total} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </Table>
     </>
   );
 };

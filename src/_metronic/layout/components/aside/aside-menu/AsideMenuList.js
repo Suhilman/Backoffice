@@ -23,6 +23,8 @@ import paymentIcon from "../../../../../images/icons8-mobile-payment-90.png";
 import paymentSalesChannel from "../../../../../images/icons8-sales-64.png";
 import aboutIcon from "../../../../../images/icons8-about-500.png";
 import axios from "axios";
+import ArrowUp from '../../../../../images/arrow-up.png'
+import ArrowDown from '../../../../../images/arrow-down.png'
 
 import "./style.css";
 
@@ -40,6 +42,9 @@ function AsideMenuList(props) {
   const [dashboardSections, setDashboardSections] = React.useState([]);
   const [productSections, setProductSections] = React.useState([]);
   const [managementSections, setManagementSections] = React.useState([]);
+  const [showDropdownReport, setShowDropdownReport] = React.useState(false)
+  const [showDropdownReportSales, setShowDropdownReportSales] = React.useState(false)
+  const [showDropdownReportEmployee, setShowDropdownEmployee] = React.useState(false)
 
   const [kitchenModul, setKitchenModul] = React.useState("");
   const [showIntegrate, setShowIntegrate] = React.useState(false)
@@ -228,6 +233,88 @@ function AsideMenuList(props) {
 
   const { t } = useTranslation();
 
+  const dropdownSalesReport = [
+    {
+      route: 'sales-summary',
+      name: 'salesSummary'
+    },
+    {
+      route: 'payment-method',
+      name: 'paymentMethod'
+    },
+    {
+      route: 'sales-type',
+      name: 'salesType'
+    },
+    {
+      route: 'category-sales',
+      name: 'categorySales'
+    },
+    {
+      route: 'transaction-history',
+      name: 'transactionHistory'
+    },
+    {
+      route: 'discount-sales',
+      name: 'discountSales'
+    },
+    {
+      route: 'recap',
+      name: 'recap'
+    },
+    {
+      route: 'sales-per-product',
+      name: 'salesPerProduct'
+    },
+    {
+      route: 'sales-detail',
+      name: 'Sales Detail'
+    },
+    {
+      route: 'cost-of-gold-sold',
+      name: 'costOfGoldSold'
+    },
+    {
+      route: 'profit-calculation',
+      name: 'Profit Calculation'
+    },
+    {
+      route: 'staff-transaction',
+      name: 'Staff Transaction'
+    },
+    {
+      route: 'void-transaction',
+      name: 'Void Transaction'
+    },
+    {
+      route: 'sales-per-hour',
+      name: 'Sales Per Hour'
+    },
+    {
+      route: 'stock-report',
+      name: 'Stock Report'
+    },
+    {
+      route: 'raw-material',
+      name: 'Raw Material'
+    }
+  ]
+
+  const dropdownEmployeeReport = [
+    {
+      route: 'attendance',
+      name: 'salesSummary'
+    },
+    {
+      route: 'commisison-report',
+      name: 'commissionReport'
+    }
+  ]
+
+  const handleDropdownReport = () => setShowDropdownReport(!showDropdownReport)
+  const handleDropdownReportSales = () => setShowDropdownReportSales(!showDropdownReportSales)
+  const handleDropdownReportEmployee = () => setShowDropdownEmployee(!showDropdownReportEmployee)
+
   return (
     <>
       <ul
@@ -265,28 +352,80 @@ function AsideMenuList(props) {
 
               if (section === "view_report") {
                 return (
-                  <li
-                    key={index}
-                    className={`menu-item ${getMenuItemActive(
-                      "/report",
-                      false
-                    )}`}
-                    aria-haspopup="true"
-                  >
-                    <NavLink className="menu-link" to="/report">
-                      {/* <span className="svg-icon menu-icon">
-                        <SVG
-                          src={toAbsoluteUrl(
-                            "/media/svg/icons/Design/Layers.svg"
+                  <>
+                    <li
+                      key={index}
+                      className={`menu-item ${getMenuItemActive(
+                        "/report",
+                        false
+                      )}`}
+                      aria-haspopup="true"
+                    >
+                      <div className="menu-link" width="100%" onClick={handleDropdownReport}>
+                        <div className="wrapper-icon">
+                          <img src={reportIcon} alt="Icon Report" />
+                        </div>
+                        <div className="handle-between-dropdown-report">
+                          <span className="menu-text">{t("report")}</span>
+                          {showDropdownReport ? (
+                            <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
+                          ) : (
+                            <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
                           )}
-                        />
-                      </span> */}
-                      <div className="wrapper-icon">
-                        <img src={reportIcon} alt="Icon Report" />
+                        </div>
                       </div>
-                      <span className="menu-text">{t("report")}</span>
-                    </NavLink>
-                  </li>
+                      <div className={showDropdownReport ? 'show-dropdown-report' : 'hide-dropdown-report'}>
+                        <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
+                          
+                          <li key={index} className="menu-item" aria-haspopup="true">
+                            <div className="menu-link d-flex justify-content-between align-items-center" onClick={handleDropdownReportSales}>
+                              <span className="dropdown-menu-lv1 menu-text">{t("salesReport")}</span>
+                              {showDropdownReportSales ? (
+                                <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
+                              ) : (
+                                <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
+                              )}
+                            </div>
+
+                            <div className={showDropdownReportSales ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
+                              <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
+                                {dropdownSalesReport.map((value, index2) => 
+                                  <li key={index2} className="menu-item" aria-haspopup="true">
+                                    <NavLink className="menu-link" to={`/report/${value.route}`}>
+                                      <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
+                                    </NavLink>
+                                  </li>
+                                )}
+                              </ul>
+                            </div>
+
+                          </li>
+
+                          <li key={index} className="menu-item" aria-haspopup="true">
+                            <div className="menu-link d-flex justify-content-between align-items-center">
+                              <span className="dropdown-menu-lv1 menu-text" onClick={handleDropdownReportEmployee}>{t("employeeReport")}</span>
+                              {showDropdownReportEmployee ? (
+                                <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
+                              ) : (
+                                <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
+                              )}
+                            </div>
+                            <div className={showDropdownReportEmployee ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
+                              <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
+                                {dropdownEmployeeReport.map((value, index2) => 
+                                  <li key={index2} className="menu-item" aria-haspopup="true">
+                                    <NavLink className="menu-link" to={`/report/${value.route}`}>
+                                      <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
+                                    </NavLink>
+                                  </li>
+                                )}
+                              </ul>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </li>
+                  </>
                 );
               }
             })

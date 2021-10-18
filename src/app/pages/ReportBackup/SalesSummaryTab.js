@@ -6,39 +6,10 @@ import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import "../style.css";
 import NumberFormat from 'react-number-format'
-import {
-  Switch,
-  FormGroup,
-  FormControl,
-  FormControlLabel,
-  Paper
-} from "@material-ui/core";
 
-import {
-  Dropdown,
-  Row,
-  Col,
-  DropdownButton,
-  Form,
-  InputGroup
-} from "react-bootstrap";
-
-export const SalesSummaryTab = () => {
+export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate, refresh, endDateFilename }) => {
   const [allTransactions, setAllTransactions] = React.useState([]);
   const [currency, setCurrency] = React.useState("")
-
-  const [refresh, setRefresh] = React.useState(0)
-  const handleRefresh = () => setRefresh((state) => state + 1)
-
-  const [selectedOutlet, setSelectedOutlet] = React.useState({
-    id: "",
-    name: "All Outlet"
-  })
-  const [startDate, setStartDate] = React.useState(
-    dayjs().format("YYYY-MM-DD")
-  );
-  const [endDate, setEndDate] = React.useState(dayjs().format("YYYY-MM-DD"));
-  const [endDateFilename, setEndDateFilename] = React.useState("");
 
   const [reports, setReports] = React.useState([
     {
@@ -450,115 +421,109 @@ export const SalesSummaryTab = () => {
 
   return (
     <>
-    <Row>
-        <Col>
-          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
-            <div style={{ display: "none" }}>
-              <table id="table-summary">
-                <thead>
-                  <tr>
-                    <th>{t("productSalesReport")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr></tr>
-                </tbody>
-                <thead>
-                  <tr>
-                    <th>{t("outlet")}</th>
-                    <td>{selectedOutlet?.name}</td>
-                  </tr>
-                </thead>
-                <thead>
-                  <tr>
-                    <th>{t("date")}</th>
-                    <td>{`${startDate} - ${endDateFilename}`}</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr></tr>
-                </tbody>
-                <thead>
-                  <tr>
-                    <th>{t("productName")}</th>
-                    <th>{t("additionalOptionNames")}</th>
-                    <th>{t("category")}</th>
-                    <th>{t("sku")}</th>
-                    <th>{t("sold")}</th>
-                    {/* <th>Penjualan Kotor</th> */}
-                    <th>{t("total")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {reports.map((item, index) => {
-                    return (
-                      <tr key={index}>
-                        <td>{item.product_name}</td>
-                        <td>{item.addons_name}</td>
-                        <td>{item.category_name}</td>
-                        <td>{item.sku}</td>
-                        <td>{item.totalItems}</td>
-                        {/* <td>{item.grossSales}</td> */}
-                        <td>{item.totalSales}</td>
-                      </tr>
-                    );
-                  })}
-                  <tr>
-                    <th>{t("subtotal")}</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th>{sumReports(reports, "totalItems")} </th>
-                    {/* <th>{sumReports(reports, "grossSales")} </th> */}
-                    <th>{sumReports(reports, "totalSales")} </th>
-                  </tr>
-                  <tr>
-                    <th>{t("discountGiven")}</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    {/* <th></th> */}
-                    <th>{totalDiscount}</th>
-                  </tr>
-                  <tr>
-                    <th>{t("service")}</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    {/* <th></th> */}
-                    <th>{totalService}</th>
-                  </tr>
-                  <tr>
-                    <th>{t("grandTotal")}</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    {/* <th></th> */}
-                    <th>{grandTotal}</th>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+      <div style={{ display: "none" }}>
+        <table id="table-summary">
+          <thead>
+            <tr>
+              <th>{t("productSalesReport")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr></tr>
+          </tbody>
+          <thead>
+            <tr>
+              <th>{t("outlet")}</th>
+              <td>{selectedOutlet?.name}</td>
+            </tr>
+          </thead>
+          <thead>
+            <tr>
+              <th>{t("date")}</th>
+              <td>{`${startDate} - ${endDateFilename}`}</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr></tr>
+          </tbody>
+          <thead>
+            <tr>
+              <th>{t("productName")}</th>
+              <th>{t("additionalOptionNames")}</th>
+              <th>{t("category")}</th>
+              <th>{t("sku")}</th>
+              <th>{t("sold")}</th>
+              {/* <th>Penjualan Kotor</th> */}
+              <th>{t("total")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {reports.map((item, index) => {
+              return (
+                <tr key={index}>
+                  <td>{item.product_name}</td>
+                  <td>{item.addons_name}</td>
+                  <td>{item.category_name}</td>
+                  <td>{item.sku}</td>
+                  <td>{item.totalItems}</td>
+                  {/* <td>{item.grossSales}</td> */}
+                  <td>{item.totalSales}</td>
+                </tr>
+              );
+            })}
+            <tr>
+              <th>{t("subtotal")}</th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th>{sumReports(reports, "totalItems")} </th>
+              {/* <th>{sumReports(reports, "grossSales")} </th> */}
+              <th>{sumReports(reports, "totalSales")} </th>
+            </tr>
+            <tr>
+              <th>{t("discountGiven")}</th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              {/* <th></th> */}
+              <th>{totalDiscount}</th>
+            </tr>
+            <tr>
+              <th>{t("service")}</th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              {/* <th></th> */}
+              <th>{totalService}</th>
+            </tr>
+            <tr>
+              <th>{t("grandTotal")}</th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              {/* <th></th> */}
+              <th>{grandTotal}</th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-            <Table striped>
-              <tbody>
-                {summaryData().map((item, index) => {
-                  return (
-                    <tr key={index}>
-                      <td></td>
-                      <td>{item.key}</td>
-                      <td><NumberFormat value={item.value} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-          </Paper>
-        </Col>
-      </Row>
+      <Table striped>
+        <tbody>
+          {summaryData().map((item, index) => {
+            return (
+              <tr key={index}>
+                <td></td>
+                <td>{item.key}</td>
+                <td><NumberFormat value={item.value} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </Table>
     </>
   );
 };
