@@ -988,5 +988,7 @@
     "reportStaffTransaction": "Report Staff Transaction",
     "reportRecap": "Report Recap",
     "reportSalesPerProduct": "Report Sales Per Product",
-    "cogs": "COGS Report"
+    "cogs": "COGS Report",
+    "reportDetailSalesPerProduct": "Report Detail Sales Per Product",
+    "detailSalesPerProduct": "Detail Sales Per Product"
 }

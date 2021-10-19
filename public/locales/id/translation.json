@@ -988,5 +988,7 @@
   "reportStaffTransaction": "Laporan Transaksi Staf",
   "reportRecap": "Laporan Rekap",
   "reportSalesPerProduct": "Laporan Penjualan Per Produk",
-  "cogs": "Laporan COGS"
+  "cogs": "Laporan COGS",
+  "reportDetailSalesPerProduct": "Laporan Detail Penjualan per Produk",
+  "detailSalesPerProduct": "Detail Penjualan per Produk "
 }

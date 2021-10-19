@@ -23,7 +23,7 @@ import StockReport from "./pages/Report/StockReport";
 import RawMaterialTab from "./pages/Report/RawMaterialTab";
 import { AttendanceTab } from "./pages/Report/AttendanceTab";
 import CommissionReport from "./pages/Report/CommissionReport";
-
+import { SalesProductDetail } from "./pages/Report/SalesProductDetail";
 
 import { StaffPage } from "./pages/Staff/StaffPage";
 import { AddStaffPage } from "./pages/Staff/AddStaffPage";
@@ -233,13 +233,13 @@ export default function BasePage() {
           path="/report/sales-per-product"
           component={SalesPerProductTab}
         />
-        {/* <ProtectedRoute
+        <ProtectedRoute
           isAllowed={currPrivileges.view_report}
           isRoute={false}
           exact={true}
           path="/report/sales-detail"
-          component={SalesDetail}
-        /> */}
+          component={SalesProductDetail}
+        />
         <ProtectedRoute
           isAllowed={currPrivileges.view_report}
           isRoute={false}

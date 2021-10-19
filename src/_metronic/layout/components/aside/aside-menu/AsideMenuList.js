@@ -268,7 +268,7 @@ function AsideMenuList(props) {
     },
     {
       route: 'sales-detail',
-      name: 'Sales Detail'
+      name: 'detailSalesPerProduct'
     },
     {
       route: 'cost-of-gold-sold',
@@ -276,11 +276,11 @@ function AsideMenuList(props) {
     },
     {
       route: 'profit-calculation',
-      name: 'Profit Calculation'
+      name: 'profitCalculation'
     },
     {
       route: 'staff-transaction',
-      name: 'Staff Transaction'
+      name: 'staffTransaction'
     },
     {
       route: 'void-transaction',
@@ -288,15 +288,15 @@ function AsideMenuList(props) {
     },
     {
       route: 'sales-per-hour',
-      name: 'Sales Per Hour'
+      name: 'salesPerHour'
     },
     {
       route: 'stock-report',
-      name: 'Stock Report'
+      name: 'stockReport'
     },
     {
       route: 'raw-material',
-      name: 'Raw Material'
+      name: 'rawMaterial'
     }
   ]
 
