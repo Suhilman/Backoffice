@@ -272,7 +272,7 @@ function AsideMenuList(props) {
     },
     {
       route: 'cost-of-gold-sold',
-      name: 'costOfGoldSold'
+      name: 'cogs'
     },
     {
       route: 'profit-calculation',
@@ -303,7 +303,7 @@ function AsideMenuList(props) {
   const dropdownEmployeeReport = [
     {
       route: 'attendance',
-      name: 'salesSummary'
+      name: 'attendance'
     },
     {
       route: 'commisison-report',

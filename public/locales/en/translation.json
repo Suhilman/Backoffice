@@ -971,5 +971,22 @@
     "authorizationShopee": "Authorization Shopee",
     "detailProductAssembly": "Detail Product Assembly",
     "editProductAssembly": "Edit Product Assembly",
-    "employeeReport": "Employee Report"
+    "employeeReport": "Employee Report",
+    "reportCategorySales": "Report Category Sales",
+    "reportSalesSummary": "Report Sales Summary",
+    "reportSalesType": "Report Sales Type",
+    "reportPaymentMethod": "Report Payment Method",
+    "reportTransactionHistory": "Report Transaction History",
+    "profitReport": "Report Profit",
+    "reportVoidTransaction": "Report Void Transaction",
+    "reportSalesPerHour": "Report Sales Per Hour",
+    "reportStock": "Report Stock",
+    "reportRawMaterial": "Report Raw Material",
+    "reportCommisison": "Report Commisison",
+    "reportAttendance": "Report Attendance",
+    "reportDiscount": "Report Discount",
+    "reportStaffTransaction": "Report Staff Transaction",
+    "reportRecap": "Report Recap",
+    "reportSalesPerProduct": "Report Sales Per Product",
+    "cogs": "COGS Report"
 }

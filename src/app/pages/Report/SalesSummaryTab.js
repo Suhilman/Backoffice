@@ -23,6 +23,8 @@ import {
   InputGroup
 } from "react-bootstrap";
 
+import { FeatureReport } from './components/FeatureReport'
+
 export const SalesSummaryTab = () => {
   const [allTransactions, setAllTransactions] = React.useState([]);
   const [currency, setCurrency] = React.useState("")
@@ -39,6 +41,14 @@ export const SalesSummaryTab = () => {
   );
   const [endDate, setEndDate] = React.useState(dayjs().format("YYYY-MM-DD"));
   const [endDateFilename, setEndDateFilename] = React.useState("");
+  const [startTime, setStartTime] = React.useState(new Date());
+  const [endTime, setEndTime] = React.useState(new Date());
+  const [tabData, setTabData] = React.useState({
+    no: 1,
+    table: "table-summary",
+    filename: `transaksi-penjualan-produk_${startDate}-${endDateFilename}`
+  })
+  const [status, setStatus] = React.useState("");
 
   const [reports, setReports] = React.useState([
     {
@@ -268,7 +278,11 @@ export const SalesSummaryTab = () => {
 
   React.useEffect(() => {
     getTransactions(selectedOutlet.id, startDate, endDate);
-  }, [selectedOutlet, startDate, endDate, refresh]);
+    setTabData({
+      ...tabData,
+      filename: `transaksi-penjualan-produk_${startDate}-${endDateFilename}` 
+    })
+  }, [selectedOutlet, startDate, endDate, refresh, endDateFilename]);
 
   const summaryData = () => {
     const data = [
@@ -448,11 +462,30 @@ export const SalesSummaryTab = () => {
   //   sumReports(reports, "totalSales") - totalDiscount + totalService;
   const grandTotal = totalCollected;
 
+  const handleStartDate = (date) => setStartDate(date)
+  const handleEndDate = (date) => setEndDate(date)
+  const handleEndDateFilename = (date) => setEndDateFilename(date)
+  const handleSelectedOutlet = (outlet) => setSelectedOutlet(outlet)
+  const handleSelectStatus = (status) => setStatus(status.target.value)
+  const handleTimeStart = (time) => setStartTime(time)
+  const handleTimeEnd = (time) => setEndTime(time)
+
   return (
     <>
-    <Row>
+      <Row>
         <Col>
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <FeatureReport
+              handleStartDate={handleStartDate}
+              handleEndDate={handleEndDate}
+              tabData={tabData}
+              handleEndDateFilename={handleEndDateFilename}
+              handleSelectedOutlet={handleSelectedOutlet}
+              titleReport="reportSalesSummary"
+              handleSelectStatus={handleSelectStatus}
+              handleTimeStart={handleTimeStart}
+              handleTimeEnd={handleTimeEnd}
+            />
             <div style={{ display: "none" }}>
               <table id="table-summary">
                 <thead>

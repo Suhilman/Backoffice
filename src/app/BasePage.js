@@ -223,7 +223,7 @@ export default function BasePage() {
           isAllowed={currPrivileges.view_report}
           isRoute={false}
           exact={true}
-          path="/report/RecapTab"
+          path="/report/recap"
           component={RecapTab}
         />
         <ProtectedRoute
@@ -293,7 +293,7 @@ export default function BasePage() {
           isAllowed={currPrivileges.view_report}
           isRoute={false}
           exact={true}
-          path="/report/AttendanceTab"
+          path="/report/attendance"
           component={AttendanceTab}
         />
         <ProtectedRoute

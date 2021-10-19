@@ -6,7 +6,37 @@ import NumberFormat from 'react-number-format'
 import "../style.css";
 import { Table } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-const COGSReport = ({ selectedOutlet, startDate, endDate, endDateFilename }) => {
+import {
+  Paper
+} from "@material-ui/core";
+import { FeatureReport } from './components/FeatureReport'
+import {
+  Row,
+  Col
+} from "react-bootstrap";
+
+const COGSReport = () => {
+  const [refresh, setRefresh] = React.useState(0)
+  const handleRefresh = () => setRefresh((state) => state + 1)
+
+  const [selectedOutlet, setSelectedOutlet] = React.useState({
+    id: "",
+    name: "All Outlet"
+  })
+  const [startDate, setStartDate] = React.useState(
+    dayjs().format("YYYY-MM-DD")
+  );
+  const [endDate, setEndDate] = React.useState(dayjs().format("YYYY-MM-DD"));
+  const [endDateFilename, setEndDateFilename] = React.useState("");
+  const [startTime, setStartTime] = React.useState(new Date());
+  const [endTime, setEndTime] = React.useState(new Date());
+  const [tabData, setTabData] = React.useState({
+    no: 10,
+    table: "table-cogs",
+    filename: `laporan-COGS_${startDate}-${endDateFilename}`,
+  })
+  const [status, setStatus] = React.useState("");
+
   const { t } = useTranslation();
   const [currency, setCurrency] = React.useState("")
   const handleCurrency = async () => {
@@ -111,129 +141,159 @@ const COGSReport = ({ selectedOutlet, startDate, endDate, endDateFilename }) => 
   };
   useEffect(() => {
     getDataCOGS(selectedOutlet.id, startDate, endDate);
-  }, [selectedOutlet, startDate, endDate]);
+    setTabData({
+      ...tabData,
+      filename: `laporan-COGS_${startDate}-${endDateFilename}`
+    })
+  }, [selectedOutlet, startDate, endDate, endDateFilename]);
+
+  const handleStartDate = (date) => setStartDate(date)
+  const handleEndDate = (date) => setEndDate(date)
+  const handleEndDateFilename = (date) => setEndDateFilename(date)
+  const handleSelectedOutlet = (outlet) => setSelectedOutlet(outlet)
+  const handleSelectStatus = (status) => setStatus(status.target.value)
+  const handleTimeStart = (time) => setStartTime(time)
+  const handleTimeEnd = (time) => setEndTime(time)
+
   return (
     <>
-      <div style={{ display: "none" }}>
-        <table id="table-cogs">
-          <thead>
-            <tr>
-              <th>{t("cogsReport")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("outlet")}</th>
-              <td>
-                {selectedOutlet.id === " " ||
-                selectedOutlet.id === null ||
-                selectedOutlet.id === undefined
-                  ? "Semua Outlet"
-                  : selectedOutlet.name}
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("date")}</th>
-              <td>{`${startDate} - ${endDateFilename}`}</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("productName")}</th>
-              <th>{t("category")}</th>
-              <th>{t("amountSold")}</th>
-              <th>{t("costOfGoodsSold")}</th>
-              <th>{t("sellingPrice")}</th>
-              <th>{t("profit")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {COGSTransaction.length > 0 ? (
-              COGSTransaction.map((item, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{item.product}</td>
-                    <td>{item.category}</td>
-                    <td>{item.kuantitas}</td>
-                    <td>{item.product_hpp}</td>
-                    <td>{item.product_sold_price}</td>
-                    <td>{item.profit}</td>
+      <Row>
+        <Col>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <FeatureReport
+              handleStartDate={handleStartDate}
+              handleEndDate={handleEndDate}
+              tabData={tabData}
+              handleEndDateFilename={handleEndDateFilename}
+              handleSelectedOutlet={handleSelectedOutlet}
+              titleReport="cogsReport"
+              handleSelectStatus={handleSelectStatus}
+              handleTimeStart={handleTimeStart}
+              handleTimeEnd={handleTimeEnd}
+            />
+            <div style={{ display: "none" }}>
+              <table id="table-cogs">
+                <thead>
+                  <tr>
+                    <th>{t("cogsReport")}</th>
                   </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td>{t("dataNotFound")}</td>
-              </tr>
-            )}
-            <tr>
-              <th>{t("grandTotal")}</th>
-              <th></th>
-              <th>{sumReports(COGSTransaction, "kuantitas")} </th>
-              <th>{sumReports(COGSTransaction, "product_hpp")} </th>
-              <th>{sumReports(COGSTransaction, "product_sold_price")} </th>
-              <th>{sumReports(COGSTransaction, "profit")} </th>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <Table>
-        <thead>
-          <tr>
-            <th>{t("productName")}</th>
-            <th>{t("category")}</th>
-            <th>{t("soldQuantity")}</th>
-            <th>{t("purchasePrice")}</th>
-            <th>{t("sellingPrice")}</th>
-            <th>{t("profit")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {COGSTransaction.length > 0 ? (
-            COGSTransaction.map((item, index) => {
-              return (
-                <tr key={index}>
-                  <td>{item.product}</td>
-                  <td>{item.category}</td>
-                  <td>{item.kuantitas}</td>
-                  <td><NumberFormat value={item.product_hpp} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
-                  <td><NumberFormat value={item.product_sold_price} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
-                  <td><NumberFormat value={item.profit} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
+                </thead>
+                <tbody>
+                  <tr></tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <th>{t("outlet")}</th>
+                    <td>
+                      {selectedOutlet.id === " " ||
+                      selectedOutlet.id === null ||
+                      selectedOutlet.id === undefined
+                        ? "Semua Outlet"
+                        : selectedOutlet.name}
+                    </td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr></tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <th>{t("date")}</th>
+                    <td>{`${startDate} - ${endDateFilename}`}</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr></tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <th>{t("productName")}</th>
+                    <th>{t("category")}</th>
+                    <th>{t("amountSold")}</th>
+                    <th>{t("costOfGoodsSold")}</th>
+                    <th>{t("sellingPrice")}</th>
+                    <th>{t("profit")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {COGSTransaction.length > 0 ? (
+                    COGSTransaction.map((item, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{item.product}</td>
+                          <td>{item.category}</td>
+                          <td>{item.kuantitas}</td>
+                          <td>{item.product_hpp}</td>
+                          <td>{item.product_sold_price}</td>
+                          <td>{item.profit}</td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td>{t("dataNotFound")}</td>
+                    </tr>
+                  )}
+                  <tr>
+                    <th>{t("grandTotal")}</th>
+                    <th></th>
+                    <th>{sumReports(COGSTransaction, "kuantitas")} </th>
+                    <th>{sumReports(COGSTransaction, "product_hpp")} </th>
+                    <th>{sumReports(COGSTransaction, "product_sold_price")} </th>
+                    <th>{sumReports(COGSTransaction, "profit")} </th>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <Table>
+              <thead>
+                <tr>
+                  <th>{t("productName")}</th>
+                  <th>{t("category")}</th>
+                  <th>{t("soldQuantity")}</th>
+                  <th>{t("purchasePrice")}</th>
+                  <th>{t("sellingPrice")}</th>
+                  <th>{t("profit")}</th>
                 </tr>
-              );
-            })
-          ) : (
-            <tr>
-              <td>{t("dataNotFound")}</td>
-            </tr>
-          )}
-          <tr>
-            <th>{t("grandTotal")}</th>
-            <th></th>
-            <th>{sumReports(COGSTransaction, "kuantitas")} </th>
-            <th>
-            <NumberFormat value={sumReports(COGSTransaction, "product_hpp")} displayType={'text'} thousandSeparator={true} prefix={currency} />
-            </th>
-            <th>
-            <NumberFormat value={sumReports(COGSTransaction, "product_sold_price")} displayType={'text'} thousandSeparator={true} prefix={currency} />
-            </th>
-            <th>
-            <NumberFormat value={sumReports(COGSTransaction, "profit")} displayType={'text'} thousandSeparator={true} prefix={currency} />
-            </th>
-          </tr>
-        </tbody>
-      </Table>
+              </thead>
+              <tbody>
+                {COGSTransaction.length > 0 ? (
+                  COGSTransaction.map((item, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{item.product}</td>
+                        <td>{item.category}</td>
+                        <td>{item.kuantitas}</td>
+                        <td><NumberFormat value={item.product_hpp} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
+                        <td><NumberFormat value={item.product_sold_price} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
+                        <td><NumberFormat value={item.profit} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td>{t("dataNotFound")}</td>
+                  </tr>
+                )}
+                <tr>
+                  <th>{t("grandTotal")}</th>
+                  <th></th>
+                  <th>{sumReports(COGSTransaction, "kuantitas")} </th>
+                  <th>
+                  <NumberFormat value={sumReports(COGSTransaction, "product_hpp")} displayType={'text'} thousandSeparator={true} prefix={currency} />
+                  </th>
+                  <th>
+                  <NumberFormat value={sumReports(COGSTransaction, "product_sold_price")} displayType={'text'} thousandSeparator={true} prefix={currency} />
+                  </th>
+                  <th>
+                  <NumberFormat value={sumReports(COGSTransaction, "profit")} displayType={'text'} thousandSeparator={true} prefix={currency} />
+                  </th>
+                </tr>
+              </tbody>
+            </Table>
+          </Paper>
+        </Col>
+      </Row>
     </>
   );
 };

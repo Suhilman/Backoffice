@@ -5,35 +5,39 @@ import { Table } from "react-bootstrap";
 import rupiahFormat from "rupiah-format";
 import { useTranslation } from "react-i18next";
 import "../style.css";
+
 import NumberFormat from 'react-number-format'
 import {
-  Switch,
-  FormGroup,
-  FormControl,
-  FormControlLabel,
   Paper
 } from "@material-ui/core";
-
+import { FeatureReport } from './components/FeatureReport'
 import {
-  Dropdown,
   Row,
-  Col,
-  DropdownButton,
-  Form,
-  InputGroup
+  Col
 } from "react-bootstrap";
 
 export const PaymentMethodTab = () => {
+
+  const [refresh, setRefresh] = React.useState(0)
+  const handleRefresh = () => setRefresh((state) => state + 1)
+
   const [selectedOutlet, setSelectedOutlet] = React.useState({
     id: "",
-    name: ""
-  });
+    name: "All Outlet"
+  })
   const [startDate, setStartDate] = React.useState(
     dayjs().format("YYYY-MM-DD")
   );
-  const [refresh, setRefresh] = React.useState(0)
   const [endDate, setEndDate] = React.useState(dayjs().format("YYYY-MM-DD"));
-  const handleRefresh = () => setRefresh((state) => state + 1)
+  const [endDateFilename, setEndDateFilename] = React.useState("");
+  const [startTime, setStartTime] = React.useState(new Date());
+  const [endTime, setEndTime] = React.useState(new Date());
+  const [tabData, setTabData] = React.useState({
+    no: 2,
+    table: "table-payment",
+    filename: `payment-method_${startDate}-${endDateFilename}`,
+  })
+  const [status, setStatus] = React.useState("");
 
   const [allPaymentMethods, setAllPaymentMethods] = React.useState([]);
   const [currency, setCurrency] = React.useState("")
@@ -91,7 +95,11 @@ export const PaymentMethodTab = () => {
 
   React.useEffect(() => {
     getPaymentMethod(selectedOutlet.id, startDate, endDate);
-  }, [selectedOutlet, startDate, endDate, refresh]);
+    setTabData({
+      ...tabData,
+      filename: `payment-method_${startDate}-${endDateFilename}` 
+    })
+  }, [selectedOutlet, startDate, endDate, refresh, endDateFilename]);
 
   const paymentMethodData = () => {
     const data = [];
@@ -130,11 +138,30 @@ export const PaymentMethodTab = () => {
     return data;
   };
 
+  const handleStartDate = (date) => setStartDate(date)
+  const handleEndDate = (date) => setEndDate(date)
+  const handleEndDateFilename = (date) => setEndDateFilename(date)
+  const handleSelectedOutlet = (outlet) => setSelectedOutlet(outlet)
+  const handleSelectStatus = (status) => setStatus(status.target.value)
+  const handleTimeStart = (time) => setStartTime(time)
+  const handleTimeEnd = (time) => setEndTime(time)
+
   return (
     <>
       <Row>
         <Col>
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <FeatureReport
+                handleStartDate={handleStartDate}
+                handleEndDate={handleEndDate}
+                tabData={tabData}
+                handleEndDateFilename={handleEndDateFilename}
+                handleSelectedOutlet={handleSelectedOutlet}
+                titleReport="reportPaymentMethod"
+                handleSelectStatus={handleSelectStatus}
+                handleTimeStart={handleTimeStart}
+                handleTimeEnd={handleTimeEnd}
+              />
             <Table id="table-payment" striped>
               <thead>
                 <tr>

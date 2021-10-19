@@ -971,5 +971,22 @@
   "authorizationShopee": "Otorisasi Shopee",
   "detailProductAssembly": "Detail Perakitan Produk",
   "editProductAssembly": "Ubah Perakitan Produk",
-  "employeeReport": "Laporan Karyawan"
+  "employeeReport": "Laporan Karyawan",
+  "reportCategorySales": "Laporan Kategori Penjualan",
+  "reportSalesSummary": "Laporan Ringkasan Penjualan",
+  "reportSalesType": "Laporan Jenis Penjualan",
+  "reportPaymentMethod": "Laporan Metode Pembayaran",
+  "reportTransactionHistory": "Laporan Riwayat Transaksi",
+  "profitReport": "Laporan Keuntungan",
+  "reportVoidTransaction": "Laporan Transaksi Batal",
+  "reportSalesPerHour": "Laporan Penjualan per Jam",
+  "reportStock": "Laporan Stok",
+  "reportRawMaterial": "Laporan Bahan Baku",
+  "reportCommisison": "Laporan Komisi",
+  "reportAttendance": "Laporan Absensi",
+  "reportDiscount": "Laporan Diskon",
+  "reportStaffTransaction": "Laporan Transaksi Staf",
+  "reportRecap": "Laporan Rekap",
+  "reportSalesPerProduct": "Laporan Penjualan Per Produk",
+  "cogs": "Laporan COGS"
 }

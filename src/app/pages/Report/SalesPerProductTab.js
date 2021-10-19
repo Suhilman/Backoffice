@@ -6,7 +6,36 @@ import NumberFormat from 'react-number-format'
 import "../style.css";
 import { Table } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate, endDateFilename }) => {
+import {
+  Paper
+} from "@material-ui/core";
+import { FeatureReport } from './components/FeatureReport'
+import {
+  Row,
+  Col
+} from "react-bootstrap";
+
+export const SalesPerProductTab = () => {
+  const [refresh, setRefresh] = React.useState(0)
+  const handleRefresh = () => setRefresh((state) => state + 1)
+
+  const [selectedOutlet, setSelectedOutlet] = React.useState({
+    id: "",
+    name: "All Outlet"
+  })
+  const [startDate, setStartDate] = React.useState(
+    dayjs().format("YYYY-MM-DD")
+  );
+  const [endDate, setEndDate] = React.useState(dayjs().format("YYYY-MM-DD"));
+  const [endDateFilename, setEndDateFilename] = React.useState("");
+  const [startTime, setStartTime] = React.useState(new Date());
+  const [endTime, setEndTime] = React.useState(new Date());
+  const [tabData, setTabData] = React.useState({
+    no: 9,
+    table: "table-sales-per-product",
+    filename: `laporan-penjualan-per-produk_${startDate}-${endDateFilename}`,
+  })
+  const [status, setStatus] = React.useState("");
   const { t } = useTranslation();
   const [salesPerProduct, setSalesPerProduct] = useState([]);
   const [currency, setCurrency] = React.useState("")
@@ -106,113 +135,143 @@ export const SalesPerProductTab = ({ selectedOutlet, startDate, endDate, endDate
   };
   useEffect(() => {
     getDataSalesPerProduct(selectedOutlet.id, startDate, endDate);
-  }, [selectedOutlet, startDate, endDate]);
+    setTabData({
+      ...tabData,
+      filename: `laporan-penjualan-per-produk_${startDate}-${endDateFilename}`
+    })
+  }, [selectedOutlet, startDate, endDate, endDateFilename]);
+  
+  const handleStartDate = (date) => setStartDate(date)
+  const handleEndDate = (date) => setEndDate(date)
+  const handleEndDateFilename = (date) => setEndDateFilename(date)
+  const handleSelectedOutlet = (outlet) => setSelectedOutlet(outlet)
+  const handleSelectStatus = (status) => setStatus(status.target.value)
+  const handleTimeStart = (time) => setStartTime(time)
+  const handleTimeEnd = (time) => setEndTime(time)
+
   return (
     <>
-      <div style={{ display: "none" }}>
-        <table id="table-sales-per-product">
-          <thead>
-            <tr>
-              <th>{t("productSalesReport")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("outlet")}</th>
-              <td>
-                {selectedOutlet.id === " " ||
-                selectedOutlet.id === null ||
-                selectedOutlet.id === undefined
-                  ? "Semua Outlet"
-                  : selectedOutlet.name}
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("date")}</th>
-              <td>{`${startDate} - ${endDateFilename}`}</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("productName")}</th>
-              <th>{t("category")}</th>
-              <th>{t("amountSold")}</th>
-              <th>{t("totalSales")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {salesPerProduct.length > 0 ? (
-              salesPerProduct.map((item, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{item.product}</td>
-                    <td>{item.category}</td>
-                    <td>{item.kuantitas}</td>
-                    <td>{item.total_sales}</td>
+      <Row>
+        <Col>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <FeatureReport
+              handleStartDate={handleStartDate}
+              handleEndDate={handleEndDate}
+              tabData={tabData}
+              handleEndDateFilename={handleEndDateFilename}
+              handleSelectedOutlet={handleSelectedOutlet}
+              titleReport="reportSalesPerProduct"
+              handleSelectStatus={handleSelectStatus}
+              handleTimeStart={handleTimeStart}
+              handleTimeEnd={handleTimeEnd}
+            />
+            <div style={{ display: "none" }}>
+              <table id="table-sales-per-product">
+                <thead>
+                  <tr>
+                    <th>{t("productSalesReport")}</th>
                   </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td>{t("dataNotFound")}</td>
-              </tr>
-            )}
-            <tr>
-              <th>{t("grandTotal")}</th>
-              <th></th>
-              <th>{sumReports(salesPerProduct, "kuantitas")} </th>
-              <th>{sumReports(salesPerProduct, "total_sales")} </th>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <Table>
-        <thead>
-          <tr>
-            <th>{t("productName")}</th>
-            <th>{t("category")}</th>
-            <th>{t("soldQuantity")}</th>
-            <th>{t("totalSales")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {salesPerProduct.length > 0 ? (
-            salesPerProduct.map((item, index) => {
-              return (
-                <tr key={index}>
-                  <td>{item.product}</td>
-                  <td>{item.category}</td>
-                  <td>{item.kuantitas}</td>
-                  <td>{<NumberFormat value={item.total_sales} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
+                </thead>
+                <tbody>
+                  <tr></tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <th>{t("outlet")}</th>
+                    <td>
+                      {selectedOutlet.id === " " ||
+                      selectedOutlet.id === null ||
+                      selectedOutlet.id === undefined
+                        ? "Semua Outlet"
+                        : selectedOutlet.name}
+                    </td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr></tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <th>{t("date")}</th>
+                    <td>{`${startDate} - ${endDateFilename}`}</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr></tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <th>{t("productName")}</th>
+                    <th>{t("category")}</th>
+                    <th>{t("amountSold")}</th>
+                    <th>{t("totalSales")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {salesPerProduct.length > 0 ? (
+                    salesPerProduct.map((item, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{item.product}</td>
+                          <td>{item.category}</td>
+                          <td>{item.kuantitas}</td>
+                          <td>{item.total_sales}</td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td>{t("dataNotFound")}</td>
+                    </tr>
+                  )}
+                  <tr>
+                    <th>{t("grandTotal")}</th>
+                    <th></th>
+                    <th>{sumReports(salesPerProduct, "kuantitas")} </th>
+                    <th>{sumReports(salesPerProduct, "total_sales")} </th>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <Table>
+              <thead>
+                <tr>
+                  <th>{t("productName")}</th>
+                  <th>{t("category")}</th>
+                  <th>{t("soldQuantity")}</th>
+                  <th>{t("totalSales")}</th>
                 </tr>
-              );
-            })
-          ) : (
-            <tr>
-              <td>{t("dataNotFound")}</td>
-            </tr>
-          )}
-          <tr>
-            <th>{t("grandTotal")}</th>
-            <th></th>
-            <th>{sumReports(salesPerProduct, "kuantitas")} </th>
-            <th>
-              {<NumberFormat value={sumReports(salesPerProduct, "total_sales")} displayType={'text'} thousandSeparator={true} prefix={currency} />}{" "}
-            </th>
-          </tr>
-        </tbody>
-      </Table>
+              </thead>
+              <tbody>
+                {salesPerProduct.length > 0 ? (
+                  salesPerProduct.map((item, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{item.product}</td>
+                        <td>{item.category}</td>
+                        <td>{item.kuantitas}</td>
+                        <td>{<NumberFormat value={item.total_sales} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td>{t("dataNotFound")}</td>
+                  </tr>
+                )}
+                <tr>
+                  <th>{t("grandTotal")}</th>
+                  <th></th>
+                  <th>{sumReports(salesPerProduct, "kuantitas")} </th>
+                  <th>
+                    {<NumberFormat value={sumReports(salesPerProduct, "total_sales")} displayType={'text'} thousandSeparator={true} prefix={currency} />}{" "}
+                  </th>
+                </tr>
+              </tbody>
+            </Table>
+          </Paper>
+        </Col>
+      </Row>
     </>
   );
 };

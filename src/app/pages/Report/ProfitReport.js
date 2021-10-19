@@ -6,7 +6,37 @@ import NumberFormat from 'react-number-format'
 import "../style.css";
 import { Table } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-const ProfitReport = ({ selectedOutlet, startDate, endDate, endDateFilename }) => {
+import {
+  Paper
+} from "@material-ui/core";
+import { FeatureReport } from './components/FeatureReport'
+import {
+  Row,
+  Col
+} from "react-bootstrap";
+
+const ProfitReport = () => {
+  const [refresh, setRefresh] = React.useState(0)
+  const handleRefresh = () => setRefresh((state) => state + 1)
+
+  const [selectedOutlet, setSelectedOutlet] = React.useState({
+    id: "",
+    name: "All Outlet"
+  })
+  const [startDate, setStartDate] = React.useState(
+    dayjs().format("YYYY-MM-DD")
+  );
+  const [endDate, setEndDate] = React.useState(dayjs().format("YYYY-MM-DD"));
+  const [endDateFilename, setEndDateFilename] = React.useState("");
+  const [startTime, setStartTime] = React.useState(new Date());
+  const [endTime, setEndTime] = React.useState(new Date());
+  const [tabData, setTabData] = React.useState({
+    no: 11,
+    table: "table-profit",
+    filename: `laporan-perhitunga-laba_${startDate}-${endDateFilename}`,
+  })
+  const [status, setStatus] = React.useState("");
+
   const { t } = useTranslation();
   const [profitReport, setProfitReport] = useState([]);
   const [currency, setCurrency] = React.useState("")
@@ -115,134 +145,163 @@ const ProfitReport = ({ selectedOutlet, startDate, endDate, endDateFilename }) =
   };
   useEffect(() => {
     getProfitReport(selectedOutlet.id, startDate, endDate);
-  }, [selectedOutlet, startDate, endDate]);
+    setTabData({
+      ...tabData,
+      filename: `laporan-perhitunga-laba_${startDate}-${endDateFilename}`
+    })
+  }, [selectedOutlet, startDate, endDate, endDateFilename]);
+
+  const handleStartDate = (date) => setStartDate(date)
+  const handleEndDate = (date) => setEndDate(date)
+  const handleEndDateFilename = (date) => setEndDateFilename(date)
+  const handleSelectedOutlet = (outlet) => setSelectedOutlet(outlet)
+  const handleSelectStatus = (status) => setStatus(status.target.value)
+  const handleTimeStart = (time) => setStartTime(time)
+  const handleTimeEnd = (time) => setEndTime(time)
 
   return (
     <>
-      <div style={{ display: "none" }}>
-        <table id="table-profit">
-          <thead>
-            <tr>
-              <th>{t("profitCalculationReport")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("outlet")}</th>
-              <td>
-                {selectedOutlet.id === " " ||
-                selectedOutlet.id === null ||
-                selectedOutlet.id === undefined
-                  ? "Semua Outlet"
-                  : selectedOutlet.name}
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("date")}</th>
-              <td>{`${startDate} - ${endDateFilename}`}</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("date")}</th>
-              <th>{t("grossSales")}</th>
-              <th>{t("totalDiscount")}</th>
-              <th>{t("rounding")}</th>
-              <th>{t("grossProfit")}</th>
-              <th>{t("%grossProfit")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {profitReport.length > 0 ? (
-              profitReport.map((item, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{item.tanggal}</td>
-                    <td>{item.penjualan_kotor}</td>
-                    <td>{item.diskon}</td>
-                    <td>{item.pembulatan}</td>
-                    <td>{item.laba_kotor}</td>
-                    <td>{`${Math.round(
-                      (item.laba_kotor / item.penjualan_kotor) * 100
-                    )}%`}</td>
-                  </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td>{t("dataNotFound")}</td>
-              </tr>
-            )}
-            <tr>
-              <th>{t("grandTotal")}</th>
-              <th>{sumReports(profitReport, "penjualan_kotor")} </th>
-              <th>{sumReports(profitReport, "diskon")} </th>
-              <th>{sumReports(profitReport, "pembulatan")} </th>
-              <th>{sumReports(profitReport, "laba_kotor")}</th>
-              <th>{`${handlePercentage(profitReport)}%`}</th>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <Table>
-        <thead>
-          <tr>
-            <th>{t("date")}</th>
-            <th>{t("grossSales")}</th>
-            <th>{t("discountTotal")}</th>
-            <th>{t("rounding")}</th>
-            <th>{t("grossProfit")}</th>
-            <th>{t("%grossProfit")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {profitReport.length > 0 ? (
-            profitReport.map((item, index) => {
-              return (
-                <tr key={index}>
-                  <td>{item.tanggal}</td>
-                  <td>{<NumberFormat value={item.penjualan_kotor} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
-                  <td>{<NumberFormat value={item.diskon} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
-                  <td>{<NumberFormat value={item.pembulatan} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
-                  <td>{<NumberFormat value={item.laba_kotor} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
-                  <td>{`${Math.round(
-                    (item.laba_kotor / item.penjualan_kotor) * 100
-                  )}%`}</td>
+    <Row>
+      <Col>
+        <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+          <FeatureReport
+            handleStartDate={handleStartDate}
+            handleEndDate={handleEndDate}
+            tabData={tabData}
+            handleEndDateFilename={handleEndDateFilename}
+            handleSelectedOutlet={handleSelectedOutlet}
+            titleReport="profitReport"
+            handleSelectStatus={handleSelectStatus}
+            handleTimeStart={handleTimeStart}
+            handleTimeEnd={handleTimeEnd}
+          />
+          <div style={{ display: "none" }}>
+            <table id="table-profit">
+              <thead>
+                <tr>
+                  <th>{t("profitCalculationReport")}</th>
                 </tr>
-              );
-            })
-          ) : (
-            <tr>
-              <td>{t("dataNotFound")}</td>
-            </tr>
-          )}
-          <tr>
-            <th>{t("grandTotal")}</th>
-            <th>
-              {<NumberFormat value={sumReports(profitReport, "penjualan_kotor")} displayType={'text'} thousandSeparator={true} prefix={currency} />}{" "}
-            </th>
-            <th>{<NumberFormat value={sumReports(profitReport, "diskon")} displayType={'text'} thousandSeparator={true} prefix={currency} />} </th>
-            <th>
-              {<NumberFormat value={sumReports(profitReport, "pembulatan")} displayType={'text'} thousandSeparator={true} prefix={currency} />}
-            </th>
-            <th>
-              {<NumberFormat value={sumReports(profitReport, "laba_kotor")} displayType={'text'} thousandSeparator={true} prefix={currency} />}
-            </th>
-            <th>{`${handlePercentage(profitReport)}%`}</th>
-          </tr>
-        </tbody>
-      </Table>
+              </thead>
+              <tbody>
+                <tr></tr>
+              </tbody>
+              <thead>
+                <tr>
+                  <th>{t("outlet")}</th>
+                  <td>
+                    {selectedOutlet.id === " " ||
+                    selectedOutlet.id === null ||
+                    selectedOutlet.id === undefined
+                      ? "Semua Outlet"
+                      : selectedOutlet.name}
+                  </td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr></tr>
+              </tbody>
+              <thead>
+                <tr>
+                  <th>{t("date")}</th>
+                  <td>{`${startDate} - ${endDateFilename}`}</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr></tr>
+              </tbody>
+              <thead>
+                <tr>
+                  <th>{t("date")}</th>
+                  <th>{t("grossSales")}</th>
+                  <th>{t("totalDiscount")}</th>
+                  <th>{t("rounding")}</th>
+                  <th>{t("grossProfit")}</th>
+                  <th>{t("%grossProfit")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {profitReport.length > 0 ? (
+                  profitReport.map((item, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{item.tanggal}</td>
+                        <td>{item.penjualan_kotor}</td>
+                        <td>{item.diskon}</td>
+                        <td>{item.pembulatan}</td>
+                        <td>{item.laba_kotor}</td>
+                        <td>{`${Math.round(
+                          (item.laba_kotor / item.penjualan_kotor) * 100
+                        )}%`}</td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td>{t("dataNotFound")}</td>
+                  </tr>
+                )}
+                <tr>
+                  <th>{t("grandTotal")}</th>
+                  <th>{sumReports(profitReport, "penjualan_kotor")} </th>
+                  <th>{sumReports(profitReport, "diskon")} </th>
+                  <th>{sumReports(profitReport, "pembulatan")} </th>
+                  <th>{sumReports(profitReport, "laba_kotor")}</th>
+                  <th>{`${handlePercentage(profitReport)}%`}</th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <Table>
+            <thead>
+              <tr>
+                <th>{t("date")}</th>
+                <th>{t("grossSales")}</th>
+                <th>{t("discountTotal")}</th>
+                <th>{t("rounding")}</th>
+                <th>{t("grossProfit")}</th>
+                <th>{t("%grossProfit")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {profitReport.length > 0 ? (
+                profitReport.map((item, index) => {
+                  return (
+                    <tr key={index}>
+                      <td>{item.tanggal}</td>
+                      <td>{<NumberFormat value={item.penjualan_kotor} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
+                      <td>{<NumberFormat value={item.diskon} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
+                      <td>{<NumberFormat value={item.pembulatan} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
+                      <td>{<NumberFormat value={item.laba_kotor} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
+                      <td>{`${Math.round(
+                        (item.laba_kotor / item.penjualan_kotor) * 100
+                      )}%`}</td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td>{t("dataNotFound")}</td>
+                </tr>
+              )}
+              <tr>
+                <th>{t("grandTotal")}</th>
+                <th>
+                  {<NumberFormat value={sumReports(profitReport, "penjualan_kotor")} displayType={'text'} thousandSeparator={true} prefix={currency} />}{" "}
+                </th>
+                <th>{<NumberFormat value={sumReports(profitReport, "diskon")} displayType={'text'} thousandSeparator={true} prefix={currency} />} </th>
+                <th>
+                  {<NumberFormat value={sumReports(profitReport, "pembulatan")} displayType={'text'} thousandSeparator={true} prefix={currency} />}
+                </th>
+                <th>
+                  {<NumberFormat value={sumReports(profitReport, "laba_kotor")} displayType={'text'} thousandSeparator={true} prefix={currency} />}
+                </th>
+                <th>{`${handlePercentage(profitReport)}%`}</th>
+              </tr>
+            </tbody>
+          </Table>
+        </Paper>
+      </Col>
+    </Row>
     </>
   );
 };
