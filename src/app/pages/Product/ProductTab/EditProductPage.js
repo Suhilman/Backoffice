@@ -85,7 +85,8 @@ export const EditProductPage = ({ match, location }) => {
     width: currProduct.width, 
     height: currProduct.height,
     sync_ecommerce: [],
-    has_assembly: currProduct.has_assembly
+    has_assembly: currProduct.has_assembly,
+    sell_by_weight: currProduct.sell_by_weight
   };
 
   const [addonsInitial, setAddonsinitial] = React.useState(groupAddons);
@@ -130,6 +131,7 @@ export const EditProductPage = ({ match, location }) => {
     has_raw_material: Yup.boolean().required(),
     has_recipe: Yup.boolean().required(),
     has_assembly: Yup.boolean().required(),
+    sell_by_weight: Yup.boolean().required(),
     has_stock: Yup.boolean().required(),
     recipe_id: Yup.number().nullable(),
     raw_material_id: Yup.number().nullable(),
@@ -238,6 +240,7 @@ export const EditProductPage = ({ match, location }) => {
       if (values.width) formData.append("width", values.width)
       if (values.height) formData.append("height", values.height)
       formData.append("has_assembly", values.has_assembly)
+      formData.append("sell_by_weight", values.sell_by_weight)
       formData.append("sync_ecommerce", JSON.stringify(values.sync_ecommerce))
 
       try {

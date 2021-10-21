@@ -993,5 +993,6 @@
   "detailSalesPerProduct": "Detail Penjualan per Produk ",
   "pricePerProduct": "Harga per Produk",
   "totalPriceAddons": "Jumlah Harga Addons",
-  "allAddons": "Semua Addons"
+  "allAddons": "Semua Addons",
+  "sellByWeight": "Jual dari Berat"
 }

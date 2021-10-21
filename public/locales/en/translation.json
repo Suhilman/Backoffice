@@ -993,5 +993,6 @@
     "detailSalesPerProduct": "Detail Sales Per Product",
     "pricePerProduct": "Price Per Product",
     "totalPriceAddons": "Total Price Addons",
-    "allAddons": "All Addons"
+    "allAddons": "All Addons",
+    "sellByWeight": "Sell by Weight"
 }

@@ -476,6 +476,36 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
+              <FormControl component="fieldset">
+                <FormGroup row>
+                  <Form.Label
+                    style={{ alignSelf: "center", marginRight: "1rem" }}
+                  >
+                    {t("sellByWeight")}*
+                  </Form.Label>
+                  <FormControlLabel
+                    value={formikProduct.values.sell_by_weight}
+                    name="sell_by_weight"
+                    control={
+                      <Switch
+                        color="primary"
+                        checked={formikProduct.values.sell_by_weight}
+                        onChange={(e) => {
+                          const { value } = e.target;
+                          if (value === "false") {
+                            formikProduct.setFieldValue("sell_by_weight", true);
+                          } else {
+                            formikProduct.setFieldValue("sell_by_weight", false);
+                          }
+                        }}
+                      />
+                    }
+                  />
+                </FormGroup>
+              </FormControl>
+            </Form.Group>
+
+            <Form.Group>
               <Form.Label>{t("productDescription")}</Form.Label>
               <Form.Control
                 as="textarea"

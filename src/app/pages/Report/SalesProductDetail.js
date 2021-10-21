@@ -37,7 +37,7 @@ export const SalesProductDetail = () => {
   const [tabData, setTabData] = React.useState({
     no: 9,
     table: "table-detail-sales-per-product",
-    filename: `${t('reportDetailSalesPerProduct')}_${startDate}-${endDateFilename}`,
+    filename: `laporan-detail-penjualan-per-produk_${startDate}-${endDateFilename}`,
   })
   const [status, setStatus] = React.useState("");
   const [salesPerProduct, setSalesPerProduct] = useState([]);
@@ -161,7 +161,7 @@ export const SalesProductDetail = () => {
     getDataSalesPerProduct(selectedOutlet.id, startDate, endDate);
     setTabData({
       ...tabData,
-      filename: `laporan-penjualan-per-produk_${startDate}-${endDateFilename}`
+      filename: `laporan-detail-penjualan-per-produk_${startDate}-${endDateFilename}`
     })
   }, [selectedOutlet, startDate, endDate, endDateFilename]);
   
