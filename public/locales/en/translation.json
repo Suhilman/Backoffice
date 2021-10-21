@@ -990,5 +990,8 @@
     "reportSalesPerProduct": "Report Sales Per Product",
     "cogs": "COGS Report",
     "reportDetailSalesPerProduct": "Report Detail Sales Per Product",
-    "detailSalesPerProduct": "Detail Sales Per Product"
+    "detailSalesPerProduct": "Detail Sales Per Product",
+    "pricePerProduct": "Price Per Product",
+    "totalPriceAddons": "Total Price Addons",
+    "allAddons": "All Addons"
 }

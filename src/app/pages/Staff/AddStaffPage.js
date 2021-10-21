@@ -300,6 +300,7 @@ export const AddStaffPage = ({ location }) => {
                       {...formikStaff.getFieldProps("staff_id")}
                       className={validationStaff("staff_id")}
                       required
+                      autoComplete="disabled"
                     />
                     {formikStaff.touched.staff_id &&
                     formikStaff.errors.staff_id ? (
@@ -356,6 +357,7 @@ export const AddStaffPage = ({ location }) => {
                       {...formikStaff.getFieldProps("password")}
                       className={validationStaff("password")}
                       required
+                      autoComplete="disabled"
                     />
                     {formikStaff.touched.password &&
                     formikStaff.errors.password ? (

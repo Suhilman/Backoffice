@@ -19,6 +19,7 @@ import {
 } from "react-bootstrap";
 
 export const SalesProductDetail = () => {
+  const { t } = useTranslation();
   const [refresh, setRefresh] = React.useState(0)
   const handleRefresh = () => setRefresh((state) => state + 1)
 
@@ -35,13 +36,13 @@ export const SalesProductDetail = () => {
   const [endTime, setEndTime] = React.useState(new Date());
   const [tabData, setTabData] = React.useState({
     no: 9,
-    table: "table-sales-per-product",
-    filename: `laporan-penjualan-per-produk_${startDate}-${endDateFilename}`,
+    table: "table-detail-sales-per-product",
+    filename: `${t('reportDetailSalesPerProduct')}_${startDate}-${endDateFilename}`,
   })
   const [status, setStatus] = React.useState("");
-  const { t } = useTranslation();
   const [salesPerProduct, setSalesPerProduct] = useState([]);
   const [salesDetailOriginal, setSalesDetailOriginal] = useState([])
+  const [grandTotal, setGrandtotal] = useState(null)
   const [currency, setCurrency] = React.useState("")
   const handleCurrency = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -85,6 +86,16 @@ export const SalesProductDetail = () => {
       );
       const resFinal = renderTable(data.data)
       console.log("resFinal", resFinal)
+      console.log("original", data.data)
+      const container_total_sales = []
+      data.data.map((value, index) => {
+        const totalSales = (value.product_price * data.data[index].sold_quantity) + (value.total_price_addons * data.data[index].sold_quantity)
+        container_total_sales.push(totalSales)
+      })
+      const reduce_total_sales = container_total_sales.reduce((acc, curr) => {
+        return acc + curr
+      }, 0)
+      setGrandtotal(reduce_total_sales)
       setSalesDetailOriginal(data.data)
       setSalesPerProduct(renderTable(data.data));
     } catch (err) {
@@ -131,11 +142,16 @@ export const SalesProductDetail = () => {
         product_id: i.product_id,
         product: i.product_name,
         category: i.category,
-        kuantitas: sum(i.quantity),
+        quantity_product: i.quantity,
+        total_quantity: sum(i.quantity),
+        price_per_product: i.product_price,
         total_sales:
           i.product_price * sum(i.quantity)
       });
     });
+
+    console.log("final", final)
+
     return final;
   };
   const sumReports = (data, key) => {
@@ -172,12 +188,16 @@ export const SalesProductDetail = () => {
       sortable: true
     },
     {
+      name: `${t("pricePerProduct")}`,
+      selector: "price_per_product",
+      sortable: true
+    },
+    {
       name: `${t("totalSales")}`,
       selector: "total_sales",
       sortable: true
     }
   ];
-
   const dataTransactions = () => {
     return salesPerProduct.map((item, index) => {
       return {
@@ -185,8 +205,10 @@ export const SalesProductDetail = () => {
         product_id: item.product_id,
         product_name: item.product,
         category: item.category,
-        sold_quantity: item.kuantitas,
-        total_sales: item.total_sales,
+        quantity_product: item.quantity_product,
+        sold_quantity: item.total_quantity,
+        price_per_product: <NumberFormat value={item.price_per_product} displayType={'text'} thousandSeparator={true} prefix={currency} />,
+        total_sales: <NumberFormat value={item.total_sales} displayType={'text'} thousandSeparator={true} prefix={currency} />,
       };
     });
   };
@@ -196,12 +218,13 @@ export const SalesProductDetail = () => {
     console.log("salesDetailOriginal", salesDetailOriginal)
     const dataItems = salesDetailOriginal.filter(val => val.product_id === data.product_id)
     console.log("dataItems", dataItems)
-    const head = ["Product", "Addons", "Quantity Addons", "Price Addons"];
+    const head = ["Product", "Addons", "Quantity Addons", "Quantity Product", "Price Addons"];
     const body = dataItems.map((item, index) => {
       return [
         item.product_name,
-        item.all_addons,
+        item.all_addons || "-",
         item.addons_quantity,
+        dataItems[index].sold_quantity,
         <NumberFormat value={item.total_price_addons} displayType={'text'} thousandSeparator={true} prefix={currency} />
       ];
     });
@@ -262,10 +285,10 @@ export const SalesProductDetail = () => {
             />
 
             <div style={{ display: "none" }}>
-              <table id="table-sales-per-product">
+              <table id="table-detail-sales-per-product">
                 <thead>
                   <tr>
-                    <th>{t("productSalesReport")}</th>
+                    <th>{t("reportDetailSalesPerProduct")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -298,20 +321,38 @@ export const SalesProductDetail = () => {
                 <thead>
                   <tr>
                     <th>{t("productName")}</th>
+
                     <th>{t("category")}</th>
+
+                    <th>{t("allAddons")}</th>
+
                     <th>{t("amountSold")}</th>
+
+                    <th>{t("totalPriceAddons")}</th>
+
+                    <th>{t("pricePerProduct")}</th>
+
                     <th>{t("totalSales")}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {salesPerProduct.length > 0 ? (
-                    salesPerProduct.map((item, index) => {
+                  {salesDetailOriginal.length > 0 ? (
+                    salesDetailOriginal.map((item, index) => {
                       return (
                         <tr key={index}>
-                          <td>{item.product}</td>
+                          <td>{item.product_name}</td>
+
                           <td>{item.category}</td>
-                          <td>{item.kuantitas}</td>
-                          <td>{item.total_sales}</td>
+
+                          <td>{item.all_addons || "-"}</td>
+
+                          <td>{salesDetailOriginal[index].sold_quantity}</td>
+
+                          <td><NumberFormat value={item.total_price_addons} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
+
+                          <td><NumberFormat value={item.product_price} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
+
+                          <td><NumberFormat value={(item.product_price * salesDetailOriginal[index].sold_quantity) + (item.total_price_addons * salesDetailOriginal[index].sold_quantity)} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
                         </tr>
                       );
                     })
@@ -323,8 +364,11 @@ export const SalesProductDetail = () => {
                   <tr>
                     <th>{t("grandTotal")}</th>
                     <th></th>
-                    <th>{sumReports(salesPerProduct, "kuantitas")} </th>
-                    <th>{sumReports(salesPerProduct, "total_sales")} </th>
+                    <th></th>
+                    <th>{sumReports(salesPerProduct, "total_quantity")} </th>
+                    <th></th>
+                    <th></th>
+                    <th><NumberFormat value={grandTotal} displayType={'text'} thousandSeparator={true} prefix={currency} /></th>
                   </tr>
                 </tbody>
               </table>

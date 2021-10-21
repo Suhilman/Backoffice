@@ -377,7 +377,7 @@ function AsideMenuList(props) {
                       <div className={showDropdownReport ? 'show-dropdown-report' : 'hide-dropdown-report'}>
                         <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
                           
-                          <li key={index} className="menu-item" aria-haspopup="true">
+                          <li key={index} className={`menu-item ${getMenuItemActive("/report",false)}`} aria-haspopup="true">
                             <div className="menu-link d-flex justify-content-between align-items-center" onClick={handleDropdownReportSales}>
                               <span className="dropdown-menu-lv1 menu-text">{t("salesReport")}</span>
                               {showDropdownReportSales ? (
@@ -390,7 +390,7 @@ function AsideMenuList(props) {
                             <div className={showDropdownReportSales ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
                               <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
                                 {dropdownSalesReport.map((value, index2) => 
-                                  <li key={index2} className="menu-item" aria-haspopup="true">
+                                  <li key={index2} className={`menu-item ${getMenuItemActive(`/${value.route}`,false)}`}  aria-haspopup="true">
                                     <NavLink className="menu-link" to={`/report/${value.route}`}>
                                       <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
                                     </NavLink>
@@ -401,7 +401,7 @@ function AsideMenuList(props) {
 
                           </li>
 
-                          <li key={index} className="menu-item" aria-haspopup="true">
+                          <li key={index} className={`menu-item ${getMenuItemActive("/report",false)}`}  aria-haspopup="true">
                             <div className="menu-link d-flex justify-content-between align-items-center">
                               <span className="dropdown-menu-lv1 menu-text" onClick={handleDropdownReportEmployee}>{t("employeeReport")}</span>
                               {showDropdownReportEmployee ? (
@@ -413,7 +413,7 @@ function AsideMenuList(props) {
                             <div className={showDropdownReportEmployee ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
                               <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
                                 {dropdownEmployeeReport.map((value, index2) => 
-                                  <li key={index2} className="menu-item" aria-haspopup="true">
+                                  <li key={index2} className={`menu-item ${getMenuItemActive(`/${value.route}`,false)}`}  aria-haspopup="true">
                                     <NavLink className="menu-link" to={`/report/${value.route}`}>
                                       <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
                                     </NavLink>
@@ -425,6 +425,22 @@ function AsideMenuList(props) {
                         </ul>
                       </div>
                     </li>
+
+                    {/* <li
+                      key={index}
+                      className={`menu-item ${getMenuItemActive(
+                        "/report",
+                        false
+                      )}`}
+                      aria-haspopup="true"
+                    >
+                    <NavLink className="menu-link" to="/report">
+                      <div className="wrapper-icon">
+                        <img src={reportIcon} alt="Icon Report" />
+                      </div>
+                      <span className="menu-text">{t("report")}</span>
+                    </NavLink>
+                    </li> */}
                   </>
                 );
               }

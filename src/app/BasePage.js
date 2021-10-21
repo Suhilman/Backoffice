@@ -4,7 +4,7 @@ import { Redirect, Switch, Route } from "react-router-dom";
 import { LayoutSplashScreen, ContentRoute } from "../_metronic/layout";
 
 import { DashboardPage } from "./pages/DashboardPage";
-import { ReportPage } from "./pages/Report/ReportPage";
+import { ReportPage } from "./pages/ReportBackup/ReportPage";
 
 import { SalesSummaryTab } from "./pages/Report/SalesSummaryTab";
 import { PaymentMethodTab } from "./pages/Report/PaymentMethodTab";
