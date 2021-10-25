@@ -994,5 +994,6 @@
   "pricePerProduct": "Harga per Produk",
   "totalPriceAddons": "Jumlah Harga Addons",
   "allAddons": "Semua Addons",
-  "sellByWeight": "Jual dari Berat"
+  "sellByWeight": "Jual dari Berat",
+  "allowRefund": "Izinkan Pengembalian Dana"
 }

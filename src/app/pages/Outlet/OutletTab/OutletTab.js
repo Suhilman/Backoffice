@@ -122,7 +122,7 @@ export const OutletTab = ({
     open_days: [],
     open_hour: "",
     close_hour: "",
-    vacation: "",
+    vacation: false,
     sosmed: [],
     sosmed_name: ""
   };
@@ -412,7 +412,8 @@ export const OutletTab = ({
       start_hour: data?.open_hour,
       end_hour: data?.close_hour
     });
-    setStateVacation(data?.vacation);
+    if(data.vacation) setStateVacation("Active")
+    if(!data.vacation) setStateVacation("Inactive")
     console.log("showEditModalOutlet", data);
 
     if (data.location_id) {
@@ -715,7 +716,7 @@ export const OutletTab = ({
           close_hour: item.close_hour,
           tax: item.Outlet_Taxes.length ? "Taxable" : "No Tax",
           allTaxes: item.Outlet_Taxes.map((item) => item.Tax.name).join(", "),
-          vacation: item?.vacation,
+          vacation: item.vacation,
           sosmed: item.sosmed ? JSON.parse(item.sosmed) : [],
           sosmed_name: item.sosmed_name
         };
@@ -741,7 +742,7 @@ export const OutletTab = ({
           close_hour: item.close_hour,
           tax: item.Outlet_Taxes.length ? "Taxable" : "No Tax",
           allTaxes: item.Outlet_Taxes.map((item) => item.Tax.name).join(", "),
-          vacation: item?.vacation,
+          vacation: item.vacation,
           sosmed: item.sosmed ? JSON.parse(item.sosmed) : [],
           sosmed_name: item.sosmed_name
         };

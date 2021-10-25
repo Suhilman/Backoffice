@@ -45,7 +45,7 @@ const AddModal = ({
           {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
           <Form.Group>
-            <Form.Label>{t("location")}:</Form.Label>
+            <Form.Label>{t("location")}*</Form.Label>
             <Select
               options={optionsOutlet}
               name="outlet_id"
@@ -66,7 +66,7 @@ const AddModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>{t("name")}:</Form.Label>
+            <Form.Label>{t("name")}*</Form.Label>
             <Form.Control
               type="text"
               name="name"
@@ -84,7 +84,7 @@ const AddModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>{t("category")}:</Form.Label>
+            <Form.Label>{t("category")}*</Form.Label>
             <Select
               options={optionsCategory}
               name="raw_material_category_id"
@@ -108,7 +108,7 @@ const AddModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>{t("stock")}:</Form.Label>
+            <Form.Label>{t("stock")}*</Form.Label>
             <Form.Control
               type="number"
               name="stock"
@@ -126,7 +126,7 @@ const AddModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>{t("unit")}:</Form.Label>
+            <Form.Label>{t("unit")}*</Form.Label>
             <Select
               options={optionsUnit}
               name="unit_id"
@@ -146,7 +146,7 @@ const AddModal = ({
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>{t("pricePerUnit")}:</Form.Label>
+            <Form.Label>{t("pricePerUnit")}*</Form.Label>
             <Form.Control
               type="number"
               name="price_per_unit"

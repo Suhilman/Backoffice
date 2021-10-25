@@ -994,5 +994,6 @@
     "pricePerProduct": "Price Per Product",
     "totalPriceAddons": "Total Price Addons",
     "allAddons": "All Addons",
-    "sellByWeight": "Sell by Weight"
+    "sellByWeight": "Sell by Weight",
+    "allowRefund": "Allow Refund"
 }

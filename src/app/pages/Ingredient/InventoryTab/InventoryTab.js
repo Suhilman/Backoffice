@@ -89,8 +89,8 @@ const InventoryIngredientTab = ({
     stock: Yup.number().required(`${t("pleaseInputStock")}`),
     unit_id: Yup.number().required(`${t("pleaseInputUnit")}`),
     price_per_unit: Yup.number().required(`${t("pleaseInputPricePerUnit")}`),
-    calorie_per_unit: Yup.number().required(`${t("pleaseInputCalorie")}`),
-    calorie_unit: Yup.string().required(`${t("pleaseInputCalorieUnit")}`),
+    // calorie_per_unit: Yup.number().required(`${t("pleaseInputCalorie")}`),
+    // calorie_unit: Yup.string().required(`${t("pleaseInputCalorieUnit")}`),
     notes: Yup.string().min(1, `${t("minimal1Character")}`),
     is_sold: Yup.boolean()
   });
@@ -366,7 +366,8 @@ const InventoryIngredientTab = ({
       location: item.Outlet?.name,
       name: item.name,
       raw_material_category_id: item.raw_material_category_id,
-      stock: item.stock,
+      // stock: item.stock,
+      stock: item.stock < 0 ? 0 : item.stock,
       unit_id: item.unit_id,
       unit_name: item.Unit?.name || "-",
       calorie_per_unit: item.calorie_per_unit,
@@ -432,7 +433,8 @@ const InventoryIngredientTab = ({
           : item.Transfer_Stock
           ? item.Transfer_Stock.code
           : "-",
-        stock: item.stock || 0,
+        // stock: item.stock || 0,
+        stock: item.stock < 0 ? 0 : item.stock,
         unit: item.Unit?.name || "-"
       };
     });

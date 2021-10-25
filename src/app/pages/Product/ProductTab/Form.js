@@ -911,6 +911,7 @@ const FormTemplate = ({
                                   // formikProduct.setFieldValue("recipe_id", null);
                                 } else {
                                   formikProduct.setFieldValue("has_assembly", true);
+                                  formikProduct.setFieldValue("has_recipe", true);
                                 }
                               }}
                               checked={item.checked}
