@@ -52,7 +52,25 @@ function useWindowSize() {
   return size;
 }
 
-const RegistrationMarketing = () => {
+  const chooseLanguages = [
+    {
+      no: 1,
+      key: "id",
+      language: "Indonesia"
+    },
+    {
+      no: 2,
+      key: "en",
+      language: "English"
+    }
+    // {
+    //   no: 3,
+    //   key: "cn",
+    //   language: "Chinese"
+    // }
+  ];
+
+const RegistrationTryNow = () => {
   const initialValues = {
     name: "",
     email: "",
@@ -96,31 +114,26 @@ const RegistrationMarketing = () => {
   //   handleExpiredApp()
   // }, [])
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
   const RegistrationSchema = Yup.object().shape({
-    name: Yup.string()
-      .min(3, `${t("minimum3Symbols")}`)
-      .max(50, `${t("maximum50Symbols")}`)
-      .required(),
+    name: Yup.string(),
     email: Yup.string()
       .email("Wrong email format")
       .min(3, `${t("minimum3Symbols")}`)
       .max(50, `${t("maximum50Symbols")}`)
-      .required(),
-    phone_number: Yup.string()
-      .min(8, `${t("minimum3Symbols")}`)
-      .max(20, `${t("maximum50Symbols")}`)
-      .required(),
+      .required(`${t("pleaseInputEmail")}`),
+    phone_number: Yup.string(),
     password: Yup.string()
       .min(8, `${t("minimum8Character")}`)
       .max(50, `${t("maximum50Symbols")}`)
-      .required()
+      .required(`${t("pleaseInputAPassword")}`)
       .matches(
         /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
         t('mustContain8Characters,OneUppercase,OneLowercaseAndOneNumber')
       ),
     changepassword: Yup.string()
-      .required()
+      .required(`${t("pleaseInputAPasswordConfirmation")}`)
       .when("password", {
         is: (val) => (val && val.length > 0 ? true : false),
         then: Yup.string().oneOf(
@@ -133,25 +146,15 @@ const RegistrationMarketing = () => {
         t('mustContain8Characters,OneUppercase,OneLowercaseAndOneNumber')
       ),
     business_type_id: Yup.number()
-      .integer()
-      .min(1)
-      .required(`${t("pleaseChooseABusinessType")}`),
+      .integer(),
     business_province_id: Yup.number()
-      .integer()
-      .min(1)
-      .required(`${t("pleaseChooseAProvince")}`),
+      .integer(),
     business_city_id: Yup.number()
-      .integer()
-      .min(1)
-      .required("Please choose a city."),
+      .integer(),
     business_location_id: Yup.number()
-      .integer()
-      .min(1)
-      .required("Please choose a business location."),
+      .integer(),
     outlet_location_id: Yup.number()
-      .integer()
-      .min(1)
-      .required(`${t('pleaseChooseAnOutletLocation')}`),
+      .integer(),
     acceptTerms: Yup.bool().required("You must accept the terms and conditions")
   });
 
@@ -286,6 +289,11 @@ const RegistrationMarketing = () => {
 
   const registerSuccess = () => {
     // props.register(token.split(" ")[1]);
+  };
+
+  const changeLanguage = (language, noLanugage) => {
+    console.log("language", language)
+    i18n.changeLanguage(language);
   };
 
   const formikBusiness = useFormik({
@@ -811,7 +819,7 @@ const RegistrationMarketing = () => {
   ]
 
   return (
-    <>
+    <div className="login-form login-signin" style={{ display: "block" }}>
       <ModalVerify
         handleSendWhatsapp={handleSendWhatsapp}
         handleSendEmail={handleSendEmail}
@@ -833,7 +841,7 @@ const RegistrationMarketing = () => {
         verification_code={verificationCode}
         changeEmail={changeEmail}
         methodSendOTP={methodSendOTP}
-        centered={true}
+        centered={false}
       />
 
       <ModalPersonal
@@ -849,7 +857,7 @@ const RegistrationMarketing = () => {
         openOTPModal={openOTPModal}
         showOTPModal={showOTPModal}
         handleMethodSentOTP={handleMethodSentOTP}
-        centered={true}
+        centered={false}
       />
 
       <ModalRegister
@@ -869,554 +877,155 @@ const RegistrationMarketing = () => {
         cancelLoading={cancelLoading}
       />
 
-      <NavDropdown
-        state={showNavDropdown}
-        handleClose={closeNavDropdown}
-      />
-
-      <nav className={styles.containerNavbar}>
-        <div className={styles.navLeft}>
-          {width > 768 ? (
-            <div className={styles.wrapperLogoBeetpos}>
-              <img src={LogoBeetpos} alt="Logo Beetpos" />
-            </div>
-          ) : (
-            <div onClick={openNavDropdown}>
-              <div className={styles.wrapperIconMenu}>
-                <img src={IconMenu} alt="Icon Menu" width={30} height={30}/>
-              </div>
-            </div>
-          )}
-        </div>
-        <div className={styles.navMid}>
-          {width > 768 ? (
-            <>
-              {/* <div className={styles.menuNavbar}>Point Of Sale</div>
-              <div className={styles.menuNavbar}>Go Onlie</div>
-              <div className={styles.menuNavbar}>Harga</div>
-              <div className={styles.menuNavbar}>Perangkat</div>
-              <div className={styles.menuNavbar}>Lainya</div> */}
-            </>
-          ) : null }
-        </div>
-        <div className={styles.navRight}>
-          {width > 768 ? (
-            <>
-              <Link to="/auth/login">
-              <button 
-                type="button"
-                className="btn btn-primary px-9 py-4 my-3 mx-4"
-              >
-                Login
-              </button>
-              </Link>
-              {/* <button
-                type="button"
-                className="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-4"
-              >
-                Sign Up
-              </button> */}
-            </>
-          ) : (
-            <div className={styles.wrapperLogoBeetpos}>
-              <img src={LogoBeetpos} alt="Logo Beetpos" />
-            </div>
-          )}
-        </div>
-      </nav>
-      
-      <div className={styles.containerContent}>
-        <div className={styles.containerBox}>
-          <div className="row">
-            <div className={`col-md-5 ${styles.colMd5}`} >
-              <div className={styles.leftColumn}>
-                <div className="text-center mb-10 mb-lg-20">
-                  <h3 className="register-to-beetpos">Register to BeetPOS</h3>
-                  <p className="text-muted register-and-get-free-trial">
-                    Register and get free trial, no pre payment and credit card
-                    needed
-                  </p>
-                </div>
-
-                <form
-                  id="kt_login_signin_form"
-                  className="form fv-plugins-bootstrap fv-plugins-framework animated animate__animated animate__backInUp"
-                  onSubmit={formik.handleSubmit}
-                >
-                  {/* begin: Alert */}
-                  {formik.status && (
-                    <div className="mb-10 alert alert-custom alert-light-danger alert-dismissible">
-                      <div className="alert-text font-weight-bold">
-                        {formik.status}
-                      </div>
-                    </div>
-                  )}
-                  {/* end: Alert */}
-
-                  {/* begin: Fullname */}
-                  <div className="form-group fv-plugins-icon-container">
-                    <input
-                      placeholder="Business Name"
-                      type="text"
-                      className={`form-control py-5 px-6 ${getInputClasses(
-                        "name"
-                      )}`}
-                      name="name"
-                      {...formik.getFieldProps("name")}
-                    />
-                    {formik.touched.name && formik.errors.name ? (
-                      <div className="fv-plugins-message-container">
-                        <div className="fv-help-block">
-                          {formik.errors.name}
-                        </div>
-                      </div>
-                    ) : null}
-                  </div>
-                  {/* end: Fullname */}
-
-                  {/* begin: Email */}
-                  <div className="form-group fv-plugins-icon-container">
-                    <input
-                      placeholder="Email"
-                      type="email"
-                      className={`form-control py-5 px-6 ${getInputClasses(
-                        "email"
-                      )}`}
-                      name="email"
-                      {...formik.getFieldProps("email")}
-                    />
-                    {formik.touched.email && formik.errors.email ? (
-                      <div className="fv-plugins-message-container">
-                        <div className="fv-help-block">
-                          {formik.errors.email}
-                        </div>
-                      </div>
-                    ) : null}
-                  </div>
-                  {/* end: Email */}
-
-                  {/* begin: Phone number */}
-                  <div className="form-group fv-plugins-icon-container">
-                    <input
-                      placeholder="Phone number"
-                      type="text"
-                      className={`form-control py-5 px-6 ${getInputClasses(
-                        "phone_number"
-                      )}`}
-                      name="phone_number"
-                      {...formik.getFieldProps("phone_number")}
-                    />
-                    {formik.touched.phone_number &&
-                    formik.errors.phone_number ? (
-                      <div className="fv-plugins-message-container">
-                        <div className="fv-help-block">
-                          {formik.errors.phone_number}
-                        </div>
-                      </div>
-                    ) : null}
-                  </div>
-                  {/* end: Phone number */}
-
-                  {/* Start business location */}
-                  <Form.Group>
-                    {/* <Form.Label>Select Business Type</Form.Label> */}
-                    <Form.Control
-                      as="select"
-                      name="business_type_id"
-                      {...formik.getFieldProps("business_type_id")}
-                      className={validationBusiness("business_type_id")}
-                      required
-                    >
-                      <option value="" disabled hidden>
-                        Choose Business Type
-                      </option>
-
-                      {allBusinessTypes.map((item) => {
-                        return (
-                          <option key={item.id} value={item.id}>
-                            {item.name}
-                          </option>
-                        );
-                      })}
-                    </Form.Control>
-                    {formik.touched.business_type_id &&
-                    formik.errors.business_type_id ? (
-                      <div className="fv-plugins-message-container">
-                        <div className="fv-help-block">
-                          {formik.errors.business_type_id}
-                        </div>
-                      </div>
-                    ) : null}
-                  </Form.Group>
-
-                  <Form.Group>
-                    {/* <Form.Label>Select Province</Form.Label> */}
-                    <Form.Control
-                      as="select"
-                      name="business_province_id"
-                      {...formik.getFieldProps("business_province_id")}
-                      onChange={handleProvince}
-                      onBlur={handleProvince}
-                      className={validationBusiness("business_province_id")}
-                      required
-                    >
-                      <option value="" disabled hidden>
-                        Choose Province
-                      </option>
-
-                      {allProvinces.map((item) => {
-                        return (
-                          <option key={item.id} value={item.id}>
-                            {item.name}
-                          </option>
-                        );
-                      })}
-                    </Form.Control>
-                    {formik.touched.business_province_id &&
-                    formik.errors.business_province_id ? (
-                      <div className="fv-plugins-message-container">
-                        <div className="fv-help-block">
-                          {formik.errors.business_province_id}
-                        </div>
-                      </div>
-                    ) : null}
-                  </Form.Group>
-
-                  <Form.Group>
-                    {/* <Form.Label>Select City</Form.Label> */}
-                    <Form.Control
-                      as="select"
-                      name="business_city_id"
-                      {...formik.getFieldProps("business_city_id")}
-                      onChange={handleCity}
-                      onBlur={handleCity}
-                      className={validationBusiness("business_city_id")}
-                      required
-                    >
-                      <option value="" disabled hidden>
-                        Choose City
-                      </option>
-
-                      {allCities.map((item) => {
-                        return (
-                          <option key={item.id} value={item.id}>
-                            {item.name}
-                          </option>
-                        );
-                      })}
-                    </Form.Control>
-                    {formik.touched.business_city_id &&
-                    formik.errors.business_city_id ? (
-                      <div className="fv-plugins-message-container">
-                        <div className="fv-help-block">
-                          {formik.errors.business_city_id}
-                        </div>
-                      </div>
-                    ) : null}
-                  </Form.Group>
-
-                  <Form.Group>
-                    {/* <Form.Label>Select Location</Form.Label> */}
-                    <Form.Control
-                      as="select"
-                      name="business_location_id"
-                      {...formik.getFieldProps("business_location_id")}
-                      className={validationBusiness("business_location_id")}
-                      required
-                    >
-                      <option value="" disabled hidden>
-                        Choose Location
-                      </option>
-
-                      {allLocations.map((item) => {
-                        return (
-                          <option key={item.id} value={item.id}>
-                            {item.name}
-                          </option>
-                        );
-                      })}
-                    </Form.Control>
-                    {formik.touched.business_location_id &&
-                    formik.errors.business_location_id ? (
-                      <div className="fv-plugins-message-container">
-                        <div className="fv-help-block">
-                          {formik.errors.business_location_id}
-                        </div>
-                      </div>
-                    ) : null}
-                  </Form.Group>
-
-                  <Form.Group>
-                    {/* <Form.Label>Select Outlet Location</Form.Label> */}
-                    <Form.Control
-                      as="select"
-                      name="outlet_location_id"
-                      {...formik.getFieldProps("outlet_location_id")}
-                      className={validationBusiness("outlet_location_id")}
-                      required
-                    >
-                      <option value="" disabled hidden>
-                        Choose Outlet Location
-                      </option>
-
-                      {allLocations.map((item) => {
-                        return (
-                          <option key={item.id} value={item.id}>
-                            {item.name}
-                          </option>
-                        );
-                      })}
-                    </Form.Control>
-                    {formik.touched.outlet_location_id &&
-                    formik.errors.outlet_location_id ? (
-                      <div className="fv-plugins-message-container">
-                        <div className="fv-help-block">
-                          {formik.errors.outlet_location_id}
-                        </div>
-                      </div>
-                    ) : null}
-                  </Form.Group>
-                  {/* End business location*/}
-
-                  {/* begin: Password */}
-                  <div className="form-group fv-plugins-icon-container">
-                    <input
-                      placeholder="Password"
-                      type="password"
-                      className={`form-control py-5 px-6 ${getInputClasses(
-                        "password"
-                      )}`}
-                      name="password"
-                      {...formik.getFieldProps("password")}
-                    />
-                    {formik.touched.password && formik.errors.password ? (
-                      <div className="fv-plugins-message-container">
-                        <div className="fv-help-block">
-                          {formik.errors.password}
-                        </div>
-                      </div>
-                    ) : null}
-                  </div>
-                  {/* end: Password */}
-
-                  {/* begin: Confirm Password */}
-                  <div className="form-group fv-plugins-icon-container">
-                    <input
-                      placeholder="Confirm Password"
-                      type="password"
-                      className={`form-control py-5 px-6 ${getInputClasses(
-                        "changepassword"
-                      )}`}
-                      name="changepassword"
-                      {...formik.getFieldProps("changepassword")}
-                    />
-                    {formik.touched.changepassword &&
-                    formik.errors.changepassword ? (
-                      <div className="fv-plugins-message-container">
-                        <div className="fv-help-block">
-                          {formik.errors.changepassword}
-                        </div>
-                      </div>
-                    ) : null}
-                  </div>
-                  {/* end: Confirm Password */}
-
-                  {/* begin: Terms and Conditions */}
-                  <div className="form-group">
-                    <label className="checkbox">
-                      <input
-                        type="checkbox"
-                        name="acceptTerms"
-                        {...formik.getFieldProps("acceptTerms")}
-                      />
-                      I agree the{" "}
-                      <Link
-                        to="/terms"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Terms & Conditions
-                      </Link>
-                      .
-                      <span />
-                    </label>
-                    {formik.touched.acceptTerms && formik.errors.acceptTerms ? (
-                      <div className="fv-plugins-message-container">
-                        <div className="fv-help-block">
-                          {formik.errors.acceptTerms}
-                        </div>
-                      </div>
-                    ) : null}
-                  </div>
-                  {/* end: Terms and Conditions */}
-                  <ReCAPTCHA
-                    sitekey={process.env.REACT_APP_SITE_KEY}
-                    onChange={handleCaptcha}
-                  />
-
-                  <div className="form-group d-flex flex-wrap flex-center">
-                    <button
-                      type="submit"
-                      disabled={
-                        formik.isSubmitting ||
-                        !formik.values.acceptTerms ||
-                        expiredApp
-                      }
-                      className="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4"
-                    >
-                      <span>Submit</span>
-                      {loading && (
-                        <span className="ml-3 spinner spinner-white"></span>
-                      )}
-                    </button>
-
-                    <Link to="/auth/login">
-                      <button
-                        type="button"
-                        className="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-4"
-                      >
-                        Cancel
-                      </button>
-                    </Link>
-                  </div>
-                </form>
-              </div>
-            </div>
-            
-            <div className={`col-md-7 ${styles.colMd7}`} style={{paddingLeft: 0, marginLeft: 0}}>
-              <div className={styles.rightColumn}>
-                <div className={styles.rightColumnTop}>
-                </div>
-                <div className={styles.rightColumnBottom}>
-                  {words.map (value => (
-                    <div className="d-flex align-items-end mb-4">
-                      <div className={styles.wrapperImage}>
-                        <img src={IconThick} alt="Icon Thick" />
-                      </div>
-                      <div className={styles.word}>
-                        {value.word}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="text-center mb-10 mb-lg-20">
+        <h3 className="register-to-beetpos">{t("registerToBeetPOS")}</h3>
+        <p className="text-muted register-and-get-free-trial">
+          {t("registerAndGetFreeTrial")}
+        </p>
       </div>
-      <footer className={styles.containerFooter}>
-        <div className={styles.contentFooter}>
-          <div className="row">
-            <div className="col-md-3">
-              <div className={styles.wrapperLogoBeetpos}>
-                <img src={LogoBeetpos} alt="Logo Beetpos" />
-              </div>
-            </div>
-            <div className="col-md-3">
-              <div className={styles.titleFooter}>
-                Kategori Bisnis
-              </div>
-              <div className="row mt-2">
-                <div className="col">
-                  <div className={styles.contentTitleFooter}>Service</div>
-                  <div className={styles.contentTitleFooter}>Restaurant</div>
-                  <div className={styles.contentTitleFooter}>Retail</div>
-                </div>
-                <div className="col">
-                  <div className={styles.contentTitleFooter}>Toko Butik</div>
-                  <div className={styles.contentTitleFooter}>Toko Elektronik</div>
-                  <div className={styles.contentTitleFooter}>Toko Serba Ada</div>
-                  <div className={styles.contentTitleFooter}>Toko Vape</div>
-                  <div className={styles.contentTitleFooter}>Laundry</div>
-                  <div className={styles.contentTitleFooter}>Car Wash</div>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-3">
-              <div className={styles.titleFooter}>
-                BeetPOS
-              </div>
-              <div className="row mt-2">
-                <div className="col">
-                  <div className={styles.contentTitleFooter}>Tentang Kami</div>
-                  <div className={styles.contentTitleFooter}>Hubungi Kami</div>
-                  <div className={styles.contentTitleFooter}>Afiliasi</div>
-                  <div className={styles.contentTitleFooter}>Blog</div>
-                  <div className={styles.contentTitleFooter}>Ketentuan Layanan</div>
-                  <div className={styles.contentTitleFooter}>Kebijakan Privasi</div>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-3">
-              <div className={styles.titleFooter}>
-                Tetap Terhubung dengan Kami
-              </div>
-              <div className="d-flex mt-2">
-                <div className={styles.wrapperLogoSosmed}>
-                  <img src={LogoFacebook} alt="Logo Facebook" />
-                </div>
-                <div className={styles.wrapperLogoSosmed}>
-                  <img src={LogoInstagram} alt="Logo Instagram" />
-                </div>
-                <div className={styles.wrapperLogoSosmed}>
-                  <img src={LogoTwitter} alt="Logo Twitter" />
-                </div>
-              </div>
-              <div className="d-flex mt-2">
-                <div className="mr-2">
-                  <div className={styles.wrapperLogoTitle}>
-                    <img src={LogoLocation} alt="Logo Location" />
-                  </div>
-                </div>
-                <div>
-                  <div className={styles.title16}>Kantor Pusat</div>
-                  <div className={styles.address}>
-                    Jl. Green Lake City Boulevard Rukan Cordoba, RT.007/RW.009, Petir, Kec. Cipondoh, Kota Jakarta Barat, Banten 15147
-                  </div>
-                </div>
-              </div>
-              <div className="d-flex align-items-end mt-2">
-                <div className="mr-2">
-                  <div className={styles.wrapperLogoTitle}>
-                    <img src={LogoPhone} alt="Logo Location" />
-                  </div>
-                </div>
-                <div className={styles.contentTitleFooter}>
-                  (021) 54313924
-                </div>
-              </div>
-              <div className="d-flex align-items-end mt-2">
-                <div className="mr-2">
-                  <div className={styles.wrapperLogoTitle}>
-                    <img src={LogoWhatsapp} alt="Logo Whatsapp" />
-                  </div>
-                </div>
-                <div className={styles.contentTitleFooter}>
-                  (021) 54313924
-                </div>
-              </div>
-              <div className="d-flex align-items-end mt-2">
-                <div className="mr-2">
-                  <div className={styles.wrapperLogoTitle}>
-                    <img src={LogoEmail} alt="Logo Email" />
-                  </div>
-                </div>
-                <div className={styles.contentTitleFooter}>
-                  hello@lifetech.co.id
-                </div>
-              </div>
-            </div>
+
+      <form
+        id="kt_login_signin_form"
+        className="form fv-plugins-bootstrap fv-plugins-framework animated animate__animated animate__backInUp"
+        onSubmit={formik.handleSubmit}
+      >
+        {/* begin: Alert */}
+        {formik.status && (
+          <div className="mb-10 alert alert-custom alert-light-danger alert-dismissible">
+            <div className="alert-text font-weight-bold">{formik.status}</div>
           </div>
-          <hr style={{height: '1px' ,backgroundColor: 'white', margin: "20px 0"}}/>
-          <div className="row justify-content-end">
-            <div className={styles.copyRight}>
-              &copy; 2021 BeetPOS. PT Lifetech Tanpa Batas. All Rights Reserved
-            </div>
-          </div>
+        )}
+        {/* end: Alert */}
+
+        {/* Choose Language */}
+        <div className="form-group d-flex align-items-end justify-content-between">
+          <label className="mr-4" for="exampleFormControlSelect1">{t('language')}</label>
+          <select 
+            className="form-control" 
+            id="exampleFormControlSelect1" 
+            onClick={(e) => changeLanguage(e.target.value)}
+          >
+            {chooseLanguages?.length
+              ? chooseLanguages.map((item) => {
+                  return (
+                    <option key={item.id} value={item.key}>
+                      {item.language}
+                    </option>
+                  );
+                })
+              : ""}
+          </select>
         </div>
-      </footer>
-    </>
+        {/* End Choose Language */}
+
+        {/* begin: Email */}
+        <div className="form-group fv-plugins-icon-container">
+          <input
+            placeholder="Email"
+            type="email"
+            autoComplete="new-password"
+            className={`form-control py-5 px-6 ${getInputClasses("email")}`}
+            name="email"
+            {...formik.getFieldProps("email")}
+          />
+          {formik.touched.email && formik.errors.email ? (
+            <div className="fv-plugins-message-container">
+              <div className="fv-help-block">{formik.errors.email}</div>
+            </div>
+          ) : null}
+        </div>
+        {/* end: Email */}
+
+        {/* begin: Password */}
+        <div className="form-group fv-plugins-icon-container">
+          <input
+            placeholder="Password"
+            type="password"
+            autoComplete="new-password"
+            className={`form-control py-5 px-6 ${getInputClasses("password")}`}
+            name="password"
+            {...formik.getFieldProps("password")}
+          />
+          {formik.touched.password && formik.errors.password ? (
+            <div className="fv-plugins-message-container">
+              <div className="fv-help-block">{formik.errors.password}</div>
+            </div>
+          ) : null}
+        </div>
+        {/* end: Password */}
+
+        {/* begin: Confirm Password */}
+        <div className="form-group fv-plugins-icon-container">
+          <input
+            placeholder="Confirm Password"
+            type="password"
+            className={`form-control py-5 px-6 ${getInputClasses(
+              "changepassword"
+            )}`}
+            name="changepassword"
+            {...formik.getFieldProps("changepassword")}
+          />
+          {formik.touched.changepassword && formik.errors.changepassword ? (
+            <div className="fv-plugins-message-container">
+              <div className="fv-help-block">
+                {formik.errors.changepassword}
+              </div>
+            </div>
+          ) : null}
+        </div>
+        {/* end: Confirm Password */}
+
+        {/* begin: Terms and Conditions */}
+        <div className="form-group">
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              name="acceptTerms"
+              {...formik.getFieldProps("acceptTerms")}
+            />
+            {t('iAgreeThe')}{" "}
+            <Link to="/terms" target="_blank" rel="noopener noreferrer">
+              {t('terms&Conditions')}
+            </Link>
+            .
+            <span />
+          </label>
+          {formik.touched.acceptTerms && formik.errors.acceptTerms ? (
+            <div className="fv-plugins-message-container">
+              <div className="fv-help-block">{formik.errors.acceptTerms}</div>
+            </div>
+          ) : null}
+        </div>
+        {/* end: Terms and Conditions */}
+        <ReCAPTCHA
+          sitekey={process.env.REACT_APP_SITE_KEY}
+          onChange={handleCaptcha}
+        />
+
+        <div className="form-group d-flex flex-wrap flex-center">
+          <button
+            type="submit"
+            disabled={
+              formik.isSubmitting || !formik.values.acceptTerms || expiredApp
+            }
+            className="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4"
+          >
+            <span>{t('submit')}</span>
+            {loading && <span className="ml-3 spinner spinner-white"></span>}
+          </button>
+
+          <Link to="/auth/login">
+            <button
+              type="button"
+              className="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-4"
+            >
+              {t('cancel')}
+            </button>
+          </Link>
+        </div>
+      </form>
+    </div>
   );
 };
 
-export default RegistrationMarketing;
+export default RegistrationTryNow;

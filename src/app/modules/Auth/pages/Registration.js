@@ -48,6 +48,7 @@ function Registration(props) {
   const [captchaToken, setCaptchaToken] = useState("");
 
   const [expiredApp, setExpiredApp] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState("")
 
   // expired_app
   const handleExpiredApp = () => {
@@ -64,61 +65,41 @@ function Registration(props) {
   //   handleExpiredApp()
   // }, [])
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const RegistrationSchema = Yup.object().shape({
     name: Yup.string()
       .min(3, `${t("minimum3Symbols")}`)
       .max(50, `${t("maximum50Symbols")}`)
-      .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD"
-        })
-      ),
+      .required(`${t('pleaseInputABusinessName')}`),
     email: Yup.string()
       .email("Wrong email format")
       .min(3, `${t("minimum3Symbols")}`)
       .max(50, `${t("maximum50Symbols")}`)
-      .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD"
-        })
-      ),
+      .required(`${t('pleaseInputEmail')}`),
     phone_number: Yup.string()
       .min(8, `${t("minimum3Symbols")}`)
       .max(20, `${t("maximum50Symbols")}`)
-      .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD"
-        })
-      ),
+      .required(`${t('pleaseInputAPhoneNumber')}`),
     password: Yup.string()
       .min(8, `${t("minimum8Character")}`)
       .max(50, `${t("maximum50Symbols")}`)
-      .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD"
-        })
-      )
+      .required(`${t('pleaseInputAPassword')}`)
       .matches(
         /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
-        "Must Contain 8 Characters, One Uppercase, One Lowercase and One Number"
+        t('mustContain8Characters,OneUppercase,OneLowercaseAndOneNumber')
       ),
     changepassword: Yup.string()
-      .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD"
-        })
-      )
+    .required(`${t('pleaseInputAPasswordConfirmation')}`)
       .when("password", {
         is: (val) => (val && val.length > 0 ? true : false),
         then: Yup.string().oneOf(
           [Yup.ref("password")],
-          "Password and Confirm Password didn't match"
+          t('passwordAndConfirmPasswordDidntMatch')
         )
       })
       .matches(
         /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
-        "Must Contain 8 Characters, One Uppercase, One Lowercase and One Number"
+        t('mustContain8Characters,OneUppercase,OneLowercaseAndOneNumber')
       ),
     business_type_id: Yup.number()
       .integer()
@@ -131,15 +112,15 @@ function Registration(props) {
     business_city_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a city."),
+      .required(`${t("pleaseChooseACity")}`),
     business_location_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a business location."),
+      .required(`${t("pleaseChooseABusinessLocation")}`),
     outlet_location_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose an outlet location."),
+      .required(`${t('pleaseChooseAnOutletLocation')}`),
     acceptTerms: Yup.bool().required("You must accept the terms and conditions")
   });
 
@@ -755,6 +736,34 @@ function Registration(props) {
     }
   };
 
+  const chooseLanguages = [
+    {
+      no: 1,
+      key: "id",
+      language: "Indonesia"
+    },
+    {
+      no: 2,
+      key: "en",
+      language: "English"
+    }
+    // {
+    //   no: 3,
+    //   key: "cn",
+    //   language: "Chinese"
+    // }
+  ];
+
+  const changeLanguage = (language, noLanugage) => {
+    console.log("language", language)
+    i18n.changeLanguage(language);
+  };
+
+  useEffect(() => {
+    const currLanguage = localStorage.getItem("i18nextLng")
+    setSelectedLanguage(currLanguage)
+  }, [])
+
   return (
     <div className="login-form login-signin" style={{ display: "block" }}>
       <ModalVerify
@@ -815,9 +824,9 @@ function Registration(props) {
       />
 
       <div className="text-center mb-10 mb-lg-20">
-        <h3 className="register-to-beetpos">Register to BeetPOS</h3>
+        <h3 className="register-to-beetpos">{t('registerToBeetPOS')}</h3>
         <p className="text-muted register-and-get-free-trial">
-          Register and get free trial, no pre payment and credit card needed
+          {t('registerAndGetFreeTrial')}
         </p>
       </div>
 
@@ -834,14 +843,40 @@ function Registration(props) {
         )}
         {/* end: Alert */}
 
+        {/* Choose Language */}
+        <div className="form-group d-flex align-items-end justify-content-between">
+          <label className="mr-4" for="exampleFormControlSelect1">{t('language')}</label>
+          <select 
+            className="form-control" 
+            id="exampleFormControlSelect1" 
+            onClick={(e) => changeLanguage(e.target.value)}
+          >
+            {chooseLanguages?.length
+              ? chooseLanguages.map((item) => {
+                  return (
+                    <option 
+                      key={item.id} 
+                      value={item.key}
+                      selected={selectedLanguage == item.key}
+                    >
+                      {item.language}
+                    </option>
+                  );
+                })
+              : ""}
+          </select>
+        </div>
+        {/* End Choose Language */}
+
         {/* begin: Fullname */}
         <div className="form-group fv-plugins-icon-container">
           <input
-            placeholder="Business Name"
+            placeholder={t('businessName')}
             type="text"
             className={`form-control py-5 px-6 ${getInputClasses("name")}`}
             name="name"
             {...formik.getFieldProps("name")}
+            autoComplete="new-password"
           />
           {formik.touched.name && formik.errors.name ? (
             <div className="fv-plugins-message-container">
@@ -859,6 +894,7 @@ function Registration(props) {
             className={`form-control py-5 px-6 ${getInputClasses("email")}`}
             name="email"
             {...formik.getFieldProps("email")}
+            autoComplete="new-password"
           />
           {formik.touched.email && formik.errors.email ? (
             <div className="fv-plugins-message-container">
@@ -871,13 +907,14 @@ function Registration(props) {
         {/* begin: Phone number */}
         <div className="form-group fv-plugins-icon-container">
           <input
-            placeholder="Phone number"
+            placeholder={t('phoneNumber')}
             type="text"
             className={`form-control py-5 px-6 ${getInputClasses(
               "phone_number"
             )}`}
             name="phone_number"
             {...formik.getFieldProps("phone_number")}
+            autoComplete="new-password"
           />
           {formik.touched.phone_number && formik.errors.phone_number ? (
             <div className="fv-plugins-message-container">
@@ -898,7 +935,7 @@ function Registration(props) {
             required
           >
             <option value="" disabled hidden>
-              Choose Business Type
+              {t('chooseABusinessType')}
             </option>
 
             {allBusinessTypes.map((item) => {
@@ -930,7 +967,7 @@ function Registration(props) {
             required
           >
             <option value="" disabled hidden>
-              Choose Province
+              {t('chooseAProvince')}
             </option>
 
             {allProvinces.map((item) => {
@@ -963,7 +1000,7 @@ function Registration(props) {
             required
           >
             <option value="" disabled hidden>
-              Choose City
+              {t('chooseACity')}
             </option>
 
             {allCities.map((item) => {
@@ -993,7 +1030,7 @@ function Registration(props) {
             required
           >
             <option value="" disabled hidden>
-              Choose Location
+              {t('chooseALocation')}
             </option>
 
             {allLocations.map((item) => {
@@ -1024,7 +1061,7 @@ function Registration(props) {
             required
           >
             <option value="" disabled hidden>
-              Choose Outlet Location
+              {t('chooseAOutletLocation')}
             </option>
 
             {allLocations.map((item) => {
@@ -1049,11 +1086,12 @@ function Registration(props) {
         {/* begin: Password */}
         <div className="form-group fv-plugins-icon-container">
           <input
-            placeholder="Password"
+            placeholder={t('password')}
             type="password"
             className={`form-control py-5 px-6 ${getInputClasses("password")}`}
             name="password"
             {...formik.getFieldProps("password")}
+            autoComplete="new-password"
           />
           {formik.touched.password && formik.errors.password ? (
             <div className="fv-plugins-message-container">
@@ -1066,13 +1104,14 @@ function Registration(props) {
         {/* begin: Confirm Password */}
         <div className="form-group fv-plugins-icon-container">
           <input
-            placeholder="Confirm Password"
+            placeholder={t('confirmPassword')}
             type="password"
             className={`form-control py-5 px-6 ${getInputClasses(
               "changepassword"
             )}`}
             name="changepassword"
             {...formik.getFieldProps("changepassword")}
+            autoComplete="new-password"
           />
           {formik.touched.changepassword && formik.errors.changepassword ? (
             <div className="fv-plugins-message-container">
@@ -1092,9 +1131,9 @@ function Registration(props) {
               name="acceptTerms"
               {...formik.getFieldProps("acceptTerms")}
             />
-            I agree the{" "}
+            {t('iAgreeThe')}{" "}
             <Link to="/terms" target="_blank" rel="noopener noreferrer">
-              Terms & Conditions
+            {t('terms&Conditions')}
             </Link>
             .
             <span />
@@ -1111,26 +1150,26 @@ function Registration(props) {
           onChange={handleCaptcha}
         />
 
-        <div className="form-group d-flex flex-wrap flex-center">
+        <div className="form-group d-flex flex-wrap flex-start">
           <button
             type="submit"
             disabled={
               formik.isSubmitting || !formik.values.acceptTerms || expiredApp
             }
-            className="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4"
+            className="btn btn-primary font-weight-bold px-9 py-4 mt-3"
           >
-            <span>Submit</span>
+            <span>{t('submit')}</span>
             {loading && <span className="ml-3 spinner spinner-white"></span>}
           </button>
 
-          <Link to="/auth/login">
+          {/* <Link to="/auth/login">
             <button
               type="button"
               className="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-4"
             >
-              Cancel
+              {t('cancel')}
             </button>
-          </Link>
+          </Link> */}
         </div>
       </form>
     </div>

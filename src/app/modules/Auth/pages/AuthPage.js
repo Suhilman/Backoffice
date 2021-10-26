@@ -1,15 +1,41 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from "react";
-import { Link, Switch, Redirect } from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import { Link, Switch, Redirect, useHistory } from "react-router-dom";
 import { toAbsoluteUrl } from "../../../../_metronic/_helpers";
 import { ContentRoute } from "../../../../_metronic/layout";
 import Login from "./Login";
 import Registration from "./Registration";
+import RegistrationTryNow from "./RegistrationTryNow";
 import ForgotPassword from "./ForgotPassword";
 import "../../../../_metronic/_assets/sass/pages/login/classic/login-1.scss";
 import LoginStaff from "./LoginStaff";
+import { useTranslation } from "react-i18next";
 
 export function AuthPage() {
+  const history = useHistory();
+  const [authState, setAuthState] = useState("register")
+  const { t } = useTranslation();
+
+  const pushToLogin = () => {
+    setAuthState("login")
+    history.push("/auth");
+  }
+  const pushToRegister = () => {
+    setAuthState("register")
+    history.push("/auth/registration");
+  }
+
+  useEffect(() => {
+    const currentRoute = window.location.pathname
+    if(currentRoute.includes("login")){
+      setAuthState("login")
+    } else if (currentRoute.includes("registration")) {
+      setAuthState("register")
+    } else {
+      setAuthState("login")
+    }
+  }, [])
+
   return (
     <>
       <div className="d-flex flex-column flex-root">
@@ -59,13 +85,13 @@ export function AuthPage() {
                 </div>
                 <div className="d-flex">
                   <Link to="/terms" className="text-white">
-                    Privacy
+                    {t('privacy')}
                   </Link>
                   <Link to="/terms" className="text-white ml-10">
-                    Legal
+                    {t('legal')}
                   </Link>
                   <Link to="/terms" className="text-white ml-10">
-                    Contact
+                    {t('contact')}
                   </Link>
                 </div>
               </div>
@@ -79,16 +105,29 @@ export function AuthPage() {
           <div className="flex-row-fluid d-flex flex-column position-relative p-7 overflow-hidden">
             {/*begin::Content header*/}
             <div className="position-absolute top-0 right-0 text-right mt-5 mb-15 mb-lg-0 flex-column-auto justify-content-center py-5 px-10">
-              <span className="font-weight-bold text-dark-50 dont-have-an-account-yet">
-                Don't have an account yet?
-              </span>
-              <Link
-                to="/auth/registration"
-                className="font-weight-bold ml-2"
-                id="kt_login_signup"
-              >
-                Sign Up!
-              </Link>
+              {authState === 'login' ? (
+                <>
+                <div className="d-flex justify-content-between align-items-center">
+                  <span className="font-weight-bold text-dark-50 dont-have-an-account-yet">
+                    {t('dontHaveAnAccountYet')}
+                  </span>
+                  <button type="button" class="btn btn-outline-primary btn-sm ml-2" onClick={pushToRegister}>
+                    {t('signUp')}
+                  </button>
+                </div>
+                </>
+              ) : (
+                <>
+                <div className="d-flex justify-content-between align-items-center">
+                  <span className="font-weight-bold text-dark-50 dont-have-an-account-yet">
+                    {t('alreadyHaveAccount')}
+                  </span>
+                  <button type="button" class="btn btn-outline-primary btn-sm ml-2" onClick={pushToLogin}>
+                    {t('signIn')}
+                  </button>
+                </div>
+                </>
+              )}
             </div>
             {/*end::Content header*/}
 
@@ -101,6 +140,10 @@ export function AuthPage() {
                 <ContentRoute
                   path="/auth/registration"
                   component={Registration}
+                />
+                <ContentRoute
+                  path="/auth/beetpos-registration"
+                  component={RegistrationTryNow}
                 />
                 <ContentRoute
                   path="/auth/forgot-password"
@@ -119,19 +162,19 @@ export function AuthPage() {
               </div>
               <div className="d-flex order-1 order-sm-2 my-2">
                 <Link to="/terms" className="text-dark-75 text-hover-primary">
-                  Privacy
+                  {t('privacy')}
                 </Link>
                 <Link
                   to="/terms"
                   className="text-dark-75 text-hover-primary ml-4"
                 >
-                  Legal
+                  {t('legal')}
                 </Link>
                 <Link
                   to="/terms"
                   className="text-dark-75 text-hover-primary ml-4"
                 >
-                  Contact
+                  {t('contact')}
                 </Link>
               </div>
             </div>

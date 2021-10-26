@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
@@ -32,9 +32,10 @@ function Login(props) {
   const [allProvinces, setAllProvinces] = useState([]);
   const [allCities, setAllCities] = useState([]);
   const [allLocations, setAllLocations] = useState([]);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [code, setCode] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState("")
 
   const [expiredApp, setExpiredApp] = useState(false)
   // expired_app
@@ -64,23 +65,23 @@ function Login(props) {
     business_type_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a business type."),
+      .required(`${t('pleaseChooseABusinessType')}`),
     business_province_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a province."),
+      .required(`${t('pleaseChooseAProvince')}`),
     business_city_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a city."),
+      .required(`${t('pleaseChooseAProvince')}`),
     business_location_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a business location."),
+      .required(`${t('pleaseChooseABusinessLocation')}`),
     outlet_location_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose an outlet location.")
+      .required(`${t('pleaseChooseAnOutletLocation')}`)
   });
 
   const formikBusiness = useFormik({
@@ -274,19 +275,11 @@ function Login(props) {
       .email("Wrong email format")
       .min(3, `${t("minimum3Symbols")}`)
       .max(50, `${t("maximum50Symbols")}`)
-      .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD"
-        })
-      ),
+      .required(`${t('pleaseInputEmail')}`),
     password: Yup.string()
       .min(3, `${t("minimum3Symbols")}`)
       .max(50, `${t("maximum50Symbols")}`)
-      .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD"
-        })
-      )
+      .required(`${t('pleaseInputAPassword')}`),
   });
 
   const getInputClasses = (fieldname) => {
@@ -384,6 +377,34 @@ function Login(props) {
     }
   });
 
+  const chooseLanguages = [
+    {
+      no: 1,
+      key: "id",
+      language: "Indonesia"
+    },
+    {
+      no: 2,
+      key: "en",
+      language: "English"
+    }
+    // {
+    //   no: 3,
+    //   key: "cn",
+    //   language: "Chinese"
+    // }
+  ];
+
+  const changeLanguage = (language, noLanugage) => {
+    console.log("language", language)
+    i18n.changeLanguage(language);
+  };
+
+  useEffect(() => {
+    const currLanguage = localStorage.getItem("i18nextLng")
+    setSelectedLanguage(currLanguage)
+  }, [])
+
   return (
     <>
       <ModalVerify
@@ -418,10 +439,10 @@ function Login(props) {
         {/* begin::Head */}
         <div className="text-center mb-10 mb-lg-20">
           <h3 className="font-size-h1">
-            <FormattedMessage id="AUTH.LOGIN.TITLE" />
+            {t('loginAccount')}
           </h3>
           <p className="text-muted font-weight-bold">
-            Enter your email and password
+            {t('enterYourEmailAndPassword')}
           </p>
         </div>
         {/* end::Head */}
@@ -438,6 +459,31 @@ function Login(props) {
           ) : (
             ""
           )}
+
+          {/* Choose Language */}
+          <div className="form-group d-flex align-items-end justify-content-between">
+            <label className="mr-4" for="exampleFormControlSelect1">{t('language')}</label>
+            <select 
+              className="form-control" 
+              id="exampleFormControlSelect1" 
+              onClick={(e) => changeLanguage(e.target.value)}
+            >
+              {chooseLanguages?.length
+                ? chooseLanguages.map((item) => {
+                    return (
+                      <option 
+                        key={item.id} 
+                        value={item.key}
+                        selected={selectedLanguage == item.key}
+                      >
+                        {item.language}
+                      </option>
+                    );
+                  })
+                : ""}
+            </select>
+          </div>
+          {/* End Choose Language */}
 
           <div className="form-group fv-plugins-icon-container">
             <input
@@ -457,7 +503,7 @@ function Login(props) {
           </div>
           <div className="form-group fv-plugins-icon-container">
             <input
-              placeholder="Password"
+              placeholder={t('password')}
               type="password"
               className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
                 "password"
@@ -477,13 +523,13 @@ function Login(props) {
               className="text-dark-50 text-hover-primary my-3 mr-2"
               id="kt_login_forgot"
             >
-              <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />
+              {t('forgotPassword')}
             </Link>
             <Link
               to="/auth/login/staff"
               className="text-dark-50 text-hover-primary my-3 mr-2"
             >
-              Staff? Login Here
+              {t('staff?LoginHere')}
             </Link>
             <ReCAPTCHA
               sitekey={process.env.REACT_APP_SITE_KEY}
@@ -495,7 +541,7 @@ function Login(props) {
               disabled={formik.isSubmitting || expiredApp}
               className={`btn btn-primary font-weight-bold px-9 py-4 my-3`}
             >
-              <span>Sign In</span>
+              <span>{t('signIn')}</span>
               {loading && <span className="ml-3 spinner spinner-white"></span>}
             </button>
           </div>

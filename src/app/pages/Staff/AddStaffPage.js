@@ -186,7 +186,7 @@ export const AddStaffPage = ({ location }) => {
                     <Form.Control
                       as="select"
                       name="outlet_id"
-                      autoComplete="off"
+                      autoComplete="new-password"
                       {...formikStaff.getFieldProps("outlet_id")}
                       className={validationStaff("outlet_id")}
                       required
@@ -248,7 +248,7 @@ export const AddStaffPage = ({ location }) => {
                     <Form.Control
                       as="select"
                       name="role_id"
-                      autoComplete="off"
+                      autoComplete="new-password"
                       {...formikStaff.getFieldProps("role_id")}
                       onChange={handleChangeRole}
                       onBlur={handleChangeRole}
@@ -281,7 +281,7 @@ export const AddStaffPage = ({ location }) => {
                     <Form.Control
                       type="text"
                       name="name"
-                      autoComplete="off"
+                      autoComplete="new-password"
                       {...formikStaff.getFieldProps("name")}
                       className={validationStaff("name")}
                       required
@@ -300,7 +300,7 @@ export const AddStaffPage = ({ location }) => {
                     <Form.Control
                       type="text"
                       name="staff_id"
-                      autoComplete="off"
+                      autoComplete="new-password"
                       {...formikStaff.getFieldProps("staff_id")}
                       className={validationStaff("staff_id")}
                       required
@@ -320,7 +320,7 @@ export const AddStaffPage = ({ location }) => {
                     <Form.Control
                       type="email"
                       name="email"
-                      autoComplete="off"
+                      autoComplete="new-password"
                       {...formikStaff.getFieldProps("email")}
                       className={validationStaff("email")}
                       required
@@ -339,7 +339,7 @@ export const AddStaffPage = ({ location }) => {
                     <Form.Control
                       type="text"
                       name="phone_number"
-                      autoComplete="off"
+                      autoComplete="new-password"
                       {...formikStaff.getFieldProps("phone_number")}
                       className={validationStaff("phone_number")}
                       required
@@ -359,7 +359,7 @@ export const AddStaffPage = ({ location }) => {
                     <Form.Control
                       type="password"
                       name="password"
-                      autoComplete="off"
+                      autoComplete="new-password"
                       {...formikStaff.getFieldProps("password")}
                       className={validationStaff("password")}
                       required
@@ -379,7 +379,7 @@ export const AddStaffPage = ({ location }) => {
                     <Form.Control
                       type="password"
                       name="password_confirmation"
-                      autoComplete="off"
+                      autoComplete="new-password"
                       {...formikStaff.getFieldProps("password_confirmation")}
                       className={validationStaff("password_confirmation")}
                       required
@@ -399,7 +399,7 @@ export const AddStaffPage = ({ location }) => {
                     <Form.Control
                       type="password"
                       name="pin"
-                      autoComplete="off"
+                      autoComplete="new-password"
                       {...formikStaff.getFieldProps("pin")}
                       className={validationStaff("pin")}
                       required
