@@ -10,7 +10,7 @@ import { Redirect, Switch, Route } from "react-router-dom";
 import { shallowEqual, useSelector } from "react-redux";
 import { Layout } from "../_metronic/layout";
 import BasePage from "./BasePage";
-import { Logout, AuthPage } from "./modules/Auth";
+import { Logout, AuthPage, AdvancedProcessRegister } from "./modules/Auth";
 import ErrorsPage from "./modules/ErrorsExamples/ErrorsPage";
 import { ChangePassword } from "./pages/Auth/ChangePassword";
 import  RegistrationMarketing from "./modules/Auth/pages/RegistrationMarketing";
@@ -35,6 +35,14 @@ export function Routes() {
       <Route path="/payment/sign-on" component={SignOn} />
       <Route path="/payment/generate-qr-string" component={GenerateQRString} />
       <Route path="/payment/show-qrcode" component={ShowQRCode} />
+
+      {!isAuthorized ? (
+        /*Render auth page when user at `/auth` and not authorized.*/
+        <Route path="/register-process" component={AdvancedProcessRegister} />
+      ) : (
+        /*Otherwise redirect to root page (`/`)*/
+        <Redirect from="/auth" to="/" />
+      )}
 
       {!isAuthorized ? (
         /*Render auth page when user at `/auth` and not authorized.*/

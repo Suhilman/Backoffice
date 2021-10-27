@@ -1017,5 +1017,10 @@
   "passwordAndConfirmPasswordDidntMatch": "Kata Sandi dan Konfirmasi Kata Sandi tidak cocok",
   "chooseAOutletLocation": "Pilih Lokasi Outlet",
   "chooseABusinessType": "Pilih Tipe Bisnis",
-  "alreadyHaveAccount": "Sudah Punya Akun?"
+  "alreadyHaveAccount": "Sudah Punya Akun?",
+  "resendVerificationCode": "Kirim ulang kode verifikasi",
+  "didntReceiveTheVerificationCode": "Tidak Menerima Kode Verifikasi?",
+  "emailTo": "Email ke",
+  "accountVerification": "Verifikasi Akun",
+  "enterTheVerificationCodeWeSend": "Masukkan Kode Verifikasi Yang Kami Kirim"
 }

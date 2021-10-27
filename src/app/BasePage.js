@@ -95,6 +95,7 @@ import NotificationExpired from "./components/NotificationExpired"
 import About from "./pages/About/AboutPage"
 import { SalesChannelPage } from './pages/SalesChannel/SalesChannelPage'
 
+
 export default function BasePage() {
   const [currPrivileges, setCurrPrivileges] = React.useState({
     view_dashboard: false,

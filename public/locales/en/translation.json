@@ -1017,5 +1017,10 @@
     "passwordAndConfirmPasswordDidntMatch": "Password and Confirm Password didn't match",
     "chooseAOutletLocation": "Choose Outlet Location",
     "chooseABusinessType": "Choose Business Type",
-    "alreadyHaveAccount": "Already Have Account?"
+    "alreadyHaveAccount": "Already Have Account?",
+    "resendVerificationCode": "Resend Verification Code",
+    "didntReceiveTheVerificationCode": "Didn't Receive the Verification Code",
+    "emailTo": "Email to",
+    "accountVerification": "Account Verification",
+    "enterTheVerificationCodeWeSend": "Enter the Verification Code We Send"
 }
