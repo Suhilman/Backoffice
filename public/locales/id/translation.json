@@ -1022,5 +1022,6 @@
   "didntReceiveTheVerificationCode": "Tidak Menerima Kode Verifikasi?",
   "emailTo": "Email ke",
   "accountVerification": "Verifikasi Akun",
-  "enterTheVerificationCodeWeSend": "Masukkan Kode Verifikasi Yang Kami Kirim"
+  "enterTheVerificationCodeWeSend": "Masukkan Kode Verifikasi Yang Kami Kirim",
+  "pleaseInputVerifyCode": "Masukkan Kode Verifikasi"
 }

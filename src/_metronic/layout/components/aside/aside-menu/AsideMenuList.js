@@ -235,68 +235,67 @@ function AsideMenuList(props) {
 
   const dropdownSalesReport = [
     {
-      route: 'sales-summary',
-      name: 'salesSummary'
-    },
-    {
-      route: 'payment-method',
-      name: 'paymentMethod'
-    },
-    {
-      route: 'sales-type',
-      name: 'salesType'
-    },
-    {
       route: 'category-sales',
       name: 'categorySales'
-    },
-    {
-      route: 'transaction-history',
-      name: 'transactionHistory'
-    },
-    {
-      route: 'discount-sales',
-      name: 'discountSales'
-    },
-    {
-      route: 'recap',
-      name: 'recap'
-    },
-    {
-      route: 'sales-per-product',
-      name: 'salesPerProduct'
-    },
-    {
-      route: 'sales-detail',
-      name: 'detailSalesPerProduct'
     },
     {
       route: 'cost-of-gold-sold',
       name: 'cogs'
     },
     {
+      route: 'sales-detail',
+      name: 'detailSalesPerProduct'
+    },
+    {
+      route: 'discount-sales',
+      name: 'discountSales'
+    },
+    {
+      route: 'payment-method',
+      name: 'paymentMethod'
+    },
+    {
       route: 'profit-calculation',
       name: 'profitCalculation'
     },
     {
-      route: 'staff-transaction',
-      name: 'staffTransaction'
+      route: 'raw-material',
+      name: 'rawMaterial'
     },
     {
-      route: 'void-transaction',
-      name: 'Void Transaction'
+      route: 'recap',
+      name: 'recap'
     },
     {
       route: 'sales-per-hour',
       name: 'salesPerHour'
     },
     {
+      route: 'sales-per-product',
+      name: 'salesPerProduct'
+    },{
+      route: 'sales-summary',
+      name: 'salesSummary'
+    },
+    {
+      route: 'sales-type',
+      name: 'salesType'
+    },
+    {
+      route: 'staff-transaction',
+      name: 'staffTransaction'
+    },
+    {
       route: 'stock-report',
       name: 'stockReport'
     },
     {
-      route: 'raw-material',
-      name: 'rawMaterial'
+      route: 'transaction-history',
+      name: 'transactionHistory'
+    },
+    {
+      route: 'void-transaction',
+      name: 'voidTransaction'
     }
   ]
 

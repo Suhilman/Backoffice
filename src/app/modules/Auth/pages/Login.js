@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { connect } from "react-redux";
@@ -19,6 +19,7 @@ const initialValues = {
 };
 
 function Login(props) {
+  const history = useHistory();
   const { intl } = props;
   const [loading, setLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
@@ -302,66 +303,65 @@ function Login(props) {
       login(values.email, values.password, captchaToken)
         .then(async ({ data }) => {
           const API_URL = process.env.REACT_APP_API_URL;
-
           const { token, user } = data.data;
-          const dataBusiness = await axios.get(`${API_URL}/api/v1/business/${user.business_id}`,
-            { headers: { Authorization: `Bearer ${token}` } }
-          )
-          localStorage.setItem("currency", dataBusiness.data.data.Currency.name)
-          localStorage.setItem("token", `Bearer ${token}`)
-          setToken(`Bearer ${token}`);
 
-          // Handle Check Country || jika diluar indonesia, ketika membuat outlet bisa select addres. Jika luar indonesia select diubah menjadi text
-
-          const options = {
-            enableHighAccuracy: true,
-            timeout: 5000,
-            maximumAge: 0
-          };
-          
-          const success = async (pos) =>  {
-            try {
-              const crd = pos.coords;
-              // console.log('Your current position is:');
-              // console.log(`Latitude : ${crd.latitude}`);
-              // console.log(`Longitude: ${crd.longitude}`);
-              // console.log(`More or less ${crd.accuracy} meters.`);
-              const result = await axios.get(`${API_URL}/api/v1/outlet/get-address?latitude=${parseFloat(crd.latitude)}&longitude=${parseFloat(crd.longitude)}`)
-              const checkCountry = result.data.resultAddress.address.includes("Indonesia");
-              if(checkCountry) {
-                localStorage.setItem("checkCountry", true);
-              } else {
-                localStorage.setItem("checkCountry", false);
-              }
-            } catch (error) {
-              localStorage.setItem("checkCountry", true);
-              console.error(error)
-              console.log("catch check country")
-            }
-          }
-          
-          const error = (err) => {
-            console.warn(`ERROR(${err.code}): ${err.message}`);
-          }
-          
-          navigator.geolocation.getCurrentPosition(success, error, options)
-
-          // End Check Country
-
-          const resPartition = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${user.business_id}`, {
-           headers: { Authorization: `Bearer ${token}` } 
-          })
-
-          user.subscription_partition_id = resPartition.data.data[0].subscription_partition_id
-
-          localStorage.setItem("user_info", JSON.stringify(user));
-          disableLoading();
+          // Jika akun belum diverifikasi
           if (!user.is_verified) {
-            setSubmitting(false);
-            openVerifyModal();
-            setSecond(60);
+            console.log("Belum diverifikasi")
+            disableLoading()
+            history.push(`/register-process/verify-email?email=${values.email}&session=${token}`);
+          // Jika akun sudah terverifikasi
           } else {
-            props.login(token);
+            console.log("Sudah diverifikasi")
+            const dataBusiness = await axios.get(`${API_URL}/api/v1/business/${user.business_id}`,
+              { headers: { Authorization: `Bearer ${token}` } })
+            console.log("dataBusiness", dataBusiness)
+            console.log("dataBusiness.data.data", dataBusiness.data.data)
+            // Jika Lokasi bisnisnya belum ada
+            if(!dataBusiness.data.data.location_id) {
+              history.push(`/register-process/business-location?session=${token}`)
+            } 
+            // Jika Sudah di verifikasi dan Lokasi bisnis nya sudah ada
+            else {
+              localStorage.setItem("currency", dataBusiness.data.data.Currency.name)
+              localStorage.setItem("token", `Bearer ${token}`)
+              setToken(`Bearer ${token}`);
+              // Handle Check Country || jika diluar indonesia, ketika membuat outlet bisa select addres. Jika luar indonesia select diubah menjadi text
+              const options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+              };
+              const success = async (pos) =>  {
+                try {
+                  const crd = pos.coords;
+                  const result = await axios.get(`${API_URL}/api/v1/outlet/get-address?latitude=${parseFloat(crd.latitude)}&longitude=${parseFloat(crd.longitude)}`)
+                  const checkCountry = result.data.resultAddress.address.includes("Indonesia");
+                  if(checkCountry) {
+                    localStorage.setItem("checkCountry", true);
+                  } else {
+                    localStorage.setItem("checkCountry", false);
+                  }
+                } catch (error) {
+                  localStorage.setItem("checkCountry", true);
+                  console.error(error)
+                  console.log("catch check country")
+                }
+              }
+              const error = (err) => {
+                console.warn(`ERROR(${err.code}): ${err.message}`);
+              }
+              navigator.geolocation.getCurrentPosition(success, error, options)
+              // End Check Country
+              const resPartition = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${user.business_id}`, {
+              headers: { Authorization: `Bearer ${token}` } 
+              })
+              user.subscription_partition_id = resPartition.data.data[0].subscription_partition_id
+              localStorage.setItem("user_info", JSON.stringify(user));
+              disableLoading();
+              props.login(token);
+
+            }
           }
         })
         .catch((err) => {

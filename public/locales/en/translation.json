@@ -1022,5 +1022,6 @@
     "didntReceiveTheVerificationCode": "Didn't Receive the Verification Code",
     "emailTo": "Email to",
     "accountVerification": "Account Verification",
-    "enterTheVerificationCodeWeSend": "Enter the Verification Code We Send"
+    "enterTheVerificationCodeWeSend": "Enter the Verification Code We Send",
+    "pleaseInputVerifyCode": "Please Input Verify Code"
 }

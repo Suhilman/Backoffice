@@ -207,6 +207,7 @@ function Registration(props) {
         businessData,
         { headers: { Authorization: accessToken } }
       );
+      
       const now = new Date();
       now.setDate(now.getDate() + 30);
       const dataSubscription = {

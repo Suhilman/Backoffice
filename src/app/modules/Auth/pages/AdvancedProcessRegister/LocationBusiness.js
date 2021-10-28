@@ -16,9 +16,10 @@ import "react-toastify/dist/ReactToastify.css";
 import "../style.css";
 import dayjs from "dayjs";
 import { register, cancelRegistration } from "../../_redux/authCrud";
+import qs from 'qs'
 
 const initialValues = {
-  name: "",
+  business_name: "",
   email: "",
   phone_number: "",
   password: "",
@@ -31,13 +32,14 @@ const initialValues = {
   acceptTerms: false
 };
 
-export default function LocationBusiness() {
+export default function LocationBusiness({location}) {
   const history = useHistory();
 
   const API_URL = process.env.REACT_APP_API_URL;
   // const { intl } = props;
   const [loading, setLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
+  const [token, setToken] = useState("")
 
   const [expiredApp, setExpiredApp] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("")
@@ -59,40 +61,11 @@ export default function LocationBusiness() {
 
   const { t, i18n } = useTranslation();
   const RegistrationSchema = Yup.object().shape({
-    name: Yup.string()
+    business_name: Yup.string()
       .min(3, `${t("minimum3Symbols")}`)
       .max(50, `${t("maximum50Symbols")}`)
       .required(`${t('pleaseInputABusinessName')}`),
-    email: Yup.string()
-      .email("Wrong email format")
-      .min(3, `${t("minimum3Symbols")}`)
-      .max(50, `${t("maximum50Symbols")}`)
-      .required(`${t('pleaseInputEmail')}`),
-    phone_number: Yup.string()
-      .min(8, `${t("minimum3Symbols")}`)
-      .max(20, `${t("maximum50Symbols")}`)
-      .required(`${t('pleaseInputAPhoneNumber')}`),
-    password: Yup.string()
-      .min(8, `${t("minimum8Character")}`)
-      .max(50, `${t("maximum50Symbols")}`)
-      .required(`${t('pleaseInputAPassword')}`)
-      .matches(
-        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
-        t('mustContain8Characters,OneUppercase,OneLowercaseAndOneNumber')
-      ),
-    changepassword: Yup.string()
-    .required(`${t('pleaseInputAPasswordConfirmation')}`)
-      .when("password", {
-        is: (val) => (val && val.length > 0 ? true : false),
-        then: Yup.string().oneOf(
-          [Yup.ref("password")],
-          t('passwordAndConfirmPasswordDidntMatch')
-        )
-      })
-      .matches(
-        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
-        t('mustContain8Characters,OneUppercase,OneLowercaseAndOneNumber')
-      ),
+    
     business_type_id: Yup.number()
       .integer()
       .min(1)
@@ -112,8 +85,7 @@ export default function LocationBusiness() {
     outlet_location_id: Yup.number()
       .integer()
       .min(1)
-      .required(`${t('pleaseChooseAnOutletLocation')}`),
-    acceptTerms: Yup.bool().required("You must accept the terms and conditions")
+      .required(`${t('pleaseChooseAnOutletLocation')}`)
   });
 
   const [dataSentOTP, setDataSentOTP] = useState({});
@@ -121,7 +93,6 @@ export default function LocationBusiness() {
   const [showVerifyModal, setShowVerifyModal] = useState(false);
   const [showBusinessModal, setShowBusinessModal] = useState(false);
   const [alertModal, setAlertModal] = useState("");
-  const [token, setToken] = useState(false);
   const [second, setSecond] = useState(0);
   const [verificationCode, setVerificationCode] = useState(0);
   const [cancelLoading, setCancelLoading] = useState(false);
@@ -152,6 +123,10 @@ export default function LocationBusiness() {
   };
 
   const BusinessSchema = Yup.object().shape({
+    business_name: Yup.string()
+      .min(3, `${t("minimum3Symbols")}`)
+      .max(50, `${t("maximum50Symbols")}`)
+      .required(`${t('pleaseInputABusinessName')}`),
     business_type_id: Yup.number()
       .integer()
       .min(1)
@@ -441,94 +416,66 @@ export default function LocationBusiness() {
   const formik = useFormik({
     initialValues,
     validationSchema: RegistrationSchema,
-    onSubmit: (values, { setStatus, setSubmitting }) => {
-      enableLoading();
-      setPhonenumber(values.phone_number.toString());
-      setDataFormik(values);
-      register(
-        values.email,
-        values.name,
-        values.phone_number.toString(),
-        values.password,
-        captchaToken
-      )
-        .then(async ({ data }) => {
-          const { owner, accessToken } = data.data;
-          setToken(`Bearer ${accessToken}`);
-          setVerificationCode(owner.verification_code);
-
-          // Handle Check Country || jika diluar indonesia, ketika membuat outlet bisa select addres. Jika luar indonesia select diubah menjadi text
-
-          const options = {
-            enableHighAccuracy: true,
-            timeout: 5000,
-            maximumAge: 0
-          };
-
-          const success = async (pos) => {
-            try {
-              const crd = pos.coords;
-              // console.log('Your current position is:');
-              // console.log(`Latitude : ${crd.latitude}`);
-              // console.log(`Longitude: ${crd.longitude}`);
-              // console.log(`More or less ${crd.accuracy} meters.`);
-              const result = await axios.get(
-                `${API_URL}/api/v1/outlet/get-address?latitude=${parseFloat(
-                  crd.latitude
-                )}&longitude=${parseFloat(crd.longitude)}`
-              );
-              console.log("country address", result.data.resultAddress.address);
-              const checkCountry = result.data.resultAddress.address.includes(
-                "Indonesia"
-              );
-              // console.log("true kah", checkCountry)
-              if (checkCountry) {
-                localStorage.setItem("checkCountry", true);
-              } else {
-                localStorage.setItem("checkCountry", false);
-              }
-            } catch (error) {
-              localStorage.setItem("checkCountry", true);
-              console.error(error);
-            }
-          };
-
-          const error = (err) => {
-            console.warn(`ERROR(${err.code}): ${err.message}`);
-          };
-
-          navigator.geolocation.getCurrentPosition(success, error, options);
-
-          // End Check Country
-
-          localStorage.setItem("user_info", JSON.stringify(owner));
-
-          if (!owner.is_verified) {
-            // pilih sent otp via gmail atau whatsapp
-            setDataSentOTP({
-              phoneNumber: values.phone_number.toString(),
-              verifyCode: owner.verification_code
-            });
-            openOTPModal();
-            setSubmitting(false);
-            setSecond(15);
-
-            // await handleSendWhatsapp(values.phone_number.toString(), owner.verification_code, accessToken)
-            // openVerifyModal();
-            // setTimeout(() => {
-            //   setMessageNotSent(true)
-            // }, 50000);
-          } else {
-            // props.login(token);
-          }
+    onSubmit: async (values) => {
+      try {
+        const getBusinessId = await axios.get(`${API_URL}/api/v1/business/my-businessid`,
+          { headers: { Authorization: token } 
         })
-        .catch((err) => {
-          // console.log('ini error formik', err)
-          setSubmitting(false);
-          console.log("err.response", err.response);
-          // setStatus(err.response.data.message);
-          disableLoading();
+        const business_id = getBusinessId.data.data
+
+        console.log("business_id", business_id)
+
+        const { data } = await axios.get(`${API_URL}/api/v1/outlet`, {
+          headers: { Authorization: token }
         });
+
+        const outlet_id = data.data[0].id;
+        const businessData = {
+          business_name: values.business_name,
+          business_type_id: values.business_type_id,
+          location_id: values.business_location_id
+        };
+
+        const outletData = {
+          location_id: values.outlet_location_id
+        };
+
+        await axios.patch(
+          `${API_URL}/api/v1/business/${business_id}`,
+          businessData,
+          { headers: { Authorization: token } }
+        );
+
+        await axios.patch(`${API_URL}/api/v1/outlet/${outlet_id}`, outletData, {
+          headers: { Authorization: token }
+        });
+
+        const now = new Date();
+
+        now.setDate(now.getDate() + 14);
+
+        const dataSubscription = {
+          subscription_type_id: 10,
+          expired_date: now,
+          status: "active"
+        };
+
+        await axios.post(`${API_URL}/api/v1/subscription`, dataSubscription, {
+          headers: { Authorization: token }
+        });
+        history.push("/login");
+        toast.success(`Register success, please login`, {
+          position: "top-right",
+          autoClose: 4500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        });
+      } catch (error) {
+        console.log("error", error)
+      }
     }
   });
 
@@ -727,6 +674,18 @@ export default function LocationBusiness() {
     const currLanguage = localStorage.getItem("i18nextLng")
     setSelectedLanguage(currLanguage)
   }, [])
+
+  useEffect(() => {
+    const token = qs.parse(location.search, { ignoreQueryPrefix: true }).session
+    setToken(`Bearer ${token}`)
+  }, [location])
+
+  const handleSubmit = () => {
+    console.log("before handleSubmit")
+    formik.submitForm()
+    console.log("after handleSubmit")
+  }
+
   return (
     <div className={styles.container}>
       <div className="d-flex justify-content-end">
@@ -737,19 +696,52 @@ export default function LocationBusiness() {
       <div>
         <div className={styles.title}>Bisnis Information</div>
         
-        <label htmlFor="business_name">Business Name</label>
+        {/* Choose Language */}
+        <div className="form-group d-flex align-items-end justify-content-between">
+          <label className="mr-4" for="exampleFormControlSelect1">{t('language')}</label>
+          <select 
+            className="form-control" 
+            id="exampleFormControlSelect1" 
+            onClick={(e) => changeLanguage(e.target.value)}
+          >
+            {chooseLanguages?.length
+              ? chooseLanguages.map((item) => {
+                  return (
+                    <option 
+                      key={item.id} 
+                      value={item.key}
+                      selected={selectedLanguage == item.key}
+                    >
+                      {item.language}
+                    </option>
+                  );
+                })
+              : ""}
+          </select>
+        </div>
+        {/* End Choose Language */}
+
+        {/* <label htmlFor="business_name">Business Name</label> */}
         <div className="form-group fv-plugins-icon-container mb-5">
           <input
             id="business_name"
-            placeholder="Business Name"
+            placeholder={t('businessName')}
             type="text"
-            className="form-control h-auto py-3 px-4"
-            name="code_verification"
+            className={`${validationBusiness("business_type_id")} form-control h-auto py-3 px-4`}
+            name="business_name"
+            {...formik.getFieldProps("business_name")}
           />
+          {formik.touched.business_name && formik.errors.business_name ? (
+            <div className="fv-plugins-message-container">
+              <div className="fv-help-block">
+                {formik.errors.business_name}
+              </div>
+            </div>
+          ) : null}
         </div>
 
         <Form.Group>
-          <Form.Label>Select Business Type</Form.Label>
+          {/* <Form.Label>Select Business Type</Form.Label> */}
           <Form.Control
             as="select"
             name="business_type_id"
@@ -779,7 +771,7 @@ export default function LocationBusiness() {
         </Form.Group>
 
         <Form.Group>
-          <Form.Label>Select Province</Form.Label>
+          {/* <Form.Label>Select Province</Form.Label> */}
           <Form.Control
             as="select"
             name="business_province_id"
@@ -812,7 +804,7 @@ export default function LocationBusiness() {
         </Form.Group>
 
         <Form.Group>
-          <Form.Label>Select City</Form.Label>
+          {/* <Form.Label>Select City</Form.Label> */}
           <Form.Control
             as="select"
             name="business_city_id"
@@ -844,7 +836,7 @@ export default function LocationBusiness() {
         </Form.Group>
 
         <Form.Group>
-          <Form.Label>Select Location</Form.Label>
+          {/* <Form.Label>Select Location</Form.Label> */}
           <Form.Control
             as="select"
             name="business_location_id"
@@ -875,7 +867,7 @@ export default function LocationBusiness() {
         </Form.Group>
 
         <Form.Group>
-          <Form.Label>Select Outlet Location</Form.Label>
+          {/* <Form.Label>Select Outlet Location</Form.Label> */}
           <Form.Control
             as="select"
             name="outlet_location_id"
@@ -909,6 +901,7 @@ export default function LocationBusiness() {
           <button
             type="submit"
             className="btn btn-primary font-weight-bold px-9 py-4 mt-3"
+            onClick={handleSubmit}
           >
             <span>{t('submit')}</span>
           </button>

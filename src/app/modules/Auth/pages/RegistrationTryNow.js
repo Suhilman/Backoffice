@@ -124,7 +124,8 @@ const RegistrationTryNow = () => {
       .min(3, `${t("minimum3Symbols")}`)
       .max(50, `${t("maximum50Symbols")}`)
       .required(`${t("pleaseInputEmail")}`),
-    phone_number: Yup.string(),
+    phone_number: Yup.string()
+      .required(`${t("pleaseInputPhoneNumber")}`),
     password: Yup.string()
       .min(8, `${t("minimum8Character")}`)
       .max(50, `${t("maximum50Symbols")}`)
@@ -498,6 +499,7 @@ const RegistrationTryNow = () => {
       enableLoading();
       setPhonenumber(values.phone_number.toString());
       setDataFormik(values);
+      console.log("Data registrasi", values)
       register(
         values.email,
         values.name,
@@ -505,83 +507,17 @@ const RegistrationTryNow = () => {
         values.password,
         captchaToken
       )
-        .then(async ({ data }) => {
-          const { owner, accessToken } = data.data;
-          setToken(`Bearer ${accessToken}`);
-          setVerificationCode(owner.verification_code);
-
-          // Handle Check Country || jika diluar indonesia, ketika membuat outlet bisa select addres. Jika luar indonesia select diubah menjadi text
-
-          const options = {
-            enableHighAccuracy: true,
-            timeout: 5000,
-            maximumAge: 0
-          };
-
-          const success = async (pos) => {
-            try {
-              const crd = pos.coords;
-              // console.log('Your current position is:');
-              // console.log(`Latitude : ${crd.latitude}`);
-              // console.log(`Longitude: ${crd.longitude}`);
-              // console.log(`More or less ${crd.accuracy} meters.`);
-              const result = await axios.get(
-                `${API_URL}/api/v1/outlet/get-address?latitude=${parseFloat(
-                  crd.latitude
-                )}&longitude=${parseFloat(crd.longitude)}`
-              );
-              console.log("country address", result.data.resultAddress.address);
-              const checkCountry = result.data.resultAddress.address.includes(
-                "Indonesia"
-              );
-              // console.log("true kah", checkCountry)
-              if (checkCountry) {
-                localStorage.setItem("checkCountry", true);
-              } else {
-                localStorage.setItem("checkCountry", false);
-              }
-            } catch (error) {
-              localStorage.setItem("checkCountry", true);
-              console.error(error);
-            }
-          };
-
-          const error = (err) => {
-            console.warn(`ERROR(${err.code}): ${err.message}`);
-          };
-
-          navigator.geolocation.getCurrentPosition(success, error, options);
-
-          // End Check Country
-
-          localStorage.setItem("user_info", JSON.stringify(owner));
-
-          if (!owner.is_verified) {
-            // pilih sent otp via gmail atau whatsapp
-            setDataSentOTP({
-              phoneNumber: values.phone_number.toString(),
-              verifyCode: owner.verification_code
-            });
-            openOTPModal();
-            setSubmitting(false);
-            setSecond(15);
-
-            // await handleSendWhatsapp(values.phone_number.toString(), owner.verification_code, accessToken)
-            // openVerifyModal();
-            // setTimeout(() => {
-            //   setMessageNotSent(true)
-            // }, 50000);
-          } else {
-            // props.login(token);
-          }
-        })
-        .catch((err) => {
-          // console.log('ini error formik', err)
-          setSubmitting(false);
-          console.log("err.response", err.response);
-          // setStatus(err.response.data.message);
-          disableLoading();
-        });
+      .then(async ({ data }) => {
+        const { owner, accessToken } = data.data;
+        setToken(`Bearer ${accessToken}`);
+        setVerificationCode(owner.verification_code)
+        history.push(`/register-process/verify-email?email=${values.email}&session=${accessToken}`);
+      })
+      .catch((err) => {
+        disableLoading()
+        setStatus(err.response.data.message);
+        console.log("err.response", err.response);
+      });
     }
   });
 
@@ -736,20 +672,13 @@ const RegistrationTryNow = () => {
   const verifyAccount = async () => {
     try {
       const API_URL = process.env.REACT_APP_API_URL;
-      enableLoading();
-      setAlertModal("");
       await axios.post(
         `${API_URL}/api/v1/auth/verify-account`,
         { code },
         { headers: { Authorization: token } }
       );
-      console.log("verify modal");
-      disableLoading();
-      closeVerifyModal();
-      // openBusinessModal();
     } catch (err) {
-      setAlertModal(err.response.data.message);
-      disableLoading();
+      console.log("error", err)
     }
   };
 
@@ -945,15 +874,15 @@ const RegistrationTryNow = () => {
         <div className="form-group fv-plugins-icon-container">
           <input
             placeholder={t('phoneNumber')}
-            type="email"
+            type="number"
             autoComplete="new-password"
-            className={`form-control py-5 px-6 ${getInputClasses("email")}`}
-            name="email"
-            {...formik.getFieldProps("email")}
+            className={`form-control py-5 px-6 ${getInputClasses("phone_number")}`}
+            name="phone_number"
+            {...formik.getFieldProps("phone_number")}
           />
-          {formik.touched.email && formik.errors.email ? (
+          {formik.touched.phone_number && formik.errors.phone_number ? (
             <div className="fv-plugins-message-container">
-              <div className="fv-help-block">{formik.errors.email}</div>
+              <div className="fv-help-block">{formik.errors.phone_number}</div>
             </div>
           ) : null}
         </div>
@@ -1028,9 +957,6 @@ const RegistrationTryNow = () => {
         <div className="form-group d-flex flex-wrap flex-end">
           <button
             type="submit"
-            disabled={
-              formik.isSubmitting || !formik.values.acceptTerms || expiredApp
-            }
             className="btn btn-primary font-weight-bold px-9 py-4 mt-3"
           >
             <span>{t('submit')}</span>

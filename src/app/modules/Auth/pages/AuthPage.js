@@ -22,7 +22,8 @@ export function AuthPage() {
   }
   const pushToRegister = () => {
     setAuthState("register")
-    history.push("/auth/registration");
+    history.push("/auth/beetpos-registration");
+    // history.push("/auth/registration");
   }
 
   useEffect(() => {
