@@ -6,8 +6,37 @@ import { Table } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import "../style.css";
 import NumberFormat from 'react-number-format'
+import {
+  Paper
+} from "@material-ui/core";
+import { FeatureReport } from './components/FeatureReport'
+import {
+  Row,
+  Col
+} from "react-bootstrap";
 
-export const SalesTypeTab = ({ selectedOutlet, startDate, endDate, refresh }) => {
+export const SalesTypeTab = () => {
+  const [refresh, setRefresh] = React.useState(0)
+  const handleRefresh = () => setRefresh((state) => state + 1)
+
+  const [selectedOutlet, setSelectedOutlet] = React.useState({
+    id: "",
+    name: "All Outlet"
+  })
+  const [startDate, setStartDate] = React.useState(
+    dayjs().format("YYYY-MM-DD")
+  );
+  const [endDate, setEndDate] = React.useState(dayjs().format("YYYY-MM-DD"));
+  const [endDateFilename, setEndDateFilename] = React.useState("");
+  const [startTime, setStartTime] = React.useState(new Date());
+  const [endTime, setEndTime] = React.useState(new Date());
+  const [tabData, setTabData] = React.useState({
+    no: 3,
+    table: "table-sales",
+    filename: `sales-type_${startDate}-${endDateFilename}`
+  })
+  const [status, setStatus] = React.useState("");
+
   const [allSalesTypes, setAllSalesTypes] = React.useState([]);
   const [allTypes, setAllTypes] = React.useState([]);
   const [currency, setCurrency] = React.useState("")
@@ -84,7 +113,11 @@ export const SalesTypeTab = ({ selectedOutlet, startDate, endDate, refresh }) =>
 
   React.useEffect(() => {
     getSalesType(selectedOutlet.id, startDate, endDate);
-  }, [selectedOutlet, startDate, endDate, refresh]);
+    setTabData({
+      ...tabData,
+      filename: `sales-type_${startDate}-${endDateFilename}`
+    })
+  }, [selectedOutlet, startDate, endDate, refresh, endDateFilename]);
 
   const salesTypeData = () => {
     const data = [];
@@ -155,30 +188,55 @@ export const SalesTypeTab = ({ selectedOutlet, startDate, endDate, refresh }) =>
     return data;
   };
 
+  const handleStartDate = (date) => setStartDate(date)
+  const handleEndDate = (date) => setEndDate(date)
+  const handleEndDateFilename = (date) => setEndDateFilename(date)
+  const handleSelectedOutlet = (outlet) => setSelectedOutlet(outlet)
+  const handleSelectStatus = (status) => setStatus(status.target.value)
+  const handleTimeStart = (time) => setStartTime(time)
+  const handleTimeEnd = (time) => setEndTime(time)
+
   return (
     <>
-      <Table id="table-sales" striped>
-        <thead>
-          <tr>
-            <th></th>
-            <th>{t("type")}</th>
-            <th>{t("numberOfTransaction")}</th>
-            <th>{t("totalCollected")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {salesTypeData().map((item, index) => {
-            return (
-              <tr key={index}>
-                <td></td>
-                <td>{item.type}</td>
-                <td>{item.transaction}</td>
-                <td><NumberFormat value={item.total} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table>
+      <Row>
+        <Col>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <FeatureReport
+              handleStartDate={handleStartDate}
+              handleEndDate={handleEndDate}
+              tabData={tabData}
+              handleEndDateFilename={handleEndDateFilename}
+              handleSelectedOutlet={handleSelectedOutlet}
+              titleReport="reportSalesType"
+              handleSelectStatus={handleSelectStatus}
+              handleTimeStart={handleTimeStart}
+              handleTimeEnd={handleTimeEnd}
+            />
+            <Table id="table-sales" striped>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>{t("type")}</th>
+                  <th>{t("numberOfTransaction")}</th>
+                  <th>{t("totalCollected")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {salesTypeData().map((item, index) => {
+                  return (
+                    <tr key={index}>
+                      <td></td>
+                      <td>{item.type}</td>
+                      <td>{item.transaction}</td>
+                      <td><NumberFormat value={item.total} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </Paper>
+        </Col>
+      </Row>
     </>
   );
 };

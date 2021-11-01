@@ -6,8 +6,33 @@ import { Row, Col, ListGroup } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 
 import "../style.css";
+import {
+  Paper
+} from "@material-ui/core";
+import { FeatureReport } from './components/FeatureReport'
 
-export const AttendanceTab = ({ selectedOutlet, startDate, endDate, endDateFilename }) => {
+export const AttendanceTab = () => {
+  const [refresh, setRefresh] = React.useState(0)
+  const handleRefresh = () => setRefresh((state) => state + 1)
+
+  const [selectedOutlet, setSelectedOutlet] = React.useState({
+    id: "",
+    name: "All Outlet"
+  })
+  const [startDate, setStartDate] = React.useState(
+    dayjs().format("YYYY-MM-DD")
+  );
+  const [endDate, setEndDate] = React.useState(dayjs().format("YYYY-MM-DD"));
+  const [endDateFilename, setEndDateFilename] = React.useState("");
+  const [startTime, setStartTime] = React.useState(new Date());
+  const [endTime, setEndTime] = React.useState(new Date());
+  const [tabData, setTabData] = React.useState({
+    no: 4,
+    table: "table-category",
+    filename: `table-category_${startDate}-${endDateFilename}`
+  })
+  const [status, setStatus] = React.useState("");
+
   const [allAttendances, setAllAttendances] = React.useState([]);
   const [reports, setReports] = React.useState([
     {
@@ -70,7 +95,11 @@ export const AttendanceTab = ({ selectedOutlet, startDate, endDate, endDateFilen
 
   React.useEffect(() => {
     getAttendances(selectedOutlet.id, startDate, endDate);
-  }, [selectedOutlet, startDate, endDate]);
+    setTabData({
+      ...tabData,
+      filename: `table-category_${startDate}-${endDateFilename}`
+    })
+  }, [selectedOutlet, startDate, endDate, endDateFilename]);
 
   const columns = [
     {
@@ -171,69 +200,94 @@ export const AttendanceTab = ({ selectedOutlet, startDate, endDate, endDateFilen
     );
   };
 
+  const handleStartDate = (date) => setStartDate(date)
+  const handleEndDate = (date) => setEndDate(date)
+  const handleEndDateFilename = (date) => setEndDateFilename(date)
+  const handleSelectedOutlet = (outlet) => setSelectedOutlet(outlet)
+  const handleSelectStatus = (status) => setStatus(status.target.value)
+  const handleTimeStart = (time) => setStartTime(time)
+  const handleTimeEnd = (time) => setEndTime(time)
+
   return (
     <>
-      <div style={{ display: "none" }}>
-        <table id="table-attendance-report">
-          <thead>
-            <tr>
-              <th>{t("attendanceReport")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("date")}</th>
-              <td>
-                {startDate} - {endDateFilename}
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("date&Time")}</th>
-              <th>{t("staffName")}</th>
-              <th>{t("outlet")}</th>
-              <th>{t("checkInTime")}</th>
-              <th>{t("checkOutTime")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {reports.map((item, index) => {
-              return (
-                <tr key={index}>
-                  <td>{dayjs(item.date).format("DD/MM/YYYY")}</td>
-                  <td>{item.user.name}</td>
-                  <td>{item.outlet}</td>
-                  <td>
-                    {item.check_in ? dayjs(item.check_in).format("HH:mm") : "-"}
-                  </td>
-                  <td>
-                    {item.check_out
-                      ? dayjs(item.check_out).format("HH:mm")
-                      : "-"}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      <DataTable
-        noHeader
-        pagination
-        columns={columns}
-        data={dataAttendances()}
-        expandableRows
-        expandableRowsComponent={<ExpandableComponent />}
-        style={{ minHeight: "100%" }}
-      />
+      <Row>
+        <Col>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <FeatureReport
+              handleStartDate={handleStartDate}
+              handleEndDate={handleEndDate}
+              tabData={tabData}
+              handleEndDateFilename={handleEndDateFilename}
+              handleSelectedOutlet={handleSelectedOutlet}
+              titleReport="reportAttendance"
+              handleSelectStatus={handleSelectStatus}
+              handleTimeStart={handleTimeStart}
+              handleTimeEnd={handleTimeEnd}
+            />
+            <div style={{ display: "none" }}>
+              <table id="table-attendance-report">
+                <thead>
+                  <tr>
+                    <th>{t("attendanceReport")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr></tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <th>{t("date")}</th>
+                    <td>
+                      {startDate} - {endDateFilename}
+                    </td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr></tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <th>{t("date&Time")}</th>
+                    <th>{t("staffName")}</th>
+                    <th>{t("outlet")}</th>
+                    <th>{t("checkInTime")}</th>
+                    <th>{t("checkOutTime")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reports.map((item, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{dayjs(item.date).format("DD/MM/YYYY")}</td>
+                        <td>{item.user.name}</td>
+                        <td>{item.outlet}</td>
+                        <td>
+                          {item.check_in ? dayjs(item.check_in).format("HH:mm") : "-"}
+                        </td>
+                        <td>
+                          {item.check_out
+                            ? dayjs(item.check_out).format("HH:mm")
+                            : "-"}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+      
+            <DataTable
+              noHeader
+              pagination
+              columns={columns}
+              data={dataAttendances()}
+              expandableRows
+              expandableRowsComponent={<ExpandableComponent />}
+              style={{ minHeight: "100%" }}
+            />
+          </Paper>
+        </Col>
+      </Row>
     </>
   );
 };

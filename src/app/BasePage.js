@@ -4,13 +4,33 @@ import { Redirect, Switch, Route } from "react-router-dom";
 import { LayoutSplashScreen, ContentRoute } from "../_metronic/layout";
 
 import { DashboardPage } from "./pages/DashboardPage";
-import { ReportPage } from "./pages/Report/ReportPage";
+import { ReportPage } from "./pages/ReportBackup/ReportPage";
+
+import { SalesSummaryTab } from "./pages/Report/SalesSummaryTab";
+import { PaymentMethodTab } from "./pages/Report/PaymentMethodTab";
+import { SalesTypeTab } from "./pages/Report/SalesTypeTab";
+import { CategorySalesTab } from "./pages/Report/CategorySalesTab";
+import { TransactionHistoryTab } from "./pages/Report/TransactionHistoryTab";
+import { DiscountSalesTab } from "./pages/Report/DiscountTab";
+import { RecapTab } from "./pages/Report/RecapTab";
+import { SalesPerProductTab } from "./pages/Report/SalesPerProductTab";
+import COGSReport from "./pages/Report/COGSReport";
+import ProfitReport from "./pages/Report/ProfitReport";
+import StaffTransaction from "./pages/Report/StaffTransaction";
+import VoidTransaction from "./pages/Report/VoidTransaction";
+import SalesPerHour from "./pages/Report/SalesPerHour";
+import StockReport from "./pages/Report/StockReport";
+import RawMaterialTab from "./pages/Report/RawMaterialTab";
+import { AttendanceTab } from "./pages/Report/AttendanceTab";
+import CommissionReport from "./pages/Report/CommissionReport";
+import { SalesProductDetail } from "./pages/Report/SalesProductDetail";
 
 import { StaffPage } from "./pages/Staff/StaffPage";
 import { AddStaffPage } from "./pages/Staff/AddStaffPage";
 import { DetailStaffPage } from "./pages/Staff/DetailStaffPage";
 import { AccountPage } from "./pages/Account/AccountPage";
 import SubscriptionPage from "./pages/Subscription/SubscriptionPage";
+import CurrencyPage from "./pages/Currency/CurrencyPage";
 import { ProductPage } from "./pages/Product/ProductPage";
 import { AddProductPage } from "./pages/Product/ProductTab/AddProductPage";
 import { EditProductPage } from "./pages/Product/ProductTab/EditProductPage";
@@ -55,6 +75,11 @@ import { OutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/Outcoming
 import { AddOutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/AddPage";
 import { EditOutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/EditPage";
 import { DetailOutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/DetailPage";
+
+import { AddProductAssembly } from "./pages/Ingredient/ProductAssemblyTab/AddProductAssembly";
+import { EditProductAssembly } from "./pages/Ingredient/ProductAssemblyTab/EditProductAssembly";
+import { DetailProductAssembly } from "./pages/Ingredient/ProductAssemblyTab/DetailProductAssembly";
+
 import { TransferMaterialPage } from "./pages/Ingredient/InventoryTab/TransferStock/TransferMaterialPage";
 import { AddTransferMaterialPage } from "./pages/Ingredient/InventoryTab/TransferStock/AddPage";
 import { DetailTransferMaterialPage } from "./pages/Ingredient/InventoryTab/TransferStock/DetailPage";
@@ -71,6 +96,7 @@ import NotificationExpired from "./components/NotificationExpired"
 import About from "./pages/About/AboutPage"
 import { SalesChannelPage } from './pages/SalesChannel/SalesChannelPage'
 
+
 export default function BasePage() {
   const [currPrivileges, setCurrPrivileges] = React.useState({
     view_dashboard: false,
@@ -84,6 +110,7 @@ export default function BasePage() {
     inventory_management: false,
     kitchen_management: false,
     commission_management: false,
+    currency: true,
     subscription: true,
     payment_module: true,
     about: true,
@@ -148,10 +175,138 @@ export default function BasePage() {
         <ProtectedRoute
           isAllowed={currPrivileges.view_report}
           isRoute={false}
-          exact={false}
+          exact={true}
           path="/report"
           component={ReportPage}
         />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/sales-summary"
+          component={SalesSummaryTab}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/payment-method"
+          component={PaymentMethodTab}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/sales-type"
+          component={SalesTypeTab}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/category-sales"
+          component={CategorySalesTab}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/transaction-history"
+          component={TransactionHistoryTab}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/discount-sales"
+          component={DiscountSalesTab}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/recap"
+          component={RecapTab}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/sales-per-product"
+          component={SalesPerProductTab}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/sales-detail"
+          component={SalesProductDetail}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/cost-of-gold-sold"
+          component={COGSReport}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/profit-calculation"
+          component={ProfitReport}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/staff-transaction"
+          component={StaffTransaction}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/void-transaction"
+          component={VoidTransaction}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/sales-per-hour"
+          component={SalesPerHour}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/stock-report"
+          component={StockReport}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/raw-material"
+          component={RawMaterialTab}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/attendance"
+          component={AttendanceTab}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/commisison-report"
+          component={CommissionReport}
+        />
+
 
         <ProtectedRoute
           isAllowed={currPrivileges.product_management}
@@ -447,6 +602,27 @@ export default function BasePage() {
           path="/ingredient-inventory/stock-opname/:materialId"
           component={DetailOpnameMaterialPage}
         />
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/product-assembly/add"
+          component={AddProductAssembly}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/edit-product-assembly/:materialId"
+          component={EditProductAssembly}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.kitchen_management}
+          isRoute={false}
+          exact={true}
+          path="/ingredient-inventory/product-assembly/:materialId"
+          component={DetailProductAssembly}
+        />
 
         <ProtectedRoute
           isAllowed={currPrivileges.outlet_management}
@@ -575,6 +751,14 @@ export default function BasePage() {
           exact={false}
           path="/commission/group-commission/:commissionId"
           component={EditGroupCommission}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.subscription}
+          isRoute={true}
+          exact={false}
+          path="/currency"
+          component={CurrencyPage}
         />
 
         <ProtectedRoute

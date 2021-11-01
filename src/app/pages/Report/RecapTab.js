@@ -6,8 +6,37 @@ import rupiahFormat from "rupiah-format";
 import NumberFormat from 'react-number-format'
 import { useTranslation } from "react-i18next";
 import "../style.css";
+import {
+  Paper
+} from "@material-ui/core";
+import { FeatureReport } from './components/FeatureReport'
+import {
+  Row,
+  Col
+} from "react-bootstrap";
 
-export const RecapTab = ({ selectedOutlet, startDate, endDate, endDateFilename }) => {
+export const RecapTab = () => {
+  const [refresh, setRefresh] = React.useState(0)
+  const handleRefresh = () => setRefresh((state) => state + 1)
+
+  const [selectedOutlet, setSelectedOutlet] = React.useState({
+    id: "",
+    name: "All Outlet"
+  })
+  const [startDate, setStartDate] = React.useState(
+    dayjs().format("YYYY-MM-DD")
+  );
+  const [endDate, setEndDate] = React.useState(dayjs().format("YYYY-MM-DD"));
+  const [endDateFilename, setEndDateFilename] = React.useState("");
+  const [startTime, setStartTime] = React.useState(new Date());
+  const [endTime, setEndTime] = React.useState(new Date());
+  const [tabData, setTabData] = React.useState({
+    no: 8,
+    table: "table-recap",
+    filename: `laporan-rekap_${startDate}-${endDateFilename}`,
+  })
+  const [status, setStatus] = React.useState("");
+
   const [allRecaps, setAllRecaps] = React.useState([]);
   const { t } = useTranslation();
   const [currency, setCurrency] = React.useState("")
@@ -112,7 +141,11 @@ export const RecapTab = ({ selectedOutlet, startDate, endDate, endDateFilename }
 
   React.useEffect(() => {
     getRecap(selectedOutlet.id, startDate, endDate);
-  }, [selectedOutlet, startDate, endDate]);
+    setTabData({
+      ...tabData,
+      filename: `laporan-rekap_${startDate}-${endDateFilename}`
+    })
+  }, [selectedOutlet, startDate, endDate, endDateFilename]);
 
   const recapData = () => {
     const data = [];
@@ -138,108 +171,133 @@ export const RecapTab = ({ selectedOutlet, startDate, endDate, endDateFilename }
     return data.reduce((init, curr) => (init += curr[key]), 0);
   };
 
+  const handleStartDate = (date) => setStartDate(date)
+  const handleEndDate = (date) => setEndDate(date)
+  const handleEndDateFilename = (date) => setEndDateFilename(date)
+  const handleSelectedOutlet = (outlet) => setSelectedOutlet(outlet)
+  const handleSelectStatus = (status) => setStatus(status.target.value)
+  const handleTimeStart = (time) => setStartTime(time)
+  const handleTimeEnd = (time) => setEndTime(time)
+
   return (
     <>
-      <div style={{ display: "none" }}>
-        <table id="table-recap">
-          <thead>
-            <tr>
-              <th>{t("cashRekapReport")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("date")}</th>
-              <td>{`${startDate} - ${endDateFilename}`}</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("date")}</th>
-              <th>{t("outlet")}</th>
-              <th>{t("cash")}</th>
-              <th>{t("cashOut")}</th>
-              <th>{t("cashIn")}</th>
-              <th>{t("debit/Credit")}</th>
-              <th>{t("e-wallet")}</th>
-              <th>{t("total")}</th>
-              <th>{t("staffName")}</th>
-              <th>{t("device")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {reports.map((item, index) => {
-              return (
-                <tr key={index}>
-                  <td>{dayjs(item.date).format("DD/MM/YYYY")}</td>
-                  <td>{item.outlet}</td>
-                  <td>{item.cash}</td>
-                  <td>{item.cash_in}</td>
-                  <td>{item.cash_out}</td>
-                  <td>{item.debit_credit}</td>
-                  <td>{item.ewallet}</td>
-                  <td>{item.total}</td>
-                  <td>{item.staff}</td>
-                  <td>{item.device}</td>
+    <Row>
+      <Col>
+        <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+          <FeatureReport
+            handleStartDate={handleStartDate}
+            handleEndDate={handleEndDate}
+            tabData={tabData}
+            handleEndDateFilename={handleEndDateFilename}
+            handleSelectedOutlet={handleSelectedOutlet}
+            titleReport="reportRecap"
+            handleSelectStatus={handleSelectStatus}
+            handleTimeStart={handleTimeStart}
+            handleTimeEnd={handleTimeEnd}
+          />
+          <div style={{ display: "none" }}>
+            <table id="table-recap">
+              <thead>
+                <tr>
+                  <th>{t("cashRekapReport")}</th>
                 </tr>
-              );
-            })}
-            <tr>
-              <th>Grand Total</th>
-              <th></th>
-              <th>{sumReports(reports, "cash")} </th>
-              <th>{sumReports(reports, "cash_in")} </th>
-              <th>{sumReports(reports, "cash_out")} </th>
-              <th>{sumReports(reports, "debit_credit")} </th>
-              <th>{sumReports(reports, "ewallet")} </th>
-              <th>{sumReports(reports, "total")} </th>
-              <th></th>
-              <th></th>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <Table striped>
-        <thead>
-          <tr>
-            <th></th>
-            <th>{t("recapDate")}</th>
-            <th>{t("user")}</th>
-            <th>{t("recapTimeOpen")}</th>
-            <th>{t("recapTimeClose")}</th>
-            <th>{t("totalActual")}</th>
-            <th>{t("totalSystem")}</th>
-            <th>{t("difference")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {recapData().map((item, index) => {
-            return (
-              <tr key={index}>
-                <td></td>
-                <td>{dayjs(item.recap_date).format("DD/MM/YYYY")}</td>
-                <td>{item.user}</td>
-                <td>{dayjs(item.recap_time_open).format("HH:mm")}</td>
-                <td>
-                  {item.recap_time_close
-                    ? dayjs(item.recap_time_close).format("HH:mm")
-                    : "-"}
-                </td>
-                <td>{<NumberFormat value={item.total_actual} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
-                <td>{<NumberFormat value={item.total_system} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
-                <td>{<NumberFormat value={item.difference} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
+              </thead>
+              <tbody>
+                <tr></tr>
+              </tbody>
+              <thead>
+                <tr>
+                  <th>{t("date")}</th>
+                  <td>{`${startDate} - ${endDateFilename}`}</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr></tr>
+              </tbody>
+              <thead>
+                <tr>
+                  <th>{t("date")}</th>
+                  <th>{t("outlet")}</th>
+                  <th>{t("cash")}</th>
+                  <th>{t("cashOut")}</th>
+                  <th>{t("cashIn")}</th>
+                  <th>{t("debit/Credit")}</th>
+                  <th>{t("e-wallet")}</th>
+                  <th>{t("total")}</th>
+                  <th>{t("staffName")}</th>
+                  <th>{t("device")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reports.map((item, index) => {
+                  return (
+                    <tr key={index}>
+                      <td>{dayjs(item.date).format("DD/MM/YYYY")}</td>
+                      <td>{item.outlet}</td>
+                      <td>{item.cash}</td>
+                      <td>{item.cash_in}</td>
+                      <td>{item.cash_out}</td>
+                      <td>{item.debit_credit}</td>
+                      <td>{item.ewallet}</td>
+                      <td>{item.total}</td>
+                      <td>{item.staff}</td>
+                      <td>{item.device}</td>
+                    </tr>
+                  );
+                })}
+                <tr>
+                  <th>Grand Total</th>
+                  <th></th>
+                  <th>{sumReports(reports, "cash")} </th>
+                  <th>{sumReports(reports, "cash_in")} </th>
+                  <th>{sumReports(reports, "cash_out")} </th>
+                  <th>{sumReports(reports, "debit_credit")} </th>
+                  <th>{sumReports(reports, "ewallet")} </th>
+                  <th>{sumReports(reports, "total")} </th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+    
+          <Table striped>
+            <thead>
+              <tr>
+                <th></th>
+                <th>{t("recapDate")}</th>
+                <th>{t("user")}</th>
+                <th>{t("recapTimeOpen")}</th>
+                <th>{t("recapTimeClose")}</th>
+                <th>{t("totalActual")}</th>
+                <th>{t("totalSystem")}</th>
+                <th>{t("difference")}</th>
               </tr>
-            );
-          })}
-        </tbody>
-      </Table>
+            </thead>
+            <tbody>
+              {recapData().map((item, index) => {
+                return (
+                  <tr key={index}>
+                    <td></td>
+                    <td>{dayjs(item.recap_date).format("DD/MM/YYYY")}</td>
+                    <td>{item.user}</td>
+                    <td>{dayjs(item.recap_time_open).format("HH:mm")}</td>
+                    <td>
+                      {item.recap_time_close
+                        ? dayjs(item.recap_time_close).format("HH:mm")
+                        : "-"}
+                    </td>
+                    <td>{<NumberFormat value={item.total_actual} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
+                    <td>{<NumberFormat value={item.total_system} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
+                    <td>{<NumberFormat value={item.difference} displayType={'text'} thousandSeparator={true} prefix={currency} />}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+        </Paper>
+      </Col>
+    </Row>
     </>
   );
 };

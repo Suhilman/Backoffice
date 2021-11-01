@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { connect } from "react-redux";
@@ -19,6 +19,7 @@ const initialValues = {
 };
 
 function Login(props) {
+  const history = useHistory();
   const { intl } = props;
   const [loading, setLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
@@ -32,9 +33,10 @@ function Login(props) {
   const [allProvinces, setAllProvinces] = useState([]);
   const [allCities, setAllCities] = useState([]);
   const [allLocations, setAllLocations] = useState([]);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [code, setCode] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState("")
 
   const [expiredApp, setExpiredApp] = useState(false)
   // expired_app
@@ -64,23 +66,23 @@ function Login(props) {
     business_type_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a business type."),
+      .required(`${t('pleaseChooseABusinessType')}`),
     business_province_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a province."),
+      .required(`${t('pleaseChooseAProvince')}`),
     business_city_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a city."),
+      .required(`${t('pleaseChooseAProvince')}`),
     business_location_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose a business location."),
+      .required(`${t('pleaseChooseABusinessLocation')}`),
     outlet_location_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose an outlet location.")
+      .required(`${t('pleaseChooseAnOutletLocation')}`)
   });
 
   const formikBusiness = useFormik({
@@ -271,22 +273,14 @@ function Login(props) {
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
-      .email("Wrong email format")
+      .email(`${t('wrongEmailFormat')}`)
       .min(3, `${t("minimum3Symbols")}`)
       .max(50, `${t("maximum50Symbols")}`)
-      .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD"
-        })
-      ),
+      .required(`${t('pleaseInputEmail')}`),
     password: Yup.string()
       .min(3, `${t("minimum3Symbols")}`)
       .max(50, `${t("maximum50Symbols")}`)
-      .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD"
-        })
-      )
+      .required(`${t('pleaseInputAPassword')}`),
   });
 
   const getInputClasses = (fieldname) => {
@@ -301,6 +295,19 @@ function Login(props) {
     return "";
   };
 
+  const handleSendEmail = async (email, verifyCode, token) => {
+    try {
+      await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/send-email/verify-otp?email=${email}&verifyCode=${verifyCode}`,
+        { headers: { Authorization: token } }
+      );
+      return true;
+    } catch (error) {
+      console.log("error", error);
+      return false;
+    }
+  };
+
   const formik = useFormik({
     initialValues,
     validationSchema: LoginSchema,
@@ -309,66 +316,70 @@ function Login(props) {
       login(values.email, values.password, captchaToken)
         .then(async ({ data }) => {
           const API_URL = process.env.REACT_APP_API_URL;
-
           const { token, user } = data.data;
-          const dataBusiness = await axios.get(`${API_URL}/api/v1/business/${user.business_id}`,
-            { headers: { Authorization: `Bearer ${token}` } }
-          )
-          localStorage.setItem("currency", dataBusiness.data.data.Currency.name)
-          localStorage.setItem("token", `Bearer ${token}`)
-          setToken(`Bearer ${token}`);
-
-          // Handle Check Country || jika diluar indonesia, ketika membuat outlet bisa select addres. Jika luar indonesia select diubah menjadi text
-
-          const options = {
-            enableHighAccuracy: true,
-            timeout: 5000,
-            maximumAge: 0
-          };
-          
-          const success = async (pos) =>  {
-            try {
-              const crd = pos.coords;
-              // console.log('Your current position is:');
-              // console.log(`Latitude : ${crd.latitude}`);
-              // console.log(`Longitude: ${crd.longitude}`);
-              // console.log(`More or less ${crd.accuracy} meters.`);
-              const result = await axios.get(`${API_URL}/api/v1/outlet/get-address?latitude=${parseFloat(crd.latitude)}&longitude=${parseFloat(crd.longitude)}`)
-              const checkCountry = result.data.resultAddress.address.includes("Indonesia");
-              if(checkCountry) {
-                localStorage.setItem("checkCountry", true);
-              } else {
-                localStorage.setItem("checkCountry", false);
-              }
-            } catch (error) {
-              localStorage.setItem("checkCountry", true);
-              console.error(error)
-              console.log("catch check country")
-            }
-          }
-          
-          const error = (err) => {
-            console.warn(`ERROR(${err.code}): ${err.message}`);
-          }
-          
-          navigator.geolocation.getCurrentPosition(success, error, options)
-
-          // End Check Country
-
-          const resPartition = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${user.business_id}`, {
-           headers: { Authorization: `Bearer ${token}` } 
-          })
-
-          user.subscription_partition_id = resPartition.data.data[0].subscription_partition_id
-
-          localStorage.setItem("user_info", JSON.stringify(user));
-          disableLoading();
+          console.log("return nya data.data", data.data)
+          // Jika akun belum diverifikasi
           if (!user.is_verified) {
-            setSubmitting(false);
-            openVerifyModal();
-            setSecond(60);
+            const getOwner = await axios.get(`${API_URL}/api/v1/owner/my-id`, {
+              headers: { Authorization: `Bearer ${token}` }
+            })
+            console.log("Belum diverifikasi")
+            console.log("Verify Code nya", getOwner.data.data.verification_code)
+            disableLoading()
+            handleSendEmail(values.email, getOwner.data.data.verification_code, `Bearer ${token}`)
+            history.push(`/register-process/verify-email?email=${values.email}&session=${token}`);
+          // Jika akun sudah terverifikasi
           } else {
-            props.login(token);
+            console.log("Sudah diverifikasi")
+            const dataBusiness = await axios.get(`${API_URL}/api/v1/business/${user.business_id}`,
+              { headers: { Authorization: `Bearer ${token}` } })
+            console.log("dataBusiness", dataBusiness)
+            console.log("dataBusiness.data.data", dataBusiness.data.data)
+            // Jika Lokasi bisnisnya belum ada
+            if(!dataBusiness.data.data.location_id) {
+              history.push(`/register-process/business-location?session=${token}`)
+            } 
+            // Jika Sudah di verifikasi dan Lokasi bisnis nya sudah ada
+            else {
+              localStorage.setItem("currency", dataBusiness.data.data.Currency.name)
+              localStorage.setItem("token", `Bearer ${token}`)
+              setToken(`Bearer ${token}`);
+              // Handle Check Country || jika diluar indonesia, ketika membuat outlet bisa select addres. Jika luar indonesia select diubah menjadi text
+              const options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+              };
+              const success = async (pos) =>  {
+                try {
+                  const crd = pos.coords;
+                  const result = await axios.get(`${API_URL}/api/v1/outlet/get-address?latitude=${parseFloat(crd.latitude)}&longitude=${parseFloat(crd.longitude)}`)
+                  const checkCountry = result.data.resultAddress.address.includes("Indonesia");
+                  if(checkCountry) {
+                    localStorage.setItem("checkCountry", true);
+                  } else {
+                    localStorage.setItem("checkCountry", false);
+                  }
+                } catch (error) {
+                  localStorage.setItem("checkCountry", true);
+                  console.error(error)
+                  console.log("catch check country")
+                }
+              }
+              const error = (err) => {
+                console.warn(`ERROR(${err.code}): ${err.message}`);
+              }
+              navigator.geolocation.getCurrentPosition(success, error, options)
+              // End Check Country
+              const resPartition = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${user.business_id}`, {
+              headers: { Authorization: `Bearer ${token}` } 
+              })
+              user.subscription_partition_id = resPartition.data.data[0].subscription_partition_id
+              localStorage.setItem("user_info", JSON.stringify(user));
+              disableLoading();
+              props.login(token);
+
+            }
           }
         })
         .catch((err) => {
@@ -383,6 +394,34 @@ function Login(props) {
         });
     }
   });
+
+  const chooseLanguages = [
+    {
+      no: 1,
+      key: "id",
+      language: "Indonesia"
+    },
+    {
+      no: 2,
+      key: "en",
+      language: "English"
+    }
+    // {
+    //   no: 3,
+    //   key: "cn",
+    //   language: "Chinese"
+    // }
+  ];
+
+  const changeLanguage = (language, noLanugage) => {
+    console.log("language", language)
+    i18n.changeLanguage(language);
+  };
+
+  useEffect(() => {
+    const currLanguage = localStorage.getItem("i18nextLng")
+    setSelectedLanguage(currLanguage)
+  }, [])
 
   return (
     <>
@@ -418,10 +457,10 @@ function Login(props) {
         {/* begin::Head */}
         <div className="text-center mb-10 mb-lg-20">
           <h3 className="font-size-h1">
-            <FormattedMessage id="AUTH.LOGIN.TITLE" />
+            {t('loginAccount')}
           </h3>
           <p className="text-muted font-weight-bold">
-            Enter your email and password
+            {t('enterYourEmailAndPassword')}
           </p>
         </div>
         {/* end::Head */}
@@ -438,6 +477,31 @@ function Login(props) {
           ) : (
             ""
           )}
+
+          {/* Choose Language */}
+          <div className="form-group d-flex align-items-end justify-content-between">
+            <label className="mr-4" for="exampleFormControlSelect1">{t('language')}</label>
+            <select 
+              className="form-control" 
+              id="exampleFormControlSelect1" 
+              onClick={(e) => changeLanguage(e.target.value)}
+            >
+              {chooseLanguages?.length
+                ? chooseLanguages.map((item) => {
+                    return (
+                      <option 
+                        key={item.id} 
+                        value={item.key}
+                        selected={selectedLanguage == item.key}
+                      >
+                        {item.language}
+                      </option>
+                    );
+                  })
+                : ""}
+            </select>
+          </div>
+          {/* End Choose Language */}
 
           <div className="form-group fv-plugins-icon-container">
             <input
@@ -457,7 +521,7 @@ function Login(props) {
           </div>
           <div className="form-group fv-plugins-icon-container">
             <input
-              placeholder="Password"
+              placeholder={t('password')}
               type="password"
               className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
                 "password"
@@ -477,13 +541,13 @@ function Login(props) {
               className="text-dark-50 text-hover-primary my-3 mr-2"
               id="kt_login_forgot"
             >
-              <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />
+              {t('forgotPassword')}
             </Link>
             <Link
               to="/auth/login/staff"
               className="text-dark-50 text-hover-primary my-3 mr-2"
             >
-              Staff? Login Here
+              {t('staff?LoginHere')}
             </Link>
             <ReCAPTCHA
               sitekey={process.env.REACT_APP_SITE_KEY}
@@ -495,7 +559,7 @@ function Login(props) {
               disabled={formik.isSubmitting || expiredApp}
               className={`btn btn-primary font-weight-bold px-9 py-4 my-3`}
             >
-              <span>Sign In</span>
+              <span>{t('signIn')}</span>
               {loading && <span className="ml-3 spinner spinner-white"></span>}
             </button>
           </div>

@@ -1208,11 +1208,11 @@ $header-topbar-config: (
 	)
 ) !default;
 
-// Aside
+// Aside Width
 $aside-config: (
 	// Aside
 	base: (
-		width: 265px,
+		width: 300px,
 		minimized-width: 70px,
 		zindex: 98,
 		scrollbar-width: 4px

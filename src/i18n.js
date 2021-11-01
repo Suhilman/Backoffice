@@ -4,7 +4,8 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
 
 i18n.use(Backend).use(LanguageDetector).use(initReactI18next).init({
-    fallbackLng: 'en',
+    fallbackLng: localStorage.getItem('i18nextLng') === 'dev' || !localStorage.getItem('i18nextLng') ? 'en' : localStorage.getItem('i18nextLng'),
+    // fallbackLng: 'en',
     debug: true,
     detection: {
         order: ['queryString', 'cookie'],

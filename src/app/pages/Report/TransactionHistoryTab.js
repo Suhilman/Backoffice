@@ -7,15 +7,33 @@ import { Row, Col, ListGroup } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import "../style.css";
+import {
+  Paper
+} from "@material-ui/core";
+import { FeatureReport } from './components/FeatureReport'
 
-export const TransactionHistoryTab = ({
-  selectedOutlet,
-  startDate,
-  endDate,
-  status,
-  refresh,
-  endDateFilename
-}) => {
+export const TransactionHistoryTab = () => {
+  const [refresh, setRefresh] = React.useState(0)
+  const handleRefresh = () => setRefresh((state) => state + 1)
+
+  const [selectedOutlet, setSelectedOutlet] = React.useState({
+    id: "",
+    name: "All Outlet"
+  })
+  const [startDate, setStartDate] = React.useState(
+    dayjs().format("YYYY-MM-DD")
+  );
+  const [endDate, setEndDate] = React.useState(dayjs().format("YYYY-MM-DD"));
+  const [endDateFilename, setEndDateFilename] = React.useState("");
+  const [startTime, setStartTime] = React.useState(new Date());
+  const [endTime, setEndTime] = React.useState(new Date());
+  const [tabData, setTabData] = React.useState({
+    no: 5,
+    table: "table-history-transaction",
+    filename: `riwayat-transaksi_${startDate}-${endDateFilename}`
+  })
+  const [status, setStatus] = React.useState("");
+
   const [allTransactions, setAllTransactions] = React.useState([]);
   const [currency, setCurrency] = React.useState("")
   const handleCurrency = async () => {
@@ -113,7 +131,11 @@ export const TransactionHistoryTab = ({
 
   React.useEffect(() => {
     getTransactions(selectedOutlet.id, status, startDate, endDate);
-  }, [selectedOutlet, status, startDate, endDate, refresh]);
+    setTabData({
+      ...tabData,
+      filename: `riwayat-transaksi_${startDate}-${endDateFilename}`
+    })
+  }, [selectedOutlet, status, startDate, endDate, refresh, endDateFilename]);
 
   const columns = [
     {
@@ -214,87 +236,112 @@ export const TransactionHistoryTab = ({
     );
   };
 
+  const handleStartDate = (date) => setStartDate(date)
+  const handleEndDate = (date) => setEndDate(date)
+  const handleEndDateFilename = (date) => setEndDateFilename(date)
+  const handleSelectedOutlet = (outlet) => setSelectedOutlet(outlet)
+  const handleSelectStatus = (status) => setStatus(status.target.value)
+  const handleTimeStart = (time) => setStartTime(time)
+  const handleTimeEnd = (time) => setEndTime(time)
+
   return (
     <>
-      <div style={{ display: "none" }}>
-        <table id="table-history-transaction">
-          <thead>
-            <tr>
-              <th>{t("salesTransactionReport")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("date")}</th>
-              <td>
-                {startDate} - {endDateFilename}
-              </td>
-            </tr>
-            <tr>
-              <th>{t("statusTransaksi")}</th>
-              <td>{status ? status : "Semua Transaksi"}</td>
-            </tr>
-            <tr>
-              <th>{t("products/Customers")}</th>
-              <td>{t("allCustomers")}</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("date&Time")}</th>
-              <th>{t("struckID")}</th>
-              <th>{t("paymentStatus")}</th>
-              <th>{t("outlet")}</th>
-              <th>{t("salesType")}</th>
-              <th>{t("user")}</th>
-              <th>{t("customerPhoneNumber")}</th>
-              <th>{t("customerName")}</th>
-              <th>{t("sku")}</th>
-              <th>{t("productName")}</th>
-              <th>{t("category")}</th>
-              <th>{t("productsAmount")}</th>
-              <th>{t("productPrice")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {reports.map((item, index) => {
-              return (
-                <tr key={index}>
-                  <td>{item.date}</td>
-                  <td>{item.receipt_id}</td>
-                  <td>{item.status}</td>
-                  <td>{item.outlet_name}</td>
-                  <td>{item.sales_type}</td>
-                  <td>{item.user}</td>
-                  <td>{item.customer_phone_number}</td>
-                  <td>{item.customer_name}</td>
-                  <td>{item.sku}</td>
-                  <td>{item.product_name}</td>
-                  <td>{item.category_name}</td>
-                  <td>{item.quantity}</td>
-                  <td>{item.price_product}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      <DataTable
-        noHeader
-        pagination
-        columns={columns}
-        data={dataTransactions()}
-        expandableRows
-        expandableRowsComponent={<ExpandableComponent />}
-        style={{ minHeight: "100%" }}
-      />
+      <Row>
+        <Col>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <FeatureReport
+              handleStartDate={handleStartDate}
+              handleEndDate={handleEndDate}
+              tabData={tabData}
+              handleEndDateFilename={handleEndDateFilename}
+              handleSelectedOutlet={handleSelectedOutlet}
+              titleReport="reportTransactionHistory"
+              handleSelectStatus={handleSelectStatus}
+              handleTimeStart={handleTimeStart}
+              handleTimeEnd={handleTimeEnd}
+            />
+            <div style={{ display: "none" }}>
+              <table id="table-history-transaction">
+                <thead>
+                  <tr>
+                    <th>{t("salesTransactionReport")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr></tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <th>{t("date")}</th>
+                    <td>
+                      {startDate} - {endDateFilename}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>{t("statusTransaksi")}</th>
+                    <td>{status ? status : "Semua Transaksi"}</td>
+                  </tr>
+                  <tr>
+                    <th>{t("products/Customers")}</th>
+                    <td>{t("allCustomers")}</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr></tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <th>{t("date&Time")}</th>
+                    <th>{t("struckID")}</th>
+                    <th>{t("paymentStatus")}</th>
+                    <th>{t("outlet")}</th>
+                    <th>{t("salesType")}</th>
+                    <th>{t("user")}</th>
+                    <th>{t("customerPhoneNumber")}</th>
+                    <th>{t("customerName")}</th>
+                    <th>{t("sku")}</th>
+                    <th>{t("productName")}</th>
+                    <th>{t("category")}</th>
+                    <th>{t("productsAmount")}</th>
+                    <th>{t("productPrice")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reports.map((item, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{item.date}</td>
+                        <td>{item.receipt_id}</td>
+                        <td>{item.status}</td>
+                        <td>{item.outlet_name}</td>
+                        <td>{item.sales_type}</td>
+                        <td>{item.user}</td>
+                        <td>{item.customer_phone_number}</td>
+                        <td>{item.customer_name}</td>
+                        <td>{item.sku}</td>
+                        <td>{item.product_name}</td>
+                        <td>{item.category_name}</td>
+                        <td>{item.quantity}</td>
+                        <td>{item.price_product}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+      
+            <DataTable
+              noHeader
+              pagination
+              columns={columns}
+              data={dataTransactions()}
+              expandableRows
+              expandableRowsComponent={<ExpandableComponent />}
+              style={{ minHeight: "100%" }}
+            />
+          </Paper>
+        </Col>
+      </Row>
     </>
   );
 };

@@ -16,11 +16,11 @@ import { useTranslation } from "react-i18next";
 import "./style.css";
 export function UserProfileDropdown() {
   const [tabs, setTabs] = React.useState(0);
-  const [notifStockAlert, setNotifStockAlert] = useState([]);
-  const [notifRecapTransaction, setNotifRecapTransaction] = useState([]);
+  const [notifStockAlert, setNotifStockAlert] = useState(false);
+  const [notifRecapTransaction, setNotifRecapTransaction] = useState(false);
   const [dateReport, setDateReport] = useState([]);
-  const [filterWeeklyReport, setFilterWeeklyReport] = useState([]);
-  const [filterDailyReport, setFilterDailyReport] = useState([]);
+  const [filterWeeklyReport, setFilterWeeklyReport] = useState(false);
+  const [filterDailyReport, setFilterDailyReport] = useState(false);
   const [emailNotification, setEmailNotification] = useState({});
 
   const API_URL = process.env.REACT_APP_API_URL;
@@ -120,8 +120,10 @@ export function UserProfileDropdown() {
 
       let dateWeekly = null;
       if (now.getMonth() - dateRecap.getMonth() == 0) {
-        if (dateRecap.getDay() === result.day) {
-          dateWeekly = now.getDate() - 7;
+        if(result) {
+          if (dateRecap.getDay() === result.day) {
+            dateWeekly = now.getDate() - 7;
+          }
         }
         if (dateRecap.getDate() >= dateWeekly) {
           // console.log("value", value)
@@ -156,6 +158,7 @@ export function UserProfileDropdown() {
     setFilterWeeklyReport(esBuah);
     setFilterDailyReport(esAlpukat);
   };
+
   const chooseLanguages = [
     {
       no: 1,
@@ -174,9 +177,39 @@ export function UserProfileDropdown() {
     // }
   ];
 
+  const handleBusinessInformation = async () => {
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+    try {
+      const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+      if(!data.data.language || data.data.language == 'en') {
+        changeLanguage("en", 2)
+      } else if (data.data.language == 'id') {
+        changeLanguage("id", 1)
+      } else {
+        changeLanguage("en", 2)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleChangeLanguage = async (language) => {
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+    try {
+      await axios.patch(`${API_URL}/api/v1/business/update-language/${userInfo.business_id}`, {language})
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    handleBusinessInformation()
+  }, [])
+
   const { t, i18n } = useTranslation();
 
   const changeLanguage = (language, noLanugage) => {
+    handleChangeLanguage(language)
     setTabs(noLanugage);
     i18n.changeLanguage(language);
   };
@@ -237,7 +270,7 @@ export function UserProfileDropdown() {
           </span>
         </div>
       </Dropdown.Toggle>
-      <Dropdown.Menu className="p-0 m-0 dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-xl">
+      <Dropdown.Menu className="p-0 m-0 dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround  dropdown-menu-xl">
         <>
           {/** ClassName should be 'dropdown-menu p-0 m-0 dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-xl' */}
           {layoutProps.light && (
@@ -260,7 +293,7 @@ export function UserProfileDropdown() {
           {!layoutProps.light && (
             <>
               <div
-                className="p-6 bgi-size-cover bgi-no-repeat rounded-top"
+                className="p-6 bgi-size-cover bgi-no-repeat rounded-top rounded-bottom"
                 style={{
                   backgroundImage: `url(${toAbsoluteUrl(
                     "/media/misc/bg-1.jpg"
@@ -314,247 +347,41 @@ export function UserProfileDropdown() {
           )}
         </>
 
-        {(notifStockAlert.length > 0 &&
-          emailNotification.emailNotification?.stok_habis_harian) ||
-        (notifRecapTransaction.length > 0 &&
-          emailNotification.emailNotification?.rekap_kas) ||
-        (filterWeeklyReport.length > 0 &&
-          emailNotification.emailNotification?.penjualan_produk_mingguan) ||
-        (filterDailyReport.length > 0 &&
-          emailNotification.emailNotification?.penjualan_produk_harian) ? (
-          <div className="navi navi-spacer-x-0 pt-5 wrapper-popup-notification">
-            {/* Start Notification Email */}
+        {/* d-flex justify-content-between navi-footer px-8 py-5 */}
+        <div className="">
+          {/* backup logout */}
+          {/* <Link
+            to="/logout"
+            className="btn btn-light-primary font-weight-bold"
+          >
+            {t("signOut")}
+          </Link> */}
 
-            <div className="low-stock-alert px-8">
-              {notifStockAlert.length > 0 &&
-              emailNotification.emailNotification?.stok_habis_harian ? (
-                <>
-                  <h5 style={{ fontWeight: 700 }}>Low Stock Alert</h5>
-                  <div className="content-notif mt-5">
-                    <div className="content-left">
-                      {notifStockAlert.map((value) => (
-                        <p>{value.message}</p>
-                      ))}
-                    </div>
-                    <div className="content-right">
-                      <div className="wrap-image" onClick={handleDeleteStock}>
-                        <img src={iconTrash} alt="Icon Trash" />
-                      </div>
-                    </div>
-                  </div>
-                </>
-              ) : // <h5 style={{ fontWeight: 700 }}>Low Stock Alert (empty)</h5>
-              null}
-            </div>
-            {notifRecapTransaction.length > 0 &&
-            emailNotification.emailNotification?.rekap_kas ? (
-              <>
-                <div>
-                  <hr />
-                  <div className="low-stock-alert px-8">
-                    {notifRecapTransaction.map((value) => (
-                      <>
-                        <h5 className="mt-4" style={{ fontWeight: 700 }}>
-                          {value.title}
-                        </h5>
-                        <div className="content-notif mt-2">
-                          <div className="content-left">
-                            <p>{value.message}</p>
-                          </div>
-                          <div className="content-right">
-                            <div
-                              className="wrap-image"
-                              onClick={() => handleDeleteRecap(value.id)}
-                            >
-                              <img src={iconTrash} alt="Icon Trash" />
-                            </div>
-                          </div>
-                        </div>
-                      </>
-                    ))}
-                    <div className="button-download">Download Report</div>
-                  </div>
-                </div>
-              </>
-            ) : /* <div className="low-stock-alert px-8">
-                    <h5 className="mt-4" style={{ fontWeight: 700 }}>Transaction Recap (empty)</h5>
-                  </div> */
-            null}
-            {filterWeeklyReport.length > 0 &&
-            emailNotification.emailNotification?.penjualan_produk_mingguan ? (
-              <div>
-                <hr />
-                <div className="low-stock-alert px-8">
-                  <h5 style={{ fontWeight: 700 }}>
-                    Weekly Report has been sent
-                  </h5>
-                  {filterWeeklyReport.map((value) => (
-                    <div className="content-notif mt-5">
-                      <div className="content-left">
-                        <p>
-                          {value.createdAt.split("T")[0]} -{" "}
-                          {value.createdAt.split("T")[1]}
-                        </p>
-                      </div>
-                      <div className="content-right">
-                        <div className="wrap-image">
-                          <img src={iconTrash} alt="Icon Trash" />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                  <div className="button-download">Download Report</div>
-                </div>
-              </div>
-            ) : // <div className="low-stock-alert px-8">
-            //   <h5 style={{ fontWeight: 700 }}>Weekly Report (empty)</h5>
-            // </div>
-            null}
-            {filterDailyReport.length > 0 &&
-            emailNotification.emailNotification?.penjualan_produk_harian ? (
-              <div>
-                <hr />
-                <div className="low-stock-alert px-8">
-                  <h5 style={{ fontWeight: 700 }}>
-                    Daily Report has been sent
-                  </h5>
-                  {filterDailyReport.map((value) => (
-                    <div className="content-notif mt-5">
-                      <div className="content-left">
-                        <p>
-                          {value.createdAt.split("T")[0]} -{" "}
-                          {value.createdAt.split("T")[1]}
-                        </p>
-                      </div>
-                      <div className="content-right">
-                        <div className="wrap-image">
-                          <img src={iconTrash} alt="Icon Trash" />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                  <div className="button-download">Download Report</div>
-                </div>
-              </div>
-            ) : /* <div className="low-stock-alert px-8">
-                    <h5 style={{ fontWeight: 700 }}>Daily Report (empty)</h5>
-                  </div> */
-            null}
-            {/* End Notification Email */}
+          {/* backup choose language */}
+          {/* <DropdownButton
+            id="dropdown-basic-button"
+            title={
+              tabs !== 0
+                ? chooseLanguages.find((item) => item.no === parseInt(tabs))
+                    .language
+                : `${t("chooseLanguage")}`
+            }
+          >
+            {chooseLanguages.map((item) => (
+              <Dropdown.Item
+                as="button"
+                onClick={() => changeLanguage(item.key, item.no)}
+                className="selected"
+              >
+                {item.language}
+              </Dropdown.Item>
+            ))}
+          </DropdownButton> */}
 
-            {/* <a className="navi-item px-8">
-                    <div className="navi-link">
-                      <div className="navi-icon mr-2">
-                        <i className="flaticon2-calendar-3 text-success"/>
-                      </div>
-                      <div className="navi-text">
-                        <div className="font-weight-bold">
-                          My Profile
-                        </div>
-                        <div className="text-muted">
-                          Account settings and more
-                          <span className="label label-light-danger label-inline font-weight-bold">update</span>
-                        </div>
-                      </div>
-                    </div>
-                  </a>
-      
-                  <a className="navi-item px-8">
-                    <div className="navi-link">
-                      <div className="navi-icon mr-2">
-                        <i className="flaticon2-mail text-warning"></i>
-                      </div>
-                      <div className="navi-text">
-                        <div className="font-weight-bold">
-                          My Messages
-                        </div>
-                        <div className="text-muted">
-                          Inbox and tasks
-                        </div>
-                      </div>
-                    </div>
-                  </a>
-      
-                  <a className="navi-item px-8">
-                    <div className="navi-link">
-                      <div className="navi-icon mr-2">
-                        <i className="flaticon2-rocket-1 text-danger"></i>
-                      </div>
-                      <div className="navi-text">
-                        <div className="font-weight-bold">
-                          My Activities
-                        </div>
-                        <div className="text-muted">
-                          Logs and notifications
-                        </div>
-                      </div>
-                    </div>
-                  </a>
-      
-                  <a className="navi-item px-8">
-                    <div className="navi-link">
-                      <div className="navi-icon mr-2">
-                        <i className="flaticon2-hourglass text-primary"></i>
-                      </div>
-                      <div className="navi-text">
-                        <div className="font-weight-bold">
-                          My Tasks
-                        </div>
-                        <div className="text-muted">
-                          latest tasks and projects
-                        </div>
-                      </div>
-                    </div>
-                  </a> */}
-            <div className="navi-separator mt-3"></div>
-
-            {/* navi-footer px-8 py-5 */}
-            <div className="">
-              {/* backup logout */}
-              {/* <Link
-                    to="/logout"
-                    className="btn btn-light-primary font-weight-bold"
-                  >
-                    {t("signOut")}
-                  </Link> */}
-
-              {/* <Dropdown>
-                    <Dropdown.Toggle variant="light">{t("chooseLanguage")}</Dropdown.Toggle>
-      
-                    <Dropdown.Menu>
-                      {chooseLanguages.map(item =>
-                        <Dropdown.Item as="button" onClick={() => changeLanguage(item.key)}>{item.language}</Dropdown.Item>
-                      )}
-                    </Dropdown.Menu>
-                  </Dropdown> */}
-
-              {/* backup choose language */}
-              {/* <DropdownButton
-                    id="dropdown-basic-button"
-                    title={
-                      tabs !== 0
-                        ? chooseLanguages.find((item) => item.no === parseInt(tabs))
-                            .language
-                        : `${t("chooseLanguage")}`
-                    }
-                  >
-                    {chooseLanguages.map((item) => (
-                      <Dropdown.Item
-                        as="button"
-                        onClick={() => changeLanguage(item.key, item.no)}
-                        className="selected"
-                      >
-                        {item.language}
-                      </Dropdown.Item>
-                    ))}
-                  </DropdownButton> */}
-
-              {/* <a href="#" className="btn btn-clean font-weight-bold">
-                    Upgrade Plan
-                  </a> */}
-            </div>
-          </div>
-        ) : null}
+          {/* <a href="#" className="btn btn-clean font-weight-bold">
+                Upgrade Plan
+              </a> */}
+        </div>
       </Dropdown.Menu>
     </Dropdown>
   );

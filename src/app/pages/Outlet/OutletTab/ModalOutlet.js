@@ -579,11 +579,13 @@ const ModalOutlet = ({
                 </Form.Group>
               </Col>
               <Col>
-                <div className="btn btn-primary mb-2" onClick={showModalSosmed}>
+                <div className="btn btn-primary" onClick={showModalSosmed}>
                   {t("addSosmed")}
                 </div>
               </Col>
-              {/* <Col>
+            </Row>
+            <Row>
+              <Col>
                 <Form.Label>Select Open Day:</Form.Label>
                 <FormControl style={{ width: "100%" }}>
                   <InputLabel>Day</InputLabel>
@@ -607,6 +609,8 @@ const ModalOutlet = ({
                     </div>
                   ) : null}
                 </FormControl>
+              </Col>
+              <Col>
                 <div className="d-flex justify-content-between align-items-end">
                   <div style={{width: "45%"}}>
                     <KeyboardTimePicker
@@ -638,9 +642,9 @@ const ModalOutlet = ({
                     />
                   </div>
                 </div>
-              </Col> */}
+              </Col>
             </Row>
-            {/* <Row>
+            <Row>
               <Col>
               </Col>
               <Col>
@@ -660,10 +664,10 @@ const ModalOutlet = ({
                           if (stateVacation === e.target.value) {
                             if (stateVacation === "Active") {
                               handleSetVacation("Inactive");
-                              formikOutlet.setFieldValue("vacation", "Inactive")
+                              formikOutlet.setFieldValue("vacation", false)
                             } else {
                               handleSetVacation("Active");
-                              formikOutlet.setFieldValue("vacation", "Active")
+                              formikOutlet.setFieldValue("vacation", true)
                             }
                           }
                         }}
@@ -673,7 +677,7 @@ const ModalOutlet = ({
                   />
                 </Form.Group>
               </Col>
-            </Row> */}
+            </Row>
             {/* <Row>
               <Col>
                 <Form.Group>

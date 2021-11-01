@@ -6,10 +6,49 @@ import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import "../style.css";
 import NumberFormat from 'react-number-format'
+import {
+  Switch,
+  FormGroup,
+  FormControl,
+  FormControlLabel,
+  Paper
+} from "@material-ui/core";
 
-export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate, refresh, endDateFilename }) => {
+import {
+  Dropdown,
+  Row,
+  Col,
+  DropdownButton,
+  Form,
+  InputGroup
+} from "react-bootstrap";
+
+import { FeatureReport } from './components/FeatureReport'
+
+export const SalesSummaryTab = () => {
   const [allTransactions, setAllTransactions] = React.useState([]);
   const [currency, setCurrency] = React.useState("")
+
+  const [refresh, setRefresh] = React.useState(0)
+  const handleRefresh = () => setRefresh((state) => state + 1)
+
+  const [selectedOutlet, setSelectedOutlet] = React.useState({
+    id: "",
+    name: "All Outlet"
+  })
+  const [startDate, setStartDate] = React.useState(
+    dayjs().format("YYYY-MM-DD")
+  );
+  const [endDate, setEndDate] = React.useState(dayjs().format("YYYY-MM-DD"));
+  const [endDateFilename, setEndDateFilename] = React.useState("");
+  const [startTime, setStartTime] = React.useState(new Date());
+  const [endTime, setEndTime] = React.useState(new Date());
+  const [tabData, setTabData] = React.useState({
+    no: 1,
+    table: "table-summary",
+    filename: `transaksi-penjualan-produk_${startDate}-${endDateFilename}`
+  })
+  const [status, setStatus] = React.useState("");
 
   const [reports, setReports] = React.useState([
     {
@@ -239,7 +278,11 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate, refresh, e
 
   React.useEffect(() => {
     getTransactions(selectedOutlet.id, startDate, endDate);
-  }, [selectedOutlet, startDate, endDate, refresh]);
+    setTabData({
+      ...tabData,
+      filename: `transaksi-penjualan-produk_${startDate}-${endDateFilename}` 
+    })
+  }, [selectedOutlet, startDate, endDate, refresh, endDateFilename]);
 
   const summaryData = () => {
     const data = [
@@ -419,111 +462,136 @@ export const SalesSummaryTab = ({ selectedOutlet, startDate, endDate, refresh, e
   //   sumReports(reports, "totalSales") - totalDiscount + totalService;
   const grandTotal = totalCollected;
 
+  const handleStartDate = (date) => setStartDate(date)
+  const handleEndDate = (date) => setEndDate(date)
+  const handleEndDateFilename = (date) => setEndDateFilename(date)
+  const handleSelectedOutlet = (outlet) => setSelectedOutlet(outlet)
+  const handleSelectStatus = (status) => setStatus(status.target.value)
+  const handleTimeStart = (time) => setStartTime(time)
+  const handleTimeEnd = (time) => setEndTime(time)
+
   return (
     <>
-      <div style={{ display: "none" }}>
-        <table id="table-summary">
-          <thead>
-            <tr>
-              <th>{t("productSalesReport")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("outlet")}</th>
-              <td>{selectedOutlet?.name}</td>
-            </tr>
-          </thead>
-          <thead>
-            <tr>
-              <th>{t("date")}</th>
-              <td>{`${startDate} - ${endDateFilename}`}</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("productName")}</th>
-              <th>{t("additionalOptionNames")}</th>
-              <th>{t("category")}</th>
-              <th>{t("sku")}</th>
-              <th>{t("sold")}</th>
-              {/* <th>Penjualan Kotor</th> */}
-              <th>{t("total")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {reports.map((item, index) => {
-              return (
-                <tr key={index}>
-                  <td>{item.product_name}</td>
-                  <td>{item.addons_name}</td>
-                  <td>{item.category_name}</td>
-                  <td>{item.sku}</td>
-                  <td>{item.totalItems}</td>
-                  {/* <td>{item.grossSales}</td> */}
-                  <td>{item.totalSales}</td>
-                </tr>
-              );
-            })}
-            <tr>
-              <th>{t("subtotal")}</th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th>{sumReports(reports, "totalItems")} </th>
-              {/* <th>{sumReports(reports, "grossSales")} </th> */}
-              <th>{sumReports(reports, "totalSales")} </th>
-            </tr>
-            <tr>
-              <th>{t("discountGiven")}</th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-              {/* <th></th> */}
-              <th>{totalDiscount}</th>
-            </tr>
-            <tr>
-              <th>{t("service")}</th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-              {/* <th></th> */}
-              <th>{totalService}</th>
-            </tr>
-            <tr>
-              <th>{t("grandTotal")}</th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-              {/* <th></th> */}
-              <th>{grandTotal}</th>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <Row>
+        <Col>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <FeatureReport
+              handleStartDate={handleStartDate}
+              handleEndDate={handleEndDate}
+              tabData={tabData}
+              handleEndDateFilename={handleEndDateFilename}
+              handleSelectedOutlet={handleSelectedOutlet}
+              titleReport="reportSalesSummary"
+              handleSelectStatus={handleSelectStatus}
+              handleTimeStart={handleTimeStart}
+              handleTimeEnd={handleTimeEnd}
+            />
+            <div style={{ display: "none" }}>
+              <table id="table-summary">
+                <thead>
+                  <tr>
+                    <th>{t("productSalesReport")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr></tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <th>{t("outlet")}</th>
+                    <td>{selectedOutlet?.name}</td>
+                  </tr>
+                </thead>
+                <thead>
+                  <tr>
+                    <th>{t("date")}</th>
+                    <td>{`${startDate} - ${endDateFilename}`}</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr></tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <th>{t("productName")}</th>
+                    <th>{t("additionalOptionNames")}</th>
+                    <th>{t("category")}</th>
+                    <th>{t("sku")}</th>
+                    <th>{t("sold")}</th>
+                    {/* <th>Penjualan Kotor</th> */}
+                    <th>{t("total")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reports.map((item, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{item.product_name}</td>
+                        <td>{item.addons_name}</td>
+                        <td>{item.category_name}</td>
+                        <td>{item.sku}</td>
+                        <td>{item.totalItems}</td>
+                        {/* <td>{item.grossSales}</td> */}
+                        <td>{item.totalSales}</td>
+                      </tr>
+                    );
+                  })}
+                  <tr>
+                    <th>{t("subtotal")}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>{sumReports(reports, "totalItems")} </th>
+                    {/* <th>{sumReports(reports, "grossSales")} </th> */}
+                    <th>{sumReports(reports, "totalSales")} </th>
+                  </tr>
+                  <tr>
+                    <th>{t("discountGiven")}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    {/* <th></th> */}
+                    <th>{totalDiscount}</th>
+                  </tr>
+                  <tr>
+                    <th>{t("service")}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    {/* <th></th> */}
+                    <th>{totalService}</th>
+                  </tr>
+                  <tr>
+                    <th>{t("grandTotal")}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    {/* <th></th> */}
+                    <th>{grandTotal}</th>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
-      <Table striped>
-        <tbody>
-          {summaryData().map((item, index) => {
-            return (
-              <tr key={index}>
-                <td></td>
-                <td>{item.key}</td>
-                <td><NumberFormat value={item.value} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table>
+            <Table striped>
+              <tbody>
+                {summaryData().map((item, index) => {
+                  return (
+                    <tr key={index}>
+                      <td></td>
+                      <td>{item.key}</td>
+                      <td><NumberFormat value={item.value} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </Paper>
+        </Col>
+      </Row>
     </>
   );
 };

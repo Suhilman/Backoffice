@@ -6,7 +6,37 @@ import rupiahFormat from "rupiah-format";
 import { useTranslation } from "react-i18next";
 import "../style.css";
 import NumberFormat from 'react-number-format'
-export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate, endDateFilename }) => {
+import {
+  Paper
+} from "@material-ui/core";
+import { FeatureReport } from './components/FeatureReport'
+import {
+  Row,
+  Col
+} from "react-bootstrap";
+
+export const DiscountSalesTab = () => {
+  const [refresh, setRefresh] = React.useState(0)
+  const handleRefresh = () => setRefresh((state) => state + 1)
+
+  const [selectedOutlet, setSelectedOutlet] = React.useState({
+    id: "",
+    name: "All Outlet"
+  })
+  const [startDate, setStartDate] = React.useState(
+    dayjs().format("YYYY-MM-DD")
+  );
+  const [endDate, setEndDate] = React.useState(dayjs().format("YYYY-MM-DD"));
+  const [endDateFilename, setEndDateFilename] = React.useState("");
+  const [startTime, setStartTime] = React.useState(new Date());
+  const [endTime, setEndTime] = React.useState(new Date());
+  const [tabData, setTabData] = React.useState({
+    no: 2,
+    table: "table-payment",
+    filename: `payment-method_${startDate}-${endDateFilename}`,
+  })
+  const [status, setStatus] = React.useState("");
+
   const [allPromoSales, setAllPromoSales] = React.useState([]);
   const { t } = useTranslation();
   const [currency, setCurrency] = React.useState("")
@@ -65,7 +95,11 @@ export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate, endDateFi
 
   React.useEffect(() => {
     getDiscountSales(selectedOutlet.id, startDate, endDate);
-  }, [selectedOutlet, startDate, endDate]);
+    setTabData({
+      ...tabData,
+      filename: `payment-method_${startDate}-${endDateFilename}` 
+    })
+  }, [selectedOutlet, startDate, endDate, endDateFilename]);
 
   const promoSalesData = () => {
     const data = [];
@@ -223,113 +257,139 @@ export const DiscountSalesTab = ({ selectedOutlet, startDate, endDate, endDateFi
   const sumReports = (data, key) => {
     return data.reduce((init, curr) => (init += curr[key]), 0);
   };
+
+  const handleStartDate = (date) => setStartDate(date)
+  const handleEndDate = (date) => setEndDate(date)
+  const handleEndDateFilename = (date) => setEndDateFilename(date)
+  const handleSelectedOutlet = (outlet) => setSelectedOutlet(outlet)
+  const handleSelectStatus = (status) => setStatus(status.target.value)
+  const handleTimeStart = (time) => setStartTime(time)
+  const handleTimeEnd = (time) => setEndTime(time)
+
   return (
     <>
-      <div style={{ display: "none" }}>
-        <table id="table-discount">
-          <thead>
-            <tr>
-              <th>{t("discountReport")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("outlet")}</th>
-              <td>
-                {selectedOutlet.id === " " ||
-                selectedOutlet.id === null ||
-                selectedOutlet.id === undefined
-                  ? "Semua Outlet"
-                  : selectedOutlet.name}
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("date")}</th>
-              <td>{`${startDate} - ${endDateFilename}`}</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("discountName")}</th>
-              <th>{t("usage")}</th>
-              <th>{t("totalUsage")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {promoSalesData().length > 0 ? (
-              promoSalesData().map((item, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{item.name}</td>
-                    <td>
-                      {item.quota ? `${item.usage}/${item.quota}` : item.usage}
-                    </td>
-                    <td>{item.total}</td>
+      <Row>
+        <Col>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <FeatureReport
+                handleStartDate={handleStartDate}
+                handleEndDate={handleEndDate}
+                tabData={tabData}
+                handleEndDateFilename={handleEndDateFilename}
+                handleSelectedOutlet={handleSelectedOutlet}
+                titleReport="reportDiscount"
+                handleSelectStatus={handleSelectStatus}
+                handleTimeStart={handleTimeStart}
+                handleTimeEnd={handleTimeEnd}
+              />
+            <div style={{ display: "none" }}>
+              <table id="table-discount">
+                <thead>
+                  <tr>
+                    <th>{t("discountReport")}</th>
                   </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td>{t("dataNotFound")}</td>
-              </tr>
-            )}
-            {/* <tr>
-              <td>Grand Total</td>
-              <td>{sumReports(promoSalesData(), "usage")}</td>
-              <td>{sumReports(promoSalesData(), "total")} </td>
-            </tr> */}
-          </tbody>
-        </table>
-      </div>
-      <Table striped>
-        <thead>
-          <tr>
-            <th></th>
-            <th>{t("discountName")}</th>
-            <th>{t("totalUsage")}</th>
-            <th>{t("totalCollected")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {promoSalesData().length > 0 ? (
-            promoSalesData().map((item, index) => {
-              return (
-                <tr key={index}>
-                  <td></td>
-                  <td>{item.name}</td>
-                  <td>
-                    {item.quota ? `${item.usage}/${item.quota}` : item.usage}
-                  </td>
-                  <td><NumberFormat value={item.total} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
+                </thead>
+                <tbody>
+                  <tr></tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <th>{t("outlet")}</th>
+                    <td>
+                      {selectedOutlet.id === " " ||
+                      selectedOutlet.id === null ||
+                      selectedOutlet.id === undefined
+                        ? "Semua Outlet"
+                        : selectedOutlet.name}
+                    </td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr></tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <th>{t("date")}</th>
+                    <td>{`${startDate} - ${endDateFilename}`}</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr></tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <th>{t("discountName")}</th>
+                    <th>{t("usage")}</th>
+                    <th>{t("totalUsage")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {promoSalesData().length > 0 ? (
+                    promoSalesData().map((item, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{item.name}</td>
+                          <td>
+                            {item.quota ? `${item.usage}/${item.quota}` : item.usage}
+                          </td>
+                          <td>{item.total}</td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td>{t("dataNotFound")}</td>
+                    </tr>
+                  )}
+                  {/* <tr>
+                    <td>Grand Total</td>
+                    <td>{sumReports(promoSalesData(), "usage")}</td>
+                    <td>{sumReports(promoSalesData(), "total")} </td>
+                  </tr> */}
+                </tbody>
+              </table>
+            </div>
+            <Table striped>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>{t("discountName")}</th>
+                  <th>{t("totalUsage")}</th>
+                  <th>{t("totalCollected")}</th>
                 </tr>
-              );
-            })
-          ) : (
-            <tr>
-              <td>{t("dataNotFound")}</td>
-            </tr>
-          )}
-          {/* <tr>
-            <td></td>
-            <td>{t("grandTotal")}</td>
-            <td>{sumReports(promoSalesData(), "usage")}</td>
-            <td>
-              <NumberFormat value={sumReports(promoSalesData(), "total")} displayType={'text'} thousandSeparator={true} prefix={currency} />
-            </td>
-          </tr> */}
-        </tbody>
-      </Table>
+              </thead>
+              <tbody>
+                {promoSalesData().length > 0 ? (
+                  promoSalesData().map((item, index) => {
+                    return (
+                      <tr key={index}>
+                        <td></td>
+                        <td>{item.name}</td>
+                        <td>
+                          {item.quota ? `${item.usage}/${item.quota}` : item.usage}
+                        </td>
+                        <td><NumberFormat value={item.total} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td>{t("dataNotFound")}</td>
+                  </tr>
+                )}
+                {/* <tr>
+                  <td></td>
+                  <td>{t("grandTotal")}</td>
+                  <td>{sumReports(promoSalesData(), "usage")}</td>
+                  <td>
+                    <NumberFormat value={sumReports(promoSalesData(), "total")} displayType={'text'} thousandSeparator={true} prefix={currency} />
+                  </td>
+                </tr> */}
+              </tbody>
+            </Table>
+          </Paper>
+        </Col>
+      </Row>
     </>
   );
 };

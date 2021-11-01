@@ -83,7 +83,8 @@ const ProductTab = ({
   const [showFeature, setShowFeature] = React.useState({
     supplier: false,
     expired: false,
-    recipe: false
+    recipe: false,
+    has_assembly: false
   })
   const [subscriptionType, setSubscriptionType] = React.useState(null)
 
@@ -174,27 +175,32 @@ const ProductTab = ({
       let supplier;
       let recipe;
       let expired;
+      let has_assembly;
 
       if(data.data[0].subscription_partition_id === 3) {
         supplier = true
         recipe = true
         expired = true
+        has_assembly = true
       }
       if(data.data[0].subscription_partition_id === 2) {
         supplier = true
         recipe = false
         expired = true
+        has_assembly = false
       }
       if(data.data[0].subscription_partition_id === 1) {
         supplier = false
         recipe = false
         expired = false
+        has_assembly = false
       }
       setSubscriptionType(data.data[0].subscription_partition_id)
       setShowFeature({
         supplier,
         expired,
-        recipe
+        recipe,
+        has_assembly
       })
     } catch (error) {
       console.log(error)

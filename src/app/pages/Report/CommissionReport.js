@@ -3,6 +3,10 @@ import axios from 'axios'
 import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
+import {
+  Paper
+} from "@material-ui/core";
+import { FeatureReport } from './components/FeatureReport'
 
 import {
   Button,
@@ -15,6 +19,27 @@ import {
 } from "react-bootstrap";
 
 const CommissionReport = () => {
+  const [refresh, setRefresh] = React.useState(0)
+  const handleRefresh = () => setRefresh((state) => state + 1)
+
+  const [selectedOutlet, setSelectedOutlet] = React.useState({
+    id: "",
+    name: "All Outlet"
+  })
+  const [startDate, setStartDate] = React.useState(
+    dayjs().format("YYYY-MM-DD")
+  );
+  const [endDate, setEndDate] = React.useState(dayjs().format("YYYY-MM-DD"));
+  const [endDateFilename, setEndDateFilename] = React.useState("");
+  const [startTime, setStartTime] = React.useState(new Date());
+  const [endTime, setEndTime] = React.useState(new Date());
+  const [tabData, setTabData] = React.useState({
+    no: 17,
+    table: "table-commission-report",
+    filename: `commission_report${startDate}-${endDateFilename}`,
+  })
+  const [status, setStatus] = React.useState("");
+
   const { t } = useTranslation();
   const API_URL = process.env.REACT_APP_API_URL;
   const [commissionReport, setCommissionReport] = useState([])
@@ -63,13 +88,6 @@ const CommissionReport = () => {
       })
     })
 
-    console.log("resultTuingtuing", resultTuingtuing)
-    console.log("resultTuingtuingClone", resultTuingtuingClone)
-
-    console.log("dataTransaction", dataTransaction.data.data)
-    console.log("dataCommission", dataCommission)
-    console.log("resultCommission", resultCommission)
-
     // fungsi untuk 
     resultCommission.map((value, index) => {
       resultCommission[index].jumlah = 1
@@ -95,7 +113,6 @@ const CommissionReport = () => {
             }
           })
         }
-        console.log("element found");
       }
     })
     // end fungsi untuk
@@ -105,9 +122,6 @@ const CommissionReport = () => {
     } catch (error) {
       console.error(error)
     }
-  }
-
-  const getDataStaff = async () => {
   }
 
   useEffect(() => {
@@ -189,41 +203,68 @@ const CommissionReport = () => {
     );
   };
 
+  const handleStartDate = (date) => setStartDate(date)
+  const handleEndDate = (date) => setEndDate(date)
+  const handleEndDateFilename = (date) => setEndDateFilename(date)
+  const handleSelectedOutlet = (outlet) => setSelectedOutlet(outlet)
+  const handleSelectStatus = (status) => setStatus(status.target.value)
+  const handleTimeStart = (time) => setStartTime(time)
+  const handleTimeEnd = (time) => setEndTime(time)
+
   return (
-    <div>
-      <div style={{ display: "none" }}>
-        <table id="table-commission-report">
-          <tr>
-            <th>{t("exportCommissionReport")}</th>
-          </tr>
-          <tr>
-            <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("groupCommission")}</th>
-            <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("dateCommission")}</th>
-            <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("timeCommission")}</th>
-            <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("totalCommission")}</th>
-          </tr>
-          {commissionReport ? (
-            commissionReport.map(item => 
-              <tr>
-                <td>{item.User?.User_Profile.name}</td>
-                <td>{item.dateCommission}</td>
-                <td>{item.timeCommission}</td>
-                <td>{item.totalCommission}</td>
-            </tr>
-            )
-          ) : null }
-        </table>
-      </div>
-      <DataTable
-          noHeader
-          pagination
-          columns={columns}
-          expandableRows
-          expandableRowsComponent={<ExpandableComponent />}
-          data={data}
-          style={{ minHeight: "100%" }}
-        />
-    </div>
+    <>
+      <Row>
+        <Col>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <FeatureReport
+              handleStartDate={handleStartDate}
+              handleEndDate={handleEndDate}
+              tabData={tabData}
+              handleEndDateFilename={handleEndDateFilename}
+              handleSelectedOutlet={handleSelectedOutlet}
+              titleReport="reportCommisison"
+              handleSelectStatus={handleSelectStatus}
+              handleTimeStart={handleTimeStart}
+              handleTimeEnd={handleTimeEnd}
+            />
+            <div>
+              <div style={{ display: "none" }}>
+                <table id="table-commission-report">
+                  <tr>
+                    <th>{t("exportCommissionReport")}</th>
+                  </tr>
+                  <tr>
+                    <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("groupCommission")}</th>
+                    <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("dateCommission")}</th>
+                    <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("timeCommission")}</th>
+                    <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("totalCommission")}</th>
+                  </tr>
+                  {commissionReport ? (
+                    commissionReport.map(item => 
+                      <tr>
+                        <td>{item.User?.User_Profile.name}</td>
+                        <td>{item.dateCommission}</td>
+                        <td>{item.timeCommission}</td>
+                        <td>{item.totalCommission}</td>
+                    </tr>
+                    )
+                  ) : null }
+                </table>
+              </div>
+              <DataTable
+                  noHeader
+                  pagination
+                  columns={columns}
+                  expandableRows
+                  expandableRowsComponent={<ExpandableComponent />}
+                  data={data}
+                  style={{ minHeight: "100%" }}
+                />
+            </div>
+          </Paper>
+        </Col>
+      </Row>
+    </>
   );
 }
 

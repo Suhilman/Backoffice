@@ -103,7 +103,7 @@ const RegistrationMarketing = () => {
       .max(50, `${t("maximum50Symbols")}`)
       .required(),
     email: Yup.string()
-      .email("Wrong email format")
+      .email(`${t('wrongEmailFormat')}`)
       .min(3, `${t("minimum3Symbols")}`)
       .max(50, `${t("maximum50Symbols")}`)
       .required(),
@@ -117,7 +117,7 @@ const RegistrationMarketing = () => {
       .required()
       .matches(
         /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
-        "Must Contain 8 Characters, One Uppercase, One Lowercase and One Number"
+        t('mustContain8Characters,OneUppercase,OneLowercaseAndOneNumber')
       ),
     changepassword: Yup.string()
       .required()
@@ -130,7 +130,7 @@ const RegistrationMarketing = () => {
       })
       .matches(
         /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
-        "Must Contain 8 Characters, One Uppercase, One Lowercase and One Number"
+        t('mustContain8Characters,OneUppercase,OneLowercaseAndOneNumber')
       ),
     business_type_id: Yup.number()
       .integer()
@@ -151,7 +151,7 @@ const RegistrationMarketing = () => {
     outlet_location_id: Yup.number()
       .integer()
       .min(1)
-      .required("Please choose an outlet location."),
+      .required(`${t('pleaseChooseAnOutletLocation')}`),
     acceptTerms: Yup.bool().required("You must accept the terms and conditions")
   });
 

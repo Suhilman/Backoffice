@@ -6,8 +6,34 @@ import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 // import { Search } from "@material-ui/icons";
 // import useDebounce from "../../hooks/useDebounce";
+import {
+  Paper
+} from "@material-ui/core";
+import { FeatureReport } from './components/FeatureReport'
 
-const StockReport = ({ selectedOutlet, startDate, endDate, endDateFilename, subscriptionPartitoin }) => {
+const StockReport = () => {
+  const [refresh, setRefresh] = React.useState(0)
+  const handleRefresh = () => setRefresh((state) => state + 1)
+
+  const [selectedOutlet, setSelectedOutlet] = React.useState({
+    id: "",
+    name: "All Outlet"
+  })
+  const [startDate, setStartDate] = React.useState(
+    dayjs().format("YYYY-MM-DD")
+  );
+  const [endDate, setEndDate] = React.useState(dayjs().format("YYYY-MM-DD"));
+  const [endDateFilename, setEndDateFilename] = React.useState("");
+  const [startTime, setStartTime] = React.useState(new Date());
+  const [endTime, setEndTime] = React.useState(new Date());
+  const [tabData, setTabData] = React.useState({
+    no: 15,
+    table: "table-stock",
+    filename: `laporan-stock-barang_${startDate}-${endDateFilename}`,
+  })
+  const [status, setStatus] = React.useState("");
+  const [subscriptionPartitoin, setSubscriptionPartitoin] = React.useState(null)
+
   // const [alert, setAlert] = React.useState("");
   // const [loading, setLoading] = React.useState(false);
   const { t } = useTranslation();
@@ -41,9 +67,30 @@ const StockReport = ({ selectedOutlet, startDate, endDate, endDateFilename, subs
     }
   };
 
+  const handleSubscriptionPartition = async () => {
+    try {
+      const tempTabData = tabData
+      const userInfo = JSON.parse(localStorage.getItem("user_info"));
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${userInfo.business_id}`
+      );
+      setSubscriptionPartitoin(data.data[0].subscription_partition_id)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  React.useEffect(() => {
+    handleSubscriptionPartition()
+  }, []);
+
   React.useEffect(() => {
     getInventory(selectedOutlet.id, startDate, endDate);
-  }, [selectedOutlet, startDate, endDate]);
+    setTabData({
+      ...tabData,
+      filename: `laporan-stock-barang_${startDate}-${endDateFilename}`
+    })
+  }, [selectedOutlet, startDate, endDate, endDateFilename]);
 
   const kolom = [
     "No",
@@ -136,7 +183,8 @@ const StockReport = ({ selectedOutlet, startDate, endDate, endDateFilename, subs
       no: index + 1,
       outlet_name: item.Outlet?.name,
       name: item.name,
-      stock: item.stock,
+      // stock: item.stock,
+      stock: item.stock < 0 ? 0 : item.stock,
       stock_starting: item.stock_starting,
       incoming_stock,
       outcoming_stock,
@@ -198,82 +246,109 @@ const StockReport = ({ selectedOutlet, startDate, endDate, endDateFilename, subs
       </>
     );
   };
+
+  const handleStartDate = (date) => setStartDate(date)
+  const handleEndDate = (date) => setEndDate(date)
+  const handleEndDateFilename = (date) => setEndDateFilename(date)
+  const handleSelectedOutlet = (outlet) => setSelectedOutlet(outlet)
+  const handleSelectStatus = (status) => setStatus(status.target.value)
+  const handleTimeStart = (time) => setStartTime(time)
+  const handleTimeEnd = (time) => setEndTime(time)
+
   return (
     <>
-      <div style={{ display: "none" }}>
-        <table id="table-stock">
-          <thead>
-            <tr>
-              <th>{t("goodsStockReport")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("outlet")}</th>
-              <td>
-                {selectedOutlet.id === " " ||
-                selectedOutlet.id === null ||
-                selectedOutlet.id === undefined
-                  ? "Semua Outlet"
-                  : selectedOutlet.name}
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>{t("date")}</th>
-              <td>{`${startDate} - ${endDateFilename}`}</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr></tr>
-          </tbody>
-          <thead>
-            <tr>
-              {kolom.map((i) => (
-                <th>{i}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {dataInventory.length > 0 ? (
-              dataInventory.map((item, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{item.outlet_name}</td>
-                    <td>{item.name}</td>
-                    <td>{item.stock_starting}</td>
-                    <td>{item.stock}</td>
-                    <td>{item.incoming_stock}</td>
-                    <td>{item.outcoming_stock}</td>
-                    <td>{item.adjusment}</td>
+      <Row>
+        <Col>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <FeatureReport
+              handleStartDate={handleStartDate}
+              handleEndDate={handleEndDate}
+              tabData={tabData}
+              handleEndDateFilename={handleEndDateFilename}
+              handleSelectedOutlet={handleSelectedOutlet}
+              titleReport="reportStock"
+              handleSelectStatus={handleSelectStatus}
+              handleTimeStart={handleTimeStart}
+              handleTimeEnd={handleTimeEnd}
+            />
+
+            <div style={{ display: "none" }}>
+              <table id="table-stock">
+                <thead>
+                  <tr>
+                    <th>{t("goodsStockReport")}</th>
                   </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td>{t("dataNotFound")}</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-      <DataTable
-        noHeader
-        pagination
-        columns={columns}
-        data={dataInventory}
-        expandableRows
-        expandableRowsComponent={<ExpandableComponent />}
-        style={{ minHeight: "100%" }}
-      />
+                </thead>
+                <tbody>
+                  <tr></tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <th>{t("outlet")}</th>
+                    <td>
+                      {selectedOutlet.id === " " ||
+                      selectedOutlet.id === null ||
+                      selectedOutlet.id === undefined
+                        ? "Semua Outlet"
+                        : selectedOutlet.name}
+                    </td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr></tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <th>{t("date")}</th>
+                    <td>{`${startDate} - ${endDateFilename}`}</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr></tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    {kolom.map((i) => (
+                      <th>{i}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {dataInventory.length > 0 ? (
+                    dataInventory.map((item, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{item.outlet_name}</td>
+                          <td>{item.name}</td>
+                          <td>{item.stock_starting}</td>
+                          <td>{item.stock}</td>
+                          <td>{item.incoming_stock}</td>
+                          <td>{item.outcoming_stock}</td>
+                          <td>{item.adjusment}</td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td>{t("dataNotFound")}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <DataTable
+              noHeader
+              pagination
+              columns={columns}
+              data={dataInventory}
+              expandableRows
+              expandableRowsComponent={<ExpandableComponent />}
+              style={{ minHeight: "100%" }}
+            />
+          </Paper>
+        </Col>
+      </Row>
     </>
   );
 };

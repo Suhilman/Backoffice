@@ -7,6 +7,7 @@ import CategoryTab from "./CategoryTab/CategoryTab";
 import UnitTab from "./UnitTab/UnitTab";
 import UnitConversionTab from "./UnitConversionTab/UnitConversionTab";
 import RecipeTab from "./RecipeTab/RecipePage";
+import ProductAssemblyTab from './ProductAssemblyTab/ProductAssembly'
 
 export const IngredientPage = () => {
   const { t } = useTranslation();
@@ -134,6 +135,19 @@ export const IngredientPage = () => {
           totalRecipePrice={totalRecipePrice}
         />
       </Tab>
+
+      {/* <Tab eventKey="product_assembly" title={t('productAssembly')}>
+        <ProductAssemblyTab
+          t={t}
+          allOutlets={allOutlets}
+          allMaterials={allMaterials}
+          allUnits={allUnits}
+          allCategories={allCategories}
+          refresh={refresh}
+          handleRefresh={handleRefresh}
+          totalRecipePrice={totalRecipePrice}
+        />
+      </Tab> */}
 
       <Tab eventKey="category" title={t("category")}>
         <CategoryTab refresh={refresh} handleRefresh={handleRefresh} />

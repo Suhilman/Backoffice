@@ -101,7 +101,6 @@ const InventoryTab = ({ refresh, t }) => {
   ];
 
   const dataInventory = inventory.map((item, index) => {
-    console.log("item apa saja", item)
     let adjusment = 0;
     let incoming_stock = 0;
     let outcoming_stock = 0;
@@ -134,7 +133,8 @@ const InventoryTab = ({ refresh, t }) => {
       outlet_name: item.Outlet?.name,
       name: item.name,
       supplier: item.supplier ? item.supplier : "-",
-      stock: item.stock,
+      // stock: item.stock,
+      stock: item.stock < 0 ? 0 : item.stock,
       stock_starting: item.stock_starting,
       incoming_stock,
       outcoming_stock,
@@ -153,6 +153,8 @@ const InventoryTab = ({ refresh, t }) => {
           ? item.Incoming_Stock.code
           : item.Transfer_Stock
           ? item.Transfer_Stock.code
+          : item.Product_Assembly
+          ? item.Product_Assembly.code
           : "-",
         stock: item.stock || 0,
         unit: item.Unit?.name || "-",

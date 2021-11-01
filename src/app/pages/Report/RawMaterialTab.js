@@ -3,20 +3,39 @@ import DataTable from "react-data-table-component";
 import { useTranslation } from "react-i18next";
 import axios from 'axios'
 import dayjs from "dayjs";
+import {
+  Paper
+} from "@material-ui/core";
+import { FeatureReport } from './components/FeatureReport'
+import {
+  Row,
+  Col
+} from "react-bootstrap";
 
-const RawMaterialTab = ({selectedOutlet,
-  endDate,
-  startDate,
-  startTime,
-  endTime}) => {
+const RawMaterialTab = () => {
+  const [refresh, setRefresh] = React.useState(0)
+  const handleRefresh = () => setRefresh((state) => state + 1)
+
+  const [selectedOutlet, setSelectedOutlet] = React.useState({
+    id: "",
+    name: "All Outlet"
+  })
+  const [startDate, setStartDate] = React.useState(
+    dayjs().format("YYYY-MM-DD")
+  );
+  const [endDate, setEndDate] = React.useState(dayjs().format("YYYY-MM-DD"));
+  const [endDateFilename, setEndDateFilename] = React.useState("");
+  const [startTime, setStartTime] = React.useState(new Date());
+  const [endTime, setEndTime] = React.useState(new Date());
+  const [tabData, setTabData] = React.useState({
+    no: 16,
+    table: "table-raw-material-report",
+    filename: `raw_material_report_${startDate}-${endDateFilename}`,
+  })
+  const [status, setStatus] = React.useState("");
+
   const { t } = useTranslation();
   const [dataExport, setDataExport] = useState([])
-
-  console.log("selectedOutlet", selectedOutlet)
-  console.log("endDate", endDate)
-  console.log("startDate", startDate)
-  console.log("startTime", startTime)
-  console.log("endTime", endTime)
 
   const columns = [
     {
@@ -157,7 +176,11 @@ const RawMaterialTab = ({selectedOutlet,
 
   useEffect(() => {
     getRecipe(selectedOutlet.id, startDate, endDate)
-  }, [selectedOutlet, startDate, endDate])
+    setTabData({
+      ...tabData,
+      filename: `raw_material_report_${startDate}-${endDateFilename}`
+    })
+  }, [selectedOutlet, startDate, endDate, endDateFilename])
 
   const rawMaterialReport = dataExport.map(value => {
     return {
@@ -168,40 +191,66 @@ const RawMaterialTab = ({selectedOutlet,
     }
   })
 
+  const handleStartDate = (date) => setStartDate(date)
+  const handleEndDate = (date) => setEndDate(date)
+  const handleEndDateFilename = (date) => setEndDateFilename(date)
+  const handleSelectedOutlet = (outlet) => setSelectedOutlet(outlet)
+  const handleSelectStatus = (status) => setStatus(status.target.value)
+  const handleTimeStart = (time) => setStartTime(time)
+  const handleTimeEnd = (time) => setEndTime(time)
+
   return (
     <>
-      <div style={{ display: "none" }}>
-        <table id="table-raw-material-report">
-          <tr>
-            <th>{t("exportRawMaterialResult")}</th>
-          </tr>
-          <tr>
-            <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("rawMaterial")}</th>
-            <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("usedAmount")}</th>
-            <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("remainingAmount")}</th>
-            <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("unit")}</th>
-          </tr>
-          {dataExport ? (
-            dataExport.map(item => 
-              <tr>
-                <td>{item.raw_material_name}</td>
-                <td>{item.used_amount}</td>
-                <td>{item.remaining_amount}</td>
-                <td>{item.unit}</td>
-            </tr>
-            )
-          ) : null }
-        </table>
-      </div>
-      <div>
-        <DataTable
-          noHeader
-          pagination
-          columns={columns}
-          data={rawMaterialReport}
-          style={{ minHeight: "100%" }}
-        />
-      </div>
+      <Row>
+        <Col>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <FeatureReport
+              handleStartDate={handleStartDate}
+              handleEndDate={handleEndDate}
+              tabData={tabData}
+              handleEndDateFilename={handleEndDateFilename}
+              handleSelectedOutlet={handleSelectedOutlet}
+              titleReport="reportRawMaterial"
+              handleSelectStatus={handleSelectStatus}
+              handleTimeStart={handleTimeStart}
+              handleTimeEnd={handleTimeEnd}
+            />
+
+            <div style={{ display: "none" }}>
+              <table id="table-raw-material-report">
+                <tr>
+                  <th>{t("exportRawMaterialResult")}</th>
+                </tr>
+                <tr>
+                  <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("rawMaterial")}</th>
+                  <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("usedAmount")}</th>
+                  <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("remainingAmount")}</th>
+                  <th scope="col" style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("unit")}</th>
+                </tr>
+                {dataExport ? (
+                  dataExport.map(item => 
+                    <tr>
+                      <td>{item.raw_material_name}</td>
+                      <td>{item.used_amount}</td>
+                      <td>{item.remaining_amount}</td>
+                      <td>{item.unit}</td>
+                  </tr>
+                  )
+                ) : null }
+              </table>
+            </div>
+            <div>
+              <DataTable
+                noHeader
+                pagination
+                columns={columns}
+                data={rawMaterialReport}
+                style={{ minHeight: "100%" }}
+              />
+            </div>
+          </Paper>
+        </Col>
+      </Row>
     </>
   );
 }

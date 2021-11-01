@@ -56,7 +56,7 @@ export const DetailSalesOrderPage = ({ match }) => {
             // orderPurchase: data.data.data.Sales_Order_Products,
             // hargaUnit: data.data.data.Sales_Order_Products[0].price,
             // kuantitas: data.data.data.Sales_Order_Products[0].quantity,
-            // produk: data.data.data.Sales_Order_Products[0].Product.name,
+            // produk: data.data.data.Sales_Order_Products[0].Product?.name,
             namaCustomer: resultCustomer.data.data.name,
             alamatCustomer: resultCustomer.data.data.address,
             nomorTeleponCustomer: resultCustomer.data.data.phone_number,
@@ -304,7 +304,7 @@ export const DetailSalesOrderPage = ({ match }) => {
   const dataOrder = SalesOrder
     ? SalesOrder.Sales_Order_Products.map((item, index) => {
         return {
-          product_name: item.Product.name,
+          product_name: item.Product?.name,
           quantity: item.quantity,
           price: item.price,
           total_price: item.total_price
@@ -371,7 +371,7 @@ export const DetailSalesOrderPage = ({ match }) => {
                     {SalesOrder ? 
                       SalesOrder.Sales_Order_Products.map((item) => 
                         <tr>
-                          <td>{item.Product.name}</td>
+                          <td>{item.Product?.name}</td>
                           <td>{item.quantity}</td>
                           <td><NumberFormat value={item.price} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
                           <td><NumberFormat value={item.total_price} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
@@ -441,7 +441,7 @@ export const DetailSalesOrderPage = ({ match }) => {
                       {SalesOrder ? (
                       SalesOrder.Sales_Order_Products.map(item => 
                         <tr>
-                          <td>{item.Product.name}</td>
+                          <td>{item.Product?.name}</td>
                           <td>{item.quantity}</td>
                           <td><NumberFormat value={item.price} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
                           <td><NumberFormat value={item.total_price} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>

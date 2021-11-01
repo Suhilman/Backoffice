@@ -476,6 +476,36 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
+              <FormControl component="fieldset">
+                <FormGroup row>
+                  <Form.Label
+                    style={{ alignSelf: "center", marginRight: "1rem" }}
+                  >
+                    {t("sellByWeight")}*
+                  </Form.Label>
+                  <FormControlLabel
+                    value={formikProduct.values.sell_by_weight}
+                    name="sell_by_weight"
+                    control={
+                      <Switch
+                        color="primary"
+                        checked={formikProduct.values.sell_by_weight}
+                        onChange={(e) => {
+                          const { value } = e.target;
+                          if (value === "false") {
+                            formikProduct.setFieldValue("sell_by_weight", true);
+                          } else {
+                            formikProduct.setFieldValue("sell_by_weight", false);
+                          }
+                        }}
+                      />
+                    }
+                  />
+                </FormGroup>
+              </FormControl>
+            </Form.Group>
+
+            <Form.Group>
               <Form.Label>{t("productDescription")}</Form.Label>
               <Form.Control
                 as="textarea"
@@ -841,6 +871,65 @@ const FormTemplate = ({
                 </Row>
               </Form.Group>
             ) : null}
+
+            {/* {showFeature.has_assembly ? (
+              <Form.Group>
+                <Form.Label>{t("productAssembly")}*</Form.Label>
+                <Row style={{ padding: "1rem" }}>
+                  {[
+                    {
+                      name: `${t("noProductAssembly")}`,
+                      value: false,
+                      checked: formikProduct.values.has_assembly ? false : true
+                    },
+                    {
+                      name: `${t("withProductAssembly")}`,
+                      value: true,
+                      checked: formikProduct.values.has_assembly ? true : false
+                    }
+                  ].map((item, index) => {
+                    return (
+                      <Col
+                        key={index}
+                        className="box"
+                        style={{ marginRight: "1rem" }}
+                      >
+                        <Row>
+                          <Col md={3}>
+                            <Form.Check
+                              type="radio"
+                              name="has_assembly"
+                              value={formikProduct.values.has_assembly}
+                              onChange={(e) => {
+                                const { value } = e.target;
+
+                                if (value === "true") {
+                                  formikProduct.setFieldValue(
+                                    "has_assembly",
+                                    false
+                                  );
+                                  // formikProduct.setFieldValue("recipe_id", null);
+                                } else {
+                                  formikProduct.setFieldValue("has_assembly", true);
+                                  formikProduct.setFieldValue("has_recipe", true);
+                                }
+                              }}
+                              checked={item.checked}
+                              className={validationProduct("has_assembly")}
+                              required
+                              feedback={formikProduct.errors.has_assembly}
+                            />
+                          </Col>
+                          <Col>
+                            <Row>{item.name}</Row>
+                          </Col>
+                        </Row>
+                      </Col>
+                    );
+                  })}
+                </Row>
+              </Form.Group>
+            ) : null} */}
 
             <Form.Group>
               <Form.Label>{t("productAddOns")}</Form.Label>
