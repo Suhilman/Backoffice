@@ -82,10 +82,10 @@ export default function LocationBusiness({location}) {
       .integer()
       .min(1)
       .required(`${t("pleaseChooseABusinessLocation")}`),
-    outlet_location_id: Yup.number()
-      .integer()
-      .min(1)
-      .required(`${t('pleaseChooseAnOutletLocation')}`)
+    // outlet_location_id: Yup.number()
+    //   .integer()
+    //   .min(1)
+    //   .required(`${t('pleaseChooseAnOutletLocation')}`)
   });
 
   const [dataSentOTP, setDataSentOTP] = useState({});
@@ -143,10 +143,10 @@ export default function LocationBusiness({location}) {
       .integer()
       .min(1)
       .required(`${t("pleaseChooseABusinessLocation ")}`),
-    outlet_location_id: Yup.number()
-      .integer()
-      .min(1)
-      .required(`${t("pleaseChooseAnOutletLocation")}`)
+    // outlet_location_id: Yup.number()
+    //   .integer()
+    //   .min(1)
+    //   .required(`${t("pleaseChooseAnOutletLocation")}`)
   });
 
   const handleFormikBusiness = async (values, accessToken) => {
@@ -166,7 +166,8 @@ export default function LocationBusiness({location}) {
       };
 
       const outletData = {
-        location_id: values.outlet_location_id
+        location_id: values.business_location_id
+        // location_id: values.outlet_location_id
       };
 
       await axios.patch(
@@ -423,6 +424,8 @@ export default function LocationBusiness({location}) {
         })
         const business_id = getBusinessId.data.data
 
+        console.log("data yang di kirimi", values)
+
         console.log("business_id", business_id)
 
         const { data } = await axios.get(`${API_URL}/api/v1/outlet`, {
@@ -437,7 +440,8 @@ export default function LocationBusiness({location}) {
         };
 
         const outletData = {
-          location_id: values.outlet_location_id
+          location_id: values.business_location_id
+          // location_id: values.outlet_location_id
         };
 
         await axios.patch(
@@ -866,8 +870,8 @@ export default function LocationBusiness({location}) {
           ) : null}
         </Form.Group>
 
-        <Form.Group>
-          {/* <Form.Label>Select Outlet Location</Form.Label> */}
+        {/* <Form.Group>
+          <Form.Label>Select Outlet Location</Form.Label>
           <Form.Control
             as="select"
             name="outlet_location_id"
@@ -895,7 +899,7 @@ export default function LocationBusiness({location}) {
               </div>
             </div>
           ) : null}
-        </Form.Group>
+        </Form.Group> */}
         {/* End business location*/}
         <div className="d-flex justify-content-end">
           <button

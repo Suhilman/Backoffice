@@ -273,7 +273,7 @@ function Login(props) {
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
-      .email("Wrong email format")
+      .email(`${t('wrongEmailFormat')}`)
       .min(3, `${t("minimum3Symbols")}`)
       .max(50, `${t("maximum50Symbols")}`)
       .required(`${t('pleaseInputEmail')}`),
@@ -295,6 +295,19 @@ function Login(props) {
     return "";
   };
 
+  const handleSendEmail = async (email, verifyCode, token) => {
+    try {
+      await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/send-email/verify-otp?email=${email}&verifyCode=${verifyCode}`,
+        { headers: { Authorization: token } }
+      );
+      return true;
+    } catch (error) {
+      console.log("error", error);
+      return false;
+    }
+  };
+
   const formik = useFormik({
     initialValues,
     validationSchema: LoginSchema,
@@ -304,11 +317,16 @@ function Login(props) {
         .then(async ({ data }) => {
           const API_URL = process.env.REACT_APP_API_URL;
           const { token, user } = data.data;
-
+          console.log("return nya data.data", data.data)
           // Jika akun belum diverifikasi
           if (!user.is_verified) {
+            const getOwner = await axios.get(`${API_URL}/api/v1/owner/my-id`, {
+              headers: { Authorization: `Bearer ${token}` }
+            })
             console.log("Belum diverifikasi")
+            console.log("Verify Code nya", getOwner.data.data.verification_code)
             disableLoading()
+            handleSendEmail(values.email, getOwner.data.data.verification_code, `Bearer ${token}`)
             history.push(`/register-process/verify-email?email=${values.email}&session=${token}`);
           // Jika akun sudah terverifikasi
           } else {

@@ -18,14 +18,10 @@ function ForgotPassword(props) {
   const [isRequested, setIsRequested] = useState(false);
   const ForgotPasswordSchema = Yup.object().shape({
     email: Yup.string()
-      .email("Wrong email format")
+      .email(`${t("wrongEmailFormat")}`)
       .min(3, `${t("minimum3Symbols")}`)
       .max(50, `${t("maximum50Symbols")}`)
-      .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD",
-        })
-      ),
+      .required(`${t('pleaseInputEmail')}`)
   });
 
   const getInputClasses = (fieldname) => {
@@ -51,7 +47,7 @@ function ForgotPassword(props) {
           setSubmitting(false);
           setStatus(
             intl.formatMessage(
-              { id: "AUTH.VALIDATION.NOT_FOUND" },
+              { id: `${t("emailNotFound")}` },
               { name: values.email }
             )
           );
@@ -65,9 +61,9 @@ function ForgotPassword(props) {
       {!isRequested && (
         <div className="login-form login-forgot" style={{ display: "block" }}>
           <div className="text-center mb-10 mb-lg-20">
-            <h3 className="font-size-h1">Forgotten Password ?</h3>
+            <h3 className="font-size-h1">{t("forgottenPassword")}</h3>
             <div className="text-muted font-weight-bold">
-              Enter your email to reset your password
+              {t("enterYourEmailToResetYourPassword")}
             </div>
           </div>
           <form
@@ -103,7 +99,7 @@ function ForgotPassword(props) {
                 className="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4"
                 disabled={formik.isSubmitting}
               >
-                Submit
+                {t("submit")}
               </button>
               <Link to="/auth">
                 <button
@@ -111,7 +107,7 @@ function ForgotPassword(props) {
                   id="kt_login_forgot_cancel"
                   className="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-4"
                 >
-                  Cancel
+                  {t("cancel")}
                 </button>
               </Link>
             </div>

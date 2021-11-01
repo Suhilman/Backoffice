@@ -91,6 +91,7 @@ const RegistrationTryNow = () => {
   const API_URL = process.env.REACT_APP_API_URL;
   const [loading, setLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState("")
 
   const [width, height] = useWindowSize();
   const [showNavDropdown, setShowDropdown] = useState(false)
@@ -120,7 +121,7 @@ const RegistrationTryNow = () => {
   const RegistrationSchema = Yup.object().shape({
     name: Yup.string(),
     email: Yup.string()
-      .email("Wrong email format")
+      .email(`${t('wrongEmailFormat')}`)
       .min(3, `${t("minimum3Symbols")}`)
       .max(50, `${t("maximum50Symbols")}`)
       .required(`${t("pleaseInputEmail")}`),
@@ -511,6 +512,7 @@ const RegistrationTryNow = () => {
         const { owner, accessToken } = data.data;
         setToken(`Bearer ${accessToken}`);
         setVerificationCode(owner.verification_code)
+        handleSendEmail(values.email, owner.verification_code)
         history.push(`/register-process/verify-email?email=${values.email}&session=${accessToken}`);
       })
       .catch((err) => {
@@ -623,6 +625,11 @@ const RegistrationTryNow = () => {
       .map((item) => item.Cities);
     setAllCities(cities);
   };
+
+  useEffect(() => {
+    const currLanguage = localStorage.getItem("i18nextLng")
+    setSelectedLanguage(currLanguage)
+  }, [])
 
   const handleCity = (e) => {
     const city_id = e.target.value;
@@ -842,7 +849,11 @@ const RegistrationTryNow = () => {
             {chooseLanguages?.length
               ? chooseLanguages.map((item) => {
                   return (
-                    <option key={item.id} value={item.key}>
+                    <option 
+                      key={item.id} 
+                      value={item.key}
+                      selected={selectedLanguage == item.key}
+                    >
                       {item.language}
                     </option>
                   );

@@ -1023,5 +1023,14 @@
     "emailTo": "Email to",
     "accountVerification": "Account Verification",
     "enterTheVerificationCodeWeSend": "Enter the Verification Code We Send",
-    "pleaseInputVerifyCode": "Please Input Verify Code"
+    "pleaseInputVerifyCode": "Please Input Verify Code",
+    "showHere": "Show Here",
+    "enterYourOwnerEmail,StaffIdAndPassword": "Enter Your Owner Email, Staff Id And Password",
+    "staffId": "Staff Id",
+    "pleaseInputStaffId": "Please Input Staff Id",
+    "loginStaff": "Login Staff",
+    "owner?LoginHere": "Owner? Login Here",
+    "emailNotFound": "Email Not Found",
+    "forgottenPassword": "Forgotten Password",
+    "enterYourEmailToResetYourPassword": "Enter Your Email To Reset Your Password"
 }

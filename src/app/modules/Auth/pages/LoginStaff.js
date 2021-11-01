@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
@@ -24,32 +24,25 @@ const LoginStaff = (props) => {
 
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState(false);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
+  const [selectedLanguage, setSelectedLanguage] = useState("")
 
   const LoginSchema = Yup.object().shape({
     staff_id: Yup.string()
       .min(3, `${t("minimum3Symbols")}`)
       .max(50, `${t("maximum50Symbols")}`)
-      .required("please input staff_id"),
+      .required(`${t("pleaseInputStaffId")}`),
     email: Yup.string()
-      .email("Wrong email format")
+      .email(`${t("wrongFormatEmail")}`)
       .min(3, `${t("minimum3Symbols")}`)
       .max(50, `${t("maximum50Symbols")}`)
-      .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD"
-        })
-      ),
+      .required(`${t('pleaseInputEmail')}`),
     password: Yup.string()
       .min(3, `${t("minimum3Symbols")}`)
       .max(50, `${t("maximum50Symbols")}`)
-      .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD"
-        })
-      )
+      .required(`${t('pleaseInputAPassword')}`),
   });
 
   const getInputClasses = (fieldname) => {
@@ -94,14 +87,42 @@ const LoginStaff = (props) => {
     }
   });
 
+  const chooseLanguages = [
+    {
+      no: 1,
+      key: "id",
+      language: "Indonesia"
+    },
+    {
+      no: 2,
+      key: "en",
+      language: "English"
+    }
+    // {
+    //   no: 3,
+    //   key: "cn",
+    //   language: "Chinese"
+    // }
+  ];
+
+  const changeLanguage = (language, noLanugage) => {
+    console.log("language", language)
+    i18n.changeLanguage(language);
+  };
+
+  useEffect(() => {
+    const currLanguage = localStorage.getItem("i18nextLng")
+    setSelectedLanguage(currLanguage)
+  }, [])
+
   return (
     <>
       <div className="login-form login-signin" id="kt_login_signin_form">
         {/* begin::Head */}
         <div className="text-center mb-10 mb-lg-20">
-          <h3 className="font-size-h1">Login Staff</h3>
+          <h3 className="font-size-h1">{t("loginStaff")}</h3>
           <p className="text-muted font-weight-bold">
-            Enter your owner email, staff id and password
+            {t("enterYourOwnerEmail,StaffIdAndPassword")}
           </p>
         </div>
         {/* end::Head */}
@@ -119,9 +140,34 @@ const LoginStaff = (props) => {
             ""
           )}
 
+          {/* Choose Language */}
+          <div className="form-group d-flex align-items-end justify-content-between">
+            <label className="mr-4" for="exampleFormControlSelect1">{t('language')}</label>
+            <select 
+              className="form-control" 
+              id="exampleFormControlSelect1" 
+              onClick={(e) => changeLanguage(e.target.value)}
+            >
+              {chooseLanguages?.length
+                ? chooseLanguages.map((item) => {
+                    return (
+                      <option 
+                        key={item.id} 
+                        value={item.key}
+                        selected={selectedLanguage == item.key}
+                      >
+                        {item.language}
+                      </option>
+                    );
+                  })
+                : ""}
+            </select>
+          </div>
+          {/* End Choose Language */}
+
           <div className="form-group fv-plugins-icon-container">
             <input
-              placeholder="Staff ID"
+              placeholder={t("staffId")}
               type="text"
               className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
                 "staff_id"
@@ -154,7 +200,7 @@ const LoginStaff = (props) => {
           </div>
           <div className="form-group fv-plugins-icon-container">
             <input
-              placeholder="Password"
+              placeholder={t("password")}
               type="password"
               className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
                 "password"
@@ -174,14 +220,14 @@ const LoginStaff = (props) => {
               className="text-dark-50 text-hover-primary my-3 mr-2"
               id="kt_login_forgot"
             >
-              <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />
+              <FormattedMessage id={t('forgotPassword')} />
             </Link>
             <Link
               to="/auth/login"
               className="text-dark-50 text-hover-primary my-3 mr-2"
               id="kt_login_forgot"
             >
-              Owner? Login Here
+              {t("owner?LoginHere")}
             </Link>
             <ReCAPTCHA
               sitekey={process.env.REACT_APP_SITE_KEY}
@@ -193,7 +239,7 @@ const LoginStaff = (props) => {
               disabled={formik.isSubmitting}
               className={`btn btn-primary font-weight-bold px-9 py-4 my-3`}
             >
-              <span>Sign In</span>
+              <span>{t("signIn")}</span>
               {loading && <span className="ml-3 spinner spinner-white"></span>}
             </button>
           </div>

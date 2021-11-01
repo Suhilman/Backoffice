@@ -158,6 +158,7 @@ export function UserProfileDropdown() {
     setFilterWeeklyReport(esBuah);
     setFilterDailyReport(esAlpukat);
   };
+
   const chooseLanguages = [
     {
       no: 1,
@@ -176,9 +177,39 @@ export function UserProfileDropdown() {
     // }
   ];
 
+  const handleBusinessInformation = async () => {
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+    try {
+      const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+      if(!data.data.language || data.data.language == 'en') {
+        changeLanguage("en", 2)
+      } else if (data.data.language == 'id') {
+        changeLanguage("id", 1)
+      } else {
+        changeLanguage("en", 2)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleChangeLanguage = async (language) => {
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+    try {
+      await axios.patch(`${API_URL}/api/v1/business/update-language/${userInfo.business_id}`, {language})
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    handleBusinessInformation()
+  }, [])
+
   const { t, i18n } = useTranslation();
 
   const changeLanguage = (language, noLanugage) => {
+    handleChangeLanguage(language)
     setTabs(noLanugage);
     i18n.changeLanguage(language);
   };

@@ -72,7 +72,7 @@ function Registration(props) {
       .max(50, `${t("maximum50Symbols")}`)
       .required(`${t('pleaseInputABusinessName')}`),
     email: Yup.string()
-      .email("Wrong email format")
+      .email(`${t('wrongEmailFormat')}`)
       .min(3, `${t("minimum3Symbols")}`)
       .max(50, `${t("maximum50Symbols")}`)
       .required(`${t('pleaseInputEmail')}`),

@@ -46,6 +46,8 @@ export function NotificationDropdown() {
     }
   } 
 
+  const handleRefreshNotif = async () => await getNotification()
+
   useState(() => {
     getNotification()
   }, [])
@@ -60,6 +62,7 @@ export function NotificationDropdown() {
           className={
             "btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2"
           }
+          onClick={handleRefreshNotif}
         >
           <img src={iconNotif} alt="Icon Notif" width={20} height={18} />
         </div>

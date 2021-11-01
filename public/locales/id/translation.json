@@ -1023,5 +1023,14 @@
   "emailTo": "Email ke",
   "accountVerification": "Verifikasi Akun",
   "enterTheVerificationCodeWeSend": "Masukkan Kode Verifikasi Yang Kami Kirim",
-  "pleaseInputVerifyCode": "Masukkan Kode Verifikasi"
+  "pleaseInputVerifyCode": "Masukkan Kode Verifikasi",
+  "showHere": "Tampilkan Disini",
+  "enterYourOwnerEmail,StaffIdAndPassword": "Masukkan Email Pemilik Anda, ID Staf Dan Kata Sandi",
+  "staffId": "Staf Id",
+  "pleaseInputStaffId": "Silakan Masukkan Id Staf",
+  "loginStaff": "Masuk Staf",
+  "owner?LoginHere": "Pemilik? Masuk disini",
+  "emailNotFound": "Email Tidak Ditemukan",
+  "forgottenPassword": "Lupa Passowrd",
+  "enterYourEmailToResetYourPassword": "Masukkan Email Anda Untuk Mengatur Ulang Kata Sandi Anda"
 }

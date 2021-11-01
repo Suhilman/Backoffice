@@ -14,7 +14,12 @@ export default function VerifyEmail({location}) {
   const [token, setToken] = useState("")
   const [session, setSession] = useState("")
   const [code, setCode] = useState("")
+  const [showCode, setShowCode] = useState(false)
   const [selectedLanguage, setSelectedLanguage] = useState("")
+  const [timeCount, setTimeCount] = useState(false)
+  const [second, setSecond] = useState(0);
+  const [defaultValue, setDefaultValue] = useState("")
+
   // const location = useLocation();
 
   const getCode = async (token) => {
@@ -28,7 +33,8 @@ export default function VerifyEmail({location}) {
     }
   }
 
-  const resendCode = async (email) => {
+  const resendCode = async () => {
+    console.log("resendCode email", email)
     try {
       await axios.get(
         `${process.env.REACT_APP_API_URL}/api/v1/send-email/verify-otp?email=${email}&verifyCode=${code}`,
@@ -39,6 +45,16 @@ export default function VerifyEmail({location}) {
       return false;
     }
   };
+
+  const showHere = () => {
+    if(second > 0) {
+      return
+    } else {
+      setShowCode(true)
+    }
+  }
+
+  const handleFillCode = () => setDefaultValue(code)
 
   const checkCode = async () => {
     try {
@@ -95,7 +111,24 @@ export default function VerifyEmail({location}) {
   useEffect(() => {
     const currLanguage = localStorage.getItem("i18nextLng")
     setSelectedLanguage(currLanguage)
+    setTimeout(() => {
+      setTimeCount(true)
+      setSecond(5)
+    }, 5000 )
   }, [])
+
+  useEffect(() => {
+    let timer;
+    if (second > 0) {
+      timer = setTimeout(function() {
+        setSecond((now) => now - 1);
+      }, 1000);
+    } else {
+      clearTimeout(timer);
+    }
+
+    return () => clearTimeout(timer);
+  });
 
   return (
     <div className={styles.container}>
@@ -141,6 +174,7 @@ export default function VerifyEmail({location}) {
             type="code_verification"
             className="form-control h-auto py-3 px-4"
             name="code_verification"
+            defaultValue={defaultValue}
           />
         </div>
         <button
@@ -153,6 +187,14 @@ export default function VerifyEmail({location}) {
         </button>
         <div>{t("didntReceiveTheVerificationCode")}</div>
         <div className={`${styles.resendCode} text-primary`} onClick={resendCode}>{t("resendVerificationCode")}</div>
+        {timeCount ? 
+          showCode ? (
+            <div className="text-primary" onClick={handleFillCode}>{code}</div>
+          ) : (
+            <div className={`${styles.resendCode} ${second > 0 ? 'text-muted' : 'text-primary'}`} onClick={showHere}>{t("showHere")}{second > 0 && (<span className="ml-2">{second}</span>)}</div>
+          )
+        : null }
+
       </div>
       <div>
         <div className={`${styles.footer} text-muted`}>&copy; 2021 Lifetech</div>
