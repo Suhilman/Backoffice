@@ -1032,5 +1032,12 @@
     "owner?LoginHere": "Owner? Login Here",
     "emailNotFound": "Email Not Found",
     "forgottenPassword": "Forgotten Password",
-    "enterYourEmailToResetYourPassword": "Enter Your Email To Reset Your Password"
+    "enterYourEmailToResetYourPassword": "Enter Your Email To Reset Your Password",
+
+    "currencyConversion": "Currency Convertion",
+    "currencyA": "Currency A",
+    "currencyB": "Currency B",
+    "conversionAToB": "Conversion A to B",
+    "conversionBToA": "Conversion B to A",
+    "addCurrencyConversion": "Add Currency Conversion"
 }

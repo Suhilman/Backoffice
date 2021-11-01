@@ -1032,5 +1032,12 @@
   "owner?LoginHere": "Pemilik? Masuk disini",
   "emailNotFound": "Email Tidak Ditemukan",
   "forgottenPassword": "Lupa Passowrd",
-  "enterYourEmailToResetYourPassword": "Masukkan Email Anda Untuk Mengatur Ulang Kata Sandi Anda"
+  "enterYourEmailToResetYourPassword": "Masukkan Email Anda Untuk Mengatur Ulang Kata Sandi Anda",
+
+  "currencyConversion": "Konversi Mata Uang",
+  "currencyA": "Mata Uang A",
+  "currencyB": "Mata Uang B",
+  "conversionAToB": "Konversi A ke B",
+  "conversionBToA": "Konversi B ke A",
+  "addCurrencyConversion": "Tambah Konversi Mata Uang"
 }

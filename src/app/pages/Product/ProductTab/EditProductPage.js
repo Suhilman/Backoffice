@@ -130,7 +130,7 @@ export const EditProductPage = ({ match, location }) => {
     is_favorite: Yup.boolean().required(),
     has_raw_material: Yup.boolean().required(),
     has_recipe: Yup.boolean().required(),
-    has_assembly: Yup.boolean().required(),
+    // has_assembly: Yup.boolean().required(),
     sell_by_weight: Yup.boolean().required(),
     has_stock: Yup.boolean().required(),
     recipe_id: Yup.number().nullable(),

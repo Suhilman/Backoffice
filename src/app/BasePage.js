@@ -30,6 +30,7 @@ import { AddStaffPage } from "./pages/Staff/AddStaffPage";
 import { DetailStaffPage } from "./pages/Staff/DetailStaffPage";
 import { AccountPage } from "./pages/Account/AccountPage";
 import SubscriptionPage from "./pages/Subscription/SubscriptionPage";
+import CurrencyPage from "./pages/Currency/CurrencyPage";
 import { ProductPage } from "./pages/Product/ProductPage";
 import { AddProductPage } from "./pages/Product/ProductTab/AddProductPage";
 import { EditProductPage } from "./pages/Product/ProductTab/EditProductPage";
@@ -109,6 +110,7 @@ export default function BasePage() {
     inventory_management: false,
     kitchen_management: false,
     commission_management: false,
+    currency: true,
     subscription: true,
     payment_module: true,
     about: true,
@@ -749,6 +751,14 @@ export default function BasePage() {
           exact={false}
           path="/commission/group-commission/:commissionId"
           component={EditGroupCommission}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.subscription}
+          isRoute={true}
+          exact={false}
+          path="/currency"
+          component={CurrencyPage}
         />
 
         <ProtectedRoute

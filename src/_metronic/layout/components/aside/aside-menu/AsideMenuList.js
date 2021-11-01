@@ -21,11 +21,11 @@ import commissionIcon from "../../../../../images/icons8-sales-performance-52.pn
 import subscriptionIcon from "../../../../../images/icons8-subscription-100.png";
 import paymentIcon from "../../../../../images/icons8-mobile-payment-90.png";
 import paymentSalesChannel from "../../../../../images/icons8-sales-64.png";
+import currencyIcon from "../../../../../images/currency-exchange.png";
 import aboutIcon from "../../../../../images/icons8-about-500.png";
 import axios from "axios";
 import ArrowUp from '../../../../../images/arrow-up.png'
 import ArrowDown from '../../../../../images/arrow-down.png'
-
 import "./style.css";
 
 // TODO: ambil privileges dari store
@@ -670,31 +670,31 @@ function AsideMenuList(props) {
                   </li>
                 );
               }
-              if (section === "commission_management") {
-                return (
-                  <li
-                    key={index}
-                    className={`menu-item ${getMenuItemActive(
-                      "/commission",
-                      false
-                    )}`}
-                  >
-                    <NavLink className="menu-link" to="/commission">
-                      {/* <span className="svg-icon menu-icon">
-                        <SVG
-                          src={toAbsoluteUrl(
-                            "/media/svg/icons/Shopping/Bag2.svg"
-                          )}
-                        />
-                      </span> */}
-                      <div className="wrapper-icon">
-                        <img src={commissionIcon} alt="Icon Commission" />
-                      </div>
-                      <span className="menu-text">{t("Commission")}</span>
-                    </NavLink>
-                  </li>
-                );
-              }
+              // if (section === "commission_management") {
+              //   return (
+              //     <li
+              //       key={index}
+              //       className={`menu-item ${getMenuItemActive(
+              //         "/commission",
+              //         false
+              //       )}`}
+              //     >
+              //       <NavLink className="menu-link" to="/commission">
+              //         {/* <span className="svg-icon menu-icon">
+              //           <SVG
+              //             src={toAbsoluteUrl(
+              //               "/media/svg/icons/Shopping/Bag2.svg"
+              //             )}
+              //           />
+              //         </span> */}
+              //         <div className="wrapper-icon">
+              //           <img src={commissionIcon} alt="Icon Commission" />
+              //         </div>
+              //         <span className="menu-text">{t("Commission")}</span>
+              //       </NavLink>
+              //     </li>
+              //   );
+              // }
             })
           : ""}
 
@@ -714,23 +714,35 @@ function AsideMenuList(props) {
           </NavLink>
         </li>
 
-        <li className={`menu-item ${getMenuItemActive("/subscription", false)}`}>
+        {/* <li className={`menu-item ${getMenuItemActive("/currency", false)}`}>
+          <NavLink className="menu-link" to="/currency">
+            <span className="svg-icon menu-icon">
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Shopping/Bag2.svg")} />
+            </span>
+            <div className="wrapper-icon">
+              <img src={currencyIcon} alt="Icon Currency" />
+            </div>
+            <span className="menu-text">{t("currencyConversion")}</span>
+          </NavLink>
+        </li> */}
+
+        {/* <li className={`menu-item ${getMenuItemActive("/subscription", false)}`}>
           <NavLink className="menu-link" to="/subscription">
             <div className="wrapper-icon">
               <img src={subscriptionIcon} alt="Icon Subscription"/>
             </div>
             <span className="menu-text">{t("subscription")}</span>
           </NavLink>
-        </li>
+        </li> */}
 
-        <li className={`menu-item ${getMenuItemActive("/payment", false)}`}>
+        {/* <li className={`menu-item ${getMenuItemActive("/payment", false)}`}>
           <NavLink className="menu-link" to="/payment">
             <div className="wrapper-icon">
               <img src={paymentIcon} alt="Icon Payment" />
             </div>
             <span className="menu-text">{t("payment")}</span>
           </NavLink>
-        </li>
+        </li> */}
 
         {/* {showIntegrate ? (
           <li className={`menu-item ${getMenuItemActive("/sales-channel", false)}`}>

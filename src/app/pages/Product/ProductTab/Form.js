@@ -872,7 +872,7 @@ const FormTemplate = ({
               </Form.Group>
             ) : null}
 
-            {showFeature.has_assembly ? (
+            {/* {showFeature.has_assembly ? (
               <Form.Group>
                 <Form.Label>{t("productAssembly")}*</Form.Label>
                 <Row style={{ padding: "1rem" }}>
@@ -929,7 +929,7 @@ const FormTemplate = ({
                   })}
                 </Row>
               </Form.Group>
-            ) : null}
+            ) : null} */}
 
             <Form.Group>
               <Form.Label>{t("productAddOns")}</Form.Label>
