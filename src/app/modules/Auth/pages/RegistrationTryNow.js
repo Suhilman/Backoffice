@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 
 import ReCAPTCHA from "react-google-recaptcha";
 import styles from "./registrationmarketing.module.css";
+import './style.css'
 
 import LogoBeetpos from '../../../../images/logo beetPOS new.png'
 import LogoTwitter from '../../../../images/twitter-480.png'
@@ -92,6 +93,10 @@ const RegistrationTryNow = () => {
   const [loading, setLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("")
+
+  const [countryCallingCode, setCountryCallingCode] = useState([])
+  const [openOption, setOpenOption] = useState(false)
+  const [phoneCode, setPhoneCode] = useState("")
 
   const [width, height] = useWindowSize();
   const [showNavDropdown, setShowDropdown] = useState(false)
@@ -497,14 +502,16 @@ const RegistrationTryNow = () => {
     initialValues,
     validationSchema: RegistrationSchema,
     onSubmit: (values, { setStatus, setSubmitting }) => {
+      const phoneNumber = `${phoneCode}${values.phone_number}`
+      console.log("phoneNumber", phoneNumber)
       enableLoading();
-      setPhonenumber(values.phone_number.toString());
+      setPhonenumber(phoneNumber);
       setDataFormik(values);
       console.log("Data registrasi", values)
       register(
         values.email,
         values.name,
-        values.phone_number.toString(),
+        phoneNumber,
         values.password,
         captchaToken
       )
@@ -671,7 +678,22 @@ const RegistrationTryNow = () => {
     }
   };
 
+  const getCountryCallingCode = async () => {
+    try {
+      const API_URL = process.env.REACT_APP_API_URL;
+      const { data } = await axios.get(`${API_URL}/api/v1/country-calling-code`);
+      data.data.map(value => {
+        value.nicename = "   " + value.nicename.substring(0, value.nicename.length)
+      })
+      console.log("countryCallingCode", data.data)
+      setCountryCallingCode(data.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
+    getCountryCallingCode()
     getBusinessTypes();
     getProvinces();
   }, []);
@@ -754,6 +776,15 @@ const RegistrationTryNow = () => {
       word: "Fasilitas pemantauan keberadaan perangkat android real-time positioning system"
     }
   ]
+
+  const handleCountryCallingCode = (value) => {
+    setPhoneCode(value)
+    console.log("handleCountryCallingCode", value)
+  }
+
+  const handleOpenOption = (params) => {
+    setOpenOption(params)
+  }
 
   return (
     <div className="login-form login-signin" style={{ display: "block" }}>
@@ -882,15 +913,42 @@ const RegistrationTryNow = () => {
         {/* end: Email */}
 
         {/* begin: Phone Number */}
-        <div className="form-group fv-plugins-icon-container">
-          <input
-            placeholder={t('phoneNumber')}
-            type="number"
-            autoComplete="new-password"
-            className={`form-control py-5 px-6 ${getInputClasses("phone_number")}`}
-            name="phone_number"
-            {...formik.getFieldProps("phone_number")}
-          />
+        <div className="row no-gutters form-group fv-plugins-icon-container">
+          <div className="col-md-4">
+            <Form.Control
+              as="select"
+              required
+              onClick={() => handleOpenOption(!openOption)}
+              onBlur={() => handleOpenOption(false)}
+              onChange={(e) => handleCountryCallingCode(e.target.value)}
+            >
+              {/* <option value="" disabled hidden>
+                Choose Business Type
+              </option> */}
+              
+              {countryCallingCode.map((item) =>
+                openOption ? (
+                  <option styles={{width: '600px'}} key={item.id} value={`+${item.phonecode}`}>
+                    {item.nicename}
+                  </option>
+                ) : (
+                  <option key={item.id} value={`+${item.phonecode}`}>
+                    {`+${item.phonecode}`}
+                  </option>
+                )
+              )}
+            </Form.Control>
+          </div>
+          <div className="col-md-8 pl-2">
+            <input
+              placeholder={t('phoneNumber')}
+              type="number"
+              autoComplete="new-password"
+              className={`form-control py-5 px-6 ${getInputClasses("phone_number")}`}
+              name="phone_number"
+              {...formik.getFieldProps("phone_number")}
+            />
+          </div>
           {formik.touched.phone_number && formik.errors.phone_number ? (
             <div className="fv-plugins-message-container">
               <div className="fv-help-block">{formik.errors.phone_number}</div>
