@@ -461,8 +461,11 @@ export default function LocationBusiness({location}) {
         const dataSubscription = {
           subscription_type_id: 10,
           expired_date: now,
-          status: "active"
+          status: "active",
+          subscription_partition_id: 1
         };
+
+        // subscription_partition_id 1. Basic 2. Standard 3. Complete
 
         await axios.post(`${API_URL}/api/v1/subscription`, dataSubscription, {
           headers: { Authorization: token }
