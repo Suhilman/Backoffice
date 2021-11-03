@@ -260,6 +260,10 @@ function AsideMenuList(props) {
       name: 'profitCalculation'
     },
     {
+      route: 'recap',
+      name: 'recap'
+    },
+    {
       route: 'sales-per-hour',
       name: 'salesPerHour'
     },
@@ -297,20 +301,12 @@ function AsideMenuList(props) {
       route: 'stock-report',
       name: 'stockReport'
     },
-    // {
-    //   route: 'commisison-report',
-    //   name: 'commissionReport'
-    // }
   ]
 
   const dropdownEmployeeReport = [
     {
       route: 'attendance',
       name: 'attendance'
-    },
-    {
-      route: 'recap',
-      name: 'recap'
     },
     // {
     //   route: 'commisison-report',
