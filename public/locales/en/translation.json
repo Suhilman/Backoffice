@@ -1039,5 +1039,6 @@
     "currencyB": "Currency B",
     "conversionAToB": "Conversion A to B",
     "conversionBToA": "Conversion B to A",
-    "addCurrencyConversion": "Add Currency Conversion"
+    "addCurrencyConversion": "Add Currency Conversion",
+    "inventoryReport": "Inventory Report"
 }

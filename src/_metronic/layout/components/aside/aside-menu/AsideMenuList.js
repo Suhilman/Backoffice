@@ -44,6 +44,7 @@ function AsideMenuList(props) {
   const [managementSections, setManagementSections] = React.useState([]);
   const [showDropdownReport, setShowDropdownReport] = React.useState(false)
   const [showDropdownReportSales, setShowDropdownReportSales] = React.useState(false)
+  const [showDropdownReportInventory, setShowDropdownInventory] = React.useState(false)
   const [showDropdownReportEmployee, setShowDropdownEmployee] = React.useState(false)
 
   const [kitchenModul, setKitchenModul] = React.useState("");
@@ -259,14 +260,6 @@ function AsideMenuList(props) {
       name: 'profitCalculation'
     },
     {
-      route: 'raw-material',
-      name: 'rawMaterial'
-    },
-    {
-      route: 'recap',
-      name: 'recap'
-    },
-    {
       route: 'sales-per-hour',
       name: 'salesPerHour'
     },
@@ -286,10 +279,6 @@ function AsideMenuList(props) {
       name: 'staffTransaction'
     },
     {
-      route: 'stock-report',
-      name: 'stockReport'
-    },
-    {
       route: 'transaction-history',
       name: 'transactionHistory'
     },
@@ -299,10 +288,29 @@ function AsideMenuList(props) {
     }
   ]
 
+  const dropdownInventoryReport = [
+    {
+      route: 'raw-material',
+      name: 'rawMaterial'
+    },
+    {
+      route: 'stock-report',
+      name: 'stockReport'
+    },
+    // {
+    //   route: 'commisison-report',
+    //   name: 'commissionReport'
+    // }
+  ]
+
   const dropdownEmployeeReport = [
     {
       route: 'attendance',
       name: 'attendance'
+    },
+    {
+      route: 'recap',
+      name: 'recap'
     },
     // {
     //   route: 'commisison-report',
@@ -312,6 +320,7 @@ function AsideMenuList(props) {
 
   const handleDropdownReport = () => setShowDropdownReport(!showDropdownReport)
   const handleDropdownReportSales = () => setShowDropdownReportSales(!showDropdownReportSales)
+  const handleDropdownReportInventory = () => setShowDropdownInventory(!showDropdownReportInventory)
   const handleDropdownReportEmployee = () => setShowDropdownEmployee(!showDropdownReportEmployee)
 
   return (
@@ -397,9 +406,30 @@ function AsideMenuList(props) {
                                 )}
                               </ul>
                             </div>
-
                           </li>
 
+                          <li key={index} className={`menu-item ${getMenuItemActive("/report",false)}`}  aria-haspopup="true">
+                            <div className="menu-link d-flex justify-content-between align-items-center">
+                              <span className="dropdown-menu-lv1 menu-text" onClick={handleDropdownReportInventory}>{t("inventoryReport")}</span>
+                              {showDropdownReportInventory ? (
+                                <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
+                              ) : (
+                                <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
+                              )}
+                            </div>
+                            <div className={showDropdownReportInventory ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
+                              <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
+                                {dropdownInventoryReport.map((value, index2) => 
+                                  <li key={index2} className={`menu-item ${getMenuItemActive(`/${value.route}`,false)}`}  aria-haspopup="true">
+                                    <NavLink className="menu-link" to={`/report/${value.route}`}>
+                                      <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
+                                    </NavLink>
+                                  </li>
+                                )}
+                              </ul>
+                            </div>
+                          </li>
+                          
                           <li key={index} className={`menu-item ${getMenuItemActive("/report",false)}`}  aria-haspopup="true">
                             <div className="menu-link d-flex justify-content-between align-items-center">
                               <span className="dropdown-menu-lv1 menu-text" onClick={handleDropdownReportEmployee}>{t("employeeReport")}</span>
@@ -421,6 +451,7 @@ function AsideMenuList(props) {
                               </ul>
                             </div>
                           </li>
+                          
                         </ul>
                       </div>
                     </li>
