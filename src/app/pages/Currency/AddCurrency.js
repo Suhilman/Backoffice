@@ -21,19 +21,40 @@ export default function AddCurrency({
   title, 
   formikCurrency, 
   validationCurrency, 
-  state, 
+  alertModal,
+  action, 
   loading, 
   handleSelectOutlet ,
   allOutlets,
-  showFeature
+  showFeature,
+  allCurrency,
+  selectedCurrency
 }) {
   const optionsOutlet = allOutlets.map((item) => {
     return { value: item.id, label: item.name };
   });
-  const defaultValue = optionsOutlet.find(
-    (item) => item.value === formikCurrency.values.outlet_id
-  );
   optionsOutlet.unshift({ value: 1, label: "All Outlets" });
+
+  const defaultOptionOutlet = optionsOutlet.find((val) => {
+    return val.value == formikCurrency.values.outlet_id
+    }
+  );
+
+  const optionCurrencyA =  allCurrency.map((item) => {
+    return {value: item.id, label: `${item.name} - ${item.full_name}` }
+  })
+
+  const defaultOptionCurrencyA = optionCurrencyA.find((val) => {
+    return val.value == formikCurrency.values.currency_a
+    }
+  );
+
+  const optionCurrencyB =  allCurrency.map((item) => {
+    return {value: item.id, label: `${item.name} - ${item.full_name}` }
+  })
+  const defaultOptionCurrencyB = optionCurrencyB.find((val) => {
+    return val.value == formikCurrency.values.currency_b
+  });
 
   return (
     <div>
@@ -43,125 +64,143 @@ export default function AddCurrency({
         </Modal.Header>
         <Form onSubmit={formikCurrency.handleSubmit}>
           <Modal.Body>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>{t("outlet")}:</Form.Label>
-                  {state === "Edit" || formikCurrency.values.outlet_id === 0 ? (
-                    <Form.Control
-                      as="select"
-                      name="outlet_id"
-                      {...formikCurrency.getFieldProps("outlet_id")}
-                      className={validationCurrency("outlet_id")}
-                      required
-                    >
-                      <option value="" disabled hidden>
-                        {t("chooseAType")}
-                      </option>
-                      {optionsOutlet?.length
-                        ? optionsOutlet.map((item) => {
-                            return (
-                              <option key={item.value} value={item.value}>
-                                {item.label}
-                              </option>
-                            );
-                          })
-                        : ""}
-                    </Form.Control>
-                  ) : (
-                    <Select
-                      options={optionsOutlet}
-                      isMulti
-                      name="outlet_id"
-                      className="basic-multi-select"
-                      classNamePrefix="select"
-                      onChange={(value) =>
-                        handleSelectOutlet(value, formikCurrency)
-                      }
-                      // defaultValue={defaultValue}
-                    />
-                  )}
-                  {formikCurrency.touched.outlet_id &&
-                  formikCurrency.errors.outlet_id ? (
-                    <div className="fv-plugins-message-container">
-                      <div className="fv-help-block">
-                        {formikCurrency.errors.outlet_id}
-                      </div>
-                    </div>
-                  ) : null}
-                </Form.Group>
-              </Col>
-            </Row>
-            
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>{t("currencyA")}:</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="currency_a"
-                    placeholder={t('enterNameCurrencyA')}
-                    {...formikCurrency.getFieldProps("currency_a")}
-                    className={validationCurrency("currency_a")}
-                    required
+          {alertModal ? (
+            <div className="mb-10 alert alert-custom alert-light-danger alert-dismissible">
+              <div className="alert-text font-weight-bold">{alertModal}</div>
+            </div>
+          ) : (
+            ""
+          )}
+          <Row>
+            <Col>
+              {/* <Form.Group>
+                <Form.Label>{t("outlet")}:</Form.Label>
+                {action === "Edit" ? (
+                  <Select
+                    options={optionsOutlet}
+                    defaultValue={defaultOptionOutlet}
+                    name="outlet_id"
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    onChange={(value) =>
+                      formikCurrency.setFieldValue(
+                        "outlet_id",
+                        value.value
+                      )
+                    }
                   />
-                  {formikCurrency.touched.currency_a && formikCurrency.errors.currency_a ? (
+                ) : (
+                  <Select
+                    options={optionsOutlet}
+                    isMulti
+                    name="outlet_id"
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    onChange={(value) =>
+                      handleSelectOutlet(value, formikCurrency)
+                    }
+                  />
+                )}
+                {formikCurrency.touched.outlet_id &&
+                formikCurrency.errors.outlet_id ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikCurrency.errors.outlet_id}
+                    </div>
+                  </div>
+                ) : null}
+              </Form.Group> */}
+              <Form.Group>
+                <Form.Label>{t("location")}:</Form.Label>
+                <Form.Control
+                  type="text"
+                  value="All Outlet"
+                  disabled
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+          
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>{t("currencyA")}</Form.Label>
+                <Select
+                  options={optionCurrencyA}
+                  defaultValue={defaultOptionCurrencyA}
+                  name="currency_a"
+                  className="basic-single"
+                  classNamePrefix="select"
+                  onChange={(value) =>
+                    formikCurrency.setFieldValue(
+                      "currency_a",
+                      value.value
+                    )
+                  }
+                />
+                {formikCurrency.touched.currency_a &&
+                  formikCurrency.errors.currency_a ? (
                     <div className="fv-plugins-message-container">
                       <div className="fv-help-block">
                         {formikCurrency.errors.currency_a}
                       </div>
                     </div>
                   ) : null}
-                </Form.Group>
-              </Col>
-            </Row>
+              </Form.Group>
+            </Col>
+          </Row>
 
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>{t("currencyB")}:</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="currency_b"
-                    placeholder={t('enterNameCurrencyB')}
-                    {...formikCurrency.getFieldProps("currency_b")}
-                    className={validationCurrency("currency_b")}
-                    required
-                  />
-                  {formikCurrency.touched.currency_b && formikCurrency.errors.currency_b ? (
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>{t("currencyB")}</Form.Label>
+                <Select
+                  options={optionCurrencyB}
+                  defaultValue={defaultOptionCurrencyB}
+                  name="currency_b"
+                  className="basic-single"
+                  classNamePrefix="select"
+                  onChange={(value) =>
+                    formikCurrency.setFieldValue(
+                      "currency_b",
+                      value.value
+                    )
+                  }
+                />
+                {formikCurrency.touched.currency_b &&
+                  formikCurrency.errors.currency_b ? (
                     <div className="fv-plugins-message-container">
                       <div className="fv-help-block">
                         {formikCurrency.errors.currency_b}
                       </div>
                     </div>
                   ) : null}
-                </Form.Group>
-              </Col>
-            </Row>
+              </Form.Group>
+            </Col>
+          </Row>
 
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>{t("conversionAToB")}:</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="conversion_a_to_b"
-                    placeholder={t("conversionAToB")}
-                    {...formikCurrency.getFieldProps("conversion_a_to_b")}
-                    className={validationCurrency("conversion_a_to_b")}
-                    required
-                  />
-                  {formikCurrency.touched.conversion_a_to_b && formikCurrency.errors.conversion_a_to_b ? (
-                    <div className="fv-plugins-message-container">
-                      <div className="fv-help-block">
-                        {formikCurrency.errors.conversion_a_to_b}
-                      </div>
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>{t("conversionAToB")}:</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="conversion_a_to_b"
+                  placeholder={t("conversionAToB")}
+                  {...formikCurrency.getFieldProps("conversion_a_to_b")}
+                  className={validationCurrency("conversion_a_to_b")}
+                  required
+                />
+                {formikCurrency.touched.conversion_a_to_b && formikCurrency.errors.conversion_a_to_b ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikCurrency.errors.conversion_a_to_b}
                     </div>
-                  ) : null}
-                </Form.Group>
-              </Col>
-            </Row>
-
+                  </div>
+                ) : null}
+              </Form.Group>
+            </Col>
+          </Row>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={cancelModal}>

@@ -425,7 +425,7 @@
     "thursday": "Thursday",
     "sunday": "Sunday",
     "tuesday": "Tuesday",
-    "fridaty": "Friday",
+    "friday": "Friday",
     "everyday": "Everyday",
     "wednesday": "Wednesday",
     "saturday": "Saturday",
@@ -1040,5 +1040,12 @@
     "conversionAToB": "Conversion A to B",
     "conversionBToA": "Conversion B to A",
     "addCurrencyConversion": "Add Currency Conversion",
-    "inventoryReport": "Inventory Report"
+    "inventoryReport": "Inventory Report",
+    "enterCurrencyNameA": "Enter Currency Name A",
+    "enterCurrencyNameB": "Enter Currency Name B",
+    "pleaseInputCurrencyA": "Please Input Currency A",
+    "pleaseInputCurrencyB": "Please Input Currency B",
+    "pleaseInputConversionAToB": "Please Input Conversion A To B",
+    "theSameCurrencyCannotBeConverted": "The Same Currency Cannot Be Converted",
+    "currencyConversionAlreadyExisting": "Currency Conversion Already Existing"
 }

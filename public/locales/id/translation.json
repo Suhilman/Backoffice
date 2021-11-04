@@ -425,7 +425,7 @@
   "thursday": "Kamis",
   "sunday": "Minggu",
   "tuesday": "Selasa",
-  "fridaty": "Jumat",
+  "friday": "Jumat",
   "everyday": "Setiap hari",
   "wednesday": "Rabu",
   "saturday": "Sabtu",
@@ -1040,5 +1040,12 @@
   "conversionAToB": "Konversi A ke B",
   "conversionBToA": "Konversi B ke A",
   "addCurrencyConversion": "Tambah Konversi Mata Uang",
-  "inventoryReport": "Laporan Inventaris"
+  "inventoryReport": "Laporan Inventaris",
+  "enterCurrencyNameA": "Masukkan Nama Mata Uang A",
+  "enterCurrencyNameB": "Masukkan Nama Mata Uang B",
+  "pleaseInputCurrencyA": "Silahkan Memasukkan Mata Uang A",
+  "pleaseInputCurrencyB": "Silahkan Memasukkan Mata Uang B",
+  "pleaseInputConversionAToB": "Silahkan Memasukkan Konversi A ke B",
+  "theSameCurrencyCannotBeConverted": "Mata Uang Yang Sama Tidak Bisa Dikonversikan",
+  "currencyConversionAlreadyExisting": "Konversi Mata Uang Sudah Ada"
 }

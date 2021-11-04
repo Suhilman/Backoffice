@@ -19,8 +19,13 @@ export default function CurrencyPage() {
   const [alert, setAlert] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [stateAddModal, setStateAddModal] = React.useState(false);
+  const [stateUpdateModal, setStateUpdateModal] = React.useState(false);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
   const [allOutlets, setAllOutlets] = React.useState([]);
+  const [allCurrency, setAllCurrency] = React.useState([])
+  const [selectedCurrency, setSelectedCurrency] = React.useState({})
+  const [action, setAction] = React.useState("")
+  const [alertModal, setAlertModal] = React.useState("")
 
   const [photo, setPhoto] = React.useState("");
   const [photoPreview, setPhotoPreview] = React.useState("");
@@ -45,14 +50,14 @@ export default function CurrencyPage() {
     name: ""
   });
 
-  const initialValueCurrency = {
-    outlet_id: [],
+  const initialValueCreateCurrency = {
+    outlet_id: [1],
     currency_a: "",
     currency_b: "",
     conversion_a_to_b: ""
   };
 
-  const CurrencySchema = Yup.object().shape({
+  const CreateCurrencySchema = Yup.object().shape({
     outlet_id: Yup.array().of(Yup.number().min(1)),
     currency_a: Yup.string()
       .required(`${t("pleaseInputCurrencyA")}`),
@@ -60,14 +65,32 @@ export default function CurrencyPage() {
       .required(`${t("pleaseInputCurrencyB")}`),
     conversion_a_to_b: Yup.string()
       .typeError(`${t('pleaseInputANumberOnly')}`)
-      .required(`${t("pleaseInputconversionAToB")}`)
+      .required(`${t("pleaseInputConversionAToB")}`)
+  })
+
+  const initialValueUpdateCurrency = {
+    outlet_id: 1,
+    currency_a: "",
+    currency_b: "",
+    conversion_a_to_b: ""
+  };
+
+  const UpdateCurrencySchema = Yup.object().shape({
+    outlet_id: Yup.number().min(1),
+    currency_a: Yup.string()
+      .required(`${t("pleaseInputCurrencyA")}`),
+    currency_b: Yup.number()
+      .required(`${t("pleaseInputCurrencyB")}`),
+    conversion_a_to_b: Yup.string()
+      .typeError(`${t('pleaseInputANumberOnly')}`)
+      .required(`${t("pleaseInputConversionAToB")}`)
   });
 
-  const formikCurrency = useFormik({
+  const formikCreateCurrency = useFormik({
     enableReinitialize: true,
-    initialValues: initialValueCurrency,
-    validationSchema: CurrencySchema,
-    onSubmit: async (values) => {
+    initialValues: initialValueCreateCurrency,
+    validationSchema: CreateCurrencySchema,
+    onSubmit: async (values, {resetForm}) => {
       const API_URL = process.env.REACT_APP_API_URL;
 
       const data = {
@@ -77,27 +100,75 @@ export default function CurrencyPage() {
         conversion_a_to_b: values.conversion_a_to_b
       }
       try {
+        if(values.currency_a == values.currency_b) {
+          setAlertModal(`${t('theSameCurrencyCannotBeConverted')}`)
+          return
+        } 
         enableLoading();
         await axios.post(`${API_URL}/api/v1/currency-conversion`, data);
+        resetForm()
         handleRefresh();
         disableLoading();
-        setAlert("");
+        setAlertModal("");
         closeAddModal();
       } catch (err) {
-        setAlert(err.response.data.message || err.message);
+        setAlertModal(`${t('currencyConversionAlreadyExisting')}`);
         disableLoading();
       }
     }
   });
 
-  const validationCurrency = (fieldname) => {
-    if (formikCurrency.touched[fieldname] && formikCurrency.errors[fieldname]) {
+  const formikUpdateCurrency = useFormik({
+    enableReinitialize: true,
+    initialValues: initialValueUpdateCurrency,
+    validationSchema: UpdateCurrencySchema,
+    onSubmit: async (values) => {
+      const API_URL = process.env.REACT_APP_API_URL;
+
+      console.log("values =====>", values)
+      const data = {
+        outlet_id: values.outlet_id,
+        currency_a: values.currency_a,
+        currency_b: values.currency_b,
+        conversion_a_to_b: values.conversion_a_to_b
+      }
+      try {
+        enableLoading();
+        await axios.post(`${API_URL}/api/v1/currency-conversion`, data);
+        handleRefresh();
+        disableLoading();
+        setAlertModal("")
+        closeAddModal();
+      } catch (err) {
+        setAlertModal(err.response.data.message || err.message);
+        disableLoading();
+      }
+    }
+  });
+
+  const validationCreateCurrency = (fieldname) => {
+    if (formikCreateCurrency.touched[fieldname] && formikCreateCurrency.errors[fieldname]) {
       return "is-invalid";
     }
 
     if (
-      formikCurrency.touched[fieldname] &&
-      !formikCurrency.errors[fieldname]
+      formikCreateCurrency.touched[fieldname] &&
+      !formikCreateCurrency.errors[fieldname]
+    ) {
+      return "is-valid";
+    }
+
+    return "";
+  };
+
+  const validationUpdateCurrency = (fieldname) => {
+    if (formikUpdateCurrency.touched[fieldname] && formikUpdateCurrency.errors[fieldname]) {
+      return "is-invalid";
+    }
+
+    if (
+      formikUpdateCurrency.touched[fieldname] &&
+      !formikUpdateCurrency.errors[fieldname]
     ) {
       return "is-valid";
     }
@@ -151,16 +222,11 @@ export default function CurrencyPage() {
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
-  const showAddModal = () => {
-    setState("Create")  
-    setStateAddModal(true)
-  };
-  const closeAddModal = () => {
-    formikCurrency.resetForm();
-    setPhoto("");
-    setPhotoPreview("");
-    setStateAddModal(false);
-  };
+  const showAddModal = () => setStateAddModal(true);
+  const closeAddModal = () =>  setStateAddModal(false);
+
+  const showUpdateModal = () => setStateUpdateModal(true);
+  const closeUpdateModal = () =>  setStateUpdateModal(false);
 
   const showDeleteModal = (data) => {
     setCurrCurrency({
@@ -180,6 +246,17 @@ export default function CurrencyPage() {
       formik.setFieldValue("outlet_id", []);
     }
   };
+
+  const handleInitialUpdateCurrency = (data) => {
+    setAction("Edit")
+    formikUpdateCurrency.setValues({
+      id: data.id,
+      outlet_id: data.outlet_id,
+      currency_a: data.currency_id_a,
+      currency_b: data.currency_id_b,
+      conversion_a_to_b: data.conversion_a_to_b
+    })
+  }
 
   const getOutlets = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -221,7 +298,23 @@ export default function CurrencyPage() {
     }
   }
 
+  const handleShowCreateModal = () => {
+    setAction("Create")
+    showAddModal()
+  }
+
+  const handleAllCurrency = async () => {
+      const API_URL = process.env.REACT_APP_API_URL;
+    try {
+      const { data } = await axios.get(`${API_URL}/api/v1/currency`)
+      setAllCurrency(data.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   React.useEffect(() => {
+    handleAllCurrency()
     handleSubscriptionPartition()
   }, [])
 
@@ -267,9 +360,14 @@ export default function CurrencyPage() {
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
-              {/* <Link to={`/customer/${rows.id}`}>
-                <Dropdown.Item as="button">{t("detail")}</Dropdown.Item>
-              </Link> */}
+              <Dropdown.Item 
+                as="button" 
+                onClick={() => {
+                  showUpdateModal()
+                  handleInitialUpdateCurrency(rows)
+                  setSelectedCurrency(rows)
+                }}
+              >{t("update")}</Dropdown.Item>
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
               {t("delete")}
               </Dropdown.Item>
@@ -284,8 +382,11 @@ export default function CurrencyPage() {
     return {
       id: item.id,
       no: index + 1,
+      outlet_id: item.outlet_id,
       currency_a: item.data_currency_a.full_name,
       currency_b: item.data_currency_b.full_name,
+      currency_id_a: item.data_currency_a.id,
+      currency_id_b: item.data_currency_b.id,
       conversion_a_to_b: item.conversion_a_to_b,
       conversion_b_to_a: item.conversion_b_to_a,
       outlet_name: item.Outlet ? item.Outlet.name : `${t('allOutlet')}`
@@ -294,19 +395,41 @@ export default function CurrencyPage() {
 
   return (
     <>
+
       <AddCurrency
+        alertModal={alertModal}
         t={t}
         stateModal={stateAddModal}
         cancelModal={closeAddModal}
         title={t("addNewCustomer")}
         alert={alert}
         loading={loading}
-        formikCurrency={formikCurrency}
-        validationCurrency={validationCurrency}
-        state={state}
+        formikCurrency={formikCreateCurrency}
+        validationCurrency={validationCreateCurrency}
         handleSelectOutlet={handleSelectOutlet}
         allOutlets={allOutlets}
         showFeature={showFeature}
+        allCurrency={allCurrency}
+        action={action}
+        selectedCurrency={selectedCurrency}
+      />
+
+      <AddCurrency
+        alertModal={alertModal}
+        t={t}
+        stateModal={stateUpdateModal}
+        cancelModal={closeUpdateModal}
+        title={t("updateCurrency")}
+        alert={alert}
+        loading={loading}
+        formikCurrency={formikUpdateCurrency}
+        validationCurrency={validationUpdateCurrency}
+        handleSelectOutlet={handleSelectOutlet}
+        allOutlets={allOutlets}
+        showFeature={showFeature}
+        allCurrency={allCurrency}
+        action={action}
+        selectedCurrency={selectedCurrency}
       />
 
       <ConfirmModal
@@ -332,7 +455,7 @@ export default function CurrencyPage() {
                 <Button
                   variant="primary"
                   style={{ marginLeft: "0.5rem" }}
-                  onClick={showAddModal}
+                  onClick={handleShowCreateModal}
                 >
                   {t("addCurrencyConversion")}
                 </Button>
