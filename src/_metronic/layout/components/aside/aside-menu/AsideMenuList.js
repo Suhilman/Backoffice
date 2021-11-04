@@ -769,7 +769,7 @@ function AsideMenuList(props) {
             </div>
             <span className="menu-text">{t("payment")}</span>
           </NavLink>
-        </li> */}
+        </li>
 
         {/* {showIntegrate ? (
           <li className={`menu-item ${getMenuItemActive("/sales-channel", false)}`}>
