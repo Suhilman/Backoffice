@@ -183,7 +183,7 @@ export default function CurrencyPage() {
 
     try {
       const { data } = await axios.get(
-        `${API_URL}/api/v1/currency-conversion${filterCustomer}`
+        `${API_URL}/api/v1/currency-conversion/my-business${filterCustomer}`
       );
       setCurrencyConversion(data.data);
     } catch (err) {
@@ -367,7 +367,7 @@ export default function CurrencyPage() {
                   handleInitialUpdateCurrency(rows)
                   setSelectedCurrency(rows)
                 }}
-              >{t("update")}</Dropdown.Item>
+              >{t("edit")}</Dropdown.Item>
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
               {t("delete")}
               </Dropdown.Item>
