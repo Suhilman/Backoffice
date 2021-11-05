@@ -531,7 +531,7 @@
   "registrationDate": "Tanggal Pendaftaran",
   "lastLogin": "Login terakhir",
   "storeID": "ID Toko",
-  "businessInformation": "Informasi bisnis",
+  "businessInformation": "Informasi Bisnis",
   "emailNotification": "Pemberitahuan email",
   "newPassword": "kata sandi baru",
   "oldPassword": "kata sandi lama",
@@ -1048,5 +1048,7 @@
   "pleaseInputConversionAToB": "Silahkan Memasukkan Konversi A ke B",
   "theSameCurrencyCannotBeConverted": "Mata Uang Yang Sama Tidak Bisa Dikonversikan",
   "currencyConversionAlreadyExisting": "Konversi Mata Uang Sudah Ada",
-  "deleteCurrencyConversion": "Hapus Konversi Mata Uang"
+  "deleteCurrencyConversion": "Hapus Konversi Mata Uang",
+  "update": "Pembaruan",
+  "editCurrencyConversion": "Ubah Konversi Mata Uang"
 }

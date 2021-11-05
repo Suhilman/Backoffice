@@ -93,3 +93,7 @@
 .content-notif > .content-left{
   width: 50%;
 }
+
+.progress{
+  height: 5px;
+}

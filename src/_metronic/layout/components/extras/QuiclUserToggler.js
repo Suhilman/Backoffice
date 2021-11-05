@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import objectPath from 'object-path';
 import { useHtmlClassService } from '../../_core/MetronicLayout';
 import { UserProfileDropdown } from './dropdowns/UserProfileDropdown';
+import { UserProfileDropdownBackup } from './dropdowns/UserProfileDropdownBackup';
 import { NotificationDropdown } from './dropdowns/NotificationDropdown';
 import Notification from './dropdowns/Notification'
 
@@ -55,6 +56,7 @@ export function QuickUserToggler() {
       {!layoutProps.offcanvas && (
         <>
           <NotificationDropdown /> 
+          {/* <UserProfileDropdownBackup /> */}
           <UserProfileDropdown /> 
           {/* <Notification margin="13px"/> */}
         </>

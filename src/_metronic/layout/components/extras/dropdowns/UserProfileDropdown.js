@@ -3,7 +3,7 @@
 import React, { useMemo, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { DropdownButton, Dropdown } from "react-bootstrap";
+import { DropdownButton, Dropdown, ProgressBar } from "react-bootstrap";
 import iconTrash from "../../../../../../src/images/5981684251543238936 5.png";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -17,6 +17,10 @@ import "./style.css";
 export function UserProfileDropdown() {
   const [tabs, setTabs] = React.useState(0);
   const [notifStockAlert, setNotifStockAlert] = useState(false);
+  const [progress, setProgress] = useState({
+    businessInformation: null
+  })
+
   const [notifRecapTransaction, setNotifRecapTransaction] = useState(false);
   const [dateReport, setDateReport] = useState([]);
   const [filterWeeklyReport, setFilterWeeklyReport] = useState(false);
@@ -241,7 +245,46 @@ export function UserProfileDropdown() {
     }
   };
 
+  const handlePercentageBusinessInformation = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+
+    try {
+      const { data } = await axios.get(
+        `${API_URL}/api/v1/business/${userInfo.business_id}`
+      );
+      let count = 0
+      if(data.data.name) count += 1
+      if(data.data.ktp_picture) count += 1
+      if(data.data.npwp_picture) count += 1
+      if(data.data.image) count += 1
+      if(data.data.name_on_ktp) count += 1
+      if(data.data.ktp_owner) count += 1
+      if(data.data.npwp_business) count += 1
+      if(data.data.business_type_id) count += 1
+      if(data.data.currency_id) count += 1
+      if(data.data.Location.City.Province.name) count += 1
+      if(data.data.Location.City.name) count += 1
+      if(data.data.Location.name) count += 1
+      if(data.data.phone_number) count += 1
+      if(data.data.address) count += 1
+
+      const calculate_percentage = count / 14 * 100
+
+      setProgress({
+        businessInformation: Math.round(calculate_percentage)
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleClickProfile = async () => {
+    await handlePercentageBusinessInformation()
+  }
+
   useEffect(() => {
+    handleClickProfile()
     handleGetNotification();
   }, []);
 
@@ -252,7 +295,7 @@ export function UserProfileDropdown() {
         id="dropdown-toggle-user-profile"
       >
         <div
-          onClick={handleGetNotification}
+          onClick={handleClickProfile}
           className={
             "btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2"
           }
@@ -347,41 +390,26 @@ export function UserProfileDropdown() {
           )}
         </>
 
-        {/* d-flex justify-content-between navi-footer px-8 py-5 */}
-        <div className="">
-          {/* backup logout */}
-          {/* <Link
-            to="/logout"
-            className="btn btn-light-primary font-weight-bold"
-          >
-            {t("signOut")}
-          </Link> */}
-
-          {/* backup choose language */}
-          {/* <DropdownButton
-            id="dropdown-basic-button"
-            title={
-              tabs !== 0
-                ? chooseLanguages.find((item) => item.no === parseInt(tabs))
-                    .language
-                : `${t("chooseLanguage")}`
-            }
-          >
-            {chooseLanguages.map((item) => (
-              <Dropdown.Item
-                as="button"
-                onClick={() => changeLanguage(item.key, item.no)}
-                className="selected"
-              >
-                {item.language}
-              </Dropdown.Item>
-            ))}
-          </DropdownButton> */}
-
-          {/* <a href="#" className="btn btn-clean font-weight-bold">
-                Upgrade Plan
-              </a> */}
+        <div className="navi navi-spacer-x-0 py-5 wrapper-popup-notification">
+          <div className="px-8">
+            <div className="d-flex justify-content-between mb-2">
+              <div>{t('businessInformation')}</div>
+              {progress.businessInformation <= 99 ? (
+                <Link to="/account?business-information&update-state">
+                  <div className="badge badge-primary">{t('update')}</div>
+                </Link>
+              ) : (
+                <div className="text-primary">{t('complete')}</div>
+              )}
+            </div>
+            {progress.businessInformation <= 99 ? (
+              <ProgressBar animated striped label={`${progress.businessInformation}%`} now={progress.businessInformation} variant="primary"/>
+            ):(
+              <ProgressBar label={`${progress.businessInformation}%`} now={progress.businessInformation} variant="primary"/>
+            )}
+          </div>
         </div>
+      
       </Dropdown.Menu>
     </Dropdown>
   );

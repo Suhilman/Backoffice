@@ -69,14 +69,15 @@ export default function CurrencyPage() {
   })
 
   const initialValueUpdateCurrency = {
-    outlet_id: 1,
+    id: "",
+    outlet_id: [1],
     currency_a: "",
     currency_b: "",
     conversion_a_to_b: ""
   };
 
   const UpdateCurrencySchema = Yup.object().shape({
-    outlet_id: Yup.number().min(1),
+    // outlet_id: Yup.array().of(Yup.number().min(1)),
     currency_a: Yup.string()
       .required(`${t("pleaseInputCurrencyA")}`),
     currency_b: Yup.number()
@@ -133,12 +134,16 @@ export default function CurrencyPage() {
         conversion_a_to_b: values.conversion_a_to_b
       }
       try {
+        if(values.currency_a == values.currency_b) {
+          setAlertModal(`${t('theSameCurrencyCannotBeConverted')}`)
+          return
+        } 
         enableLoading();
-        await axios.post(`${API_URL}/api/v1/currency-conversion`, data);
+        await axios.put(`${API_URL}/api/v1/currency-conversion/${values.id}`, data);
         handleRefresh();
         disableLoading();
         setAlertModal("")
-        closeAddModal();
+        closeUpdateModal();
       } catch (err) {
         setAlertModal(err.response.data.message || err.message);
         disableLoading();
@@ -223,10 +228,16 @@ export default function CurrencyPage() {
   const disableLoading = () => setLoading(false);
 
   const showAddModal = () => setStateAddModal(true);
-  const closeAddModal = () =>  setStateAddModal(false);
+  const closeAddModal = () =>  {  
+    setAlertModal("")
+    setStateAddModal(false)
+  };
 
   const showUpdateModal = () => setStateUpdateModal(true);
-  const closeUpdateModal = () =>  setStateUpdateModal(false);
+  const closeUpdateModal = () => {
+    setAlertModal("")
+    setStateUpdateModal(false)
+  };
 
   const showDeleteModal = (data) => {
     setCurrCurrency({
@@ -419,7 +430,7 @@ export default function CurrencyPage() {
         t={t}
         stateModal={stateUpdateModal}
         cancelModal={closeUpdateModal}
-        title={t("updateCurrency")}
+        title={t("editCurrencyConversion")}
         alert={alert}
         loading={loading}
         formikCurrency={formikUpdateCurrency}

@@ -1048,5 +1048,7 @@
     "pleaseInputConversionAToB": "Please Input Conversion A To B",
     "theSameCurrencyCannotBeConverted": "The Same Currency Cannot Be Converted",
     "currencyConversionAlreadyExisting": "Currency Conversion Already Existing",
-    "deleteCurrencyConversion": "Delete Currency Conversion"
+    "deleteCurrencyConversion": "Delete Currency Conversion",
+    "update": "Update",
+    "editCurrencyConversion": "Edit Currency Conversion"
 }

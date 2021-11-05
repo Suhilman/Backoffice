@@ -14,7 +14,7 @@ import { toAbsoluteUrl } from "../../../../_helpers";
 import { DropdownTopbarItemToggler } from "../../../../_partials/dropdowns";
 import { useTranslation } from "react-i18next";
 import "./style.css";
-export function UserProfileDropdown() {
+export function UserProfileDropdownBackup() {
   const [tabs, setTabs] = React.useState(0);
   const [notifStockAlert, setNotifStockAlert] = useState(false);
   const [notifRecapTransaction, setNotifRecapTransaction] = useState(false);

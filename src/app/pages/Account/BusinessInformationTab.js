@@ -12,7 +12,9 @@ import { Paper } from "@material-ui/core";
 import "../style.css";
 import { DropdownButton, Dropdown } from "react-bootstrap";
 
-export const BusinessInformation = () => {
+// updateState dari query parameter /account?business-information&update-state
+
+export const BusinessInformation = ({updateState}) => {
   const API_URL = process.env.REACT_APP_API_URL;
   const [loading, setLoading] = React.useState(false);
 
@@ -33,6 +35,13 @@ export const BusinessInformation = () => {
 
   const [stateComponent, setStateComponent] = React.useState("show");
   const [refresh, setRefresh] = React.useState("show");
+
+  React.useEffect(() => {
+    console.log("updateState", updateState)
+    if(updateState) {
+      setStateComponent(updateState)
+    }
+  }, [updateState])
 
   const [business, setBusiness] = React.useState({
     name: "",
