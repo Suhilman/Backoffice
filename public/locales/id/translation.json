@@ -1047,5 +1047,6 @@
   "pleaseInputCurrencyB": "Silahkan Memasukkan Mata Uang B",
   "pleaseInputConversionAToB": "Silahkan Memasukkan Konversi A ke B",
   "theSameCurrencyCannotBeConverted": "Mata Uang Yang Sama Tidak Bisa Dikonversikan",
-  "currencyConversionAlreadyExisting": "Konversi Mata Uang Sudah Ada"
+  "currencyConversionAlreadyExisting": "Konversi Mata Uang Sudah Ada",
+  "deleteCurrencyConversion": "Hapus Konversi Mata Uang"
 }

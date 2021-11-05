@@ -114,7 +114,7 @@ export default function AddCurrency({
                 <Form.Label>{t("location")}:</Form.Label>
                 <Form.Control
                   type="text"
-                  value="All Outlet"
+                  value={t('allOutlet')}
                   disabled
                 />
               </Form.Group>
