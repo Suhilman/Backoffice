@@ -184,14 +184,16 @@ export const AddProductAssembly = ({ location }) => {
 
       const resOption = data.data.map((item) => {
           if (item.outlet_id === outlet_id) {
-            return { 
-              value: item.id, 
-              label: item.Product?.name,
-              unit: {
-                id: item.Product?.unit_id,
-                name: item.Product.Unit?.name,
-              }, 
-            };
+            if(item.Product.has_assembly) {
+              return { 
+                value: item.id, 
+                label: item.Product?.name,
+                unit: {
+                  id: item.Product?.unit_id,
+                  name: item.Product.Unit?.name,
+                }, 
+              };
+            }
           } else {
             return "";
           }

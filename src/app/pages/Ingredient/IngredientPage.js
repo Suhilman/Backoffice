@@ -136,7 +136,7 @@ export const IngredientPage = () => {
         />
       </Tab>
 
-      {/* <Tab eventKey="product_assembly" title={t('productAssembly')}>
+      <Tab eventKey="product_assembly" title={t('productAssembly')}>
         <ProductAssemblyTab
           t={t}
           allOutlets={allOutlets}
@@ -147,7 +147,7 @@ export const IngredientPage = () => {
           handleRefresh={handleRefresh}
           totalRecipePrice={totalRecipePrice}
         />
-      </Tab> */}
+      </Tab>
 
       <Tab eventKey="category" title={t("category")}>
         <CategoryTab refresh={refresh} handleRefresh={handleRefresh} />

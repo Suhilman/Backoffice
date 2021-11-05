@@ -231,7 +231,7 @@ export const BusinessInformation = ({updateState}) => {
         business_type: data.data.Business_Type.name,
         business_address: data.data.address || "",
         business_phone_number: data.data.phone_number,
-        name_on_ktp: data.data.name_on_ktp,
+        name_on_ktp: data.data.name_on_ktp === "null" ? "" : data.data.name_on_ktp,
         ktp_number: data.data.ktp_owner || "",
         npwp_number: data.data.npwp_business || "",
         payment_method: "",
@@ -241,6 +241,7 @@ export const BusinessInformation = ({updateState}) => {
         city_id: data.data.Location.City.id,
         location_id: data.data.location_id,
         currency_id: data.data.currency_id,
+        currency_name: data.data.Currency?.full_name
       });
 
       setImageKtp(
@@ -389,7 +390,7 @@ export const BusinessInformation = ({updateState}) => {
     },
     {
       field: `${t("chooseCurrency")}`,
-      value: business.currency_id
+      value: business.currency_name
     }
   ];
 
