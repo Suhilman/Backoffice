@@ -47,6 +47,10 @@ function AsideMenuList(props) {
   const [showDropdownReportInventory, setShowDropdownInventory] = React.useState(false)
   const [showDropdownReportEmployee, setShowDropdownEmployee] = React.useState(false)
 
+  const [dropdownSalesReport, setDropdownSalesReport] = React.useState([])
+  const [dropdownInventoryReport, setDropdownInventoryReport] = React.useState([])
+  const [dropdownEmployeeReport, setDropdownEmployeeReport] = React.useState([])
+
   const [kitchenModul, setKitchenModul] = React.useState("");
   const [showIntegrate, setShowIntegrate] = React.useState(false)
 
@@ -234,90 +238,203 @@ function AsideMenuList(props) {
 
   const { t } = useTranslation();
 
-  const dropdownSalesReport = [
-    {
-      route: 'category-sales',
-      name: 'categorySales'
-    },
-    {
-      route: 'cost-of-gold-sold',
-      name: 'cogs'
-    },
-    {
-      route: 'sales-detail',
-      name: 'detailSalesPerProduct'
-    },
-    {
-      route: 'discount-sales',
-      name: 'discountSales'
-    },
-    {
-      route: 'payment-method',
-      name: 'paymentMethod'
-    },
-    {
-      route: 'profit-calculation',
-      name: 'profitCalculation'
-    },
-    {
-      route: 'recap',
-      name: 'recap'
-    },
-    {
-      route: 'sales-per-hour',
-      name: 'salesPerHour'
-    },
-    {
-      route: 'sales-per-product',
-      name: 'salesPerProduct'
-    },{
-      route: 'sales-summary',
-      name: 'salesSummary'
-    },
-    {
-      route: 'sales-type',
-      name: 'salesType'
-    },
-    {
-      route: 'staff-transaction',
-      name: 'staffTransaction'
-    },
-    {
-      route: 'transaction-history',
-      name: 'transactionHistory'
-    },
-    {
-      route: 'void-transaction',
-      name: 'voidTransaction'
-    }
-  ]
+  // const dropdownSalesReport = [
+  //   {
+  //     route: 'category-sales',
+  //     name: 'categorySales'
+  //   },
+  //   {
+  //     route: 'cost-of-gold-sold',
+  //     name: 'cogs'
+  //   },
+  //   {
+  //     route: 'sales-detail',
+  //     name: 'detailSalesPerProduct'
+  //   },
+  //   {
+  //     route: 'discount-sales',
+  //     name: 'discountSales'
+  //   },
+  //   {
+  //     route: 'payment-method',
+  //     name: 'paymentMethod'
+  //   },
+  //   {
+  //     route: 'profit-calculation',
+  //     name: 'profitCalculation'
+  //   },
+  //   {
+  //     route: 'recap',
+  //     name: 'recap'
+  //   },
+  //   {
+  //     route: 'sales-per-hour',
+  //     name: 'salesPerHour'
+  //   },
+  //   {
+  //     route: 'sales-per-product',
+  //     name: 'salesPerProduct'
+  //   },
+  //   {
+  //     route: 'sales-summary',
+  //     name: 'salesSummary'
+  //   },
+  //   {
+  //     route: 'sales-type',
+  //     name: 'salesType'
+  //   },
+  //   {
+  //     route: 'staff-transaction',
+  //     name: 'staffTransaction'
+  //   },
+  //   {
+  //     route: 'transaction-history',
+  //     name: 'transactionHistory'
+  //   },
+  //   {
+  //     route: 'void-transaction',
+  //     name: 'voidTransaction'
+  //   }
+  // ]
 
-  const dropdownInventoryReport = [
-    {
-      route: 'raw-material',
-      name: 'rawMaterial'
-    },
-    {
-      route: 'stock-report',
-      name: 'stockReport'
-    },
-  ]
+  // const dropdownInventoryReport = [
+  //   {
+  //     route: 'raw-material',
+  //     name: 'rawMaterial'
+  //   },
+  //   {
+  //     route: 'stock-report',
+  //     name: 'stockReport'
+  //   },
+  // ]
 
-  const dropdownEmployeeReport = [
-    {
-      route: 'attendance',
-      name: 'attendance'
-    },
-    // {
-    //   route: 'commisison-report',
-    //   name: 'commissionReport'
-    // }
-  ]
+  // const dropdownEmployeeReport = [
+  //   {
+  //     route: 'attendance',
+  //     name: 'attendance'
+  //   },
+  //   // {
+  //   //   route: 'commisison-report',
+  //   //   name: 'commissionReport'
+  //   // }
+  // ]
 
   const handleDropdownReport = () => setShowDropdownReport(!showDropdownReport)
   const handleDropdownReportSales = () => setShowDropdownReportSales(!showDropdownReportSales)
   const handleDropdownReportInventory = () => setShowDropdownInventory(!showDropdownReportInventory)
   const handleDropdownReportEmployee = () => setShowDropdownEmployee(!showDropdownReportEmployee)
+
+  const handlePartitionReport = async () => {
+    try {
+      const tempDropdownSales = [
+        {
+          route: 'category-sales',
+          name: 'categorySales'
+        },
+        {
+          route: 'cost-of-gold-sold',
+          name: 'cogs'
+        },
+        {
+          route: 'sales-detail',
+          name: 'detailSalesPerProduct'
+        },
+        {
+          route: 'payment-method',
+          name: 'paymentMethod'
+        },
+        {
+          route: 'profit-calculation',
+          name: 'profitCalculation'
+        },
+        {
+          route: 'recap',
+          name: 'recap'
+        },
+        {
+          route: 'sales-per-hour',
+          name: 'salesPerHour'
+        },
+        {
+          route: 'sales-per-product',
+          name: 'salesPerProduct'
+        },
+        {
+          route: 'sales-summary',
+          name: 'salesSummary'
+        },
+        {
+          route: 'sales-type',
+          name: 'salesType'
+        },
+        {
+          route: 'staff-transaction',
+          name: 'staffTransaction'
+        },
+        {
+          route: 'transaction-history',
+          name: 'transactionHistory'
+        },
+        {
+          route: 'void-transaction',
+          name: 'voidTransaction'
+        }
+      ]
+
+      const tempDropdownInventory = [
+        {
+          route: 'stock-report',
+          name: 'stockReport'
+        }
+      ]
+
+      const tempDropdownEmployee = [
+        // {
+        //   route: 'commisison-report',
+        //   name: 'commissionReport'
+        // }
+      ]
+
+      const localData = JSON.parse(localStorage.getItem("user_info"));
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${localData.business_id}`
+      );
+
+      const subscription_partition_id = data.data[0].subscription_partition_id
+      
+      if(subscription_partition_id === 3) {
+        tempDropdownSales.splice(2, 0, 
+          {
+            route: 'discount-sales',
+            name: 'discountSales'
+          }
+        )
+        tempDropdownInventory.splice(0,0, 
+          {
+            route: 'raw-material',
+            name: 'rawMaterial'
+          }
+        )
+        tempDropdownEmployee.splice(0, 0, 
+          {
+            route: 'attendance',
+            name: 'attendance'
+          }
+        )
+      }
+      setDropdownSalesReport(tempDropdownSales)
+      setDropdownInventoryReport(tempDropdownInventory)
+      setDropdownEmployeeReport(tempDropdownEmployee)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  React.useEffect(() => {
+    handlePartitionReport()
+  }, [])
+
+  console.log("dropdownSalesReport", dropdownSalesReport)
 
   return (
     <>
@@ -404,49 +521,53 @@ function AsideMenuList(props) {
                             </div>
                           </li>
 
-                          <li key={index} className={`menu-item ${getMenuItemActive("/report",false)}`}  aria-haspopup="true">
-                            <div className="menu-link d-flex justify-content-between align-items-center">
-                              <span className="dropdown-menu-lv1 menu-text" onClick={handleDropdownReportInventory}>{t("inventoryReport")}</span>
-                              {showDropdownReportInventory ? (
-                                <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
-                              ) : (
-                                <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
-                              )}
-                            </div>
-                            <div className={showDropdownReportInventory ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
-                              <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
-                                {dropdownInventoryReport.map((value, index2) => 
-                                  <li key={index2} className={`menu-item ${getMenuItemActive(`/${value.route}`,false)}`}  aria-haspopup="true">
-                                    <NavLink className="menu-link" to={`/report/${value.route}`}>
-                                      <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
-                                    </NavLink>
-                                  </li>
+                          {dropdownInventoryReport.length > 0 ? (
+                            <li key={index} className={`menu-item ${getMenuItemActive("/report",false)}`}  aria-haspopup="true">
+                              <div className="menu-link d-flex justify-content-between align-items-center">
+                                <span className="dropdown-menu-lv1 menu-text" onClick={handleDropdownReportInventory}>{t("inventoryReport")}</span>
+                                {showDropdownReportInventory ? (
+                                  <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
+                                ) : (
+                                  <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
                                 )}
-                              </ul>
-                            </div>
-                          </li>
+                              </div>
+                              <div className={showDropdownReportInventory ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
+                                <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
+                                  {dropdownInventoryReport.map((value, index2) => 
+                                    <li key={index2} className={`menu-item ${getMenuItemActive(`/${value.route}`,false)}`}  aria-haspopup="true">
+                                      <NavLink className="menu-link" to={`/report/${value.route}`}>
+                                        <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
+                                      </NavLink>
+                                    </li>
+                                  )}
+                                </ul>
+                              </div>
+                            </li>
+                          ) : null }
                           
-                          <li key={index} className={`menu-item ${getMenuItemActive("/report",false)}`}  aria-haspopup="true">
-                            <div className="menu-link d-flex justify-content-between align-items-center">
-                              <span className="dropdown-menu-lv1 menu-text" onClick={handleDropdownReportEmployee}>{t("employeeReport")}</span>
-                              {showDropdownReportEmployee ? (
-                                <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
-                              ) : (
-                                <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
-                              )}
-                            </div>
-                            <div className={showDropdownReportEmployee ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
-                              <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
-                                {dropdownEmployeeReport.map((value, index2) => 
-                                  <li key={index2} className={`menu-item ${getMenuItemActive(`/${value.route}`,false)}`}  aria-haspopup="true">
-                                    <NavLink className="menu-link" to={`/report/${value.route}`}>
-                                      <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
-                                    </NavLink>
-                                  </li>
+                          {dropdownEmployeeReport.length > 0 ? (
+                            <li key={index} className={`menu-item ${getMenuItemActive("/report",false)}`}  aria-haspopup="true">
+                              <div className="menu-link d-flex justify-content-between align-items-center">
+                                <span className="dropdown-menu-lv1 menu-text" onClick={handleDropdownReportEmployee}>{t("employeeReport")}</span>
+                                {showDropdownReportEmployee ? (
+                                  <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
+                                ) : (
+                                  <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
                                 )}
-                              </ul>
-                            </div>
-                          </li>
+                              </div>
+                              <div className={showDropdownReportEmployee ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
+                                <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
+                                  {dropdownEmployeeReport.map((value, index2) => 
+                                    <li key={index2} className={`menu-item ${getMenuItemActive(`/${value.route}`,false)}`}  aria-haspopup="true">
+                                      <NavLink className="menu-link" to={`/report/${value.route}`}>
+                                        <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
+                                      </NavLink>
+                                    </li>
+                                  )}
+                                </ul>
+                              </div>
+                            </li>
+                          ) : null}
                           
                         </ul>
                       </div>
