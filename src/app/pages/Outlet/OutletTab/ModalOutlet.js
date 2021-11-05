@@ -71,32 +71,36 @@ const ModalOutlet = ({
 
   const optionDay = [
     {
+      value: null,
+      label: `${t('everyday')}`
+    },
+    {
       value: 0,
-      label: "Sunday"
+      label: `${t('sunday')}`
     },
     {
       value: 1,
-      label: "Monday"
+      label: `${t('monday')}`
     },
     {
       value: 2,
-      label: "Tuesday"
+      label: `${t('tuesday')}`
     },
     {
       value: 3,
-      label: "Wednesday"
+      label: `${t('wednesday')}`
     },
     {
       value: 4,
-      label: "Thursday"
+      label: `${t('thursday')}`
     },
     {
       value: 5,
-      label: "Friday"
+      label: `${t('friday')}`
     },
     {
       value: 6,
-      label: "Saturday"
+      label: `${t('saturday')}`
     }
   ];
 
@@ -115,9 +119,19 @@ const ModalOutlet = ({
 
   const handleSelectDays = (value, formik) => {
     if (value) {
-      console.log("handleSelectDays", value);
-      const openDays = value.map((item) => item.value);
-      formikOutlet.setFieldValue("open_days", openDays);
+      // Check jika ada Everyday, hari yang dipilih sekarang dihapus lalu ditambah semua hari (senin sampain minggu)
+      const checked = value.find(
+        (val) => val.value === null
+      )
+      if(checked) {
+        const temp_all_days = optionDay
+        temp_all_days.splice(0, 1)
+        const openDays = temp_all_days.map((item) => item.value);
+        formikOutlet.setFieldValue("open_days", openDays);
+      } else {
+        const openDays = value.map((item) => item.value);
+        formikOutlet.setFieldValue("open_days", openDays);
+      }
     } else {
       formikOutlet.setFieldValue("open_days", []);
     }
