@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo, useEffect, useState } from "react";
+import { useSelector, useDispatch } from 'react-redux';
 import rupiah from "rupiah-format";
 import axios from 'axios'
 import { useTranslation } from "react-i18next";
@@ -16,7 +17,7 @@ import { DateRangePicker } from "react-date-range";
 import Swal from "sweetalert2"
 import ExportExcel from "react-html-table-to-excel";
 import NumberFormat from 'react-number-format'
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from 'react-router-dom'
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import './style.css'
@@ -544,15 +545,27 @@ const ModalCustomRange = ({
   const [showGuide, setShowGuide] = React.useState(null)
   const API_URL = process.env.REACT_APP_API_URL;
   const userInfo = JSON.parse(localStorage.getItem("user_info"));
+  const [countExpired, setCountExpired] = useState(0)
+  const dispatch = useDispatch();
+  const [kitchenModul, setKitchenModul] = React.useState("");
+
+  const location = useLocation()
+  const history = useHistory()
+
+  const state = useSelector((state) => state);
+  console.log("react redux", state)
 
   const checkUserGuideBusiness = async () => {
+    
+    const queryParams = location.search
     try {
       const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
-      // if(!data.data.user_guide) {
-      //   setShowGuide("dashboard")
-      // } else {
-      //   setShowGuide(null)
-      // }
+      if(!data.data.user_guide || queryParams.includes("repeat-tour")) {
+        setShowGuide("dashboard")
+      } else {
+        setShowGuide(null)
+      }
+      history.replace({ ...history.location.search, location })
     } catch (error) {
       console.log(error)
     }
@@ -569,9 +582,79 @@ const ModalCustomRange = ({
     }
   }
 
+  const handleCheckExpired = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const dataSubscription = await axios.get(`${API_URL}/api/v1/subscription`,
+      { headers: { Authorization: localStorage.getItem("token") } })
+    if (dataSubscription.data.data.length > 0) {
+      const dt = new Date()
+      const month = dt.getMonth() + 1
+      const year = dt.getFullYear()
+
+      const daysInMonth = new Date(year, month, 0).getDate()
+      const userInfo = JSON.parse(localStorage.getItem("user_info"))
+      const subscription = dataSubscription.data.data.find(item => {
+        return item.business_id === userInfo.business_id
+      })
+      if (subscription) {
+        const getDateExpired = subscription.expired_date
+        const expired_tolerance = subscription.Subscription_Type.expired_tolerance
+        const dateNow = new Date()
+        const dateExpired = new Date(getDateExpired)
+        let countDate;
+        if (dateExpired.getFullYear() - dateNow.getFullYear() > 0) {
+          const resultMonth = 12 - dateNow.getMonth()
+          const resultMonth2 = dateExpired.getMonth() + resultMonth
+          const expired = Math.floor(resultMonth2 * daysInMonth +  dateExpired.getDate())
+          setCountExpired(expired)
+        }
+        if (dateExpired.getFullYear() - dateNow.getFullYear() < 1) {
+          if (dateExpired.getMonth() - dateNow.getMonth() <= 0) {
+            countDate = dateExpired.getDate() - dateNow.getDate()
+            setCountExpired(countDate)
+          } else if (dateExpired.getMonth() - dateNow.getMonth() === 1) {
+            const expired = daysInMonth - dateNow.getDate() + dateExpired.getDate()
+            setCountExpired(expired)
+          } else {
+            const resultMonth = dateExpired.getMonth() - dateNow.getMonth()
+            const expired = Math.floor(resultMonth * daysInMonth + dateExpired.getDate())
+            setCountExpired(expired)
+          }
+        }
+      } else {
+        console.log(null)
+      } 
+    }
+  }
+
+  const handleTypeBusiness = async () => {
+    try {
+      const localData = JSON.parse(localStorage.getItem("user_info"));
+
+      let nameKithcenModul;
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/business/${localData.business_id}`
+      );
+      if (data.data.business_type_id == 1) nameKithcenModul = "assembly";
+      if (data.data.business_type_id == 2) nameKithcenModul = "kitchen";
+      if (data.data.business_type_id == 3) nameKithcenModul = "assembly";
+
+      setKitchenModul(nameKithcenModul);
+
+      console.log();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  React.useEffect(() => {
+    handleTypeBusiness()
+    handleCheckExpired()
+  },[])
+
   React.useEffect(() => {
     checkUserGuideBusiness()
-  },[])
+  }, [location.search])
 
   return (
     <div>
@@ -604,209 +687,217 @@ const ModalCustomRange = ({
         <div className="background-black" />
       ) : null}
       {showGuide === 'dashboard' ? (
-        <div className="wrapper-guide dashboard">
-          <div className="font-weight-bold">Dashboard</div>
-          Pada Submenu Dashboard, akan terlihat grafik penjualan beserta dengan detail sales dan detail transactions. Anda dapat menggunakan filter waktu dan outlet untuk mengubah grafik sesuai dengan yang diinginkan.
+        <div className={`wrapper-guide dashboard ${countExpired > 14 ? 'margin-top-55' : ""}`}>
+          <div className="font-weight-bold">{t('dashboard')}</div>
+          {t('onTheDashboardSubmenu')}
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('report')}>
-              <div className="badge badge-info">Skip Guide</div>
+              <div className="badge badge-info">{t('skipGuide')}</div>
             </div>
             <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
-              <div className="badge badge-danger">Skip All Guide</div>
+              <div className="badge badge-danger">{t('skipAllGuide')}</div>
             </div>
           </div>
         </div>
       ) : null}
       {showGuide === 'report' ? (
-        <div className="wrapper-guide report">
-          <div className="font-weight-bold">Report</div>
-          Pada menu utama laporan, anda dapat melihat Sales Summary dari bisnis anda. Sales summary yang ditampilkan dapat diatur menggunakan filter waktu dan tempat yang tersedia pada bagian kanan menu. Terdapat juga tombol export yang memungkinkan anda untuk melihat data Sales Summary dalam bentuk .xls.
+        <div className={`wrapper-guide report ${countExpired > 14 ? 'margin-top-55' : ""}`}>
+          <div className="font-weight-bold">{t('report')}</div>
+          {t('inTheMainMenuOfTheReport')}
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('product')}>
-              <div className="badge badge-info">Skip Guide</div>
+              <div className="badge badge-info">{t('skipGuide')}</div>
             </div>
             <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
-              <div className="badge badge-danger">Skip All Guide</div>
+              <div className="badge badge-danger">{t('skipAllGuide')}</div>
             </div>
           </div>
         </div>
       ) : null}
       {showGuide === 'product' ? (
-        <div className="wrapper-guide product" >
-          <div className="font-weight-bold">Product</div>
-            Pada menu utama modul product, akan terlihat Product List dari bisnis anda. Anda dapat melihat data produk yang telah dibuat pada bisnis anda, beserta dengan stock serta status produk tersebut. Status produk dapat diubah menjadi non aktif maupun aktif, yang dapat digunakan untuk menghilangkan produk dari product list pada aplikasi BeetPOS (jika non-aktif). Anda dapat melakukan edit maupun delete produk pada masing-masing produk.
+        <div className={`wrapper-guide product ${countExpired > 14 ? 'margin-top-55' : ""}`}>
+          <div className="font-weight-bold">{t('product')}</div>
+            {t('inTheMainMenuOfTheProductModule')}
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('inventory')}>
-              <div className="badge badge-info">Skip Guide</div>
+              <div className="badge badge-info">{t('skipGuide')}</div>
             </div>
             <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
-              <div className="badge badge-danger">Skip All Guide</div>
+              <div className="badge badge-danger">{t('skipAllGuide')}</div>
             </div>
           </div>
         </div>
       ) : null }
       {showGuide === 'inventory' ? (
-        <div className="wrapper-guide inventory">
-          <div className="font-weight-bold">Inventory</div>
-          Pada modul Inventory, anda dapat mengatur stock pada setiap produk anda. Lakukan aktivitas pemasukan stock, pengeluaran stock, transfer stock, hingga pembuatan dokumen stock opname dan purchase order.
+        <div className={`wrapper-guide inventory ${countExpired > 14 ? 'margin-top-55' : ""}`}>
+          <div className="font-weight-bold">{t('inventory')}</div>
+          {t('inTheInventoryModule')}
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('kitchen')}>
-              <div className="badge badge-info">Skip Guide</div>
+              <div className="badge badge-info">{t('skipGuide')}</div>
             </div>
             <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
-              <div className="badge badge-danger">Skip All Guide</div>
+              <div className="badge badge-danger">{t('skipAllGuide')}</div>
             </div>
           </div>
         </div>
       ): null}
       {showGuide === 'kitchen' ? (
-        <div className="wrapper-guide kitchen">
-          <div className="font-weight-bold">Kitchen</div>
-          Pada modul kitchen, anda dapat menambahkan dan mengatur bahan baku yang terdapat pada usaha anda. Gunakan menu resep untuk membangun resep pada produk anda, dan masukan bahan baku pada resep untuk melakukan pengurangan bahan baku secara otomatis.
+        <div className={`wrapper-guide kitchen ${countExpired > 14 ? 'margin-top-55' : ""}`}>
+          <div className="font-weight-bold">{t(kitchenModul)}</div>
+          {kitchenModul === 'assembly' ? (
+            <div>
+              {t('inTheAssemblyModule')}
+            </div>
+          ) : (
+            <div>
+              {t('inTheKitchenModule')}
+            </div>
+          )}
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('outlet')}>
-              <div className="badge badge-info">Skip Guide</div>
+              <div className="badge badge-info">{t('skipGuide')}</div>
             </div>
             <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
-              <div className="badge badge-danger">Skip All Guide</div>
+              <div className="badge badge-danger">{t('skipAllGuide')}</div>
             </div>
           </div>
         </div>
       ): null}
       {showGuide === 'outlet' ? (
-        <div className="wrapper-guide outlet" >
-          <div className="font-weight-bold">Outlet</div>
-          Pada menu utama Outlet, terdapat tampilan Outlet yang sudah dibuat pada bisnis anda. Pada setiap outlet, terdapat juga dropdown yang dapat digunakan untuk melihat data outlet secara cepat (quickview). Anda dapat memilih opsi edit outlet pada setiap outlet untuk mengubah data pada popup edit outlet. Menambah Outlet baru.
+        <div className={`wrapper-guide outlet ${countExpired > 14 ? 'margin-top-55' : ""}`}>
+          <div className="font-weight-bold">{t('outlet')}</div>
+          {t('inTheMainOutletMenu')}
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('promo')}>
-              <div className="badge badge-info">Skip Guide</div>
+              <div className="badge badge-info">{t('skipGuide')}</div>
             </div>
             <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
-              <div className="badge badge-danger">Skip All Guide</div>
+              <div className="badge badge-danger">{t('skipAllGuide')}</div>
             </div>
           </div>
         </div>
       ): null}
       {showGuide === 'promo' ? (
-        <div className="wrapper-guide promo"> 
-          <div className="font-weight-bold">Promo</div>
-          Pada menu special promo, anda dapat membuat promo yang dapat diaktifkan saat customer akan melakukan pembayaran. Diskon ini dapat diaktifkan secara manual setelah customer memenuhi kriteria yang anda berikan (Ex. Diskon Mahasiswa, Diskon Ulang Tahun, dsb.). Promo ini dapat memberikan potongan harga menggunakan rupiah ataupun persentase.
+        <div className={`wrapper-guide promo ${countExpired > 14 ? 'margin-top-55' : ""}`}> 
+          <div className="font-weight-bold">{t('promo')}</div>
+          {t('inTheSpecialPromoMenu')}
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('staff')}>
-              <div className="badge badge-info">Skip Guide</div>
+              <div className="badge badge-info">{t('skipGuide')}</div>
             </div>
             <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
-              <div className="badge badge-danger">Skip All Guide</div>
+              <div className="badge badge-danger">{t('skipAllGuide')}</div>
             </div>
           </div>
         </div>
       ): null}
       {showGuide === 'staff' ? (
-        <div className="wrapper-guide staff">
-          <div className="font-weight-bold">Staff</div>
-          Pada menu Staff, akan ditampilkan staff yang sedang aktif dalam bisnis anda. Setiap Staff akan memiliki data pribadi beserta dengan data Role dari Staff tersebut. Data role pada staff akan menentukan hak akses dari staff tersebut, baik dari sisi aplikasi kasir BeetPOS maupun Backoffice BeetPOS.
+        <div className={`wrapper-guide staff ${countExpired > 14 ? 'margin-top-55' : ""}`}>
+          <div className="font-weight-bold">{t('staff')}</div>
+          {t('onTheStaffMenu')}
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('role')}>
-              <div className="badge badge-info">Skip Guide</div>
+              <div className="badge badge-info">{t('skipGuide')}</div>
             </div>
             <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
-              <div className="badge badge-danger">Skip All Guide</div>
+              <div className="badge badge-danger">{t('skipAllGuide')}</div>
             </div>
           </div>
         </div>
       ): null}
       {showGuide === 'role' ? (
-        <div className="wrapper-guide role">
+        <div className={`wrapper-guide role ${countExpired > 14 ? 'margin-top-55' : ""}`}>
           <div onClick={() => handleShowGuide('customer')}>
-            <div className="font-weight-bold">Role</div>
-            Menu utama role akan menunjukan role yang ada pada bisnis anda. Pada menu ini, akan ditampilkan tipe akses yang telah diberikan untuk masing-masing role pada kolom Access.
+            <div className="font-weight-bold">{t('role')}</div>
+            {t('theMainRoleMenuWillShowTheRolesThatExistInYourBusiness')}
           </div>
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('customer')}>
-              <div className="badge badge-info">Skip Guide</div>
+              <div className="badge badge-info">{t('skipGuide')}</div>
             </div>
             <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
-              <div className="badge badge-danger">Skip All Guide</div>
+              <div className="badge badge-danger">{t('skipAllGuide')}</div>
             </div>
           </div>
         </div>
       ): null}
       {showGuide === 'customer' ? (
-        <div className="wrapper-guide customer">
-          <div onClick={() => handleShowGuide('commission')}>
-            <div className="font-weight-bold">Customer</div>
-            Pada menu utama customer management, customer yang sudah terdaftar pada bisnis anda akan ditampilkan disini. Anda dapat melihat detail setiap customer dengan memilih menu customer detail pada kolom Actions. Pada menu customer detail, akan ditampilkan info lengkap mengenai customer tersebut, beserta dengan statisitik pembelian dan riwayat transaksi dari customer tersebut.
-          </div>
-          <div className="d-flex justify-content-end">
-            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('commission')}>
-              <div className="badge badge-info">Skip Guide</div>
-            </div>
-            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
-              <div className="badge badge-danger">Skip All Guide</div>
-            </div>
-          </div>
-        </div>
-      ): null}
-      {showGuide === 'commission' ? (
-        <div className="wrapper-guide commission">
+        <div className={`wrapper-guide customer ${countExpired > 14 ? 'margin-top-55' : ""}`}>
           <div onClick={() => handleShowGuide('account')}>
-            <div className="font-weight-bold">Commission</div>
-            Catat komisi yang didapatkan oleh staff anda menggunakan modul comission. Buat grup komisi dan tentukan peraturan dan nilai komisi untuk staff anda. Komisi yang akan didapatkan oleh staff anda dapat dilihat pada menu report.
+            <div className="font-weight-bold">{t('customer')}</div>
+            {t('inTheCustomerManagementMainMenu')}
           </div>
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('account')}>
-              <div className="badge badge-info">Skip Guide</div>
+              <div className="badge badge-info">{t('skipGuide')}</div>
             </div>
             <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
-              <div className="badge badge-danger">Skip All Guide</div>
+              <div className="badge badge-danger">{t('skipAllGuide')}</div>
             </div>
           </div>
         </div>
       ): null}
-      {showGuide === 'account' ? (
-        <div className="wrapper-guide account">
-          <div onClick={() => handleShowGuide('subscription')}>
-            <div className="font-weight-bold">Account</div>
-            Pada menu Account Information, akan ditampilkan data mengenai akun anda sesuai dengan data yang anda isi. Untuk mengubah data Account Information, anda dapat memilih Change Account Information, dan memasukan data yang ingin diganti. Untuk perubahan password dan PIN staff, dapat dilakukan juga pada menu Change Account Information.
+      {/* {showGuide === 'commission' ? (
+        <div className={`wrapper-guide commission ${countExpired > 14 ? 'margin-top-55' : ""}`}>
+          <div onClick={() => handleShowGuide('account')}>
+            <div className="font-weight-bold">{t('commission')}</div>
+            {t('recordTheCommissionsEarnedByYourStaffUsingTheCommissionModule')}
           </div>
           <div className="d-flex justify-content-end">
-            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('subscription')}>
-              <div className="badge badge-info">Skip Guide</div>
+            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('account')}>
+              <div className="badge badge-info">{t('skipGuide')}</div>
             </div>
-            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('subscription')}>
-              <div className="badge badge-danger">Skip All Guide</div>
+            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
+              <div className="badge badge-danger">{t('skipAllGuide')}</div>
             </div>
           </div>
         </div>
-      ): null}
-      {showGuide === 'subscription' ? (
-        <div className="wrapper-guide subscription">
+      ): null} */}
+      {showGuide === 'account' ? (
+        <div className={`wrapper-guide account ${countExpired > 14 ? 'margin-top-55' : ""}`}>
           <div onClick={() => handleShowGuide('payment')}>
-            <div className="font-weight-bold">Subscription</div>
-            Lihat status langganan beetPOS anda disini. Lakukan pelengkapan data melalui menu subscription, tambahkan kuota outlet dan pilih tipe pembayaran subscription melalui menu ini.
+            <div className="font-weight-bold">{t('account')}</div>
+            {t('onTheAccountInformationMenu')}
           </div>
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('payment')}>
-              <div className="badge badge-info">Skip Guide</div>
+              <div className="badge badge-info">{t('skipGuide')}</div>
             </div>
-            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('payment')}>
-              <div className="badge badge-danger">Skip All Guide</div>
+            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('subscription')}>
+              <div className="badge badge-danger">{t('skipAllGuide')}</div>
             </div>
           </div>
         </div>
       ): null}
+      {/* {showGuide === 'subscription' ? (
+        <div className={`wrapper-guide subscription ${countExpired > 14 ? 'margin-top-55' : ""}`}>
+          <div onClick={() => handleShowGuide('payment')}>
+            <div className="font-weight-bold">Subscription</div>
+            {t('seeTheStatusOfYourBeetPOSSubscriptionHere')}
+          </div>
+          <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('payment')}>
+              <div className="badge badge-info">{t('skipGuide')}</div>
+            </div>
+            <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('payment')}>
+              <div className="badge badge-danger">{t('skipAllGuide')}</div>
+            </div>
+          </div>
+        </div>
+      ): null} */}
       {showGuide === 'payment' ? (
-        <div className="wrapper-guide payment">
+        <div className={`wrapper-guide payment ${countExpired > 14 ? 'margin-top-55' : ""}`}>
           <div onClick={() => handleShowGuide('finish_guide')}>
-            <div className="font-weight-bold">Payment</div>
-            Permudah transaksi bisnis anda dengan mendaftarkan bisnis anda pada menu ini. Gunakan fitur Payment Gateway dari partner BeetPOS untuk melakukan transaksi online dengan konfirmasi otomatis pada setiap pembayaran online yang terdaftar pada menu ini.
+            <div className="font-weight-bold">{t('payment')}</div>
+            {t('simplifyYourBusinessTransactionsByRegisteringYourBusinessOnThisMenu')}
           </div>
           <div className="d-flex justify-content-end">
             <div className="d-flex justify-content-end" onClick={() => handleShowGuide('finish_guide')}>
-              <div className="badge badge-info">Skip Guide</div>
+              <div className="badge badge-info">{t('skipGuide')}</div>
             </div>
             <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
-              <div className="badge badge-danger">Skip All Guide</div>
+              <div className="badge badge-danger">{t('skipAllGuide')}</div>
             </div>
           </div>
         </div>

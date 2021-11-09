@@ -862,14 +862,14 @@ function AsideMenuList(props) {
           </NavLink>
         </li>
 
-        <li className={`menu-item ${getMenuItemActive("/currency", false)}`}>
+        {/* <li className={`menu-item ${getMenuItemActive("/currency", false)}`}>
           <NavLink className="menu-link" to="/currency">
             <div className="wrapper-icon">
               <img src={currencyIcon} alt="Icon Currency" />
             </div>
             <span className="menu-text">{t("currencyConversion")}</span>
           </NavLink>
-        </li>
+        </li> */}
 
         {/* <li className={`menu-item ${getMenuItemActive("/subscription", false)}`}>
           <NavLink className="menu-link" to="/subscription">

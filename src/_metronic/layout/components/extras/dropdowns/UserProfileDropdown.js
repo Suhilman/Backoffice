@@ -283,6 +283,17 @@ export function UserProfileDropdown() {
     await handlePercentageBusinessInformation()
   }
 
+  const handleRepeatTour = async () => {
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+    try {
+      await axios.patch(`${API_URL}/api/v1/business/update-guide/${userInfo.business_id}`, {
+        user_guide: null
+      })
+    } catch (error) {
+      console.log("error", error)
+    }
+  }
+
   useEffect(() => {
     handleClickProfile()
     handleGetNotification();
@@ -390,7 +401,7 @@ export function UserProfileDropdown() {
           )}
         </>
 
-        <div className="navi navi-spacer-x-0 py-5 wrapper-popup-notification">
+        <div className="navi navi-spacer-x-0 pt-2 pb-2 wrapper-popup-notification">
           <div className="px-8">
             <div className="d-flex justify-content-between mb-2">
               <div>{t('businessInformation')}</div>
@@ -407,6 +418,14 @@ export function UserProfileDropdown() {
             ):(
               <ProgressBar label={`${progress.businessInformation}%`} now={progress.businessInformation} variant="primary"/>
             )}
+          </div>
+        </div>
+
+        <div className="navi navi-spacer-x-0 pb-2 pt-2 wrapper-popup-notification">
+          <div className="px-8">
+            <Link to="/dashboard?repeat-tour">
+              <div style={{display:'inline-block', width:'100%'}} className="badge badge-primary py-2" onClick={handleRepeatTour}>{t('repeatTour')}</div>
+            </Link>
           </div>
         </div>
       
