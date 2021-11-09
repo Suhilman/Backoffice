@@ -17,7 +17,7 @@ export const InventoryPage = () => {
   return (
     <Tabs activeKey={tabs} onSelect={(v) => setTabs(v)}>
       <Tab eventKey="inventory" title={t("inventory")}>
-        <InventoryTab t={t}/>
+        <InventoryTab t={t} refresh={refresh} handleRefresh={handleRefresh}/>
       </Tab>
 
       <Tab eventKey="supplier" title={t("supplier")}>

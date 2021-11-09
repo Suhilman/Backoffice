@@ -12,7 +12,7 @@ import useDebounce from "../../../hooks/useDebounce";
 import { Delete } from "@material-ui/icons";
 import ConfirmModal from "../../../components/ConfirmModal";
 
-const InventoryTab = ({ refresh, t }) => {
+const InventoryTab = ({ refresh, t, handleRefresh }) => {
   // const [alert, setAlert] = React.useState("");
   const [loading, setLoading] = React.useState(false);
 
@@ -64,6 +64,9 @@ const InventoryTab = ({ refresh, t }) => {
     console.log("filterData", filterData)
     setFilter(filterData);
   };
+
+  const enableLoading = () => setLoading(true);
+  const disableLoading = () => setLoading(false);
 
   const columns = [
     {
@@ -233,13 +236,35 @@ const InventoryTab = ({ refresh, t }) => {
     setShowConfirmBulk(false);
   };
 
+  const handleBulkDelete = async (data) => {
+    if (!data.length) {
+      return handleMode();
+    }
+    const API_URL = process.env.REACT_APP_API_URL;
+    const product_id = data.map((item) => item.id);
+
+    console.log("handleBulkDelete", data)
+
+    try {
+      enableLoading();
+      await axios.delete(`${API_URL}/api/v1/product/bulk-delete`, {
+        data: { product_id }
+      });
+      disableLoading();
+      handleRefresh();
+      closeConfirmBulkModal();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <>
       <ConfirmModal
         title={`${t('delete')} ${selectedData.length} Selected Products`}
         body={t('areYouSureWantToDelete?')}
         buttonColor="danger"
-        // handleClick={() => handleBulkDelete(selectedData)}
+        handleClick={() => handleBulkDelete(selectedData)}
         state={showConfirmBulk}
         closeModal={closeConfirmBulkModal}
         loading={loading}
