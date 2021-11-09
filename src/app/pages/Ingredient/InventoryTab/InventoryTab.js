@@ -23,6 +23,7 @@ import useDebounce from "../../../hooks/useDebounce";
 import AddModal from "./RawMaterial/AddModal";
 import EditModal from "./RawMaterial/EditModal";
 import ConfirmModal from "../../../components/ConfirmModal";
+import { Delete } from "@material-ui/icons";
 
 const InventoryIngredientTab = ({
   allOutlets,
@@ -39,6 +40,11 @@ const InventoryIngredientTab = ({
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
   const [stateExport, setStateExportExcel] = React.useState(false);
   const [dataExport, setDataExport] = React.useState([])
+
+  const [multiSelect, setMultiSelect] = React.useState(false);
+  const [clearRows, setClearRows] = React.useState(true);
+  const [selectedData, setSelectedData] = React.useState([]);
+  const [showConfirmBulk, setShowConfirmBulk] = React.useState(false);
 
   const [search, setSearch] = React.useState("");
   const debouncedSearch = useDebounce(search, 1000);
@@ -206,6 +212,16 @@ const InventoryIngredientTab = ({
     }
 
     return "";
+  };
+
+  const handleMode = () => {
+    setSelectedData([]);
+    setMultiSelect((state) => !state);
+    setClearRows((state) => !state);
+  };
+
+  const handleSelected = (state) => {
+    setSelectedData(state.selectedRows);
   };
 
   const getRawMaterial = async (search) => {
@@ -475,6 +491,40 @@ const InventoryIngredientTab = ({
     );
   };
 
+  const showConfirmBulkModal = (data) => {
+    if (!data.length) {
+      return handleMode();
+    }
+    setShowConfirmBulk(true);
+  };
+  
+  const closeConfirmBulkModal = () => {
+    handleMode();
+    setShowConfirmBulk(false);
+  };
+
+  const handleBulkDelete = async (data) => {
+    if (!data.length) {
+      return handleMode();
+    }
+    const API_URL = process.env.REACT_APP_API_URL;
+    const product_id = data.map((item) => item.id);
+
+    console.log("handleBulkDelete", data)
+
+    try {
+      enableLoading();
+      // await axios.delete(`${API_URL}/api/v1/product/bulk-delete`, {
+      //   data: { product_id }
+      // });
+      disableLoading();
+      handleRefresh();
+      closeConfirmBulkModal();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <>
       <AddModal
@@ -506,6 +556,16 @@ const InventoryIngredientTab = ({
       />
 
       <ConfirmModal
+        title={`${t('delete')} ${selectedData.length} Selected Products`}
+        body={t('areYouSureWantToDelete?')}
+        buttonColor="danger"
+        handleClick={() => handleBulkDelete(selectedData)}
+        state={showConfirmBulk}
+        closeModal={closeConfirmBulkModal}
+        loading={loading}
+      />
+
+      <ConfirmModal
         t={t}
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
@@ -530,58 +590,85 @@ const InventoryIngredientTab = ({
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>{t("rawMaterial")}</h3>
+                {!selectedData.length ? (
+                  <h3>{t("rawMaterial")}</h3>
+                ) : (
+                  <h3>{selectedData.length} {t("itemSelected")}</h3>
+                )}
               </div>
               <div className="headerEnd" style={{ display: "flex" }}>
-                <Button style={{ marginRight: "0.5rem" }} variant="secondary" onClick={() => setStateExportExcel(true)}>
+              {!multiSelect ? (
+                <>
+                  <Button style={{ marginRight: "0.5rem" }} variant="secondary" onClick={() => setStateExportExcel(true)}>
                   {t("export")}
+                  </Button>
+                  <div style={{ marginRight: "0.5rem" }}>
+                    <Button variant="primary" onClick={showAddModal}>
+                      {t("addRawMaterial")}
+                    </Button>
+                  </div>
+
+                  <Dropdown>
+                    <Dropdown.Toggle variant="light">{t("stock")}</Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                      <Link
+                        to={{
+                          pathname: "/ingredient-inventory/incoming-stock"
+                        }}
+                      >
+                        <Dropdown.Item as="button">{t("incomingStock")}</Dropdown.Item>
+                      </Link>
+                      <Link
+                        to={{
+                          pathname: "/ingredient-inventory/outcoming-stock"
+                        }}
+                      >
+                        <Dropdown.Item as="button">{t("outcomingStock")}</Dropdown.Item>
+                      </Link>
+                      <Link
+                        to={{
+                          pathname: "/ingredient-inventory/transfer-stock"
+                        }}
+                      >
+                        <Dropdown.Item as="button">{t("transferStock")}</Dropdown.Item>
+                      </Link>
+                      <Link
+                        to={{
+                          pathname: "/ingredient-inventory/stock-opname"
+                        }}
+                      >
+                        <Dropdown.Item as="button">{t("stockOpname")}</Dropdown.Item>
+                      </Link>
+                    </Dropdown.Menu>
+                  </Dropdown>
+
+                  {/* <Link to={{ pathname: "/inventory/stock-opname" }}>
+                    <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
+                      Stock Opname
+                    </Button>
+                  </Link> */}
+                </>
+              ) : (
+                <Button
+                  variant="danger"
+                  style={{ marginLeft: "0.5rem" }}
+                  onClick={() => showConfirmBulkModal(selectedData)}
+                >
+                  {t("delete")}
                 </Button>
-                <div style={{ marginRight: "0.5rem" }}>
-                  <Button variant="primary" onClick={showAddModal}>
-                    {t("addRawMaterial")}
-                  </Button>
-                </div>
-
-                <Dropdown>
-                  <Dropdown.Toggle variant="light">{t("stock")}</Dropdown.Toggle>
-
-                  <Dropdown.Menu>
-                    <Link
-                      to={{
-                        pathname: "/ingredient-inventory/incoming-stock"
-                      }}
-                    >
-                      <Dropdown.Item as="button">{t("incomingStock")}</Dropdown.Item>
-                    </Link>
-                    <Link
-                      to={{
-                        pathname: "/ingredient-inventory/outcoming-stock"
-                      }}
-                    >
-                      <Dropdown.Item as="button">{t("outcomingStock")}</Dropdown.Item>
-                    </Link>
-                    <Link
-                      to={{
-                        pathname: "/ingredient-inventory/transfer-stock"
-                      }}
-                    >
-                      <Dropdown.Item as="button">{t("transferStock")}</Dropdown.Item>
-                    </Link>
-                    <Link
-                      to={{
-                        pathname: "/ingredient-inventory/stock-opname"
-                      }}
-                    >
-                      <Dropdown.Item as="button">{t("stockOpname")}</Dropdown.Item>
-                    </Link>
-                  </Dropdown.Menu>
-                </Dropdown>
-
-                {/* <Link to={{ pathname: "/inventory/stock-opname" }}>
-                  <Button variant="primary" style={{ marginLeft: "0.5rem" }}>
-                    Stock Opname
-                  </Button>
-                </Link> */}
+              )}
+              {rawMaterial.length ? (
+                <Button
+                  variant={!multiSelect ? "danger" : "secondary"}
+                  style={{ marginLeft: "0.5rem" }}
+                  onClick={handleMode}
+                >
+                  {!multiSelect ? <Delete /> : `${t("cancel")}`}
+                </Button>
+              ) : (
+                ""
+              )}
               </div>
             </div>
 
@@ -633,6 +720,9 @@ const InventoryIngredientTab = ({
               expandableRows
               expandableRowsComponent={<ExpandableComponent />}
               style={{ minHeight: "100%" }}
+              selectableRows={multiSelect}
+              onSelectedRowsChange={handleSelected}
+              clearSelectedRows={clearRows}
             />
           </Paper>
         </Col>
