@@ -26,7 +26,8 @@ const ModalRole = ({
   formikRole,
   validationRole,
   accessLists,
-  t
+  t,
+  handleSelectAll
 }) => {
   return (
     <Modal show={state} onHide={closeModal}>
@@ -68,7 +69,12 @@ const ModalRole = ({
                           component="fieldset"
                           style={{ width: "100%" }}
                         >
-                          <h6>{access === 'Cashier' ? 'Frontend App' : access}</h6>
+                          <div className="d-flex justify-content-between align-items-center">
+                            <h6>{access === 'Cashier' ? 'Frontend App' : access}</h6>
+                            <div className="badge badge-primary" onClick={() => handleSelectAll(access)}>
+                              {t('selectAll')}
+                            </div>
+                          </div>
 
                           <FormGroup row>
                             <Container style={{ padding: "0" }}>

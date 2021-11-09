@@ -83,6 +83,8 @@ export const RolePage = () => {
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
 
+      console.log("Data yang ditambahkan", values)
+
       try {
         setAlert("");
         enableLoading();
@@ -505,6 +507,43 @@ export const RolePage = () => {
   //   );
   // };
 
+  const handleSelectAll = (state) => {
+    let temp_field_props;
+    let formik;
+    if(stateAddModal) {
+      temp_field_props = formikAddRole.getFieldProps("privileges").value
+      formik = formikAddRole
+    }
+    if(stateEditModal) {
+      temp_field_props = formikEditRole.getFieldProps("privileges").value
+      formik = formikEditRole
+    }
+    let allow_false = 0
+  
+    temp_field_props.map(value => {
+      if(value.access === state) {
+        if(!value.allow) {
+          allow_false += 1
+        }
+      }
+    })
+
+    if(allow_false === 0) {
+      temp_field_props.map(value => {
+          if(value.access === state) {
+            value.allow = false
+          }
+        })
+    } else {
+      temp_field_props.map(value => {
+        if(value.access === state) {
+          value.allow = true
+        }
+      })
+    }
+    formik.setFieldValue("privileges", temp_field_props);
+  }
+
   return (
     <>
       <ModalRole
@@ -517,6 +556,7 @@ export const RolePage = () => {
         formikRole={formikAddRole}
         validationRole={validationAddRole}
         accessLists={allAccessLists}
+        handleSelectAll={handleSelectAll}
       />
 
       <ModalRole
@@ -529,6 +569,7 @@ export const RolePage = () => {
         formikRole={formikEditRole}
         validationRole={validationEditRole}
         accessLists={allAccessLists}
+        handleSelectAll={handleSelectAll}
       />
 
       <ConfirmModal

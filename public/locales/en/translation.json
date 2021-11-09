@@ -1068,5 +1068,6 @@
     "skipGuide": "Skip Guide",
     "skipAllGuide": "Skip All Guide",
     "repeatTour": "Repeat Tour",
-    "inTheAssemblyModule": "In the assembly module, you can add and manage the raw materials contained in your business. Use the recipe menu to build recipes for your products, and input ingredients into recipes to automatically reduce ingredients"
+    "inTheAssemblyModule": "In the assembly module, you can add and manage the raw materials contained in your business. Use the recipe menu to build recipes for your products, and input ingredients into recipes to automatically reduce ingredients",
+    "selectAll": "Select All"
 }

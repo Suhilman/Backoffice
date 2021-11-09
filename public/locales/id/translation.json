@@ -1068,5 +1068,6 @@
   "skipGuide": "Lewati Panduan",
   "skipAllGuide": "Lewati Semua Panduan",
   "repeatTour": "Ulangi Tour",
-  "inTheAssemblyModule": "Dalam modul perakitan, Anda dapat menambah dan mengelola bahan baku yang terdapat dalam bisnis Anda. Gunakan menu resep untuk membuat resep produk Anda, dan masukkan bahan ke dalam resep untuk mengurangi bahan secara otomatis"
+  "inTheAssemblyModule": "Dalam modul perakitan, Anda dapat menambah dan mengelola bahan baku yang terdapat dalam bisnis Anda. Gunakan menu resep untuk membuat resep produk Anda, dan masukkan bahan ke dalam resep untuk mengurangi bahan secara otomatis",
+  "selectAll": "Pilih Semua"
 }
