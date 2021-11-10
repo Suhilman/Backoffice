@@ -424,7 +424,8 @@ export function UserProfileDropdown() {
         <div className="navi navi-spacer-x-0 pb-2 pt-2 wrapper-popup-notification">
           <div className="px-8">
             <Link to="/dashboard?repeat-tour">
-              <div style={{display:'inline-block', width:'100%'}} className="badge badge-primary py-2" onClick={handleRepeatTour}>{t('repeatTour')}</div>
+            {/* style={{display:'inline-block', width:'100%'}}  */}
+              <div className="badge badge-primary py-2" onClick={handleRepeatTour}>{t('repeatTour')}</div>
             </Link>
           </div>
         </div>

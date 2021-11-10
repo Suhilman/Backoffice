@@ -508,15 +508,15 @@ const InventoryIngredientTab = ({
       return handleMode();
     }
     const API_URL = process.env.REACT_APP_API_URL;
-    const product_id = data.map((item) => item.id);
+    const raw_material_id = data.map((item) => item.id);
 
     console.log("handleBulkDelete", data)
 
     try {
       enableLoading();
-      // await axios.delete(`${API_URL}/api/v1/product/bulk-delete`, {
-      //   data: { product_id }
-      // });
+      await axios.delete(`${API_URL}/api/v1/raw-material/bulk-delete`, {
+        data: { raw_material_id }
+      });
       disableLoading();
       handleRefresh();
       closeConfirmBulkModal();
