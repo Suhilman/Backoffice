@@ -256,7 +256,7 @@ export const EmailNotifications = () => {
       text: `${t("youCanChooseTimingForSendingEmailWeeklySalesReport")}`,
       low: (
         <FormControl style={{ width: "100%" }}>
-          <InputLabel htmlFor="hari">Day</InputLabel>
+          <InputLabel htmlFor="hari">{t('day')}</InputLabel>
           <Select
             native
             value={day}

@@ -546,6 +546,8 @@ const ModalCustomRange = ({
   const API_URL = process.env.REACT_APP_API_URL;
   const userInfo = JSON.parse(localStorage.getItem("user_info"));
   const [countExpired, setCountExpired] = useState(0)
+  const [subscriptionPartitoin, setSubscriptionPartitoin] = useState(null)
+
   const dispatch = useDispatch();
   const [kitchenModul, setKitchenModul] = React.useState("");
 
@@ -647,7 +649,20 @@ const ModalCustomRange = ({
     }
   };
 
+  const handleSubscriptionPartition = async () => {
+    try {
+      const userInfo = JSON.parse(localStorage.getItem("user_info"));
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${userInfo.business_id}`
+      );
+      setSubscriptionPartitoin(data.data[0].subscription_partition_id)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   React.useEffect(() => {
+    handleSubscriptionPartition()
     handleTypeBusiness()
     handleCheckExpired()
   },[])
@@ -719,9 +734,16 @@ const ModalCustomRange = ({
           <div className="font-weight-bold">{t('product')}</div>
             {t('inTheMainMenuOfTheProductModule')}
           <div className="d-flex justify-content-end">
-            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('inventory')}>
-              <div className="badge badge-info">{t('skipGuide')}</div>
-            </div>
+            {subscriptionPartitoin > 1 ? (
+              // Jika subscription nya Standard (2) atau Complete (3) maka guide selanjutnya Inventory
+              <div className="d-flex justify-content-end" onClick={() => handleShowGuide('inventory')}>
+                <div className="badge badge-info">{t('skipGuide')}</div>
+              </div>
+            ): (
+              <div className="d-flex justify-content-end" onClick={() => handleShowGuide('outlet')}>
+                <div className="badge badge-info">{t('skipGuide')}</div>
+              </div>
+            )}
             <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
               <div className="badge badge-danger">{t('skipAllGuide')}</div>
             </div>
@@ -733,9 +755,15 @@ const ModalCustomRange = ({
           <div className="font-weight-bold">{t('inventory')}</div>
           {t('inTheInventoryModule')}
           <div className="d-flex justify-content-end">
-            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('kitchen')}>
-              <div className="badge badge-info">{t('skipGuide')}</div>
-            </div>
+            {subscriptionPartitoin > 2 ? (
+              <div className="d-flex justify-content-end" onClick={() => handleShowGuide('kitchen')}>
+                <div className="badge badge-info">{t('skipGuide')}</div>
+              </div>
+            ) : (
+              <div className="d-flex justify-content-end" onClick={() => handleShowGuide('outlet')}>
+                <div className="badge badge-info">{t('skipGuide')}</div>
+              </div>
+            )}
             <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
               <div className="badge badge-danger">{t('skipAllGuide')}</div>
             </div>
@@ -765,13 +793,19 @@ const ModalCustomRange = ({
         </div>
       ): null}
       {showGuide === 'outlet' ? (
-        <div className={`wrapper-guide outlet ${countExpired > 14 ? 'margin-top-55' : ""}`}>
+        <div className={`wrapper-guide ${subscriptionPartitoin === 1 ? 'outlet-basic' : subscriptionPartitoin === 2 ? 'outlet-standard' : 'outlet' } ${countExpired > 14 ? 'margin-top-55' : ""}`}>
           <div className="font-weight-bold">{t('outlet')}</div>
           {t('inTheMainOutletMenu')}
           <div className="d-flex justify-content-end">
-            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('promo')}>
-              <div className="badge badge-info">{t('skipGuide')}</div>
-            </div>
+            {subscriptionPartitoin > 2 ? (
+              <div className="d-flex justify-content-end" onClick={() => handleShowGuide('promo')}>
+                <div className="badge badge-info">{t('skipGuide')}</div>
+              </div>
+            ) : (
+              <div className="d-flex justify-content-end" onClick={() => handleShowGuide('staff')}>
+                <div className="badge badge-info">{t('skipGuide')}</div>
+              </div>
+            )}
             <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
               <div className="badge badge-danger">{t('skipAllGuide')}</div>
             </div>
@@ -793,13 +827,19 @@ const ModalCustomRange = ({
         </div>
       ): null}
       {showGuide === 'staff' ? (
-        <div className={`wrapper-guide staff ${countExpired > 14 ? 'margin-top-55' : ""}`}>
+        <div className={`wrapper-guide ${subscriptionPartitoin === 1 ? 'staff-basic' : subscriptionPartitoin === 2 ? 'staff-standard' : 'staff'}  ${countExpired > 14 ? 'margin-top-55' : ""}`}>
           <div className="font-weight-bold">{t('staff')}</div>
           {t('onTheStaffMenu')}
           <div className="d-flex justify-content-end">
-            <div className="d-flex justify-content-end" onClick={() => handleShowGuide('role')}>
-              <div className="badge badge-info">{t('skipGuide')}</div>
-            </div>
+            {subscriptionPartitoin > 1 ? (
+              <div className="d-flex justify-content-end" onClick={() => handleShowGuide('role')}>
+                <div className="badge badge-info">{t('skipGuide')}</div>
+              </div>
+            ) : (
+              <div className="d-flex justify-content-end" onClick={() => handleShowGuide('account')}>
+                <div className="badge badge-info">{t('skipGuide')}</div>
+              </div>
+            )}
             <div className="d-flex justify-content-end ml-2" onClick={() => handleShowGuide('finish_guide')}>
               <div className="badge badge-danger">{t('skipAllGuide')}</div>
             </div>
@@ -807,7 +847,7 @@ const ModalCustomRange = ({
         </div>
       ): null}
       {showGuide === 'role' ? (
-        <div className={`wrapper-guide role ${countExpired > 14 ? 'margin-top-55' : ""}`}>
+        <div className={`wrapper-guide ${subscriptionPartitoin === 2 ? 'role-standard' : " role"} ${countExpired > 14 ? 'margin-top-55' : ""}`}>
           <div onClick={() => handleShowGuide('customer')}>
             <div className="font-weight-bold">{t('role')}</div>
             {t('theMainRoleMenuWillShowTheRolesThatExistInYourBusiness')}
@@ -823,7 +863,7 @@ const ModalCustomRange = ({
         </div>
       ): null}
       {showGuide === 'customer' ? (
-        <div className={`wrapper-guide customer ${countExpired > 14 ? 'margin-top-55' : ""}`}>
+        <div className={`wrapper-guide ${subscriptionPartitoin === 2 ? 'customer-standard' : 'customer'} ${countExpired > 14 ? 'margin-top-55' : ""}`}>
           <div onClick={() => handleShowGuide('account')}>
             <div className="font-weight-bold">{t('customer')}</div>
             {t('inTheCustomerManagementMainMenu')}
@@ -855,7 +895,7 @@ const ModalCustomRange = ({
         </div>
       ): null} */}
       {showGuide === 'account' ? (
-        <div className={`wrapper-guide account ${countExpired > 14 ? 'margin-top-55' : ""}`}>
+        <div className={`wrapper-guide ${subscriptionPartitoin === 1 ? 'account-bassic' : subscriptionPartitoin === 2 ? 'account-standard' : 'account'}  ${countExpired > 14 ? 'margin-top-55' : ""}`}>
           <div onClick={() => handleShowGuide('payment')}>
             <div className="font-weight-bold">{t('account')}</div>
             {t('onTheAccountInformationMenu')}
@@ -887,7 +927,7 @@ const ModalCustomRange = ({
         </div>
       ): null} */}
       {showGuide === 'payment' ? (
-        <div className={`wrapper-guide payment ${countExpired > 14 ? 'margin-top-55' : ""}`}>
+        <div className={`wrapper-guide ${subscriptionPartitoin === 1 ? 'payment-basic' : subscriptionPartitoin === 2 ? 'payment-standard' : 'payment'}  ${countExpired > 14 ? 'margin-top-55' : ""}`}>
           <div onClick={() => handleShowGuide('finish_guide')}>
             <div className="font-weight-bold">{t('payment')}</div>
             {t('simplifyYourBusinessTransactionsByRegisteringYourBusinessOnThisMenu')}

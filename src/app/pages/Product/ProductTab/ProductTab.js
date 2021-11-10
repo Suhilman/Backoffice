@@ -683,6 +683,7 @@ const ProductTab = ({
   };
 
   const handleOptionOutlet = async (outlet_id) => {
+    console.log("Call handleOptionOutlet")
     const API_URL = process.env.REACT_APP_API_URL;
     try {
       const { data } = await axios.get(

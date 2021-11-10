@@ -192,6 +192,7 @@ const ModalSync = ({
           }
           await axios.post(`${API_URL}/api/v1/blibli/sync-in-single`, send_sync_in_single)
         })
+        console.log("Sebelum Call handleOptionOutlet")
         await handleOptionOutlet(outletId)
         toast.success(t('synsBlibliProductSuccess'), {
           position: "top-right",
