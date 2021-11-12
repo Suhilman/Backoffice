@@ -29,7 +29,7 @@ const ModalRecepientEmail = ({
   }
 
   const toastSuccess = () => {
-    return toast.success('Add Email Recipient Success', {
+    return toast.success(t('addEmailRecipientSuccess'), {
       position: "top-right",
       autoClose: 3000,
       hideProgressBar: false,
@@ -41,7 +41,7 @@ const ModalRecepientEmail = ({
   }
 
   const toastInfo = () => {
-    return toast.info('Something went wrong', {
+    return toast.info(t('somethingWentWrong'), {
       position: "top-right",
       autoClose: 3000,
       hideProgressBar: false,

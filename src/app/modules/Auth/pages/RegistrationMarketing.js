@@ -267,7 +267,7 @@ const RegistrationMarketing = () => {
       verifyAccount();
       // disableLoading();
       history.push("/login");
-      toast.success(`Register success, please login`, {
+      toast.success(t('registerSuccess,PleaseLogin'), {
         position: "top-right",
         autoClose: 4500,
         hideProgressBar: false,

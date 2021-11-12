@@ -405,12 +405,17 @@ function Login(props) {
       no: 2,
       key: "en",
       language: "English"
+    },
+    {
+      no: 3,
+      key: "cn_simplified",
+      language: "Chinese Simplified"
+    },
+    {
+      no: 4,
+      key: "cn_traditional",
+      language: "Chinese Traditional"
     }
-    // {
-    //   no: 3,
-    //   key: "cn",
-    //   language: "Chinese"
-    // }
   ];
 
   const changeLanguage = (language, noLanugage) => {

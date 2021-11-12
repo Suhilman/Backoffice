@@ -168,7 +168,7 @@ const ModalManageVariant = ({
                                                   )}
                                                   <Form.Check
                                                     type="checkbox"
-                                                    label="Using Raw Material"
+                                                    label={t('usingRawMaterial')}
                                                     style={{
                                                       marginTop: "0.5rem"
                                                     }}

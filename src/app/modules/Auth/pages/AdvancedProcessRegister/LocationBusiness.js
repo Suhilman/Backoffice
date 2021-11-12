@@ -41,6 +41,8 @@ export default function LocationBusiness({location}) {
   const [captchaToken, setCaptchaToken] = useState("");
   const [token, setToken] = useState("")
 
+  const [language, setLanguage] = useState("")
+
   const [expiredApp, setExpiredApp] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("")
 
@@ -204,7 +206,7 @@ export default function LocationBusiness({location}) {
       verifyAccount();
       // disableLoading();
       history.push("/login");
-      toast.success(`Register success, please login`, {
+      toast.success(t('registerSuccess,PleaseLogin'), {
         position: "top-right",
         autoClose: 4500,
         hideProgressBar: false,
@@ -436,13 +438,16 @@ export default function LocationBusiness({location}) {
         const businessData = {
           business_name: values.business_name,
           business_type_id: values.business_type_id,
-          location_id: values.business_location_id
+          location_id: values.business_location_id,
+          language
         };
 
         const outletData = {
           location_id: values.business_location_id
           // location_id: values.outlet_location_id
         };
+
+        console.log("businessData", businessData)
 
         await axios.patch(
           `${API_URL}/api/v1/business/${business_id}`,
@@ -471,7 +476,7 @@ export default function LocationBusiness({location}) {
           headers: { Authorization: token }
         });
         history.push("/login");
-        toast.success(`Register success, please login`, {
+        toast.success(t('registerSuccess,PleaseLogin'), {
           position: "top-right",
           autoClose: 4500,
           hideProgressBar: false,
@@ -664,15 +669,21 @@ export default function LocationBusiness({location}) {
       no: 2,
       key: "en",
       language: "English"
+    },
+    {
+      no: 3,
+      key: "cn_simplified",
+      language: "Chinese Simplified"
+    },
+    {
+      no: 4,
+      key: "cn_traditional",
+      language: "Chinese Traditional"
     }
-    // {
-    //   no: 3,
-    //   key: "cn",
-    //   language: "Chinese"
-    // }
   ];
 
   const changeLanguage = (language, noLanugage) => {
+    setLanguage(language)
     console.log("language", language)
     i18n.changeLanguage(language);
   };
