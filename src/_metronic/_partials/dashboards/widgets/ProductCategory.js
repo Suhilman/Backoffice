@@ -39,7 +39,7 @@ export function ProductCategory({ className, productCategories }) {
     }
 
     const height = parseInt(KTUtil.css(element, "height"));
-    const options = getChartOptions(layoutProps, height, productCategories);
+    const options = getChartOptions(layoutProps, height, productCategories, t);
 
     const chart = new ApexCharts(element, options);
     chart.render();
@@ -62,13 +62,13 @@ export function ProductCategory({ className, productCategories }) {
   );
 }
 
-function getChartOptions(layoutProps, height, productCategories) {
+function getChartOptions(layoutProps, height, productCategories, t) {
   const categoryName = Object.keys(productCategories);
   const categoryQty = Object.values(productCategories);
 
   const options = {
     series: categoryQty.length ? categoryQty : [1],
-    labels: categoryName.length ? categoryName : ["[No Sales]"],
+    labels: categoryName.length ? categoryName : [`[${t('noSales')}]`],
     chart: {
       type: "donut"
     }

@@ -79,7 +79,7 @@ const CashlezTab = ({
       <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
         <div className="headerPage mb-5">
           <div className="headerStart">
-            <h3>FORMULIR APLIKASI MERCHANT ({registrationType})</h3>
+            <h3>{t('formulirAplikasiMerchant')} ({registrationType})</h3>
           </div>
         </div>
         <div className="btn btn-primary" onClick={() => openModalIndividual(t('individualRegistration'))}>

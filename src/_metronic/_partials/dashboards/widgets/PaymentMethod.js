@@ -40,7 +40,7 @@ export function PaymentMethod({ className, paymentMethods }) {
     }
 
     const height = parseInt(KTUtil.css(element, "height"));
-    const options = getChartOptions(layoutProps, height, paymentMethods);
+    const options = getChartOptions(layoutProps, height, paymentMethods, t);
 
     const chart = new ApexCharts(element, options);
     chart.render();
@@ -65,7 +65,7 @@ export function PaymentMethod({ className, paymentMethods }) {
   );
 }
 
-function getChartOptions(layoutProps, height, paymentMethods) {
+function getChartOptions(layoutProps, height, paymentMethods, t) {
   const paymentName = Object.keys(paymentMethods);
   const paymentCount = Object.values(paymentMethods);
 
@@ -74,7 +74,7 @@ function getChartOptions(layoutProps, height, paymentMethods) {
 
   const options = {
     series: paymentCount.length ? paymentCount : [1],
-    labels: paymentName.length ? paymentName : ["[No Sales]"],
+    labels: paymentName.length ? paymentName : [`[${t('noSales')}]`],
     chart: {
       type: "donut"
     },

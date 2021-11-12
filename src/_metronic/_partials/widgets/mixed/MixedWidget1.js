@@ -89,7 +89,7 @@ export function MixedWidget1({
       return;
     }
 
-    const options = getChartOptions(layoutProps, currentSales, currentRange);
+    const options = getChartOptions(layoutProps, currentSales, currentRange, t);
 
     const chart = new ApexCharts(element, options);
     chart.render();
@@ -279,7 +279,7 @@ export function MixedWidget1({
                 table="table-transactions"
                 filename={filename()}
                 sheet="transaction-report"
-                buttonText="Export"
+                buttonText={t('export')}
               />
             </Dropdown>
           </div>
@@ -402,13 +402,13 @@ export function MixedWidget1({
   );
 }
 
-function getChartOptions(layoutProps, currentSales, currentRange) {
+function getChartOptions(layoutProps, currentSales, currentRange, t) {
   const strokeColor = "#D13647";
 
   const options = {
     series: [
       {
-        name: "Sales Stats",
+        name: `${t('salesStats')}`,
         data: currentSales
       }
     ],

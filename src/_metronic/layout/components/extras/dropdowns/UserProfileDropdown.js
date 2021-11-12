@@ -173,12 +173,17 @@ export function UserProfileDropdown() {
       no: 2,
       key: "en",
       language: "English"
+    },
+    {
+      no: 3,
+      key: "cn_simplified",
+      language: "Chinese Simplified"
+    },
+    {
+      no: 4,
+      key: "cn_traditional",
+      language: "Chinese Traditional"
     }
-    // {
-    //   no: 3,
-    //   key: "cn",
-    //   language: "Chinese"
-    // }
   ];
 
   const handleBusinessInformation = async () => {
@@ -189,6 +194,10 @@ export function UserProfileDropdown() {
         changeLanguage("en", 2)
       } else if (data.data.language == 'id') {
         changeLanguage("id", 1)
+      } else if (data.data.language === 'cn_simplified'){
+        changeLanguage("cn_simplified", 3)
+      } else if (data.data.language === 'cn_traditional'){
+        changeLanguage("cn_traditional", 4)
       } else {
         changeLanguage("en", 2)
       }
@@ -200,6 +209,7 @@ export function UserProfileDropdown() {
   const handleChangeLanguage = async (language) => {
     const userInfo = JSON.parse(localStorage.getItem("user_info"));
     try {
+      console.log("language", language)
       await axios.patch(`${API_URL}/api/v1/business/update-language/${userInfo.business_id}`, {language})
     } catch (error) {
       console.log(error)

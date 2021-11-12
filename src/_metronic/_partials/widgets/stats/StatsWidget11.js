@@ -52,7 +52,8 @@ export function StatsWidget11({
     const options = getChartOption(
       layoutProps,
       realTimeTransactions,
-      realTimeRange
+      realTimeRange,
+      t
     );
     const chart = new ApexCharts(element, options);
     chart.render();
@@ -105,7 +106,7 @@ export function StatsWidget11({
   );
 }
 
-function getChartOption(layoutProps, realTimeTransactions, realTimeRange) {
+function getChartOption(layoutProps, realTimeTransactions, realTimeRange, t) {
   const dataSalesTransactions = realTimeRange.map(
     (item) => realTimeTransactions[item]?.salesTransactions || 0
   );
@@ -277,14 +278,14 @@ function getChartOption(layoutProps, realTimeTransactions, realTimeRange) {
       custom: function({ series, seriesIndex, dataPointIndex, w }) {
         return `
           <div class="tooltip-chart">
-            <span><b>Transactions:</b> ${
+            <span><b>${t('transactions')}:</b> ${
               dataTransactions[dataPointIndex]
             }</span><br />
-            <span><b>Sales Transactions:</b> ${rupiahFormat.convert(
+            <span><b>${t('salesTransactions')}:</b> ${rupiahFormat.convert(
               dataSalesTransactions[dataPointIndex]
             )}</span><br />
-            <span><b>Voids:</b> ${dataVoids[dataPointIndex]}</span><br />
-            <span><b>Voids Nominal:</b> ${rupiahFormat.convert(
+            <span><b>${t('voids')}:</b> ${dataVoids[dataPointIndex]}</span><br />
+            <span><b>${t('voidsNominal')}:</b> ${rupiahFormat.convert(
               dataVoidsNominal[dataPointIndex]
             )}</span>
           </div>

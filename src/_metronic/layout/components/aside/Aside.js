@@ -4,6 +4,7 @@ import objectPath from "object-path";
 import {Brand} from "../brand/Brand";
 import {AsideMenu} from "./aside-menu/AsideMenu";
 import {useHtmlClassService} from "../../_core/MetronicLayout";
+import ChatBox from '../ChatBox'
 
 export function Aside() {
   const uiService = useHtmlClassService();
@@ -28,7 +29,7 @@ export function Aside() {
           <Brand/>
 
           {/* begin::Aside Menu */}
-          <div id="kt_aside_menu_wrapper" className="aside-menu-wrapper flex-column-fluid">
+          <div id="kt_aside_menu_wrapper" className="aside-menu-wrapper flex-column-fluid d-flex flex-column justify-content-between">
             {layoutProps.disableAsideSelfDisplay && (
               <>
                 {/* begin::Header Logo */}
@@ -40,7 +41,8 @@ export function Aside() {
                 {/* end::Header Logo */}
               </>
             )}
-            <AsideMenu disableScroll={layoutProps.disableScroll}/>
+            <AsideMenu className="flex-grow-8" disableScroll={layoutProps.disableScroll}/>
+            <ChatBox className="flex-grow-2" />
           </div>
           {/* end::Aside Menu */}
         </div>

@@ -274,6 +274,12 @@ export const RolePage = () => {
   //   }
   // };
 
+  const camelize = (str) => {
+    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
+      return index === 0 ? word.toLowerCase() : word.toUpperCase();
+    }).replace(/\s+/g, '');
+  }
+
   const getPrivileges = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
@@ -308,19 +314,26 @@ export const RolePage = () => {
         return {
           id: item.Privilege.id,
           allow: false,
-          name: item.Privilege.name,
+          name: camelize(item.Privilege.name),
           access: item.Privilege.Access.name,
           allowShow: item.allow
         };
       });
 
-      console.log("privilegeData", privilegeData)
+      // handle hide commisison management
+      privilegeDataOwner.map((value, index) => {
+        if(value.name === 'commissionManagement') {
+          delete privilegeDataOwner[index]
+        }
+      })
+
+      console.log("privilegeDataOwner", privilegeDataOwner)
       // output => {id: 1, allow: false, name: "Cashier Transaction", access: "Cashier"}
 
-      formikAddRole.setFieldValue("privileges", privilegeData);
+      formikAddRole.setFieldValue("privileges", privilegeDataOwner);
 
       setAllAccessLists(accesses);
-      setAllPrivileges(privilegeData);
+      setAllPrivileges(privilegeDataOwner);
     } catch (err) {
       setAllPrivileges([]);
     }
@@ -374,11 +387,18 @@ export const RolePage = () => {
       const privilegeData = item.Role_Privileges.map((val) => {
         return {
           id: val.privilege_id,
-          name: val.Privilege?.name,
+          name: camelize(val.Privilege.name),
           allow: val.allow,
           access: val.Privilege?.Access.name
         };
       });
+
+      // handle hide commisison management
+      privilegeData.map((value, index) => {
+        if(value.name === 'commissionManagement') {
+          delete privilegeData[index]
+        }
+      })
 
       return {
         id: item.id,

@@ -96,7 +96,7 @@ const ModalRole = ({
                                           }}
                                         >
                                           <Form.Label>
-                                            {privilege.name === "Changing Transaction" ? "Delete Transaction" : privilege.name}
+                                            {privilege.name === "changingTransaction" ? `${t('deleteTransaction')}` : `${t(privilege.name)}`}
                                           </Form.Label>
                                         </Col>
                                         <Col style={{ textAlign: "end" }}>

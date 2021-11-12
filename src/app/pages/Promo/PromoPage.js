@@ -71,19 +71,22 @@ export const PromoPage = () => {
   return (
     <>
       {promoCategories.map((item, index) => {
-        if (item.name === "Sistem Poin / Kesetiaan") {
+        if (item.name === "Promo Khusus" || item.name ===  "特别促销" || item.name === "特價") {
           item.name = "Special Promo"
+          item.title_name = `${t("specialPromo")}`
         }
-        if (item.name === "Promo Voucher") {
-          item.name = "Voucher Promo"
-        }
-        if (item.name === "Promo Otomatis") {
+        if (item.name === "Promo Otomatis" || item.name === "自动促销" || item.name === "自動促銷") {
           item.name = "Automatic Promo"
+          item.title_name = `${t("automaticPromo")}`
         }
-        if (item.name === "Promo Khusus") {
-          item.name = "Special Promo"
+        if (item.name === "Promo Voucher" || item.name === "折扣券促销" || item.name === "優惠卷") {
+          item.name = "Voucher Promo"
+          item.title_name = `${t("voucherPromo")}`
         }
-        // console.log("ini item apa", item)
+        if (item.name === "Poin/Loyalitas Sistem" || item.name === "积分/忠诚度系统" || item.name === "積分/忠誠度系統") {
+          item.name = "Point/Loyalty System"
+          item.title_name = `${t("point/LoyaltySystem")}`
+        }
         const link = item.name
           .split(" ")
           .map((val) => val.replace(/[^A-Za-z0-9]/, "-"))
@@ -118,7 +121,7 @@ export const PromoPage = () => {
               <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
                 <div className="headerPage">
                   <div className="headerStart">
-                    <h5>{item.name}</h5>
+                    <h5>{item.title_name}</h5>
                   </div>
                   <div className="headerEnd" style={{ display: "inline-flex" }}>
                     <p style={{ margin: 0, alignSelf: "center" }}>

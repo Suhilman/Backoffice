@@ -36,7 +36,7 @@ const StatusRegistration = ({
 							<div className={styles.wrapperPayment}>
 								<div>
 									<div className={styles.title}>
-										Tracking Process
+										{t('trackingProcess')}
 									</div>
 									<div className={styles.value}>
 										{value.status}
@@ -44,7 +44,7 @@ const StatusRegistration = ({
 								</div>
 								<div>
 									<div className={styles.title}>
-										Payment Gateway Name
+										{t('paymentGatewayName')}
 									</div>
 									<div className={styles.value}>
 										{value.payment_gateway_name}
@@ -52,7 +52,7 @@ const StatusRegistration = ({
 								</div>
 								<div>
 									<div className={styles.title}>
-										Register Type Cashlez
+										{t('registerTypeCashlez')}
 									</div>
 									<div className={styles.value}>
 										{value.register_type_cz}
@@ -62,28 +62,28 @@ const StatusRegistration = ({
 							<div className="row justify-content-between">
 								<div className={`order-tracking ${value.tracking_process > 0 && value.tracking_process < 5 ? 'completed' : ''}`}>
 									<span className="is-complete"></span>
-									<p>Sudah diajukan di Beetpos<br /><span>{value.date_tracking_1 ? value.date_tracking_1 : ""}</span>
+									<p>{t('alreadySubmittedOnBeetpos')}<br /><span>{value.date_tracking_1 ? value.date_tracking_1 : ""}</span>
 									<br />
 									{/* <span>{value.time_tracking_1 ? value.time_tracking_1 : ""}</span> */}
 									</p>
 								</div>
 								<div className={`order-tracking ${value.tracking_process > 1 && value.tracking_process < 5 ? 'completed' : ''}`}>
 									<span className="is-complete"></span>
-									<p>Sedang diproses Payment Gateway<br /><span>{value.date_tracking_2 ? value.date_tracking_2 : ""}</span>
+									<p>{t('paymentGatewayIsInProgress')}<br /><span>{value.date_tracking_2 ? value.date_tracking_2 : ""}</span>
 									<br />
 									{/* <span>{value.time_tracking_2 ? value.time_tracking_2 : ""}</span> */}
 									</p>
 								</div>
 								<div className={`order-tracking ${value.tracking_process > 2 && value.tracking_process < 5 ? 'completed' : ''}`}>
 									<span className="is-complete"></span>
-									<p>Masa Penerbitan Cashlez<br /><span>{value.date_tracking_3 ? value.date_tracking_3 : ""}</span>
+									<p>{t('cashlezIssuancePeriod')}<br /><span>{value.date_tracking_3 ? value.date_tracking_3 : ""}</span>
 									<br />
 									{/* <span>{value.time_tracking_3 ? value.time_tracking_3 : ""}</span> */}
 									</p>
 								</div>
 								<div className={`order-tracking ${value.tracking_process > 3 && value.tracking_process < 5 ? 'completed' : ''}`}>
 									<span className="is-complete"></span>
-									<p>Status Selesai<br /><span>{value.date_tracking_4 ? value.date_tracking_4 : ""}</span>
+									<p>{t('completedStatus')}<br /><span>{value.date_tracking_4 ? value.date_tracking_4 : ""}</span>
 									<br />
 									{/* <span>{value.time_tracking_4 ? value.time_tracking_4 : ""}</span> */}
 									</p>
