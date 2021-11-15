@@ -264,6 +264,7 @@ export function UserProfileDropdown() {
         `${API_URL}/api/v1/business/${userInfo.business_id}`
       );
       let count = 0
+      
       if(data.data.name) count += 1
       if(data.data.ktp_picture) count += 1
       if(data.data.npwp_picture) count += 1
@@ -273,11 +274,18 @@ export function UserProfileDropdown() {
       if(data.data.npwp_business) count += 1
       if(data.data.business_type_id) count += 1
       if(data.data.currency_id) count += 1
-      if(data.data.Location.City.Province.name) count += 1
-      if(data.data.Location.City.name) count += 1
-      if(data.data.Location.name) count += 1
       if(data.data.phone_number) count += 1
       if(data.data.address) count += 1
+
+      if(data.data.country_code_iso3 === "IDN") {
+        if(data.data.Location.City.Province.name) count += 1
+        if(data.data.Location.City.name) count += 1
+        if(data.data.Location.name) count += 1
+      } else {
+        if(data.data.province) count += 1
+        if(data.data.city) count += 1
+        if(data.data.location) count += 1
+      }
 
       const calculate_percentage = count / 14 * 100
 

@@ -217,7 +217,7 @@
   padding: 10px 20px;
   border-radius: 25px 25px 25px 0;
   z-index: 999;
-  bottom: 135px;
+  bottom: 20px;
   width: 500px;
   box-shadow: 0 0 3px 1px #a66fa7;
   background-color: white;
@@ -281,4 +281,7 @@
 
 .margin-top-55{
   margin-top: 55px;
+}
+.margin-bottom-55{
+  margin-bottom: 55px;
 }

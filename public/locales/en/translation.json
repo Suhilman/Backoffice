@@ -1076,6 +1076,10 @@
     "inTheAssemblyModule": "In the assembly module, you can add and manage the raw materials contained in your business. Use the recipe menu to build recipes for your products, and input ingredients into recipes to automatically reduce ingredients",
     "notificationNotFound": "Notification Not Found",
     "update": "Update",
+    "enterLocation": "Enter Location",
+    "retail": "Retail",
+    "restaurant": "Restaurant",
+    "service": "Service",
 
     "currencyConversion": "Currency Convertion",
     "currencyA": "Currency A",

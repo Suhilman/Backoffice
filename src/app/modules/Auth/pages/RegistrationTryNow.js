@@ -101,7 +101,9 @@ const RegistrationTryNow = () => {
 
   const [countryCallingCode, setCountryCallingCode] = useState([])
   const [openOption, setOpenOption] = useState(false)
+  const [countryCodeIso, setCountryCodeIso] = useState("")
   const [phoneCode, setPhoneCode] = useState("")
+  const [language, setLanguage] = useState("")
 
   const [width, height] = useWindowSize();
   const [showNavDropdown, setShowDropdown] = useState(false)
@@ -305,6 +307,7 @@ const RegistrationTryNow = () => {
   };
 
   const changeLanguage = (language, noLanugage) => {
+    setLanguage(language)
     console.log("language", language)
     i18n.changeLanguage(language);
   };
@@ -518,7 +521,9 @@ const RegistrationTryNow = () => {
         values.name,
         phoneNumber,
         values.password,
-        captchaToken
+        captchaToken,
+        language,
+        countryCodeIso
       )
       .then(async ({ data }) => {
         const { owner, accessToken } = data.data;
@@ -784,7 +789,11 @@ const RegistrationTryNow = () => {
 
   const handleCountryCallingCode = (value) => {
     setPhoneCode(value)
-    console.log("handleCountryCallingCode", value)
+    const result = countryCallingCode.find(item => {
+      return item.phonecode == value
+    })
+    setCountryCodeIso(result.iso3)
+    console.log("setCountryCodeIso", result.iso3)
   }
 
   const handleOpenOption = (params) => {
@@ -933,11 +942,11 @@ const RegistrationTryNow = () => {
               
               {countryCallingCode.map((item) =>
                 openOption ? (
-                  <option styles={{width: '600px'}} key={item.id} value={`+${item.phonecode}`}>
+                  <option styles={{width: '600px'}} key={item.id} value={item.phonecode}>
                     {item.nicename}
                   </option>
                 ) : (
-                  <option key={item.id} value={`+${item.phonecode}`}>
+                  <option key={item.id} value={item.phonecode}>
                     {`+${item.phonecode}`}
                   </option>
                 )

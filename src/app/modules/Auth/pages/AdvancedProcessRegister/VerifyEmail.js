@@ -8,6 +8,8 @@ import { useLocation, useHistory } from 'react-router-dom'
 import axios from 'axios'
 
 export default function VerifyEmail({location}) {
+  const API_URL = process.env.REACT_APP_API_URL;
+
   const history = useHistory();
   const { t, i18n } = useTranslation();
   const [email, setEmail] = useState("")
@@ -70,6 +72,32 @@ export default function VerifyEmail({location}) {
     }
   };
 
+  const handleBusinessInformation = async (token) => {
+    try {
+      const getBusinessId = await axios.get(`${API_URL}/api/v1/business/my-businessid`,
+        { headers: { Authorization: token } 
+      })
+      const business_id = getBusinessId.data.data
+
+      const {data} = await axios.get(`${API_URL}/api/v1/business/${business_id}`,
+      { headers: { Authorization: token } })
+
+      if(!data.data.language || data.data.language == 'en') {
+        changeLanguage("en", 2)
+      } else if (data.data.language == 'id') {
+        changeLanguage("id", 1)
+      } else if (data.data.language === 'cn_simplified'){
+        changeLanguage("cn_simplified", 3)
+      } else if (data.data.language === 'cn_traditional'){
+        changeLanguage("cn_traditional", 4)
+      } else {
+        changeLanguage("en", 2)
+      }
+    } catch (error) {
+      console.log("error", error)
+    }
+  }
+
   useEffect(() => {
     const email = qs.parse(location.search, { ignoreQueryPrefix: true }).email
     const token = qs.parse(location.search, { ignoreQueryPrefix: true }).session
@@ -83,6 +111,9 @@ export default function VerifyEmail({location}) {
 
     // Funsgi untuk mendapatkan code verify, bukan state
     getCode(`Bearer ${token}`)
+
+    // Fungsi untuk get bahasa
+    handleBusinessInformation(`Bearer ${token}`)
   }, [location])
 
   const chooseLanguages = [
@@ -108,8 +139,9 @@ export default function VerifyEmail({location}) {
     }
   ];
 
+  
   const changeLanguage = (language, noLanugage) => {
-    console.log("language", language)
+    console.log("language verify email", language)
     i18n.changeLanguage(language);
   };
 

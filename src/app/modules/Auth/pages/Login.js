@@ -308,6 +308,47 @@ function Login(props) {
     }
   };
 
+  const toLogin = async (dataBusiness, token, user, API_URL) => {
+    // Jika Sudah di verifikasi dan Lokasi bisnis nya sudah ada
+    localStorage.setItem("currency", dataBusiness.data.data.Currency.name)
+    localStorage.setItem("token", `Bearer ${token}`)
+    setToken(`Bearer ${token}`);
+    // Handle Check Country || jika diluar indonesia, ketika membuat outlet bisa select addres. Jika luar indonesia select diubah menjadi text
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0
+    };
+    const success = async (pos) =>  {
+      try {
+        const crd = pos.coords;
+        const result = await axios.get(`${API_URL}/api/v1/outlet/get-address?latitude=${parseFloat(crd.latitude)}&longitude=${parseFloat(crd.longitude)}`)
+        const checkCountry = result.data.resultAddress.address.includes("Indonesia");
+        if(checkCountry) {
+          localStorage.setItem("checkCountry", true);
+        } else {
+          localStorage.setItem("checkCountry", false);
+        }
+      } catch (error) {
+        localStorage.setItem("checkCountry", true);
+        console.error(error)
+        console.log("catch check country")
+      }
+    }
+    const error = (err) => {
+      console.warn(`ERROR(${err.code}): ${err.message}`);
+    }
+    navigator.geolocation.getCurrentPosition(success, error, options)
+    // End Check Country
+    const resPartition = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${user.business_id}`, {
+    headers: { Authorization: `Bearer ${token}` } 
+    })
+    user.subscription_partition_id = resPartition.data.data[0].subscription_partition_id
+    localStorage.setItem("user_info", JSON.stringify(user));
+    disableLoading();
+    props.login(token);
+  }
+
   const formik = useFormik({
     initialValues,
     validationSchema: LoginSchema,
@@ -336,49 +377,24 @@ function Login(props) {
             console.log("dataBusiness", dataBusiness)
             console.log("dataBusiness.data.data", dataBusiness.data.data)
             // Jika Lokasi bisnisnya belum ada
-            if(!dataBusiness.data.data.location_id) {
-              history.push(`/register-process/business-location?session=${token}`)
+            if(dataBusiness.data.data.country_code_iso3 === "IDN" && dataBusiness.data.data.location_id) {
+              toLogin(dataBusiness, token, user, API_URL)
             } 
-            // Jika Sudah di verifikasi dan Lokasi bisnis nya sudah ada
-            else {
-              localStorage.setItem("currency", dataBusiness.data.data.Currency.name)
-              localStorage.setItem("token", `Bearer ${token}`)
-              setToken(`Bearer ${token}`);
-              // Handle Check Country || jika diluar indonesia, ketika membuat outlet bisa select addres. Jika luar indonesia select diubah menjadi text
-              const options = {
-                enableHighAccuracy: true,
-                timeout: 5000,
-                maximumAge: 0
-              };
-              const success = async (pos) =>  {
-                try {
-                  const crd = pos.coords;
-                  const result = await axios.get(`${API_URL}/api/v1/outlet/get-address?latitude=${parseFloat(crd.latitude)}&longitude=${parseFloat(crd.longitude)}`)
-                  const checkCountry = result.data.resultAddress.address.includes("Indonesia");
-                  if(checkCountry) {
-                    localStorage.setItem("checkCountry", true);
-                  } else {
-                    localStorage.setItem("checkCountry", false);
-                  }
-                } catch (error) {
-                  localStorage.setItem("checkCountry", true);
-                  console.error(error)
-                  console.log("catch check country")
-                }
+            // Jika Province, City, Location belum ada
+            else if (dataBusiness.data.data.country_code_iso3 !== "IDN" && dataBusiness.data.data.province && dataBusiness.data.data.city && dataBusiness.data.data.location) {
+              toLogin(dataBusiness, token, user, API_URL)
+            } else {
+              // Check bahasa
+              if(dataBusiness.data.data.language) {
+                console.log("language dari bisnis", dataBusiness.data.data.language)
+                changeLanguage(dataBusiness.data.data.language)
+                localStorage.setItem("i18nextLng", dataBusiness.data.data.language)
+              } else {
+                const currLanguage = localStorage.getItem("i18nextLng")
+                console.log("language dari localstorage", currLanguage)
+                setSelectedLanguage(currLanguage)
               }
-              const error = (err) => {
-                console.warn(`ERROR(${err.code}): ${err.message}`);
-              }
-              navigator.geolocation.getCurrentPosition(success, error, options)
-              // End Check Country
-              const resPartition = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/subscription?business_id=${user.business_id}`, {
-              headers: { Authorization: `Bearer ${token}` } 
-              })
-              user.subscription_partition_id = resPartition.data.data[0].subscription_partition_id
-              localStorage.setItem("user_info", JSON.stringify(user));
-              disableLoading();
-              props.login(token);
-
+              history.push(`/register-process/business-location?session=${token}`)
             }
           }
         })

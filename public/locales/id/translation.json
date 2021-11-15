@@ -1076,6 +1076,10 @@
   "inTheAssemblyModule": "Dalam modul perakitan, Anda dapat menambah dan mengelola bahan baku yang terdapat dalam bisnis Anda. Gunakan menu resep untuk membuat resep produk Anda, dan masukkan bahan ke dalam resep untuk mengurangi bahan secara otomatis",
   "notificationNotFound": "Notifikasi Tidak Ditemukan",
   "update": "Pembaruan",
+  "enterLocation": "Masukkan Lokasi",
+  "retail": "Pengecer",
+  "restaurant": "Restoran",
+  "service": "Layanan",
 
   "currencyConversion": "Konversi Mata Uang",
   "currencyA": "Mata Uang A",

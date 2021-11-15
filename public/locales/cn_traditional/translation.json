@@ -1075,5 +1075,9 @@
     "simplifyYourBusinessTransactionsByRegisteringYourBusinessOnThisMenu": "通过在此菜单上注册您的业务来简化您的业务交易。使用 BeetPOS 合作伙伴的支付网关功能进行在线交易，并自动确认此菜单上列出的每个在线支付",
     "inTheAssemblyModule": "在组装模块中，您可以添加和管理您业务中包含的原材料。使用配方菜单为您的产品建立配方，并将成分输入到配方中以自动减少成分",
     "notificationNotFound": "未找到通知",
-    "update": "更新"
+    "update": "更新",
+    "enterLocation": "輸入位置",
+    "retail": "零售",
+    "restaurant": "餐廳",
+    "service": "服務"
 }

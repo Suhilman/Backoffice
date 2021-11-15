@@ -29,12 +29,14 @@ export function loginStaff(staff_id, email, password, device) {
   });
 }
 
-export function register(email, name, phone_number, password, captcha) {
+export function register(email, name, phone_number, password, captcha, language, country_code_iso3) {
   return axios.post(REGISTER_URL, {
     email,
     name,
     phone_number,
     password,
+    language,
+    country_code_iso3,
     "g-recaptcha-response": captcha
   });
 }

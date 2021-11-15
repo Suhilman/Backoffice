@@ -61,6 +61,7 @@ const ModalOutlet = ({
 
   const showModalSosmed = () => setOpenModalSosmed(true);
   const closeModalSosmed = () => setOpenModalSosmed(false);
+  const [countryCodeIso3, setCountryCodeIso3] = useState("")
 
   const date = new Date();
   // console.log("Sekarang hari ke berapa", dayjs(date).format('d'))
@@ -157,9 +158,25 @@ const ModalOutlet = ({
     formikOutlet.setFieldValue("payment_description", e.target.getContent());
     console.log("Content was updated:", e.target.getContent());
   };
+  const handleBusinessInfo = async (token) => {
+    try {
+      const getBusinessId = await axios.get(`${API_URL}/api/v1/business/my-businessid`,
+        { headers: { Authorization: token } 
+      })
+      const business_id = getBusinessId.data.data
+
+      const {data} = await axios.get(`${API_URL}/api/v1/business/${business_id}`,
+        { headers: { Authorization: token } 
+      })
+      setCountryCodeIso3(data.data.country_code_iso3)
+    } catch (error) {
+      console.log("error", error)
+    }
+  }
   useEffect(() => {
     // option provinsi
     // setConditionCountry(localStorage.getItem("checkCountry"));
+    handleBusinessInfo()
     setConditionCountry("true");
     setPaymentDescription(
       formikOutlet.getFieldProps("payment_description").value
@@ -290,7 +307,7 @@ const ModalOutlet = ({
             </Row>
             <Row>
               <Col>
-                {conditionCountry === "true" ||
+                {countryCodeIso3 === "IDN" ||
                 formikOutlet.getFieldProps("location_id").value ? (
                   <Form.Group>
                     <Form.Label>{t("selectProvince")}:</Form.Label>
@@ -349,7 +366,7 @@ const ModalOutlet = ({
               </Col>
 
               <Col>
-                {conditionCountry === "true" ||
+                {countryCodeIso3 === "IDN" ||
                 formikOutlet.getFieldProps("location_id").value ? (
                   <Form.Group>
                     <Form.Label>{t("selectCity")}:</Form.Label>
@@ -409,7 +426,7 @@ const ModalOutlet = ({
 
             <Row>
               <Col>
-                {conditionCountry === "true" ||
+                {countryCodeIso3 === "IDN" ||
                 formikOutlet.getFieldProps("location_id").value ? (
                   <Form.Group>
                     <Form.Label>{t("selectLocation")}:</Form.Label>

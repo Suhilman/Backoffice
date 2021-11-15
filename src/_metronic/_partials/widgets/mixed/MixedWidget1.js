@@ -547,6 +547,7 @@ const ModalCustomRange = ({
   const userInfo = JSON.parse(localStorage.getItem("user_info"));
   const [countExpired, setCountExpired] = useState(0)
   const [subscriptionPartitoin, setSubscriptionPartitoin] = useState(null)
+  const [countryCodeIso3, setCountryCodeIso3] = useState("")
 
   const dispatch = useDispatch();
   const [kitchenModul, setKitchenModul] = React.useState("");
@@ -562,6 +563,8 @@ const ModalCustomRange = ({
     const queryParams = location.search
     try {
       const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+      setCountryCodeIso3(data.data.country_code_iso3)
+      console.log("setCountryCodeIso3", data.data.country_code_iso3)
       if(!data.data.user_guide || queryParams.includes("repeat-tour")) {
         setShowGuide("dashboard")
       } else {
@@ -863,7 +866,7 @@ const ModalCustomRange = ({
         </div>
       ): null}
       {showGuide === 'customer' ? (
-        <div className={`wrapper-guide ${subscriptionPartitoin === 2 ? 'customer-standard' : 'customer'} ${countExpired > 14 ? 'margin-top-55' : ""}`}>
+        <div className={`wrapper-guide ${subscriptionPartitoin === 2 ? 'customer-standard' : 'customer'} ${countExpired <= 14 ? 'margin-bottom-55' : ""}`}>
           <div onClick={() => handleShowGuide('account')}>
             <div className="font-weight-bold">{t('customer')}</div>
             {t('inTheCustomerManagementMainMenu')}
@@ -895,7 +898,7 @@ const ModalCustomRange = ({
         </div>
       ): null} */}
       {showGuide === 'account' ? (
-        <div className={`wrapper-guide ${subscriptionPartitoin === 1 ? 'account-bassic' : subscriptionPartitoin === 2 ? 'account-standard' : 'account'}  ${countExpired > 14 ? 'margin-top-55' : ""}`}>
+        <div className={`wrapper-guide ${subscriptionPartitoin === 1 ? 'account-bassic' : subscriptionPartitoin === 2 ? 'account-standard' : 'account'}  ${countExpired <= 14 ? 'margin-bottom-55' : ""}`}>
           <div onClick={() => handleShowGuide('payment')}>
             <div className="font-weight-bold">{t('account')}</div>
             {t('onTheAccountInformationMenu')}
@@ -926,8 +929,8 @@ const ModalCustomRange = ({
           </div>
         </div>
       ): null} */}
-      {showGuide === 'payment' ? (
-        <div className={`wrapper-guide ${subscriptionPartitoin === 1 ? 'payment-basic' : subscriptionPartitoin === 2 ? 'payment-standard' : 'payment'}  ${countExpired > 14 ? 'margin-top-55' : ""}`}>
+      {showGuide === 'payment' && countryCodeIso3 === "IDN" ? (
+        <div className={`wrapper-guide ${subscriptionPartitoin === 1 ? 'payment-basic' : subscriptionPartitoin === 2 ? 'payment-standard' : 'payment'}  ${countExpired <= 14 ? 'margin-bottom-55' : ""}`}>
           <div onClick={() => handleShowGuide('finish_guide')}>
             <div className="font-weight-bold">{t('payment')}</div>
             {t('simplifyYourBusinessTransactionsByRegisteringYourBusinessOnThisMenu')}

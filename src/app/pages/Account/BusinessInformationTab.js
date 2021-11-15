@@ -27,6 +27,8 @@ export const BusinessInformation = ({updateState}) => {
   const [businessImage, setBusinessImage] = React.useState("");
   const [allCurrencies, setAllCurrencies] = React.useState([])
 
+  const [countryCodeIso3, setCountryCodeIso3] = React.useState("")
+
   const [allBusinessTypes, setAllBusinessTypes] = React.useState([]);
   const [allProvinces, setAllProvinces] = React.useState([]);
   const [allCities, setAllCities] = React.useState([]);
@@ -153,6 +155,11 @@ export const BusinessInformation = ({updateState}) => {
       }
       
       const formData = new FormData();
+      if(countryCodeIso3 !== "IDN" ) {
+        formData.append("province", values.province_name);
+        formData.append("city", values.city_name);
+        formData.append("location", values.business_location);
+      }
       formData.append("name", values.name);
       formData.append("currency_id", values.currency_id);
       formData.append("phone_number", values.business_phone_number);
@@ -221,13 +228,13 @@ export const BusinessInformation = ({updateState}) => {
         `${API_URL}/api/v1/business/${userInfo.business_id}`
       );
 
-      // console.log("getBusinessInfo", data.data)
+      console.log("getBusinessInfo", data.data)
 
-      setBusiness({
+      const businessInfo = {
         name: data.data.name,
-        province_name: data.data.Location.City.Province.name,
-        city_name: data.data.Location.City.name,
-        business_location: data.data.Location.name,
+        province_name: "",
+        city_name: "",
+        business_location: "",
         business_type: data.data.Business_Type.name,
         business_address: data.data.address || "",
         business_phone_number: data.data.phone_number,
@@ -237,12 +244,34 @@ export const BusinessInformation = ({updateState}) => {
         payment_method: "",
         sales_type: "",
         business_type_id: data.data.business_type_id,
-        province_id: data.data.Location.City.Province.id,
-        city_id: data.data.Location.City.id,
+        province_id: "",
+        city_id: "",
         location_id: data.data.location_id,
         currency_id: data.data.currency_id,
         currency_name: data.data.Currency?.full_name
-      });
+      }
+
+      if (data.data.country_code_iso3 === 'IDN') {
+        console.log("masuk Indonesia")
+        businessInfo.province_name= data.data.Location.City.Province.name
+        businessInfo.city_name= data.data.Location.City.name
+        businessInfo.business_location= data.data.Location.name
+        businessInfo.province_id = data.data.Location.City.Province.id
+        businessInfo.city_id = data.data.Location.City.id
+      } else if (data.data.country_code_iso3 !== 'IDN') {
+        console.log("masuk Bukan Indonesia")
+        businessInfo.province_name = data.data.province
+        businessInfo.city_name = data.data.city
+        businessInfo.business_location = data.data.location
+      } else {
+        console.log("masuk default")
+        businessInfo.province_name= data.data.Location.City.Province.name
+        businessInfo.city_name= data.data.Location.City.name
+        businessInfo.business_location= data.data.Location.name
+      }
+
+      setCountryCodeIso3(data.data.country_code_iso3)
+      setBusiness(businessInfo);
 
       setImageKtp(
         `${data.data.ktp_picture ? `${API_URL}/${data.data.ktp_picture}` : ""}`
@@ -795,69 +824,110 @@ export const BusinessInformation = ({updateState}) => {
                   </Row>
                   <Row style={{ padding: "1rem" }}>
                     <Col md={6}>
-                      <Form.Group>
-                        <Form.Label>{t("province")}</Form.Label>
-                        <Form.Control
-                          as="select"
-                          name="province_id"
-                          {...formikBusiness.getFieldProps("province_id")}
-                          onChange={handleProvince}
-                          onBlur={handleProvince}
-                          className={validationBusiness("province_id")}
-                          required
-                        >
-                          {allProvinces.length
-                            ? allProvinces.map((item) => {
-                                return (
-                                  <option key={item.id} value={item.id}>
-                                    {item.name}
-                                  </option>
-                                );
-                              })
-                            : ""}
-                        </Form.Control>
-                        {formikBusiness.touched.province_id &&
-                        formikBusiness.errors.province_id ? (
-                          <div className="fv-plugins-message-container">
-                            <div className="fv-help-block">
-                              {formikBusiness.errors.province_id}
+                      {countryCodeIso3 === "IDN" ? (
+                        <Form.Group>
+                          <Form.Label>{t("province")}</Form.Label>
+                          <Form.Control
+                            as="select"
+                            name="province_id"
+                            {...formikBusiness.getFieldProps("province_id")}
+                            onChange={handleProvince}
+                            onBlur={handleProvince}
+                            className={validationBusiness("province_id")}
+                            required
+                          >
+                            {allProvinces.length
+                              ? allProvinces.map((item) => {
+                                  return (
+                                    <option key={item.id} value={item.id}>
+                                      {item.name}
+                                    </option>
+                                  );
+                                })
+                              : ""}
+                          </Form.Control>
+                          {formikBusiness.touched.province_id &&
+                          formikBusiness.errors.province_id ? (
+                            <div className="fv-plugins-message-container">
+                              <div className="fv-help-block">
+                                {formikBusiness.errors.province_id}
+                              </div>
                             </div>
-                          </div>
-                        ) : null}
-                      </Form.Group>
-
-                      <Form.Group>
-                        <Form.Label>{t("location")}</Form.Label>
-                        <Form.Control
-                          as="select"
-                          name="location_id"
-                          {...formikBusiness.getFieldProps("location_id")}
-                          className={validationBusiness("location_id")}
-                          required
-                        >
-                          <option value={""} disabled hidden>
-                            {t("chooseALocation")}
-                          </option>
-                          {allLocations.length
-                            ? allLocations.map((item) => {
-                                return (
-                                  <option key={item.id} value={item.id}>
-                                    {item.name}
-                                  </option>
-                                );
-                              })
-                            : ""}
-                        </Form.Control>
-                        {formikBusiness.touched.location_id &&
-                        formikBusiness.errors.location_id ? (
-                          <div className="fv-plugins-message-container">
-                            <div className="fv-help-block">
-                              {formikBusiness.errors.location_id}
+                          ) : null}
+                        </Form.Group>
+                      ) : (
+                        <Form.Group>
+                          <Form.Label>{t("pleaseInputProvince")}:</Form.Label>
+                          <Form.Control
+                            type="text"
+                            name="province"
+                            placeholder="Enter province"
+                            {...formikBusiness.getFieldProps("province_name")}
+                            className={validationBusiness("province_name")}
+                            required
+                          />
+                          {formikBusiness.touched.province_name && formikBusiness.errors.province_name ? (
+                            <div className="fv-plugins-message-container">
+                              <div className="fv-help-block">
+                                {formikBusiness.errors.province_name}
+                              </div>
                             </div>
-                          </div>
-                        ) : null}
-                      </Form.Group>
+                          ) : null}
+                        </Form.Group>
+                      )}
 
+                      {countryCodeIso3 === "IDN" ? (
+                        <Form.Group>
+                          <Form.Label>{t("location")}</Form.Label>
+                          <Form.Control
+                            as="select"
+                            name="location_id"
+                            {...formikBusiness.getFieldProps("location_id")}
+                            className={validationBusiness("location_id")}
+                            required
+                          >
+                            <option value={""} disabled hidden>
+                              {t("chooseALocation")}
+                            </option>
+                            {allLocations.length
+                              ? allLocations.map((item) => {
+                                  return (
+                                    <option key={item.id} value={item.id}>
+                                      {item.name}
+                                    </option>
+                                  );
+                                })
+                              : ""}
+                          </Form.Control>
+                          {formikBusiness.touched.location_id &&
+                          formikBusiness.errors.location_id ? (
+                            <div className="fv-plugins-message-container">
+                              <div className="fv-help-block">
+                                {formikBusiness.errors.location_id}
+                              </div>
+                            </div>
+                          ) : null}
+                        </Form.Group>
+                      ) : (
+                        <Form.Group>
+                          <Form.Label>{t("pleaseInputLocation")}:</Form.Label>
+                          <Form.Control
+                            type="text"
+                            name="Location"
+                            placeholder="Enter Location"
+                            {...formikBusiness.getFieldProps("business_location")}
+                            className={validationBusiness("business_location")}
+                            required
+                          />
+                          {formikBusiness.touched.business_location && formikBusiness.errors.business_location ? (
+                            <div className="fv-plugins-message-container">
+                              <div className="fv-help-block">
+                                {formikBusiness.errors.business_location}
+                              </div>
+                            </div>
+                          ) : null}
+                        </Form.Group>
+                      )}
                       <Form.Group>
                         <Form.Label>{t("phoneNumber")}</Form.Label>
                         <Form.Control
@@ -882,39 +952,60 @@ export const BusinessInformation = ({updateState}) => {
                       </Form.Group>
                     </Col>
                     <Col md={6}>
-                      <Form.Group>
-                        <Form.Label>{t("city")}</Form.Label>
-                        <Form.Control
-                          as="select"
-                          name="city_id"
-                          {...formikBusiness.getFieldProps("city_id")}
-                          onChange={handleCity}
-                          onBlur={handleCity}
-                          className={validationBusiness("city_id")}
-                          required
-                        >
-                          <option value={""} disabled hidden>
-                            {t("chooseACity")}
-                          </option>
-                          {allCities.length
-                            ? allCities.map((item) => {
-                                return (
-                                  <option key={item.id} value={item.id}>
-                                    {item.name}
-                                  </option>
-                                );
-                              })
-                            : ""}
-                        </Form.Control>
-                        {formikBusiness.touched.city_id &&
-                        formikBusiness.errors.city_id ? (
-                          <div className="fv-plugins-message-container">
-                            <div className="fv-help-block">
-                              {formikBusiness.errors.city_id}
+                      {countryCodeIso3 === "IDN" ? (
+                        <Form.Group>
+                          <Form.Label>{t("city")}</Form.Label>
+                          <Form.Control
+                            as="select"
+                            name="city_id"
+                            {...formikBusiness.getFieldProps("city_id")}
+                            onChange={handleCity}
+                            onBlur={handleCity}
+                            className={validationBusiness("city_id")}
+                            required
+                          >
+                            <option value={""} disabled hidden>
+                              {t("chooseACity")}
+                            </option>
+                            {allCities.length
+                              ? allCities.map((item) => {
+                                  return (
+                                    <option key={item.id} value={item.id}>
+                                      {item.name}
+                                    </option>
+                                  );
+                                })
+                              : ""}
+                          </Form.Control>
+                          {formikBusiness.touched.city_id &&
+                          formikBusiness.errors.city_id ? (
+                            <div className="fv-plugins-message-container">
+                              <div className="fv-help-block">
+                                {formikBusiness.errors.city_id}
+                              </div>
                             </div>
-                          </div>
-                        ) : null}
-                      </Form.Group>
+                          ) : null}
+                        </Form.Group>
+                      ) : (
+                        <Form.Group>
+                          <Form.Label>{t("pleaseInputCity")}:</Form.Label>
+                          <Form.Control
+                            type="text"
+                            name="city"
+                            placeholder="Enter city"
+                            {...formikBusiness.getFieldProps("city_name")}
+                            className={validationBusiness("city_name")}
+                            required
+                          />
+                          {formikBusiness.touched.city_name && formikBusiness.errors.city_name ? (
+                            <div className="fv-plugins-message-container">
+                              <div className="fv-help-block">
+                                {formikBusiness.errors.city_name}
+                              </div>
+                            </div>
+                          ) : null}
+                        </Form.Group>
+                      )}
 
                       <Form.Group>
                         <Form.Label>{t("address")}</Form.Label>
