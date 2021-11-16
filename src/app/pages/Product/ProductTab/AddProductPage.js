@@ -8,6 +8,8 @@ import { useTranslation } from "react-i18next";
 import { Row, Col } from "react-bootstrap";
 
 import ModalManageAddons from "./ModalManageAddons";
+import ModalSalesType from "./ModalSalesType";
+
 import FormTemplate from "./Form";
 import dayjs from "dayjs";
 
@@ -34,6 +36,9 @@ export const AddProductPage = ({ location }) => {
   const [allUnit, setAllUnit] = React.useState([])
   const [defaultWeight, setDefaultWeight] = React.useState("kg")
 
+  const [openSalesType, setOpenSalesType] = React.useState(false)
+  const [allSalesTypes, setAllSalesTypes] = React.useState([])
+
   const [syncEcommerce, setSyncEcommerce] = React.useState([])
   const [thereShowSync, setThereShowSync] = React.useState(false)
 
@@ -54,6 +59,14 @@ export const AddProductPage = ({ location }) => {
       ]
     }
   ]);
+
+  const [savedSalesTypes, setSavedSalesTypes] = React.useState(
+    [{
+      sales_type_id: "",
+      price: 0,
+      active: "Active"
+    }]
+  );
 
   const initialValueProduct = {
     outlet_id: "",
@@ -87,7 +100,8 @@ export const AddProductPage = ({ location }) => {
     height: 0,
     sync_ecommerce: [],
     has_assembly: false,
-    sell_by_weight: false
+    sell_by_weight: false,
+    sales_types: []
   };
 
   const ProductSchema = Yup.object().shape({
@@ -162,6 +176,16 @@ export const AddProductPage = ({ location }) => {
           })
         )
       })
+    ),
+    sales_types: Yup.array().of(
+      Yup.object().shape({
+        sales_type_id: Yup.number()
+          .integer()
+          .min(1, `${t("minimum1Character")}`),
+        price: Yup.number()
+          .min(1, `${t("minimum1Character")}`)
+          .required(`${t("pleaseInputPrice")}`)
+      })
     )
   });
 
@@ -175,6 +199,7 @@ export const AddProductPage = ({ location }) => {
         maxWidthOrHeight: 1920,
         useWebWorker: true
       }
+
       const formData = new FormData();
       formData.append("outlet_id", values.outlet_id);
       formData.append("name", values.name);
@@ -242,9 +267,26 @@ export const AddProductPage = ({ location }) => {
       if (values.sell_by_weight) formData.append("sell_by_weight", values.sell_by_weight)
 
       formData.append("sync_ecommerce", JSON.stringify(values.sync_ecommerce))
+      
       try {
         enableLoading();
-        await axios.post(`${API_URL}/api/v1/product/create-development`, formData);
+        const {data} = await axios.post(`${API_URL}/api/v1/product/create-development`, formData);
+        
+        console.log("response create product", data.data)
+        // Proses looping untuk mengubah (Active / Inactive) sales product menjadi true (active) / false (inactive)
+        values.sales_types.map(value => {
+          value.active = value.active === 'Active' ? true : false
+        })
+
+        // Cek dlu apakah sales types nya ada isinya
+        if(values.sales_types[0].price) {
+          const data_sales_type_product = {
+            product_id: data.data.id,
+            items: values.sales_types
+          }
+          await axios.post(`${API_URL}/api/v1/sales-type-product/create-array`, data_sales_type_product);
+        }
+
         disableLoading();
         history.push("/product");
       } catch (err) {
@@ -291,7 +333,6 @@ export const AddProductPage = ({ location }) => {
     setSavedAddons(formikProduct.values.groupAddons);
     setShowManageAddons(false);
   };
-
   const handlePreviewPhoto = (file) => {
     setAlertPhoto("");
 
@@ -415,6 +456,62 @@ export const AddProductPage = ({ location }) => {
     }
   }
 
+  const showModalSalesType = () => {
+    if (!formikProduct.values.sales_types.length) {
+      formikProduct.setFieldValue("sales_types", savedSalesTypes);
+    }
+    setOpenSalesType(true)
+  }
+  const closeModalSalesType = () => {
+    if (!savedSalesTypes[0].price) {
+      formikProduct.setFieldValue("sales_types", savedSalesTypes);
+    } else {
+      formikProduct.setFieldValue("sales_types", savedSalesTypes);
+    }
+    setOpenSalesType(false)
+  }
+
+  const handleSalesTypes = async () => {
+    try {
+      const {data} = await axios.get(`${API_URL}/api/v1/sales-type`)
+      setAllSalesTypes(data.data)
+    } catch (error) {
+      console.log("error", error)
+    }
+  }
+
+  useEffect(() => {
+    handleSalesTypes()
+  }, [])
+
+  const optionsSalesTypes = allSalesTypes
+    .map((item) => {
+      return {
+        value: item.id,
+        label: item.name
+      }
+    })
+    .filter((item) => item);
+
+   const defaultValueSalesTypes = (key) =>
+   optionsSalesTypes.find((val) => val.value === key);
+
+  const saveChangesSalesTypes = (e) => {
+    e.preventDefault();
+    console.log("hasilnya", formikProduct.values.sales_types)
+    setSavedSalesTypes(formikProduct.values.sales_types);
+    setOpenSalesType(false);
+  };
+  
+  const handleActiveSalesType = async (params, index, formik) => {
+    try {
+      formik.setFieldValue(`sales_types[${index}].active`, params)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
   return (
     <Row>
       <ModalManageAddons
@@ -427,6 +524,19 @@ export const AddProductPage = ({ location }) => {
         optionsUnit={optionsUnit}
         defaultValueMaterial={defaultValueMaterial}
         defaultValueUnit={defaultValueUnit}
+      />
+
+      <ModalSalesType
+        title={`${t("addProductSalesType")} - ${formikProduct.values.name}`}
+        closeModalSalesType={closeModalSalesType}
+        openSalesType={openSalesType}
+        formikProduct={formikProduct}
+        savedSalesTypes={savedSalesTypes}
+        optionsSalesTypes={optionsSalesTypes}
+        initialValueProduct={initialValueProduct}
+        saveChangesSalesTypes={saveChangesSalesTypes}
+        defaultValueSalesTypes={defaultValueSalesTypes}
+        handleActiveSalesType={handleActiveSalesType}
       />
 
       <Col>
@@ -461,6 +571,7 @@ export const AddProductPage = ({ location }) => {
           handleOptionSync={handleOptionSync}
           syncEcommerce={syncEcommerce}
           thereShowSync={thereShowSync}
+          showModalSalesType={showModalSalesType}
         />
       </Col>
     </Row>

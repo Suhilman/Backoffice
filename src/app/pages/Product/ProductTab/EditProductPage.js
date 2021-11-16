@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { Row, Col } from "react-bootstrap";
 import NumberFormat from 'react-number-format';
 
+import ModalSalesType from "./ModalSalesType";
 import ModalManageAddons from "./ModalManageAddons";
 import FormTemplate from "./Form";
 import dayjs from "dayjs";
@@ -24,7 +25,7 @@ export const EditProductPage = ({ match, location }) => {
     allMaterials,
     currProduct,
     groupAddons,
-    showFeature,
+    showFeature
   } = location.state;
   const history = useHistory();
   const API_URL = process.env.REACT_APP_API_URL;
@@ -53,6 +54,10 @@ export const EditProductPage = ({ match, location }) => {
   const [syncEcommerce, setSyncEcommerce] = React.useState([])
 
   const [thereShowSync, setThereShowSync] = React.useState(false)
+
+  const [openSalesType, setOpenSalesType] = React.useState(false)
+  const [allSalesTypes, setAllSalesTypes] = React.useState([])
+
 
   const product = {
     outlet_id: currProduct.outlet_id,
@@ -86,10 +91,17 @@ export const EditProductPage = ({ match, location }) => {
     height: currProduct.height,
     sync_ecommerce: [],
     has_assembly: currProduct.has_assembly,
-    sell_by_weight: currProduct.sell_by_weight
+    sell_by_weight: currProduct.sell_by_weight,
+    sales_types: currProduct.Sales_Type_Products
   };
 
+  console.log("edit product", product)
+
   const [addonsInitial, setAddonsinitial] = React.useState(groupAddons);
+
+  const [savedSalesTypes, setSavedSalesTypes] = React.useState(currProduct.Sales_Type_Products);
+
+  console.log("savedSalesTypes", savedSalesTypes)
 
   const ProductSchema = Yup.object().shape({
     outlet_id: Yup.number()
@@ -246,6 +258,19 @@ export const EditProductPage = ({ match, location }) => {
       try {
         enableLoading();
         await axios.put(`${API_URL}/api/v1/product/update-development/${product_id}`, formData);
+        if(values.sales_types) {
+
+          // Proses looping untuk mengubah (Active / Inactive) sales product menjadi true (active) / false (inactive)
+          values.sales_types.map(value => {
+            value.active = value.active === 'Active' ? true : false
+          })
+          const data_sales_type_product = {
+            product_id: product_id,
+            items: values.sales_types
+          }
+          console.log("data_sales_type_product", data_sales_type_product)
+          await axios.post(`${API_URL}/api/v1/sales-type-product/create-array`, data_sales_type_product);
+        }
         disableLoading();
         history.push("/product");
       } catch (err) {
@@ -322,9 +347,6 @@ export const EditProductPage = ({ match, location }) => {
   const defaultValueOutlet = optionsOutlet.find(
     (val) => val.value === formikProduct.values.outlet_id
   );
-
-  console.log("optionsOutlet product", optionsOutlet)
-  console.log("defaultValueOutlet product", defaultValueOutlet)
 
   const optionsCategory = allCategories.map((item) => {
     return { value: item.id, label: item.name };
@@ -450,6 +472,61 @@ export const EditProductPage = ({ match, location }) => {
     }
   }
 
+  const showModalSalesType = () => {
+    if (!formikProduct.values.sales_types.length) {
+      formikProduct.setFieldValue("sales_types", savedSalesTypes);
+    }
+    setOpenSalesType(true)
+  }
+  const closeModalSalesType = () => {
+    if (!savedSalesTypes[0]) {
+      formikProduct.setFieldValue("sales_types", savedSalesTypes);
+    } else {
+      formikProduct.setFieldValue("sales_types", savedSalesTypes);
+    }
+    setOpenSalesType(false)
+  }
+
+  const handleSalesTypes = async () => {
+    try {
+      const {data} = await axios.get(`${API_URL}/api/v1/sales-type`)
+      setAllSalesTypes(data.data)
+    } catch (error) {
+      console.log("error", error)
+    }
+  }
+
+  useEffect(() => {
+    handleSalesTypes()
+  }, [])
+
+  const optionsSalesTypes = allSalesTypes
+    .map((item) => {
+      return {
+        value: item.id,
+        label: item.name
+      }
+    })
+    .filter((item) => item);
+
+   const defaultValueSalesTypes = (key) =>
+   optionsSalesTypes.find((val) => val.value === key);
+
+  const saveChangesSalesTypes = (e) => {
+    e.preventDefault();
+    console.log("hasilnya", formikProduct.values.sales_types)
+    setSavedSalesTypes(formikProduct.values.sales_types);
+    setOpenSalesType(false);
+  };
+
+  const handleActiveSalesType = async (params, index, formik) => {
+    try {
+      formik.setFieldValue(`sales_types[${index}].active`, params)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <Row>
       <ModalManageAddons
@@ -463,6 +540,18 @@ export const EditProductPage = ({ match, location }) => {
         optionsUnit={optionsUnit}
         defaultValueMaterial={defaultValueMaterial}
         defaultValueUnit={defaultValueUnit}
+      />
+
+      <ModalSalesType
+        title={`${t("addProductSalesType")} - ${formikProduct.values.name}`}
+        closeModalSalesType={closeModalSalesType}
+        openSalesType={openSalesType}
+        formikProduct={formikProduct}
+        savedSalesTypes={savedSalesTypes}
+        optionsSalesTypes={optionsSalesTypes}
+        saveChangesSalesTypes={saveChangesSalesTypes}
+        defaultValueSalesTypes={defaultValueSalesTypes}
+        handleActiveSalesType={handleActiveSalesType}
       />
 
       <Col>
@@ -497,6 +586,7 @@ export const EditProductPage = ({ match, location }) => {
           handleOptionSync={handleOptionSync}
           syncEcommerce={syncEcommerce}
           thereShowSync={thereShowSync}
+          showModalSalesType={showModalSalesType}
         />
       </Col>
     </Row>

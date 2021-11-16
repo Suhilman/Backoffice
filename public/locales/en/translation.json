@@ -1080,6 +1080,7 @@
     "retail": "Retail",
     "restaurant": "Restaurant",
     "service": "Service",
+    "addProductSalesType": "Add Product Sales Type",
 
     "currencyConversion": "Currency Convertion",
     "currencyA": "Currency A",

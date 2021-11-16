@@ -151,6 +151,13 @@ const ProductTab = ({
         `${API_URL}/api/v1/product/back-office${filterProduct}`
         // `${API_URL}/api/v1/product${filterProduct}`
       );
+      data.data.map(value => {
+        if(value.Sales_Type_Products) {
+          value.Sales_Type_Products.map(value2 => {
+            value2.active = value2.active ? "Active" : "Inactive"
+          })
+        }
+      })
       setAllProducts(data.data);
       handleOutletProduct(data.data)
     } catch (err) {
@@ -352,7 +359,8 @@ const ProductTab = ({
         currProduct: item,
         groupAddons,
         bundleItems,
-        initial_stock_id
+        initial_stock_id,
+        sales_types: item.sales_types
       };
     });
   };
@@ -451,6 +459,7 @@ const ProductTab = ({
       name: `${t("actions")}`,
       grow: 1,
       cell: (rows) => {
+        console.log("data yang akan di edit", rows)
         return (
           <Dropdown>
             <Dropdown.Toggle variant="secondary">

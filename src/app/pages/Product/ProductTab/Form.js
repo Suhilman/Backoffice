@@ -57,8 +57,9 @@ const FormTemplate = ({
   defaultWeight,
   handleOptionSync,
   syncEcommerce,
-  thereShowSync
-}) => {
+  thereShowSync,
+  showModalSalesType
+}) => {  
   console.log("defaultWeight", defaultWeight)
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
@@ -187,8 +188,12 @@ const FormTemplate = ({
                   </div>
                 ) : null}
             </Form.Group>
+
             <Form.Group>
-              <Form.Label>{t("price")}*</Form.Label>
+              <div className="d-flex justify-content-between align-items-center mb-1">
+                <Form.Label>{t("price")}*</Form.Label>
+                <div className="badge badge-info" onClick={showModalSalesType}>{t('salesType')}</div>
+              </div>
               <Form.Control
                 type="number"
                 name="price"

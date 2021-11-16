@@ -1079,5 +1079,6 @@
     "enterLocation": "输入位置",
     "retail": "零售",
     "restaurant": "餐厅",
-    "service": "服务"
+    "service": "服务",
+    "addProductSalesType": "添加产品销售类型"
 }
