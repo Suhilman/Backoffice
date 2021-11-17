@@ -49,7 +49,7 @@ const ModalTax = ({
               {allTypes.map((item) => {
                 return (
                   <option key={item.id} value={item.id}>
-                    {item.name}
+                    {t(item.name)}
                   </option>
                 );
               })}
@@ -68,7 +68,7 @@ const ModalTax = ({
             <Form.Control
               type="text"
               name="name"
-              placeholder="Enter Tax Name"
+              placeholder={t('enterTaxName')}
               {...formikTax.getFieldProps("name")}
               className={validationTax("name")}
               required
@@ -91,7 +91,7 @@ const ModalTax = ({
               <Form.Control
                 type="number"
                 name="value"
-                placeholder="Enter Tax Amount"
+                placeholder={t('enterTaxAmount')}
                 {...formikTax.getFieldProps("value")}
                 className={validationTax("value")}
                 required
@@ -112,6 +112,7 @@ const ModalTax = ({
               name="outlet_id"
               className="basic-multi-select"
               classNamePrefix="select"
+              placeholder={t('select')}
               onChange={(value) => handleSelectOutlet(value, formikTax)}
               defaultValue={defaultValue}
             />

@@ -74,7 +74,7 @@ export const AttendanceTab = ({ selectedOutlet, startDate, endDate, endDateFilen
 
   const columns = [
     {
-      name: "No.",
+      name: `${t('no')}`,
       selector: "no",
       sortable: true,
       width: "50px"

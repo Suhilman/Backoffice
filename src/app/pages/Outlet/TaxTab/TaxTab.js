@@ -45,6 +45,9 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
     try {
       const { data } = await axios.get(`${API_URL}/api/v1/tax-type`);
       console.log("get types tax", data.data)
+      data.data.map(value => {
+        value.name = value.name.toLowerCase()
+      })
       setAllTypes(data.data);
     } catch (err) {
       console.log(err);
@@ -252,7 +255,7 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
 
   const columns = [
     {
-      name: "No.",
+      name: `${t('no')}`,
       selector: "no",
       sortable: true,
       width: "50px"
@@ -308,7 +311,7 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
         id: item.id,
         no: index + 1,
         name: item.name,
-        type: item.Tax_Type.name,
+        type: item.Tax_Type.name ? t(item.Tax_Type.name.toLowerCase()) : "",
         tax_type_id: item.tax_type_id,
         amount: parseFloat(item.value) + "%",
         outlet_id: item.Outlet_Taxes.map((item) => item.outlet_id)

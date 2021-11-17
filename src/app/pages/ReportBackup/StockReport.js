@@ -57,7 +57,7 @@ const StockReport = ({ selectedOutlet, startDate, endDate, endDateFilename, subs
   ];
   const columns = [
     {
-      name: "No.",
+      name: `${t('no')}`,
       selector: "no",
       sortable: true,
       width: "50px"

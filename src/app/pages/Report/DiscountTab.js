@@ -246,7 +246,7 @@ export const DiscountSalesTab = () => {
     );
 
     data.push({
-      name: "Grand Total",
+      name: `${t('grandTotal')}`,
       usage: totalUsage,
       total: totalAmount
     });

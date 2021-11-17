@@ -317,7 +317,7 @@ const InventoryIngredientTab = ({
   };
   const columns = [
     {
-      name: "No.",
+      name: `${t('no')}`,
       selector: "no",
       sortable: true,
       width: "50px"
