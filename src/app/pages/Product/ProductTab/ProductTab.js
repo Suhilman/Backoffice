@@ -1005,6 +1005,7 @@ const ProductTab = ({
             selectableRows={multiSelect}
             onSelectedRowsChange={handleSelected}
             clearSelectedRows={clearRows}
+            noDataComponent={t('thereAreNoRecordsToDisplay')}
           />
         </Paper>
       </Col>

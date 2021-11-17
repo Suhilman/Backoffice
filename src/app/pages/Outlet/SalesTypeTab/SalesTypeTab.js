@@ -387,6 +387,7 @@ export const SalesTypeTab = ({ handleRefresh, refresh, t, optionsEcommerce, show
             columns={columns}
             data={dataSalesTypes()}
             style={{ minHeight: "100%" }}
+            noDataComponent={t('thereAreNoRecordsToDisplay')}
           />
         </Paper>
       </Col>

@@ -246,6 +246,7 @@ const RawMaterialTab = () => {
                 columns={columns}
                 data={rawMaterialReport}
                 style={{ minHeight: "100%" }}
+                noDataComponent={t('thereAreNoRecordsToDisplay')}
               />
             </div>
           </Paper>

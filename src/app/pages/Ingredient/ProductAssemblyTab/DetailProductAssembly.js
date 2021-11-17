@@ -283,6 +283,7 @@ export const DetailProductAssembly = ({ location, match }) => {
               columns={columns}
               data={dataAssembly}
               style={{ minHeight: "100%" }}
+              noDataComponent={t('thereAreNoRecordsToDisplay')}
             />
           </Paper>
         </Col>

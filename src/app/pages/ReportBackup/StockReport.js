@@ -273,6 +273,7 @@ const StockReport = ({ selectedOutlet, startDate, endDate, endDateFilename, subs
         expandableRows
         expandableRowsComponent={<ExpandableComponent />}
         style={{ minHeight: "100%" }}
+        noDataComponent={t('thereAreNoRecordsToDisplay')}
       />
     </>
   );

@@ -272,6 +272,7 @@ const RecipeTab = ({
               columns={columns}
               data={dataUnit}
               style={{ minHeight: "100%" }}
+              noDataComponent={t('thereAreNoRecordsToDisplay')}
             />
           </Paper>
         </Col>

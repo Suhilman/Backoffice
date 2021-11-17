@@ -519,6 +519,7 @@ export default function CurrencyPage() {
               columns={columns}
               data={dadtaCurrencyConversion}
               style={{ minHeight: "100%" }}
+              noDataComponent={t('thereAreNoRecordsToDisplay')}
             />
           </Paper>
         </Col>

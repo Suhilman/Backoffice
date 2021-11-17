@@ -233,6 +233,7 @@ export const AttendanceTab = ({ selectedOutlet, startDate, endDate, endDateFilen
         expandableRows
         expandableRowsComponent={<ExpandableComponent />}
         style={{ minHeight: "100%" }}
+        noDataComponent={t('thereAreNoRecordsToDisplay')}
       />
     </>
   );

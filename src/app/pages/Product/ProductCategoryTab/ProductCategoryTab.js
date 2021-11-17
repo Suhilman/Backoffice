@@ -499,6 +499,7 @@ const ProductCategoryTab = ({ refresh, handleRefresh}) => {
             selectableRows={multiSelect}
             onSelectedRowsChange={handleSelected}
             clearSelectedRows={clearRows}
+            noDataComponent={t('thereAreNoRecordsToDisplay')}
           />
         </Paper>
       </Col>

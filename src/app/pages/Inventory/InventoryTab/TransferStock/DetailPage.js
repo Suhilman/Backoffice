@@ -299,6 +299,7 @@ export const DetailTransferStockPage = ({ match }) => {
                 columns={columns}
                 data={dataStock}
                 style={{ minHeight: "100%" }}
+                noDataComponent={t('thereAreNoRecordsToDisplay')}
               />
             </Paper>
           </Col>

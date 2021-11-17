@@ -327,6 +327,7 @@ const PurchaseOrderPage = ({ refresh, handleRefresh, t }) => {
               columns={columns}
               data={dataOrder}
               style={{ minHeight: "100%" }}
+              noDataComponent={t('thereAreNoRecordsToDisplay')}
             />
           </Paper>
         </Col>

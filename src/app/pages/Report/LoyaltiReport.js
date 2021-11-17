@@ -3,8 +3,10 @@ import axios from "axios";
 import { Row, Col, ListGroup } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 
 const LoyaltiReport = ({selectedOutlet, startDate, endDate, endDateFilename}) => {
+  const { t } = useTranslation();
      const kolom = [
        "No",
        "Nama Produk",
@@ -84,7 +86,7 @@ const LoyaltiReport = ({selectedOutlet, startDate, endDate, endDateFilename}) =>
               })
             ) : (
               <tr>
-                <td>Data Not Found</td>
+                <td>{t('dataNotFound')}</td>
               </tr>
             )} */}
           </tbody>
@@ -96,6 +98,7 @@ const LoyaltiReport = ({selectedOutlet, startDate, endDate, endDateFilename}) =>
         columns={columns}
      //    data={dataInventory}
         style={{ minHeight: "100%" }}
+        noDataComponent={t('thereAreNoRecordsToDisplay')}
       />
     </>
   );

@@ -430,6 +430,7 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
             columns={columns}
             data={dataTaxes()}
             style={{ minHeight: "100%" }}
+            noDataComponent={t('thereAreNoRecordsToDisplay')}
           />
         </Paper>
       </Col>

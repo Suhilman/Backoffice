@@ -200,6 +200,7 @@ const RawMaterialTab = ({selectedOutlet,
           columns={columns}
           data={rawMaterialReport}
           style={{ minHeight: "100%" }}
+          noDataComponent={t('thereAreNoRecordsToDisplay')}
         />
       </div>
     </>

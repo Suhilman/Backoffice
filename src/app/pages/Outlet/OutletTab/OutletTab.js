@@ -951,6 +951,7 @@ export const OutletTab = ({
               expandableRows
               expandableRowsComponent={<ExpandableComponent />}
               style={{ minHeight: "70%" }}
+              noDataComponent={t('thereAreNoRecordsToDisplay')}
             />
           </Paper>
         </Col>

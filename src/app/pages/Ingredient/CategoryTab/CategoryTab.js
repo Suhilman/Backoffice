@@ -362,6 +362,7 @@ const CategoryTab = ({ refresh, handleRefresh }) => {
               columns={columns}
               data={dataCategory}
               style={{ minHeight: "100%" }}
+              noDataComponent={t('thereAreNoRecordsToDisplay')}
             />
           </Paper>
         </Col>

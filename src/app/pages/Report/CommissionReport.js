@@ -252,14 +252,15 @@ const CommissionReport = () => {
                 </table>
               </div>
               <DataTable
-                  noHeader
-                  pagination
-                  columns={columns}
-                  expandableRows
-                  expandableRowsComponent={<ExpandableComponent />}
-                  data={data}
-                  style={{ minHeight: "100%" }}
-                />
+                noHeader
+                pagination
+                columns={columns}
+                expandableRows
+                expandableRowsComponent={<ExpandableComponent />}
+                data={data}
+                style={{ minHeight: "100%" }}
+                noDataComponent={t('thereAreNoRecordsToDisplay')}
+              />
             </div>
           </Paper>
         </Col>

@@ -647,6 +647,7 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
             columns={columns}
             data={dataPayments()}
             style={{ minHeight: "100%" }}
+            noDataComponent={t('thereAreNoRecordsToDisplay')}
           />
         </Paper>
       </Col>

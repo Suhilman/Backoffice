@@ -334,6 +334,7 @@ export const StaffPage = () => {
               columns={columns}
               data={dataStaff}
               style={{ minHeight: "100%" }}
+              noDataComponent={t('thereAreNoRecordsToDisplay')}
             />
           </Paper>
         </Col>

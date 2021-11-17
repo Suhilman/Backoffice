@@ -294,6 +294,7 @@ export const TransactionHistoryTab = ({
         expandableRows
         expandableRowsComponent={<ExpandableComponent />}
         style={{ minHeight: "100%" }}
+        noDataComponent={t('thereAreNoRecordsToDisplay')}
       />
     </>
   );

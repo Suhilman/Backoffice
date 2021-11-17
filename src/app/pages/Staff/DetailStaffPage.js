@@ -714,6 +714,7 @@ export const DetailStaffPage = ({ match, location }) => {
                     style={{ padding: "1rem" }}
                     expandableRows
                     expandableRowsComponent={<ExpandableComponent />}
+                    noDataComponent={t('thereAreNoRecordsToDisplay')}
                   />
                 </Col>
               </Row>

@@ -322,6 +322,7 @@ export const AutomaticPromoPage = () => {
               data={dataPromo()}
               // style={{ minHeight: "80%" }}
               style={{ minHeight: "100%" }}
+              noDataComponent={t('thereAreNoRecordsToDisplay')}
             />
           </Paper>
         </Col>

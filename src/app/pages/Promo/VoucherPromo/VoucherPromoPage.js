@@ -598,6 +598,7 @@ export const VoucherPromoPage = () => {
               columns={columns}
               data={dataPromo()}
               style={{ minHeight: "100%" }}
+              noDataComponent={t('thereAreNoRecordsToDisplay')}
             />
           </Paper>
         </Col>

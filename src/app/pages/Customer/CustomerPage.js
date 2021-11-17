@@ -357,6 +357,7 @@ export const CustomerPage = () => {
               columns={columns}
               data={dataCustomer}
               style={{ minHeight: "100%" }}
+              noDataComponent={t('thereAreNoRecordsToDisplay')}
             />
           </Paper>
         </Col>

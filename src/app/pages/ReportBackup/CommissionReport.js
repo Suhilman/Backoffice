@@ -222,6 +222,7 @@ const CommissionReport = () => {
           expandableRowsComponent={<ExpandableComponent />}
           data={data}
           style={{ minHeight: "100%" }}
+          noDataComponent={t('thereAreNoRecordsToDisplay')}
         />
     </div>
   );

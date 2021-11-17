@@ -435,7 +435,7 @@ const FormTemplate = ({
                           formikProduct.setFieldValue("status", "active");
                         }
                       }}
-                      label={item}
+                      label={t(item.toLocaleLowerCase())}
                       checked={
                         item.toLowerCase() === formikProduct.values.status
                           ? true

@@ -396,6 +396,7 @@ const SupplierTab = ({ refresh, handleRefresh, t }) => {
               columns={columns}
               data={dataSupplier}
               style={{ minHeight: "100%" }}
+              noDataComponent={t('thereAreNoRecordsToDisplay')}
             />
           </Paper>
         </Col>

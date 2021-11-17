@@ -196,7 +196,7 @@
   "incomingStock": "新进材料",
   "outcomingStock": "售罄材料",
   "transferStock": "转移材料",
-  "stockOpname": "Stock Opname",
+  "stockOpname": "库存操作",
   "outletName": "分店名称",
   "currentStock": "现有存货",
   "adjusment": "调节",
@@ -1081,5 +1081,6 @@
     "restaurant": "餐厅",
     "service": "服务",
     "addProductSalesType": "添加产品销售类型",
-    "salesTypecannotSame": "销售类型不能相同"
+    "salesTypecannotSame": "销售类型不能相同",
+    "thereAreNoRecordsToDisplay": "没有可显示的记录"
 }

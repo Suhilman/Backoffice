@@ -351,7 +351,7 @@ const SalesPerHour = () => {
                   })
                 ) : (
                   <tr>
-                    <td>Data Not Found</td>
+                    <td>{t('dataNotFound')}</td>
                   </tr>
                 )}
                 <tr>

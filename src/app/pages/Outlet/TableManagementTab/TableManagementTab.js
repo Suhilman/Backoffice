@@ -535,6 +535,7 @@ export const TableManagementTab = ({ handleRefresh, refresh }) => {
             columns={columns}
             data={dataTables()}
             style={{ minHeight: "100%" }}
+            noDataComponent={t('thereAreNoRecordsToDisplay')}
           />
         </Paper>
       </Col>

@@ -341,7 +341,7 @@
     "totalCashRecap": "Total Cash Recap",
     "totalTransaction": "Total Transaction",
     "totalSales": "Total Sales",
-    "dataNotFound": "Data Not Found",
+    "dataNotFound": "{t('dataNotFound')}",
     "transactionID": "Transaction ID",
     "voidType": "Void Type",
     "totalVoidTransaction": "Total Void Transaction",
@@ -1082,6 +1082,7 @@
     "service": "Service",
     "addProductSalesType": "Add Product Sales Type",
     "theTypeOfSaleCannotBeTheSame": "The Type of Sale Cannot be The Same",
+    "thereAreNoRecordsToDisplay": "There Are No Records To Display",
 
     "currencyConversion": "Currency Convertion",
     "currencyA": "Currency A",
