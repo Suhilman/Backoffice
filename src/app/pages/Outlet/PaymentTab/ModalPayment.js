@@ -75,7 +75,7 @@ const ModalPayment = ({
   );
   console.log("defaultValue", defaultValue);
   console.log("sebelum optionsOutlet", optionsOutlet);
-  optionsOutlet.unshift({ value: 1, label: "All Outlets" });
+  optionsOutlet.unshift({ value: 1, label: t('allOutlets') });
   console.log("sesudah optionsOutlet", optionsOutlet);
   console.log("allOutlets", allOutlets);
   // console.log("defaultValue", defaultValue)
@@ -115,6 +115,7 @@ const ModalPayment = ({
                 ) : (
                   <Select
                     options={optionsOutlet}
+                    placeholder={t('select')}
                     isMulti
                     name="outlet_id"
                     className="basic-multi-select"
@@ -300,7 +301,7 @@ const ModalPayment = ({
           {photo ? (
             <Row className="justify-content-md-center">
               <div className="btn btn-danger" onClick={handleDelete}>
-                Delete QR Code
+                {t('deleteQRCode')}
               </div>
             </Row>
           ) : null}

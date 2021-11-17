@@ -287,6 +287,7 @@ export const AddStockOpnamePage = ({ location }) => {
                 <Form.Group>
                   <Form.Label>{t('location')}:</Form.Label>
                   <Select
+                    placeholder={t('select')}
                     options={optionsOutlet}
                     name="outlet_id"
                     className="basic-single"
@@ -408,6 +409,7 @@ export const AddStockOpnamePage = ({ location }) => {
                                 <Col>
                                   <Form.Group>
                                     <Select
+                                      placeholder={t('select')}
                                       options={optionsProducts}
                                       formatGroupLabel={formatGroupLabel}
                                       name={`items[${index}].stock_id`}

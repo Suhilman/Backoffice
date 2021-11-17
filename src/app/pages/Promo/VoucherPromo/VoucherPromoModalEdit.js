@@ -104,6 +104,7 @@ const VoucherPromoModalEdit = ({
                 <Form.Label>{t("outlet")}:</Form.Label>
                 <Select
                   options={optionsOutlet}
+                  placeholder={t('select')}
                   isMulti
                   name="outlet_id"
                   className="basic-multi-select"

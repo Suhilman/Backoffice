@@ -356,6 +356,7 @@ export const EditRecipePage = ({ location, match }) => {
                         <Form.Label>{t("location")}:</Form.Label>
                         <Select
                           options={optionsOutlet}
+                          placeholder={t('select')}
                           defaultValue={defaultValueOutlet}
                           name="outlet_id"
                           className="basic-single"
@@ -464,6 +465,7 @@ export const EditRecipePage = ({ location, match }) => {
                                         <Form.Group>
                                           <Select
                                             options={optionsCategory}
+                                            placeholder={t('select')}
                                             defaultValue={defaultValueCategory(
                                               index
                                             )}
@@ -500,6 +502,7 @@ export const EditRecipePage = ({ location, match }) => {
                                         <Form.Group>
                                           <Select
                                             options={optionsRaw(index)}
+                                            placeholder={t('select')}
                                             defaultValue={defaultValueRaw(
                                               index
                                             )}

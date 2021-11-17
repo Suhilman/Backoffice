@@ -275,24 +275,24 @@ export const AddProductPage = ({ location }) => {
         enableLoading();
         const {data} = await axios.post(`${API_URL}/api/v1/product/create-development`, formData);
         
-        console.log("response create product", data.data)
         // Proses looping untuk mengubah (Active / Inactive) sales product menjadi true (active) / false (inactive)
         values.sales_types.map(value => {
           value.active = value.active === 'Active' ? true : false
         })
 
         // Cek dlu apakah sales types nya ada isinya
-        if(values.sales_types[0].price) {
+        if(values.sales_types.length) {
           const data_sales_type_product = {
             product_id: data.data.id,
             items: values.sales_types
           }
+          console.log("data_sales_type_product", data_sales_type_product)
           await axios.post(`${API_URL}/api/v1/sales-type-product/create-array`, data_sales_type_product);
         }
-
         disableLoading();
         history.push("/product");
       } catch (err) {
+        console.log("error", err)
         setAlert(err.response.data.message);
         disableLoading();
       }
@@ -465,9 +465,10 @@ export const AddProductPage = ({ location }) => {
     }
     setOpenSalesType(true)
   }
+
   const closeModalSalesType = () => {
     if (!savedSalesTypes[0].price) {
-      formikProduct.setFieldValue("sales_types", savedSalesTypes);
+      formikProduct.setFieldValue("sales_types", []);
     } else {
       formikProduct.setFieldValue("sales_types", savedSalesTypes);
     }
@@ -514,7 +515,7 @@ export const AddProductPage = ({ location }) => {
     console.log("formikProduct.values.sales_types", formikProduct.values.sales_types)
 
     if(temp_check.length > 0) {
-      toast.warn(t('salesTypecannotSame'), {
+      toast.warn(t('theTypeOfSaleCannotBeTheSame'), {
         position: "top-right",
         autoClose: 4500,
         hideProgressBar: false,

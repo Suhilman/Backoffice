@@ -59,6 +59,7 @@ const EditModal = ({
           <Form.Group>
             <Form.Label>{t("location")}:</Form.Label>
             <Select
+              placeholder={t('select')}
               options={optionsOutlet}
               defaultValue={defaultValueOutlet}
               name="outlet_id"
@@ -99,6 +100,7 @@ const EditModal = ({
           <Form.Group>
             <Form.Label>{t("category")}:</Form.Label>
             <Select
+              placeholder={t('select')}
               options={optionsCategory}
               defaultValue={defaultValueCategory}
               name="raw_material_category_id"
@@ -142,6 +144,7 @@ const EditModal = ({
           <Form.Group>
             <Form.Label>{t("unit")}:</Form.Label>
             <Select
+              placeholder={t('select')}
               options={optionsUnit}
               defaultValue={defaultValueUnit}
               name="unit_id"
@@ -201,6 +204,7 @@ const EditModal = ({
           <Form.Group>
             <Form.Label>{t("calorieUnit")}:</Form.Label>
             <Select
+              placeholder={t('select')}
               options={optionsCalorie}
               defaultValue={defaultValueCalorie}
               name="calorie_unit"

@@ -119,6 +119,7 @@ const FormTemplate = ({
               <Form.Label>{t("outlet")}*</Form.Label>
               <Select
                 options={optionsOutlet}
+                placeholder={t('select')}
                 defaultValue={defaultValueOutlet}
                 name="outlet_id"
                 className="basic-single"
@@ -170,6 +171,7 @@ const FormTemplate = ({
                 options={optionsCategory}
                 defaultValue={defaultValueCategory}
                 name="product_category_id"
+                placeholder={t('select')}
                 className="basic-single"
                 classNamePrefix="select"
                 onChange={(value) =>
@@ -628,6 +630,7 @@ const FormTemplate = ({
                 <Select
                   options={optionsSupplier}
                   defaultValue={defaultValueSupplier}
+                  placeholder={t('select')}
                   name="supplier_id"
                   className="basic-single"
                   classNamePrefix="select"
@@ -706,6 +709,7 @@ const FormTemplate = ({
                 <Form.Label>{t("unit")}</Form.Label>
                 <Select
                   options={optionsUnit}
+                  placeholder={t('select')}
                   defaultValue={defaultValueUnit(formikProduct.values.unit_id)}
                   name="unit_id"
                   className="basic-single"

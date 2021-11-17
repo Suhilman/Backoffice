@@ -930,7 +930,7 @@ export const OutletTab = ({
                             {allStatuses.map((item, index) => {
                               return (
                                 <option key={index} value={item.toLowerCase()}>
-                                  {item}
+                                  {t(item.toLowerCase())}
                                 </option>
                               );
                             })}

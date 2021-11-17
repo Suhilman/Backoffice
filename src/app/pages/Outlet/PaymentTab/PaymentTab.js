@@ -478,7 +478,7 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
         type_id: item.payment_method_type_id,
         ecommerce: item.ecommerce,
         mdr: item.mdr + "%",
-        outlet: item.Outlet ? item.Outlet.name : "All Outlet",
+        outlet: item.Outlet ? item.Outlet.name : t('allOutlets'),
         qr_image: item.qr_image,
         status: item.status,
         outlet_id: item.outlet_id

@@ -391,6 +391,7 @@ export const EditSalesOrderPage = ({ location, match }) => {
                     <Form.Label>{t("paymentMethod")}</Form.Label>
                     <Select
                       options={paymentMethods}
+                      placeholder={t('select')}
                       defaultValue={defaultPayment}
                       name="payment_method_id"
                       className="basic-single"
@@ -519,6 +520,7 @@ export const EditSalesOrderPage = ({ location, match }) => {
                                   <Form.Group>
                                     <Select
                                       options={optionProduct}
+                                      placeholder={t('select')}
                                       defaultValue={defaultProduct(index)}
                                       name={`items[${index}].product_id`}
                                       className="basic-single"

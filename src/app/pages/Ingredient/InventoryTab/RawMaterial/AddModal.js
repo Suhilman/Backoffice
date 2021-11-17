@@ -47,6 +47,7 @@ const AddModal = ({
           <Form.Group>
             <Form.Label>{t("location")}*</Form.Label>
             <Select
+              placeholder={t('select')}
               options={optionsOutlet}
               name="outlet_id"
               className="basic-single"
@@ -86,6 +87,7 @@ const AddModal = ({
           <Form.Group>
             <Form.Label>{t("category")}*</Form.Label>
             <Select
+              placeholder={t('select')}
               options={optionsCategory}
               name="raw_material_category_id"
               className="basic-single"
@@ -128,6 +130,7 @@ const AddModal = ({
           <Form.Group>
             <Form.Label>{t("unit")}*</Form.Label>
             <Select
+              placeholder={t('select')}
               options={optionsUnit}
               name="unit_id"
               className="basic-single"
@@ -185,6 +188,7 @@ const AddModal = ({
           <Form.Group>
             <Form.Label>{t("calorieUnit")}:</Form.Label>
             <Select
+              placeholder={t('select')}
               options={optionsCalorie}
               name="calorie_unit"
               className="basic-single"

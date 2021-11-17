@@ -61,6 +61,7 @@ export default function ModalSalesType({
                                 <Form.Group>
                                   <Select
                                     options={optionsSalesTypes}
+                                    placeholder={t('select')}
                                     defaultValue={defaultValueSalesTypes(
                                       formikProduct.values.sales_types[index].sales_type_id
                                     )}

@@ -275,6 +275,7 @@ export const AddIncomingStockPage = ({ location }) => {
                     <Select
                       options={optionsOutlet}
                       name="outlet_id"
+                      placeholder={t('select')}
                       className="basic-single"
                       classNamePrefix="select"
                       onChange={(value) => {
@@ -394,6 +395,7 @@ export const AddIncomingStockPage = ({ location }) => {
                                     <Form.Group>
                                       <Select
                                         options={optionsProduct}
+                                        placeholder={t('select')}
                                         name={`items[${index}].product_id`}
                                         className="basic-single"
                                         classNamePrefix="select"

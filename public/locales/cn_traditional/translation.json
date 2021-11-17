@@ -343,7 +343,7 @@
   "totalSales":  "總售出",
   "dataNotFound":  "資料未找到",
   "transactionID":  "交易編號",
-  "voidType":  "Jenis Void",
+  "voidType":  "傑尼斯虛空",
   "totalVoidTransaction":  "總交易取消",
   "note":  "備註",
   "averageSales":  "售出平均",
@@ -1081,6 +1081,12 @@
   "restaurant": "餐廳",
   "service": "服務",
   "addProductSalesType": "添加產品銷售類型",
-  "salesTypecannotSame": "銷售類型不能相同",
-  "thereAreNoRecordsToDisplay": "沒有可顯示的記錄"
+  "theTypeOfSaleCannotBeTheSame": "銷售類型不能相同",
+  "thereAreNoRecordsToDisplay": "沒有可顯示的記錄",
+  "enterTaxName": "輸入稅名",
+  "enterTaxAmount": "輸入稅額",
+  "exSize": "示例：尺寸",
+  "exS/M/L": "示例：S / M / L",
+  "deleteQRCode": "刪除二維碼",
+  "frontend": "前端"
 }

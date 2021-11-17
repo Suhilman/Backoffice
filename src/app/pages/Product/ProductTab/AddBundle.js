@@ -327,6 +327,7 @@ export const AddBundlePage = ({ location }) => {
                   <Form.Label>{t("outlet")}*</Form.Label>
                   <Select
                     options={optionsOutlet}
+                    placeholder={t('select')}
                     defaultValue={defaultValueOutlet}
                     name="outlet_id"
                     className="basic-single"
@@ -444,6 +445,7 @@ export const AddBundlePage = ({ location }) => {
                   <Select
                     options={optionsCategory}
                     defaultValue={defaultValueCategory}
+                    placeholder={t('select')}
                     name="product_category_id"
                     className="basic-single"
                     classNamePrefix="select"
@@ -542,6 +544,7 @@ export const AddBundlePage = ({ location }) => {
                                       <Form.Label>{t("product")}*</Form.Label>
                                       <Select
                                         options={optionsProduct}
+                                        placeholder={t('select')}
                                         formatGroupLabel={formatGroupLabel}
                                         name={`bundle_items[${index}].stock_id`}
                                         onChange={(value) =>

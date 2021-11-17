@@ -237,6 +237,7 @@ export const AddTransferStockPage = ({ location }) => {
                   <Form.Label>{t("origin")}:</Form.Label>
                   <Select
                     options={optionsOutlet}
+                    placeholder={t('select')}
                     name="outlet_from_id"
                     className="basic-single"
                     classNamePrefix="select"
@@ -265,6 +266,7 @@ export const AddTransferStockPage = ({ location }) => {
                   <Form.Label>{t("destination")}:</Form.Label>
                   <Select
                     options={optionsOutlet}
+                    placeholder={t('select')}
                     name="outlet_to_id"
                     className="basic-single"
                     classNamePrefix="select"
@@ -363,6 +365,7 @@ export const AddTransferStockPage = ({ location }) => {
                                   <Form.Group>
                                     <Select
                                       options={optionsProducts}
+                                      placeholder={t('select')}
                                       formatGroupLabel={formatGroupLabel}
                                       name={`items[${index}].stock_id`}
                                       // className="basic-single"

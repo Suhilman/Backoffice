@@ -260,7 +260,7 @@ export const EditProductPage = ({ match, location }) => {
       try {
         enableLoading();
         await axios.put(`${API_URL}/api/v1/product/update-development/${product_id}`, formData);
-        if(values.sales_types) {
+        if(values.sales_types.length) {
           // Proses looping untuk mengubah (Active / Inactive) sales product menjadi true (active) / false (inactive)
           values.sales_types.map(value => {
             value.active = value.active === 'Active' ? true : false
@@ -533,7 +533,7 @@ export const EditProductPage = ({ match, location }) => {
     console.log("formikProduct.values.sales_types", formikProduct.values.sales_types)
 
     if(temp_check.length > 0) {
-      toast.warn(t('salesTypecannotSame'), {
+      toast.warn(t('theTypeOfSaleCannotBeTheSame'), {
         position: "top-right",
         autoClose: 4500,
         hideProgressBar: false,

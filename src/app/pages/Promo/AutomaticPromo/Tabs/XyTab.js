@@ -119,6 +119,7 @@ const XyTab = ({
                       <Form.Label>{t("productToBuy")}:</Form.Label>
                       <Select
                         defaultValue={defaultValueX}
+                        placeholder={t('select')}
                         options={options}
                         isMulti
                         name="xy_product_x_id"
@@ -179,6 +180,7 @@ const XyTab = ({
                       <Form.Label>{t("freeProduct")}:</Form.Label>
                       <Select
                         defaultValue={defaultValueY}
+                        placeholder={t('select')}
                         options={options}
                         isMulti
                         name="xy_product_y_id"

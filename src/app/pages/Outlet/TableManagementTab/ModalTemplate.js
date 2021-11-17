@@ -34,6 +34,7 @@ const ModalTemplate = ({t, stateModal, cancelModal, loading, sosmed, validationT
                 <Form.Label>{t("socialMedia")}</Form.Label>
                 <Select
                   defaultValue={defaultValue}
+                  placeholder={t('select')}
                   options={optionSosmed}
                   name="sosmed"
                   isMulti

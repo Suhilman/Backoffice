@@ -221,6 +221,7 @@ export const AddOpnameMaterialPage = ({ location }) => {
                 <Form.Group>
                   <Form.Label>{t('location')}:</Form.Label>
                   <Select
+                    placeholder={t('select')}
                     options={optionsOutlet}
                     name="outlet_id"
                     className="basic-single"
@@ -330,6 +331,7 @@ export const AddOpnameMaterialPage = ({ location }) => {
                                 <Col>
                                   <Form.Group>
                                     <Select
+                                      placeholder={t('select')}
                                       options={optionsMaterial}
                                       name={`items[${index}].stock_id`}
                                       className="basic-single"

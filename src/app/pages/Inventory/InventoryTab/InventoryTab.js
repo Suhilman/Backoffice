@@ -191,10 +191,10 @@ const InventoryTab = ({ refresh, t, handleRefresh }) => {
         <ListGroup style={{ padding: "1rem", marginLeft: "1rem" }}>
           <ListGroup.Item>
             <Row>
-              <Col style={{ fontWeight: "700" }}>Batch</Col>
-              <Col style={{ fontWeight: "700" }}>Stock</Col>
-              <Col style={{ fontWeight: "700" }}>Unit</Col>
-              <Col style={{ fontWeight: "700" }}>Expired Date</Col>
+              <Col style={{ fontWeight: "700" }}>{t('batch')}</Col>
+              <Col style={{ fontWeight: "700" }}>{t('stock')}</Col>
+              <Col style={{ fontWeight: "700" }}>{t('unit')}</Col>
+              <Col style={{ fontWeight: "700" }}>{t('expiredDate')}</Col>
             </Row>
           </ListGroup.Item>
           {stockData.length ? (

@@ -355,6 +355,7 @@ export const EditBundlePage = ({ match, location }) => {
                   <Form.Label>Outlet*</Form.Label>
                   <Select
                     options={optionsOutlet}
+                    placeholder={t('select')}
                     defaultValue={defaultValueOutlet}
                     name="outlet_id"
                     className="basic-single"
@@ -472,6 +473,7 @@ export const EditBundlePage = ({ match, location }) => {
                   <Select
                     options={optionsCategory}
                     defaultValue={defaultValueCategory}
+                    placeholder={t('select')}
                     name="product_category_id"
                     className="basic-single"
                     classNamePrefix="select"
@@ -571,6 +573,7 @@ export const EditBundlePage = ({ match, location }) => {
                                       <Form.Label>Product*</Form.Label>
                                       <Select
                                         options={optionsProduct}
+                                        placeholder={t('select')}
                                         formatGroupLabel={formatGroupLabel}
                                         defaultValue={defaultValueProduct(
                                           index

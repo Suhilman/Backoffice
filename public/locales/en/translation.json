@@ -1083,6 +1083,12 @@
     "addProductSalesType": "Add Product Sales Type",
     "theTypeOfSaleCannotBeTheSame": "The Type of Sale Cannot be The Same",
     "thereAreNoRecordsToDisplay": "There Are No Records To Display",
+    "enterTaxName": "Enter Tax Name",
+    "enterTaxAmount": "Enter Tax Amount",
+    "exSize": "Ex. :Size",
+    "exS/M/L": "Ex. ：S / M / L",
+    "deleteQRCode": "Delete QR Code",
+    "frontend": "Frontend",
 
     "currencyConversion": "Currency Convertion",
     "currencyA": "Currency A",

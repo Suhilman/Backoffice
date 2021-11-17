@@ -52,7 +52,7 @@ const ModalManageVariant = ({
                                     {...formikProduct.getFieldProps(
                                       `groupAddons[${index}].group_name`
                                     )}
-                                    placeholder="Ex. : Ukuran"
+                                    placeholder={t('exSize')}
                                     required
                                   />
                                   {formikProduct.touched.groupAddons &&
@@ -118,12 +118,13 @@ const ModalManageVariant = ({
                                                   {val.has_raw_material ? (
                                                     <>
                                                       <Form.Label>
-                                                        Raw Material
+                                                        {t('rawMaterial')}
                                                       </Form.Label>
                                                       <Select
                                                         options={
                                                           optionsMaterial
                                                         }
+                                                        placeholder={t('select')}
                                                         defaultValue={defaultValueMaterial(
                                                           formikProduct.values
                                                             .groupAddons[index]
@@ -161,7 +162,7 @@ const ModalManageVariant = ({
                                                         {...formikProduct.getFieldProps(
                                                           `groupAddons[${index}].addons[${valIndex}].name`
                                                         )}
-                                                        placeholder="Ex. : S / M / L"
+                                                        placeholder={t("exS/M/L")}
                                                         required
                                                       />
                                                     </>
@@ -219,6 +220,7 @@ const ModalManageVariant = ({
                                                     </Form.Label>
                                                     <Select
                                                       options={optionsUnit}
+                                                      placeholder={t('select')}
                                                       defaultValue={defaultValueUnit(
                                                         formikProduct.values
                                                           .groupAddons[index]

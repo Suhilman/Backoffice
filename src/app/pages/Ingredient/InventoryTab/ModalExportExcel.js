@@ -119,6 +119,7 @@ const ModalExportExcel = ({state, closeModal, optionsOutlet, handleExports, data
                 <Form.Group>
                   <Form.Label>{t("locationOutlet")}:</Form.Label>
                   <Select
+                    placeholder={t('select')}
                     options={optionsOutlet}
                     isMulti
                     name="outlet_id"

@@ -288,6 +288,7 @@ export const AddProductAssembly = ({ location }) => {
                     <Form.Label>{t('locationOutlet')}:</Form.Label>
                     <Select
                       options={optionsOutlet}
+                      placeholder={t('select')}
                       name="outlet_id"
                       className="basic-single"
                       classNamePrefix="select"
@@ -396,6 +397,7 @@ export const AddProductAssembly = ({ location }) => {
                                     <Form.Group>
                                       <Select
                                         options={optionsRecipe}
+                                        placeholder={t('select')}
                                         name={`items[${index}].recipe_id`}
                                         className="basic-single"
                                         classNamePrefix="select"

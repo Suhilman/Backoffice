@@ -50,7 +50,7 @@ const ModalPayment = ({
                 <Form.Control
                   type="text"
                   name="name"
-                  placeholder="Enter Name"
+                  placeholder={t('enterName')}
                   {...formikSalesType.getFieldProps("name")}
                   className={validationSalesType("name")}
                   required
@@ -189,7 +189,7 @@ const ModalPayment = ({
                   <Form.Label>{t("hideInEmenu")}</Form.Label>
                 </div>
                 <div className="d-flex align-items-center">
-                  <h4 className="text-muted h6 mr-3">{hidden}</h4>
+                  <h4 className="text-muted h6 mr-3">{t(hidden.toLowerCase())}</h4>
                   <FormControlLabel
                     value={hidden}
                     control={

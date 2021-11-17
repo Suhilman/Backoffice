@@ -190,6 +190,7 @@ export const AddTransferMaterialPage = ({ location }) => {
                 <Form.Group>
                   <Form.Label>{t('origin')}:</Form.Label>
                   <Select
+                    placeholder={t('select')}
                     options={optionsFromOutlet}
                     name="outlet_from_id"
                     className="basic-single"
@@ -220,6 +221,7 @@ export const AddTransferMaterialPage = ({ location }) => {
                   <Select
                     options={optionsToOutlet}
                     name="outlet_to_id"
+                    placeholder={t('select')}
                     className="basic-single"
                     classNamePrefix="select"
                     onChange={(value) =>
@@ -312,6 +314,7 @@ export const AddTransferMaterialPage = ({ location }) => {
                                     <Select
                                       options={optionsMaterial}
                                       name={`items[${index}].stock_id`}
+                                      placeholder={t('select')}
                                       className="basic-single"
                                       classNamePrefix="select"
                                       onChange={(value) =>
@@ -362,6 +365,7 @@ export const AddTransferMaterialPage = ({ location }) => {
                                     <Select
                                       options={optionsUnit}
                                       name={`items[${index}].unit_id`}
+                                      placeholder={t('select')}
                                       className="basic-single"
                                       classNamePrefix="select"
                                       onChange={(value) =>

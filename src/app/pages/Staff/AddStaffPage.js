@@ -134,6 +134,12 @@ export const AddStaffPage = ({ location }) => {
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
+  const camelize = (str) => {
+    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
+      return index === 0 ? word.toLowerCase() : word.toUpperCase();
+    }).replace(/\s+/g, '');
+  }
+
   const handleChangeRole = (e) => {
     const { name, value } = e.target;
 
@@ -149,6 +155,18 @@ export const AddStaffPage = ({ location }) => {
     const sortedPrivileges = selectedRole.Role_Privileges.sort(
       (a, b) => a.privilege_id - b.privilege_id
     );
+
+    sortedPrivileges.map(value => {
+      value.Privilege.name = camelize(value.Privilege.name)
+    })
+
+    // handle hide commisison management
+    sortedPrivileges.map((value, index) => {
+      if(value.name === 'commissionManagement') {
+        delete sortedPrivileges[index]
+      }
+    })
+
     setSelectedPrivileges(sortedPrivileges);
   };
 
@@ -428,7 +446,7 @@ export const AddStaffPage = ({ location }) => {
                         elevation={2}
                         style={{ padding: "1rem", height: "100%" }}
                       >
-                        <h5>{access.name}{t("accessList")}</h5>
+                        <h5>{access.name === 'Cashier' ? 'Frontend' : access.name} {t("accessList")}</h5>
 
                         <FormControl
                           component="fieldset"
@@ -448,7 +466,7 @@ export const AddStaffPage = ({ location }) => {
                                     >
                                       <Col style={{ alignSelf: "center" }}>
                                         <Form.Label>
-                                          {privilege.Privilege.name === "Changing Transaction" ? "Delete Transaction" : privilege.Privilege.name}
+                                          {privilege.Privilege.name === "changingTransaction" ? `${t('deleteTransaction')}` : `${t(privilege.Privilege.name)}`}
                                         </Form.Label>
                                       </Col>
                                       <Col style={{ textAlign: "end" }}>

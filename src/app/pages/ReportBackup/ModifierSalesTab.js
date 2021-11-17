@@ -148,7 +148,7 @@ export const ModifierSalesTab = ({ allOutlets }) => {
               <Row>
                 <DropdownButton title={outletName}>
                   <Dropdown.Item onClick={() => handleSelectOutlet()}>
-                    All Outlets
+                    {t('allOutlets')}
                   </Dropdown.Item>
                   {allOutlets.map((item, index) => {
                     return (

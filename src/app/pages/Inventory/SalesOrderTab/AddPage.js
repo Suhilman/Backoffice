@@ -415,6 +415,7 @@ export const AddSalesOrderPage = ({ location }) => {
                   <Form.Label>{t("outlet")}</Form.Label>
                   <Select
                     options={optionsOutlet}
+                    placeholder={t('select')}
                     name="outlet_id"
                     className="basic-single"
                     classNamePrefix="select"
@@ -449,6 +450,7 @@ export const AddSalesOrderPage = ({ location }) => {
                   <Form.Label>{t("paymentMethod")}</Form.Label>
                   <Select
                     options={paymentMethods}
+                    placeholder={t('select')}
                     name="payment_method_id"
                     className="basic-single"
                     classNamePrefix="select"
@@ -575,6 +577,7 @@ export const AddSalesOrderPage = ({ location }) => {
                                   <Form.Group>
                                     <Select
                                       options={optionProduct}
+                                      placeholder={t('select')}
                                       name={`items[${index}].product_id`}
                                       className="basic-single"
                                       classNamePrefix="select"

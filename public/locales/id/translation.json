@@ -1083,6 +1083,12 @@
   "addProductSalesType": "Tambahkan Jenis Penjualan Produk",
   "theTypeOfSaleCannotBeTheSame": "Jenis Penjualan Tidak Bisa Sama",
   "thereAreNoRecordsToDisplay": "Tidak ada catatan untuk ditampilkan",
+  "enterTaxName": "Masukkan Nama Pajak",
+  "enterTaxAmount": "Masukkan Jumlah Pajak",
+  "exSize": "Cnth. :Ukuran",
+  "exS/M/L": "Cnth. ：S / M / L",
+  "deleteQRCode": "Hapus Kode QR",
+  "frontend": "Frontend",
 
   "currencyConversion": "Konversi Mata Uang",
   "currencyA": "Mata Uang A",

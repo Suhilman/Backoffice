@@ -234,6 +234,7 @@ const ModalSync = ({
                 </div>
                 <Select
                   options={optionsOutlet}
+                  placeholder={t('select')}
                   name="outlet_id"
                   className="basic-select"
                   classNamePrefix="select"

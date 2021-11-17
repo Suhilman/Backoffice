@@ -229,6 +229,7 @@ export const AddIncomingMaterialPage = ({ location }) => {
                   <Form.Group>
                     <Form.Label>{t('location')}:</Form.Label>
                     <Select
+                      placeholder={t('select')}
                       options={optionsOutlet}
                       name="outlet_id"
                       className="basic-single"
@@ -336,6 +337,7 @@ export const AddIncomingMaterialPage = ({ location }) => {
                                   <Col>
                                     <Form.Group>
                                       <Select
+                                        placeholder={t('select')}
                                         options={optionsMaterial}
                                         name={`items[${index}].raw_material_id`}
                                         className="basic-single"
@@ -392,6 +394,7 @@ export const AddIncomingMaterialPage = ({ location }) => {
                                   <Col>
                                     <Form.Group>
                                       <Select
+                                        placeholder={t('select')}
                                         options={optionsUnit}
                                         name={`items[${index}].unit_id`}
                                         className="basic-single"

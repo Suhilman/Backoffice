@@ -70,6 +70,7 @@ const AddModal = ({
                 <Select
                   options={optionsUnitFrom}
                   defaultValue={defaultValueUnitFrom}
+                  placeholder={t('select')}
                   name="unit_from_id"
                   className="basic-single"
                   classNamePrefix="select"
@@ -121,6 +122,7 @@ const AddModal = ({
                 <Form.Label>{t("unitTo")}:</Form.Label>
                 <Select
                   options={optionsUnitTo}
+                  placeholder={t('select')}
                   defaultValue={defaultValueUnitTo}
                   name="unit_to_id"
                   className="basic-single"

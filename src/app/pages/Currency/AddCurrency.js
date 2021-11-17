@@ -33,7 +33,7 @@ export default function AddCurrency({
   const optionsOutlet = allOutlets.map((item) => {
     return { value: item.id, label: item.name };
   });
-  optionsOutlet.unshift({ value: 1, label: "All Outlets" });
+  optionsOutlet.unshift({ value: 1, label: t('allOutlets') });
 
   const defaultOptionOutlet = optionsOutlet.find((val) => {
     return val.value == formikCurrency.values.outlet_id
@@ -126,6 +126,7 @@ export default function AddCurrency({
               <Form.Group>
                 <Form.Label>{t("currencyA")}</Form.Label>
                 <Select
+                  placeholder={t('select')}
                   options={optionCurrencyA}
                   defaultValue={defaultOptionCurrencyA}
                   name="currency_a"
@@ -155,6 +156,7 @@ export default function AddCurrency({
               <Form.Group>
                 <Form.Label>{t("currencyB")}</Form.Label>
                 <Select
+                  placeholder={t('select')}
                   options={optionCurrencyB}
                   defaultValue={defaultOptionCurrencyB}
                   name="currency_b"

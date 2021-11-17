@@ -69,6 +69,7 @@ const ExportModal = ({state, closeModal, optionsOutlet, handleExports, loading, 
                 <Form.Label>{t("locationOutlet")}:</Form.Label>
                 <Select
                   options={optionsOutlet}
+                  placeholder={t('select')}
                   isMulti
                   name="outlet_id"
                   className="basic-multi-select"

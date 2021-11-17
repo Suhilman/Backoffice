@@ -67,6 +67,7 @@ const ConfirmModal = ({
                 <Select
                   options={optionsOutlet}
                   isMulti
+                  placeholder={t('select')}
                   name="outlet_id"
                   className="basic-multi-select"
                   classNamePrefix="select"
