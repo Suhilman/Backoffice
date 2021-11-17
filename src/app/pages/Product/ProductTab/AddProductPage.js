@@ -7,6 +7,8 @@ import imageCompression from 'browser-image-compression';
 import { useTranslation } from "react-i18next";
 import { Row, Col } from "react-bootstrap";
 
+import { ToastContainer, toast } from "react-toastify";
+
 import ModalManageAddons from "./ModalManageAddons";
 import ModalSalesType from "./ModalSalesType";
 
@@ -41,6 +43,7 @@ export const AddProductPage = ({ location }) => {
 
   const [syncEcommerce, setSyncEcommerce] = React.useState([])
   const [thereShowSync, setThereShowSync] = React.useState(false)
+  const [allIdDelete, setAllIdDelete] = React.useState([])
 
   const [savedAddons, setSavedAddons] = React.useState([
     {
@@ -498,7 +501,34 @@ export const AddProductPage = ({ location }) => {
 
   const saveChangesSalesTypes = (e) => {
     e.preventDefault();
-    console.log("hasilnya", formikProduct.values.sales_types)
+    
+    // Check duplicate sales type product id
+    const findDuplicates = arr => arr.filter((item, index) => arr.indexOf(item) != index)
+    const get_sales_type_id = formikProduct.values.sales_types.map(value => {
+      return value.sales_type_id
+    } ) 
+    console.log("get_sales_type_id", get_sales_type_id)
+    const temp_check = findDuplicates(get_sales_type_id)
+
+    console.log("temp_check", temp_check)
+    console.log("formikProduct.values.sales_types", formikProduct.values.sales_types)
+
+    if(temp_check.length > 0) {
+      toast.warn(t('salesTypecannotSame'), {
+        position: "top-right",
+        autoClose: 4500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+      return
+    }
+    // End Check Duplicate
+
+    console.log("Jika tidak duplikat")
+
     setSavedSalesTypes(formikProduct.values.sales_types);
     setOpenSalesType(false);
   };
@@ -511,6 +541,12 @@ export const AddProductPage = ({ location }) => {
     }
   }
 
+  const handleDeleteArayHelper = (id) => {
+    const temp_id = allIdDelete
+    temp_id.push(id)
+    setAllIdDelete(temp_id)
+    console.log("temp_id", temp_id)
+  }
 
   return (
     <Row>
@@ -537,6 +573,7 @@ export const AddProductPage = ({ location }) => {
         saveChangesSalesTypes={saveChangesSalesTypes}
         defaultValueSalesTypes={defaultValueSalesTypes}
         handleActiveSalesType={handleActiveSalesType}
+        handleDeleteArayHelper={handleDeleteArayHelper}
       />
 
       <Col>

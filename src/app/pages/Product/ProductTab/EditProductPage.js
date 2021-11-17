@@ -13,6 +13,7 @@ import ModalManageAddons from "./ModalManageAddons";
 import FormTemplate from "./Form";
 import dayjs from "dayjs";
 
+import { ToastContainer, toast } from "react-toastify";
 
 export const EditProductPage = ({ match, location }) => {
   const { t } = useTranslation();
@@ -58,6 +59,7 @@ export const EditProductPage = ({ match, location }) => {
   const [openSalesType, setOpenSalesType] = React.useState(false)
   const [allSalesTypes, setAllSalesTypes] = React.useState([])
 
+  const [allIdDelete, setAllIdDelete] = React.useState([])
 
   const product = {
     outlet_id: currProduct.outlet_id,
@@ -259,7 +261,6 @@ export const EditProductPage = ({ match, location }) => {
         enableLoading();
         await axios.put(`${API_URL}/api/v1/product/update-development/${product_id}`, formData);
         if(values.sales_types) {
-
           // Proses looping untuk mengubah (Active / Inactive) sales product menjadi true (active) / false (inactive)
           values.sales_types.map(value => {
             value.active = value.active === 'Active' ? true : false
@@ -268,8 +269,13 @@ export const EditProductPage = ({ match, location }) => {
             product_id: product_id,
             items: values.sales_types
           }
-          console.log("data_sales_type_product", data_sales_type_product)
           await axios.post(`${API_URL}/api/v1/sales-type-product/create-array`, data_sales_type_product);
+        }
+        // Jika ada isinya, delete
+        if(allIdDelete.length > 0) {
+          await axios.delete(`${API_URL}/api/v1/sales-type-product/bulk-delete`, {
+            data: { sales_type_product_id: allIdDelete }
+          });
         }
         disableLoading();
         history.push("/product");
@@ -514,7 +520,34 @@ export const EditProductPage = ({ match, location }) => {
 
   const saveChangesSalesTypes = (e) => {
     e.preventDefault();
-    console.log("hasilnya", formikProduct.values.sales_types)
+
+    // Check duplicate sales type product id
+    const findDuplicates = arr => arr.filter((item, index) => arr.indexOf(item) != index)
+    const get_sales_type_id = formikProduct.values.sales_types.map(value => {
+      return value.sales_type_id
+    } ) 
+    console.log("get_sales_type_id", get_sales_type_id)
+    const temp_check = findDuplicates(get_sales_type_id)
+
+    console.log("temp_check", temp_check)
+    console.log("formikProduct.values.sales_types", formikProduct.values.sales_types)
+
+    if(temp_check.length > 0) {
+      toast.warn(t('salesTypecannotSame'), {
+        position: "top-right",
+        autoClose: 4500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+      return
+    }
+    // End Check Duplicate
+
+    console.log("Jika tidak duplikat")
+
     setSavedSalesTypes(formikProduct.values.sales_types);
     setOpenSalesType(false);
   };
@@ -525,6 +558,13 @@ export const EditProductPage = ({ match, location }) => {
     } catch (error) {
       console.log(error)
     }
+  }
+
+  const handleDeleteArayHelper = (id) => {
+    const temp_id = allIdDelete
+    temp_id.push(id)
+    setAllIdDelete(temp_id)
+    console.log("temp_id", temp_id)
   }
 
   return (
@@ -552,6 +592,7 @@ export const EditProductPage = ({ match, location }) => {
         saveChangesSalesTypes={saveChangesSalesTypes}
         defaultValueSalesTypes={defaultValueSalesTypes}
         handleActiveSalesType={handleActiveSalesType}
+        handleDeleteArayHelper={handleDeleteArayHelper}
       />
 
       <Col>

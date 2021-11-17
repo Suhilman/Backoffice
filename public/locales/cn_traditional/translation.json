@@ -1080,5 +1080,6 @@
     "retail": "零售",
     "restaurant": "餐廳",
     "service": "服務",
-    "addProductSalesType": "添加產品銷售類型"
+    "addProductSalesType": "添加產品銷售類型",
+    "salesTypecannotSame": "銷售類型不能相同"
 }

@@ -1081,6 +1081,7 @@
     "restaurant": "Restaurant",
     "service": "Service",
     "addProductSalesType": "Add Product Sales Type",
+    "theTypeOfSaleCannotBeTheSame": "The Type of Sale Cannot be The Same",
 
     "currencyConversion": "Currency Convertion",
     "currencyA": "Currency A",

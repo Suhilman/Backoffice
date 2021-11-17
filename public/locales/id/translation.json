@@ -1081,6 +1081,7 @@
   "restaurant": "Restoran",
   "service": "Layanan",
   "addProductSalesType": "Tambahkan Jenis Penjualan Produk",
+  "theTypeOfSaleCannotBeTheSame": "Jenis Penjualan Tidak Bisa Sama",
 
   "currencyConversion": "Konversi Mata Uang",
   "currencyA": "Mata Uang A",

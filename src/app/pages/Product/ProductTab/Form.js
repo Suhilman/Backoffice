@@ -192,7 +192,7 @@ const FormTemplate = ({
             <Form.Group>
               <div className="d-flex justify-content-between align-items-center mb-1">
                 <Form.Label>{t("price")}*</Form.Label>
-                <div className="badge badge-info" onClick={showModalSalesType}>{t('salesType')}</div>
+                <div className="badge badge-primary" onClick={showModalSalesType}>{t('salesType')}</div>
               </div>
               <Form.Control
                 type="number"

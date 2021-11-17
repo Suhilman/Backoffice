@@ -16,10 +16,10 @@ export default function ModalSalesType({
   title,
   formikProduct,
   saveChangesSalesTypes,
-  savedSalesTypes,
   optionsSalesTypes,
   defaultValueSalesTypes,
-  handleActiveSalesType
+  handleActiveSalesType,
+  handleDeleteArayHelper
 }) {
   const { t } = useTranslation();
   console.log("optionsSalesTypes", optionsSalesTypes)
@@ -135,7 +135,10 @@ export default function ModalSalesType({
 
                               <Col sm={1}>
                                 <Button
-                                  onClick={() => arrayHelpers.remove(index)}
+                                  onClick={() => {
+                                    handleDeleteArayHelper(item.id)
+                                    arrayHelpers.remove(index)
+                                  }}
                                   variant="danger"
                                 >
                                   <Delete />
