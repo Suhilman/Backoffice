@@ -617,8 +617,10 @@ export const PaymentModulPage = () => {
   }, [])
 
   const handleFeatureTransaction = (e) => {
-    const {name} = e.target
-    console.log("Pilihan yang mantap", name)
+    const currFeatureTransaction = { ...featureTransaction };
+    const { name } = e.target;
+    currFeatureTransaction[name].checked = !currFeatureTransaction[name].checked;
+    setFeatureTransasction(currFeatureTransaction);
   }
 
   return (

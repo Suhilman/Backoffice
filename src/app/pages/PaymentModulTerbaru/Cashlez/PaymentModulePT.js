@@ -66,8 +66,42 @@ const PaymentModulePT = ({
   imageNpwpPt,
   previewNpwpPt,
   imageSiup,
-  previewSiup
+  previewSiup,
+  handleFeatureTransaction,
+  featureTransaction
 }) => {
+  const allFeatureTransaction = [
+    {
+      id: "1", 
+      key: "kartu_kredit",
+      name: "kartuKredit"
+    }, 
+    {
+      id: "2", 
+      key: "kartu_debit",
+      name: "kartuDebit"
+    },
+    {
+      id: "3", 
+      key: "cicilan",
+      name: "cicilan"
+    }, 
+    {
+      id: "4", 
+      key: "qris_uang_lektronik",
+      name: "qrisUangElektronik"
+    },
+    {
+      id: "5", 
+      key: "debit_transfer",
+      name: "debitTransfer"
+    }, 
+    {
+      id: "6", 
+      key: "ecommerce",
+      name: "ecommerce"
+    }
+  ]
   return (
     <div>
       <Signature
@@ -87,11 +121,124 @@ const PaymentModulePT = ({
             <Col>
               <div className="d-flex justify-content-center">
                 <div>
-                  <strong style={{fontSize:"15px", textDecoration: "underline"}}>{t("merchantOwnerData")}</strong>
+                  <strong style={{fontSize:"15px", textDecoration: "underline"}}>{t("headers")}</strong>
+                </div>
+              </div>
+
+              <Form.Group as={Row} style={{ padding: "0 1rem", width: '80%' }} className="d-flex mt-2">
+                <div style={{ width: '27%' }}>
+                  <Form.Label>{t('submissionAs')}:</Form.Label>
+                </div>
+                <div style={{ width: '60%' }} className="d-flex">
+                  {[{id: "1", name: "individualMerchant"}, {id: "2", name: "businessEntityMerchant"}].map((item, index) => {
+                    return (
+                      <div style={{width: "60%"}}>
+                        <Form.Check
+                          key={index}
+                          type="checkbox"
+                          name="submission_as"
+                          label={t(item.name)}
+                          value={item.id}
+                          checked={
+                            item.id ==
+                            formikFormCz.getFieldProps("submission_as").value
+                              ? true
+                              : false
+                          }
+                          onChange={(e) => {
+                            const submission_as = e.target.value;
+                            console.log("submission_as", submission_as)
+                            if (submission_as == "1") {
+                              formikFormCz.setFieldValue("submission_as", "1");
+                            } else {
+                              formikFormCz.setFieldValue("submission_as", "2");
+                            }
+                          }}
+                          className={validationFormCz("submission_as")}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+                
+                {formikFormCz.touched.submission_as && formikFormCz.errors.submission_as ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikFormCz.errors.submission_as}
+                    </div>
+                  </div>
+                ) : null}
+              </Form.Group>
+
+              <Form.Group as={Row} style={{ padding: "0 1rem", width: '80%' }} className="d-flex mt-2">
+                <div style={{ width: '27%' }}>
+                  <Form.Label>{t('businessPlaceStatus')}:</Form.Label>
+                </div>
+                <div style={{ width: '60%' }} className="d-flex">
+                {[{id: "1", name: "rightOfOwnership"}, {id: "2", name: "rent"}].map((item, index) => {
+                  return (
+                    <div style={{width: "60%"}}>
+                      <Form.Check
+                        key={index}
+                        type="checkbox"
+                        name="business_place_status"
+                        label={t(item.name)}
+                        value={item.id}
+                        checked={
+                          item.id ==
+                          formikFormCz.getFieldProps("business_place_status").value
+                            ? true
+                            : false
+                        }
+                        onChange={(e) => {
+                          const business_place_status = e.target.value;
+                          console.log("business_place_status", business_place_status)
+                          if (business_place_status == "1") {
+                            formikFormCz.setFieldValue("business_place_status", "1");
+                          } else {
+                            formikFormCz.setFieldValue("business_place_status", "2");
+                          }
+                        }}
+                        className={validationFormCz("business_place_status")}
+                      />
+                    </div>
+                  );
+                })}
+                </div>
+                {formikFormCz.touched.business_place_status && formikFormCz.errors.business_place_status ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikFormCz.errors.business_place_status}
+                    </div>
+                  </div>
+                ) : null}
+              </Form.Group>
+              
+              <Form.Group as={Row} style={{ padding: "0 1rem", width: '100%' }} className="d-flex" >
+                <div style={{ width: '20%' }}>
+                  <Form.Label>{t('transactionFeatures')}:</Form.Label>
+                </div>
+                <div style={{width: '70%'}} className="d-flex justify-content-between ml-3">
+                  {allFeatureTransaction.map(value => 
+                    <Form.Check
+                      type="checkbox"
+                      name={value.key}
+                      label={t(value.name)}
+                      // disabled={featureTransaction.everyday.checked}
+                      checked={featureTransaction[value.key].checked}
+                      onChange={handleFeatureTransaction}
+                    />
+                  )}
+                </div>
+              </Form.Group>
+
+              <div className="d-flex justify-content-center">
+                <div>
+                  <strong style={{fontSize:"15px", textDecoration: "underline"}}>{t("ownerAuthoritiveOfficerDataAtMerchant")}</strong>
                 </div>
               </div>
               <Form.Group>
-                <Form.Label>{t("merchantOwnerName")} *</Form.Label>
+                <Form.Label>{t("nameOfMerchantOwnerAuthorizedOfficial")} *</Form.Label>
                 <Form.Control
                   name="nama_pemilik"
                   placeholder={t("enterMerchantOwnerName")}
@@ -107,7 +254,7 @@ const PaymentModulePT = ({
                     </div>
                   </div>
                 ) : null}
-                <small><em>({t("accordingToTheIdentityOfTheRegisteredMerchantOwner")})</em></small>
+                <small><em>({t("accordingToTheKtpOfTheMerchantOwnerAuthorizedOfficialIndividualBusinessEntity")})</em></small>
               </Form.Group>
               <Form.Group>
                 <Form.Label>{t("place&DateOfBirthOfMerchantOwner")}</Form.Label>
@@ -142,7 +289,7 @@ const PaymentModulePT = ({
                     </div>
                   </div>
                 ) : null}
-                <small><em>({t("accordingToTheRegisteredMerchantOwner")})</em></small>
+                <small><em>({t("accordingToTheKtpOfTheMerchantOwnerAuthorizedOfficialIndividualBusinessEntity")})</em></small>
               </Form.Group>
               <Row>
                 <Col>
@@ -221,6 +368,7 @@ const PaymentModulePT = ({
                         </div>
                       </div>
                     ) : null}
+                  <small><em>({t("noMobileAndEmailOfMerchantOwnerAuthorizedOfficialIndividualBusinessEntity")})</em></small>
                   </Form.Group>
                 </Col>
                 <Col>
@@ -246,7 +394,7 @@ const PaymentModulePT = ({
               <Row>
                 <Col>
                   <Form.Group>
-                  <Form.Label>{t("no.Identity(KTP/Pasport/KITAS)")} *</Form.Label>
+                  <Form.Label>{t("noIdentityKtpPassportKitasForeigners")} *</Form.Label>
                   <Form.Control
                     name="ktp"
                     placeholder={t("enterNo.Identity(KTP/Pasport/KITAS)")}
@@ -287,11 +435,11 @@ const PaymentModulePT = ({
               </Row>
               <div className="d-flex justify-content-center mt-4">
                 <div>
-                  <strong style={{fontSize:"15px", textDecoration: "underline"}}>{t("dataMerchant")}</strong>
+                  <strong style={{fontSize:"15px", textDecoration: "underline"}}>{t("merchantDataBusinessEntity")}</strong>
                 </div>
               </div>
               <Form.Group>
-                <Form.Label>{t("merchantName")}</Form.Label>
+                <Form.Label>{t("nameOfMerchantIndividualBusinessEntity")}</Form.Label>
                 <Form.Control
                   name="nama_merchant"
                   placeholder={t("enterMerchantName")}
@@ -307,8 +455,9 @@ const PaymentModulePT = ({
                   </div>
                 ) : null}
               </Form.Group>
+
               <Form.Group>
-                <Form.Label>{t("merchantBusinessAddress")} *</Form.Label>
+                <Form.Label>{t('individualMerchantBusinessEntityContactName')}**</Form.Label>
                 <Form.Control
                   name="alamat_usaha_merchant"
                   placeholder={t("enterMerchantBusinessAddress")}
@@ -323,7 +472,109 @@ const PaymentModulePT = ({
                     </div>
                   </div>
                 ) : null}
-                <small><em>({t("building/house/mall/apartment/shop")})   ({t("mandatoryPhotoOfBusinessLocation,MerchantNameSignboard/merchantResidence")})</em></small>
+                <small><em>({t("nameOfTheContactPersonWhoIsResponsibleToTheMerchantOwnerAuthorizedOfficialIndividualBusinessEntity")})</em></small>
+              </Form.Group>
+
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>{t('noMobileContactMerchant')}**</Form.Label>
+                    <Form.Control
+                      name="nomor_telp_merchant"
+                      placeholder={t("enterMerchantPhoneNumber")}
+                      {...formikFormCz.getFieldProps("nomor_telp_merchant")}
+                      className={validationFormCz("nomor_telp_merchant")}
+                      required
+                    />
+                    {formikFormCz.touched.nomor_telp_merchant && formikFormCz.errors.nomor_telp_merchant ? (
+                      <div className="fv-plugins-message-container">
+                        <div className="fv-help-block">
+                          {formikFormCz.errors.nomor_telp_merchant}
+                        </div>
+                      </div>
+                    ) : null}
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>{t("noPhoneMerchant")} *</Form.Label>
+                    <Form.Control
+                      name="nomor_telp_merchant"
+                      placeholder={t("enterMerchantPhoneNumber")}
+                      {...formikFormCz.getFieldProps("nomor_telp_merchant")}
+                      className={validationFormCz("nomor_telp_merchant")}
+                      required
+                    />
+                    {formikFormCz.touched.nomor_telp_merchant && formikFormCz.errors.nomor_telp_merchant ? (
+                      <div className="fv-plugins-message-container">
+                        <div className="fv-help-block">
+                          {formikFormCz.errors.nomor_telp_merchant}
+                        </div>
+                      </div>
+                    ) : null}
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>{t('noNpwpMerchantBusinessEntity')}*</Form.Label>
+                    <Form.Control
+                      name="nomor_telp_merchant"
+                      placeholder={t("enterMerchantPhoneNumber")}
+                      {...formikFormCz.getFieldProps("nomor_telp_merchant")}
+                      className={validationFormCz("nomor_telp_merchant")}
+                      required
+                    />
+                    {formikFormCz.touched.nomor_telp_merchant && formikFormCz.errors.nomor_telp_merchant ? (
+                      <div className="fv-plugins-message-container">
+                        <div className="fv-help-block">
+                          {formikFormCz.errors.nomor_telp_merchant}
+                        </div>
+                      </div>
+                    ) : null}
+                    <small><em>({t("originalPhotoRequired")})</em></small>
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>{t("emailMerchant")}</Form.Label>
+                    <Form.Control
+                      name="alamat_email_merchant"
+                      placeholder={t("enterMerchantEmailAddress")}
+                      {...formikFormCz.getFieldProps("alamat_email_merchant")}
+                      className={validationFormCz("alamat_email_merchant")}
+                      required
+                    />
+                    {formikFormCz.touched.alamat_email_merchant && formikFormCz.errors.alamat_email_merchant ? (
+                      <div className="fv-plugins-message-container">
+                        <div className="fv-help-block">
+                          {formikFormCz.errors.alamat_email_merchant}
+                        </div>
+                      </div>
+                    ) : null}
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Form.Group>
+                <Form.Label>{t("individualMerchantBusinessEntityAddress")} *</Form.Label>
+                <Form.Control
+                  name="alamat_usaha_merchant"
+                  placeholder={t("enterMerchantBusinessAddress")}
+                  {...formikFormCz.getFieldProps("alamat_usaha_merchant")}
+                  className={validationFormCz("alamat_usaha_merchant")}
+                  required
+                />
+                {formikFormCz.touched.alamat_usaha_merchant && formikFormCz.errors.alamat_usaha_merchant ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikFormCz.errors.alamat_usaha_merchant}
+                    </div>
+                  </div>
+                ) : null}
+                <small><em>({t("requiredPhotoOfBusinessDomicileCertificateNameplateOfIndividualMerchantBusinessEntity")})</em></small>
               </Form.Group>
               <Row>
                 <Col>
@@ -384,100 +635,25 @@ const PaymentModulePT = ({
                   </Form.Group>
                 </Col>
               </Row>
-              <Form.Group>
-                <Form.Label>{t("merchantBusinessType")}</Form.Label>
-                <Form.Control
-                  name="tipe_usaha_merchant"
-                  placeholder={t("enterMerchantBusinessType")}
-                  {...formikFormCz.getFieldProps("tipe_usaha_merchant")}
-                  className={validationFormCz("tipe_usaha_merchant")}
-                  required
-                />
-                {formikFormCz.touched.tipe_usaha_merchant && formikFormCz.errors.tipe_usaha_merchant ? (
-                  <div className="fv-plugins-message-container">
-                    <div className="fv-help-block">
-                      {formikFormCz.errors.tipe_usaha_merchant}
-                    </div>
-                  </div>
-                ) : null}
-                <small><em>({t("pt/individual/cooperative/firm/cv/foundation")})</em></small>
-              </Form.Group>
-              {/* <Form.Group>
-                <Form.Label>status_usaha</Form.Label>
-                <Form.Control
-                  name="status_usaha"
-                  placeholder="Enter place and date of birth"
-                  {...formikFormCz.getFieldProps("status_usaha")}
-                  className={validationFormCz("status_usaha")}
-                  required
-                />
-                {formikFormCz.touched.status_usaha && formikFormCz.errors.status_usaha ? (
-                  <div className="fv-plugins-message-container">
-                    <div className="fv-help-block">
-                      {formikFormCz.errors.status_usaha}
-                    </div>
-                  </div>
-                ) : null}
-              </Form.Group> */}
               <Row>
                 <Col>
                   <Form.Group>
-                    <Form.Label>{t("merchantPhoneNumber")} *</Form.Label>
+                    <Form.Label>{t("typeOfBusiness")}</Form.Label>
                     <Form.Control
-                      name="nomor_telp_merchant"
-                      placeholder={t("enterMerchantPhoneNumber")}
-                      {...formikFormCz.getFieldProps("nomor_telp_merchant")}
-                      className={validationFormCz("nomor_telp_merchant")}
+                      name="tipe_usaha_merchant"
+                      placeholder={t("enterMerchantBusinessType")}
+                      {...formikFormCz.getFieldProps("tipe_usaha_merchant")}
+                      className={validationFormCz("tipe_usaha_merchant")}
                       required
                     />
-                    {formikFormCz.touched.nomor_telp_merchant && formikFormCz.errors.nomor_telp_merchant ? (
+                    {formikFormCz.touched.tipe_usaha_merchant && formikFormCz.errors.tipe_usaha_merchant ? (
                       <div className="fv-plugins-message-container">
                         <div className="fv-help-block">
-                          {formikFormCz.errors.nomor_telp_merchant}
+                          {formikFormCz.errors.tipe_usaha_merchant}
                         </div>
                       </div>
                     ) : null}
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group>
-                    <Form.Label>{t("merchantEmailAddress")}</Form.Label>
-                    <Form.Control
-                      name="alamat_email_merchant"
-                      placeholder={t("enterMerchantEmailAddress")}
-                      {...formikFormCz.getFieldProps("alamat_email_merchant")}
-                      className={validationFormCz("alamat_email_merchant")}
-                      required
-                    />
-                    {formikFormCz.touched.alamat_email_merchant && formikFormCz.errors.alamat_email_merchant ? (
-                      <div className="fv-plugins-message-container">
-                        <div className="fv-help-block">
-                          {formikFormCz.errors.alamat_email_merchant}
-                        </div>
-                      </div>
-                    ) : null}
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Form.Group>
-                    <Form.Label>{t("form/FieldOfBusiness")} *</Form.Label>
-                    <Form.Control
-                      name="bentuk_bidang_usaha"
-                      placeholder={t("enterForm/FieldOfBusiness")}
-                      {...formikFormCz.getFieldProps("bentuk_bidang_usaha")}
-                      className={validationFormCz("bentuk_bidang_usaha")}
-                      required
-                    />
-                    {formikFormCz.touched.bentuk_bidang_usaha && formikFormCz.errors.bentuk_bidang_usaha ? (
-                      <div className="fv-plugins-message-container">
-                        <div className="fv-help-block">
-                          {formikFormCz.errors.bentuk_bidang_usaha}
-                        </div>
-                      </div>
-                    ) : null}
-                    <small><em>({t("mandatoryPhotoOfBusinessLocation,NameSign/Merchant/MerchantResidence")})   ({t("mandatoryPhotosOfProductsSoldByMerchants")})</em></small>
+                    <small><em>({t("mustAttachABusinessPermitIndividualMerchantOrDeedNibBusinessEntityMerchant")})</em></small>
                   </Form.Group>
                 </Col>
                 <Col>
@@ -497,20 +673,59 @@ const PaymentModulePT = ({
                         </div>
                       </div>
                     ) : null}
+                    <small><em>({t("mandatoryPhotoOfTheProductBeingSold")})</em></small>
                   </Form.Group>
                 </Col>
               </Row>
+
+              <Form.Group>
+                <Form.Label>{t('averageTransactionsPerMonth')}*</Form.Label>
+                <Form.Control
+                  name="deskripsi_produk"
+                  placeholder={t("enterProductDescriptionForSale")}
+                  {...formikFormCz.getFieldProps("deskripsi_produk")}
+                  className={validationFormCz("deskripsi_produk")}
+                  required
+                />
+                {formikFormCz.touched.deskripsi_produk && formikFormCz.errors.deskripsi_produk ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikFormCz.errors.deskripsi_produk}
+                    </div>
+                  </div>
+                ) : null}
+                <small><em>({t("attachAListPriceListOfGoodsServicesIfAny")})</em></small>
+              </Form.Group>
 
               <div className="d-flex flex-column justify-content-center align-items-center mt-4">
                 <div>
                   <strong style={{fontSize:"15px", textDecoration: "underline"}}>{t("dataBank")}</strong>
                 </div>
                 <div>
-                  <small><em>({t("mustAttachAPhotoOfTheCoverOfTheSavingsBook")})</em></small>
+                  <small><em>({t("requiredCoverPhotoOfPassbookCurrentAccountElectronicAccountAtmTransferEeceipt")})</em></small>
                 </div>
               </div>
               
               <Row className="mt-3">
+                <Col>
+                  <Form.Group>
+                    <Form.Label>{t("hostBankAccountNumber")} *</Form.Label>
+                    <Form.Control
+                      name="nomor_rekening"
+                      placeholder={t("enterBankAccountNumber")}
+                      {...formikFormCz.getFieldProps("nomor_rekening")}
+                      className={validationFormCz("nomor_rekening")}
+                      required
+                    />
+                    {formikFormCz.touched.nomor_rekening && formikFormCz.errors.nomor_rekening ? (
+                      <div className="fv-plugins-message-container">
+                        <div className="fv-help-block">
+                          {formikFormCz.errors.nomor_rekening}
+                        </div>
+                      </div>
+                    ) : null}
+                  </Form.Group>
+                </Col>
                 <Col>
                   <Form.Group>
                     <Form.Label>{t("bankName")} *</Form.Label>
@@ -528,48 +743,31 @@ const PaymentModulePT = ({
                         </div>
                       </div>
                     ) : null}
-                    <small>({t("accordingToTheRegisteredMerchant/CompanyOwner")}</small>
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group>
-                    <Form.Label>{t("bankAccountNumber")} *</Form.Label>
-                    <Form.Control
-                      name="nomor_rekening"
-                      placeholder={t("enterBankAccountNumber")}
-                      {...formikFormCz.getFieldProps("nomor_rekening")}
-                      className={validationFormCz("nomor_rekening")}
-                      required
-                    />
-                    {formikFormCz.touched.nomor_rekening && formikFormCz.errors.nomor_rekening ? (
-                      <div className="fv-plugins-message-container">
-                        <div className="fv-help-block">
-                          {formikFormCz.errors.nomor_rekening}
-                        </div>
-                      </div>
-                    ) : null}
                   </Form.Group>
                 </Col>
               </Row>
-
-              <Form.Group>
-                <Form.Label>{t("nameOfOwnerMerchantAccount")} *</Form.Label>
-                <Form.Control
-                  name="nama_pemilik_rekening"
-                  placeholder={t("enterNameOfOwnerMerchantAccount")}
-                  {...formikFormCz.getFieldProps("nama_pemilik_rekening")}
-                  className={validationFormCz("nama_pemilik_rekening")}
-                  required
-                />
-                {formikFormCz.touched.nama_pemilik_rekening && formikFormCz.errors.nama_pemilik_rekening ? (
-                  <div className="fv-plugins-message-container">
-                    <div className="fv-help-block">
-                      {formikFormCz.errors.nama_pemilik_rekening}
-                    </div>
-                  </div>
-                ) : null}
-                <small><em>({t("accordingToTheRegisteredMerchant/CompanyOwner")}</em></small>
-              </Form.Group>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>{t("nameOfMerchantAccountOwnerBusinessEntity")} *</Form.Label>
+                    <Form.Control
+                      name="nama_pemilik_rekening"
+                      placeholder={t("enterBankName")}
+                      {...formikFormCz.getFieldProps("nama_pemilik_rekening")}
+                      className={validationFormCz("nama_pemilik_rekening")}
+                      required
+                    />
+                    {formikFormCz.touched.nama_pemilik_rekening && formikFormCz.errors.nama_pemilik_rekening ? (
+                      <div className="fv-plugins-message-container">
+                        <div className="fv-help-block">
+                          {formikFormCz.errors.nama_pemilik_rekening}
+                        </div>
+                      </div>
+                    ) : null}
+                    <small>({t("theMerchantAccountOwnerMustBeInTheNameOfTheIndividualBusinessEntityMerchantOwner")}</small>
+                  </Form.Group>
+                </Col>
+              </Row>
 
               <div className="d-flex flex-column justify-content-center align-items-center mt-4">
                 <div>
@@ -839,6 +1037,128 @@ const PaymentModulePT = ({
                         />
                         <label
                           htmlFor="upload-siup-file"
+                          className="btn btn-primary"
+                        >
+                          {t("uploadFile")}
+                        </label>
+                      </div>
+                    </Row>
+                  </div>
+                </Col><Col>
+                  <div className="px-2">
+                    <label style={{fontSize: '11px', margin: 0}}>
+                      {t('priceList')}*
+                    </label>
+                    <div>
+                      <small>{t("fileSizeLimit")}</small>
+                    </div>
+                    <Row className="d-flex justify-content-between box">
+                      <div>
+                        <div
+                          style={{
+                            width: "160px",
+                            height: "120px",
+                            overflow: "hidden",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundImage: `url(${previewLocation || imageLocation})`
+                          }}
+                        />
+                      </div>
+                      <div style={{ alignSelf: "center" }}>
+                        <input
+                          accept="image/jpeg,image/png"
+                          style={{ display: "none" }}
+                          id="upload-location-file"
+                          type="file"
+                          onChange={handlePreviewLocation}
+                          required
+                        />
+                        <label
+                          htmlFor="upload-location-file"
+                          className="btn btn-primary"
+                        >
+                          {t("uploadFile")}
+                        </label>
+                      </div>
+                    </Row>
+                  </div>
+                </Col>
+                
+                <Col>
+                  <div className="px-2">
+                    <label style={{fontSize: '10px', margin: 0}}>
+                    {t('companyDeedDeedOfAmendmentIfAny')} *
+                    </label>
+                    <div>
+                      <small>{t("fileSizeLimit")}</small>
+                    </div>
+                    <Row className="d-flex justify-content-between box">
+                      <div>
+                        <div
+                          style={{
+                            width: "160px",
+                            height: "120px",
+                            overflow: "hidden",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundImage: `url(${previewLocation || imageLocation})`
+                          }}
+                        />
+                      </div>
+                      <div style={{ alignSelf: "center" }}>
+                        <input
+                          accept="image/jpeg,image/png"
+                          style={{ display: "none" }}
+                          id="upload-location-file"
+                          type="file"
+                          onChange={handlePreviewLocation}
+                          required
+                        />
+                        <label
+                          htmlFor="upload-location-file"
+                          className="btn btn-primary"
+                        >
+                          {t("uploadFile")}
+                        </label>
+                      </div>
+                    </Row>
+                  </div>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <div className="px-2">
+                    <label style={{fontSize: '10px', margin: 0}}>
+                      {t('photoOfPassbookCover')}
+                    </label>
+                    <div>
+                      <small>{t("fileSizeLimit")}</small>
+                    </div>
+                    <Row className="d-flex justify-content-between box">
+                      <div>
+                        <div
+                          style={{
+                            width: "160px",
+                            height: "120px",
+                            overflow: "hidden",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundImage: `url(${previewLocation || imageLocation})`
+                          }}
+                        />
+                      </div>
+                      <div style={{ alignSelf: "center" }}>
+                        <input
+                          accept="image/jpeg,image/png"
+                          style={{ display: "none" }}
+                          id="upload-location-file"
+                          type="file"
+                          onChange={handlePreviewLocation}
+                          required
+                        />
+                        <label
+                          htmlFor="upload-location-file"
                           className="btn btn-primary"
                         >
                           {t("uploadFile")}
