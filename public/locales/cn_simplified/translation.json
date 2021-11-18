@@ -1089,5 +1089,7 @@
     "exS/M/L": "示例：S / M / L",
     "deleteQRCode": "删除二维码",
     "frontend": "前端",
-    "backend": "前端"
+    "backend": "前端",
+    "businessEntityMerchant": "商业实体商家",
+    "individualMerchant": "个体商户"
 }

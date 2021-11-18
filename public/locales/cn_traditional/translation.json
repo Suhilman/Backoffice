@@ -1088,5 +1088,7 @@
   "exSize": "示例：尺寸",
   "exS/M/L": "示例：S / M / L",
   "deleteQRCode": "刪除二維碼",
-  "frontend": "前端"
+  "frontend": "前端",
+  "businessEntityMerchant": "商業實體商家",
+  "individualMerchant": "個體商戶"
 }

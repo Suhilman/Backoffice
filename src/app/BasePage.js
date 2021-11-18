@@ -88,7 +88,13 @@ import { AddOpnameMaterialPage } from "./pages/Ingredient/InventoryTab/StockOpna
 import { DetailOpnameMaterialPage } from "./pages/Ingredient/InventoryTab/StockOpname/DetailPage";
 import { AddBundlePage } from "./pages/Product/ProductTab/AddBundle";
 import { EditBundlePage } from "./pages/Product/ProductTab/EditBundle";
-import { PaymentModulPage } from './pages/PaymentModul/PaymentModulePage'
+
+// Form Cashlez Lama
+// import { PaymentModulPage } from './pages/PaymentModul/PaymentModulePage'
+
+// Form Cashlez Baru
+import { PaymentModulPage } from './pages/PaymentModulTerbaru/PaymentModulePage'
+
 import Commission from "./pages/Commission/CommissionPage"
 import AddGroupCommission from "./pages/Commission/AddGroupCommission"
 import EditGroupCommission from "./pages/Commission/EditGroupCommission"

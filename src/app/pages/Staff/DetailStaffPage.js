@@ -247,6 +247,13 @@ export const DetailStaffPage = ({ match, location }) => {
       setStatePage("show");
     }
   };
+  
+  const camelize = (str) => {
+    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
+      return index === 0 ? word.toLowerCase() : word.toUpperCase();
+    }).replace(/\s+/g, '');
+  }
+
 
   const privilegesData = (role_id) => {
     if (!role_id) {
@@ -256,6 +263,9 @@ export const DetailStaffPage = ({ match, location }) => {
     const sortedPrivileges = staffPrivileges.Role_Privileges.sort(
       (a, b) => a.privilege_id - b.privilege_id
     );
+    sortedPrivileges.map(value => {
+      value.Privilege.name = camelize(value.Privilege.name)
+    })
     return sortedPrivileges;
   };
 
@@ -763,7 +773,7 @@ export const DetailStaffPage = ({ match, location }) => {
                                                   }}
                                                 >
                                                   <Form.Label>
-                                                    {privilege.Privilege.name === "Changing Transaction" ? "Delete Transaction" : privilege.Privilege.name}
+                                                    {privilege.Privilege.name === "changingTransaction" ? `${t('deleteTransaction')}` : `${t(privilege.Privilege.name)}`}
                                                   </Form.Label>
                                                 </Col>
                                                 <Col

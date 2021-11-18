@@ -1089,6 +1089,8 @@
     "exS/M/L": "Ex. ：S / M / L",
     "deleteQRCode": "Delete QR Code",
     "frontend": "Frontend",
+    "businessEntityMerchant": "Business Entity Merchant",
+    "individualMerchant": "Individual Merchant",
 
     "currencyConversion": "Currency Convertion",
     "currencyA": "Currency A",

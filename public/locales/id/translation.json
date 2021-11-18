@@ -1089,6 +1089,8 @@
   "exS/M/L": "Cnth. ：S / M / L",
   "deleteQRCode": "Hapus Kode QR",
   "frontend": "Frontend",
+  "businessEntityMerchant": "Pedagang Badan Usaha",
+  "individualMerchant": "Pedagang Perorangan",
 
   "currencyConversion": "Konversi Mata Uang",
   "currencyA": "Mata Uang A",
