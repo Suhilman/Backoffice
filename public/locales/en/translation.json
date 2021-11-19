@@ -1132,6 +1132,8 @@
     "photoOfPassbookCover": "Photo of passbook cover/ current account/ screenshot of digital banking account or proof of transfer of merchant account",
     "priceList": "Price List",
     "frontLook": "Front Look",
+    "ecommerce": "ecommerce",
+    "npwpMerchantPhoto": "NPWP Merchant Photo",
 
     "currencyConversion": "Currency Convertion",
     "currencyA": "Currency A",

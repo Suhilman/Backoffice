@@ -19,6 +19,10 @@ const CashlezTab = ({
   handlePreviewProduct,
   handlePreviewNpwp,
   handlePreviewKtp,
+  handlePreviewPriceList,
+  handlePreviewNPWPMerchant,
+  handlePreviewPassBook,
+  handlePreviewDeedCompany,
   handleOwnerName,
   openSignaturePad,
   business,
@@ -39,6 +43,14 @@ const CashlezTab = ({
   previewNpwpPt,
   imageSiup,
   previewSiup,
+  imagePriceList,
+  previewPriceList,
+  previewNPWPMerchant,
+  imageNPWPMerchant,
+  previewPassBook,
+  imagePassBook,
+  imageDeedCompany,
+  previewDeedCompany,
   handle_register_type_cz,
   handleFeatureTransaction,
   featureTransaction
@@ -127,6 +139,18 @@ const CashlezTab = ({
           title={t('paymentIndividual')}
           handleFeatureTransaction={handleFeatureTransaction}
           featureTransaction={featureTransaction}
+          handlePreviewPriceList={handlePreviewPriceList}
+          handlePreviewNPWPMerchant={handlePreviewNPWPMerchant}
+          handlePreviewPassBook={handlePreviewPassBook}
+          handlePreviewDeedCompany={handlePreviewDeedCompany}
+          imagePriceList={imagePriceList}
+          previewPriceList={previewPriceList}
+          previewNPWPMerchant={previewNPWPMerchant}
+          imageNPWPMerchant={imageNPWPMerchant}
+          previewPassBook={previewPassBook}
+          imagePassBook={imagePassBook}
+          imageDeedCompany={imageDeedCompany}
+          previewDeedCompany={previewDeedCompany}
         />
 
         <PaymentModulePT 
@@ -172,6 +196,18 @@ const CashlezTab = ({
           previewSiup={previewSiup}
           handleFeatureTransaction={handleFeatureTransaction}
           featureTransaction={featureTransaction}
+          handlePreviewPriceList={handlePreviewPriceList}
+          handlePreviewNPWPMerchant={handlePreviewNPWPMerchant}
+          handlePreviewPassBook={handlePreviewPassBook}
+          handlePreviewDeedCompany={handlePreviewDeedCompany}
+          imagePriceList={imagePriceList}
+          previewPriceList={previewPriceList}
+          previewNPWPMerchant={previewNPWPMerchant}
+          imageNPWPMerchant={imageNPWPMerchant}
+          previewPassBook={previewPassBook}
+          imagePassBook={imagePassBook}
+          imageDeedCompany={imageDeedCompany}
+          previewDeedCompany={previewDeedCompany}
         />
       </Paper>
     </div>

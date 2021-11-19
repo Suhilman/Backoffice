@@ -1131,5 +1131,7 @@
     "companyDeedDeedOfAmendmentIfAny": "Company Deed (Deed of amendment if any)",
     "photoOfPassbookCover": "Photo of passbook cover/ current account/ screenshot of digital banking account or proof of transfer of merchant account",
     "priceList": "Price List",
-    "frontLook": "Front Look"
+    "frontLook": "Front Look",
+    "ecommerce": "ecommerce",
+    "npwpMerchantPhoto": "NPWP Merchant Photo"
 }

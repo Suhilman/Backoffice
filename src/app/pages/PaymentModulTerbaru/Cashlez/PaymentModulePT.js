@@ -47,6 +47,10 @@ const PaymentModulePT = ({
   handlePreviewProduct,
   handlePreviewNpwp,
   handlePreviewKtp,
+  handlePreviewPriceList,
+  handlePreviewNPWPMerchant,
+  handlePreviewPassBook,
+  handlePreviewDeedCompany,
   handleOwnerName,
   openSignaturePad,
   business,
@@ -67,29 +71,38 @@ const PaymentModulePT = ({
   previewNpwpPt,
   imageSiup,
   previewSiup,
+  imagePriceList,
+  previewPriceList,
+  previewNPWPMerchant,
+  imageNPWPMerchant,
+  imageDeedCompany,
+  previewDeedCompany,
+  previewPassBook,
+  imagePassBook,
   handleFeatureTransaction,
   featureTransaction
 }) => {
+  
   const allFeatureTransaction = [
     {
       id: "1", 
       key: "kartu_kredit",
-      name: "kartuKredit"
+      name: "creditCard"
     }, 
     {
       id: "2", 
       key: "kartu_debit",
-      name: "kartuDebit"
+      name: "debitCard"
     },
     {
       id: "3", 
       key: "cicilan",
-      name: "cicilan"
+      name: "instalment"
     }, 
     {
       id: "4", 
       key: "qris_uang_lektronik",
-      name: "qrisUangElektronik"
+      name: "qrisElectronicMoney"
     },
     {
       id: "5", 
@@ -102,6 +115,7 @@ const PaymentModulePT = ({
       name: "ecommerce"
     }
   ]
+  
   return (
     <div>
       <Signature
@@ -119,7 +133,7 @@ const PaymentModulePT = ({
         {stateModal ? (
           <Row className="p-5">
             <Col>
-              <div className="d-flex justify-content-center">
+              {/* <div className="d-flex justify-content-center">
                 <div>
                   <strong style={{fontSize:"15px", textDecoration: "underline"}}>{t("headers")}</strong>
                 </div>
@@ -168,7 +182,7 @@ const PaymentModulePT = ({
                     </div>
                   </div>
                 ) : null}
-              </Form.Group>
+              </Form.Group> */}
 
               <Form.Group as={Row} style={{ padding: "0 1rem", width: '80%' }} className="d-flex mt-2">
                 <div style={{ width: '27%' }}>
@@ -1044,7 +1058,8 @@ const PaymentModulePT = ({
                       </div>
                     </Row>
                   </div>
-                </Col><Col>
+                </Col>
+                <Col>
                   <div className="px-2">
                     <label style={{fontSize: '11px', margin: 0}}>
                       {t('priceList')}*
@@ -1061,7 +1076,7 @@ const PaymentModulePT = ({
                             overflow: "hidden",
                             backgroundSize: "cover",
                             backgroundPosition: "center",
-                            backgroundImage: `url(${previewLocation || imageLocation})`
+                            backgroundImage: `url(${previewPriceList || imagePriceList})`
                           }}
                         />
                       </div>
@@ -1069,13 +1084,13 @@ const PaymentModulePT = ({
                         <input
                           accept="image/jpeg,image/png"
                           style={{ display: "none" }}
-                          id="upload-location-file"
+                          id="upload-price-list"
                           type="file"
-                          onChange={handlePreviewLocation}
+                          onChange={handlePreviewPriceList}
                           required
                         />
                         <label
-                          htmlFor="upload-location-file"
+                          htmlFor="upload-price-list"
                           className="btn btn-primary"
                         >
                           {t("uploadFile")}
@@ -1102,7 +1117,7 @@ const PaymentModulePT = ({
                             overflow: "hidden",
                             backgroundSize: "cover",
                             backgroundPosition: "center",
-                            backgroundImage: `url(${previewLocation || imageLocation})`
+                            backgroundImage: `url(${previewDeedCompany || imageDeedCompany})`
                           }}
                         />
                       </div>
@@ -1110,13 +1125,13 @@ const PaymentModulePT = ({
                         <input
                           accept="image/jpeg,image/png"
                           style={{ display: "none" }}
-                          id="upload-location-file"
+                          id="upload-dedd-company-file"
                           type="file"
-                          onChange={handlePreviewLocation}
+                          onChange={handlePreviewDeedCompany}
                           required
                         />
                         <label
-                          htmlFor="upload-location-file"
+                          htmlFor="upload-dedd-company-file"
                           className="btn btn-primary"
                         >
                           {t("uploadFile")}
@@ -1127,6 +1142,46 @@ const PaymentModulePT = ({
                 </Col>
               </Row>
               <Row>
+              <Col>
+                  <div className="px-2">
+                    <label style={{fontSize: '10px', margin: 0}}>
+                    {t('npwpMerchantPhoto')}
+                    </label>
+                    <div>
+                      <small>{t("fileSizeLimit")}</small>
+                    </div>
+                    <Row className="d-flex justify-content-between box">
+                      <div>
+                        <div
+                          style={{
+                            width: "160px",
+                            height: "120px",
+                            overflow: "hidden",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundImage: `url(${previewNPWPMerchant || imageNPWPMerchant})`
+                          }}
+                        />
+                      </div>
+                      <div style={{ alignSelf: "center" }}>
+                        <input
+                          accept="image/jpeg,image/png"
+                          style={{ display: "none" }}
+                          id="upload-npwp-merchant-file"
+                          type="file"
+                          onChange={handlePreviewNPWPMerchant}
+                          required
+                        />
+                        <label
+                          htmlFor="upload-npwp-merchant-file"
+                          className="btn btn-primary"
+                        >
+                          {t("uploadFile")}
+                        </label>
+                      </div>
+                    </Row>
+                  </div>
+                </Col>
                 <Col>
                   <div className="px-2">
                     <label style={{fontSize: '10px', margin: 0}}>
@@ -1144,7 +1199,7 @@ const PaymentModulePT = ({
                             overflow: "hidden",
                             backgroundSize: "cover",
                             backgroundPosition: "center",
-                            backgroundImage: `url(${previewLocation || imageLocation})`
+                            backgroundImage: `url(${previewPassBook || imagePassBook})`
                           }}
                         />
                       </div>
@@ -1152,13 +1207,13 @@ const PaymentModulePT = ({
                         <input
                           accept="image/jpeg,image/png"
                           style={{ display: "none" }}
-                          id="upload-location-file"
+                          id="upload-pass-book-file"
                           type="file"
-                          onChange={handlePreviewLocation}
+                          onChange={handlePreviewPassBook}
                           required
                         />
                         <label
-                          htmlFor="upload-location-file"
+                          htmlFor="upload-pass-book-file"
                           className="btn btn-primary"
                         >
                           {t("uploadFile")}
@@ -1167,7 +1222,6 @@ const PaymentModulePT = ({
                     </Row>
                   </div>
                 </Col>
-                <Col />
                 <Col />
               </Row>
               <div className="d-flex justify-content-end">

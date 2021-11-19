@@ -49,6 +49,14 @@ export const PaymentModulPage = () => {
   const [imageSiup, setImageSiup] = React.useState("")
   const [previewNpwpPt, setPreviewNpwpPt] = React.useState("");
   const [imageNpwpPt, setImageNpwpPt] = React.useState("")
+  const [imagePriceList, setImagePriceList] = React.useState("")
+  const [previewPriceList, setPreviewPriceList] = React.useState("");
+  const [imageNPWPMerchant, setImageNPWPMerchant] = React.useState("")
+  const [previewNPWPMerchant, setPreviewNPWPMerchant] = React.useState("");
+  const [imagePassBook, setImagePassBook] = React.useState("")
+  const [previewPassBook, setPreviewPassBook] = React.useState("");
+  const [previewDeedCompany, setPreviewDeedCompany] = React.useState("");
+  const [imageDeedCompany, setImageDeedCompany] = React.useState("")
   const [registerTypeCz, setRegisterTypeCz] = React.useState("individu")
   const [paymentGatewayName, setPaymentGatewayName] = React.useState("")
 
@@ -103,6 +111,8 @@ export const PaymentModulPage = () => {
       const formData = new FormData();
       formData.append("ktp_picture", img);
       await axios.patch(`${API_URL}/api/v1/business/update-photo/${user_info.business_id}`,formData);
+      
+      formikFormCz.submitForm()
       setImageKtp(img)
     } else {
       preview = "";
@@ -124,6 +134,8 @@ export const PaymentModulPage = () => {
       const formData = new FormData();
       formData.append("npwp_picture", img);
       await axios.patch(`${API_URL}/api/v1/business/update-photo/${user_info.business_id}`,formData);
+      
+      formikFormCz.submitForm()
       setImageNpwp(img)
     } else {
       preview = "";
@@ -146,6 +158,8 @@ export const PaymentModulPage = () => {
       formData.append("product_photo", img);
       await axios.post(`${API_URL}/api/v1/business-form-data/first-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
       getBusinessFormData()
+      
+      formikFormCz.submitForm()
       setImageProduct(img)
     } else {
       preview = "";
@@ -169,6 +183,8 @@ export const PaymentModulPage = () => {
       formData.append("business_signpost_photo", img);
       await axios.post(`${API_URL}/api/v1/business-form-data/first-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
       getBusinessFormData()
+      
+      formikFormCz.submitForm()
       setImageSignpost(img)
     } else {
       preview = "";
@@ -191,6 +207,8 @@ export const PaymentModulPage = () => {
       formData.append("business_location_photo", img);
       await axios.post(`${API_URL}/api/v1/business-form-data/first-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
       getBusinessFormData()
+      
+      formikFormCz.submitForm()
       setImageLocation(img)
     } else {
       preview = "";
@@ -214,6 +232,8 @@ export const PaymentModulPage = () => {
       formData.append("siup_tdp_nib", img);
       await axios.post(`${API_URL}/api/v1/business-form-data/second-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
       getBusinessFormData()
+      
+      formikFormCz.submitForm()
       setImageSiup(img)
     } else {
       preview = "";
@@ -236,12 +256,110 @@ export const PaymentModulPage = () => {
       formData.append("npwp_pt_photo", img);
       await axios.post(`${API_URL}/api/v1/business-form-data/first-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
       getBusinessFormData()
+      
+      formikFormCz.submitForm()
       setImageNpwpPt(img)
     } else {
       preview = "";
     }
   };
   
+  const handlePreviewPriceList = async (e) => {
+    let preview;
+    let img;
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          setPreviewPriceList(reader.result);
+        }
+      }
+      reader.readAsDataURL(e.target.files[0])
+      img = e.target.files[0];
+      const formData = new FormData();
+      formData.append("price_list_photo", img);
+      await axios.post(`${API_URL}/api/v1/business-form-data/second-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
+      getBusinessFormData()
+      
+      formikFormCz.submitForm()
+      setImagePriceList(img)
+    } else {
+      preview = "";
+    }
+  };
+
+  const handlePreviewNPWPMerchant = async (e) => {
+    let preview;
+    let img;
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          setPreviewNPWPMerchant(reader.result);
+        }
+      }
+      reader.readAsDataURL(e.target.files[0])
+      img = e.target.files[0];
+      const formData = new FormData();
+      formData.append("npwp_merchant_photo", img);
+      await axios.post(`${API_URL}/api/v1/business-form-data/second-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
+      getBusinessFormData()
+      
+      formikFormCz.submitForm()
+      setImageNPWPMerchant(img)
+    } else {
+      preview = "";
+    }
+  };
+
+  const handlePreviewPassBook = async (e) => {
+    let preview;
+    let img;
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          setPreviewPassBook(reader.result);
+        }
+      }
+      reader.readAsDataURL(e.target.files[0])
+      img = e.target.files[0];
+      const formData = new FormData();
+      formData.append("savings_book_cover_photo", img);
+      await axios.post(`${API_URL}/api/v1/business-form-data/second-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
+      getBusinessFormData()
+      
+      formikFormCz.submitForm()
+      setImagePassBook(img)
+    } else {
+      preview = "";
+    }
+  };
+
+  const handlePreviewDeedCompany = async (e) => {
+    let preview;
+    let img;
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = () =>{
+        if(reader.readyState === 2){
+          setPreviewDeedCompany(reader.result);
+        }
+      }
+      reader.readAsDataURL(e.target.files[0])
+      img = e.target.files[0];
+      const formData = new FormData();
+      formData.append("deed_of_company_photo", img);
+      await axios.post(`${API_URL}/api/v1/business-form-data/third-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
+      getBusinessFormData()
+      
+      formikFormCz.submitForm()
+      setImageDeedCompany(img)
+    } else {
+      preview = "";
+    }
+  };
+
   const InitialFormCz = {
     submission_as: "1",
     business_place_status: "1",
@@ -258,15 +376,19 @@ export const PaymentModulPage = () => {
     kk: "",
     nama_merchant: "",
     alamat_usaha_merchant: "",
+    merchant_contact_name: "",
+    mobile_contact_merchant: "",
     kota_merchant: "",
     provinsi_merchant: "",
     kode_pos_merchant: "",
     tipe_usaha_merchant: "",
     status_usaha: "",
     nomor_telp_merchant: "",
+    npwp_merchant_business_entity: "",
     alamat_email_merchant: "",
     bentuk_bidang_usaha: "",
     deskripsi_produk: "",
+    average_transaction_per_month: "",
     nama_bank: "",
     nomor_rekening: "",
     nama_pemilik_rekening: "",
@@ -293,8 +415,8 @@ export const PaymentModulPage = () => {
       .required(`${t("pleaseInputAMerchantCity")}`),
     nomor_telp_merchant: Yup.string()
       .required(`${t("pleaseInputAMerchantPhoneNumber")}`),
-    bentuk_bidang_usaha: Yup.string()
-      .required(`${t("pleaseInputAForm/FieldOfBusiness")}`),
+    // bentuk_bidang_usaha: Yup.string()
+    //   .required(`${t("pleaseInputAForm/FieldOfBusiness")}`),
     deskripsi_produk: Yup.string()
       .required(`${t("pleaseInputAProductDescriptionForSale")}`),
     nama_bank: Yup.string()
@@ -339,6 +461,17 @@ export const PaymentModulPage = () => {
         // tanggal: values.tanggal
       }
 
+      const result_feature = []
+
+      const arrayFeatureTransaction = Object.keys(featureTransaction);
+
+      arrayFeatureTransaction.map(value => {
+        const result = featureTransaction[value].checked
+        if(result) {
+          result_feature.push(value)
+        }
+      })
+
       const dataSendSave = {
         status: "Sudah Diajukan di Backoffice",
         tracking_process: 1,
@@ -368,6 +501,13 @@ export const PaymentModulPage = () => {
         bank_name: values.nama_bank,
         account_number: values.nomor_rekening,
         account_owner_name: values.nama_pemilik_rekening,
+        average_transaction_per_month: values.average_transaction_per_month,
+        npwp_merchant_business_entity: values.npwp_merchant_business_entity,
+        merchant_contact_name: values.merchant_contact_name,
+        mobile_contact_merchant: values.mobile_contact_merchant,
+        submission_as: values.submission_as,
+        business_place_status: values.business_place_status,
+        transaction_features: JSON.stringify(result_feature)
       }
       if(baseSignature) dataSendPdf.signature = baseSignature
       console.log("dataSendSave", dataSendSave)
@@ -481,6 +621,8 @@ export const PaymentModulPage = () => {
         console.log("registerTypeCz", registerTypeCz)
         const {data} = await axios.get(`${API_URL}/api/v1/business-form-data/my-id?register_type_cz=${registerTypeCz}`)
   
+        console.log("Data Form Data", data.data)
+
         if(data.data.ktp_paspor_kitas) {
           formikFormCz.setFieldValue("ktp", data.data.ktp_paspor_kitas || "")
         } else {
@@ -529,6 +671,32 @@ export const PaymentModulPage = () => {
         formikFormCz.setFieldValue("nama_bank", data.data.bank_name || "")
         formikFormCz.setFieldValue("nomor_rekening", data.data.account_number || "")
         formikFormCz.setFieldValue("nama_pemilik_rekening", data.data.account_owner_name || "")
+
+        formikFormCz.setFieldValue("submission_as", data.data.submission_as || "")
+        formikFormCz.setFieldValue("business_place_status", data.data.business_place_status || "")
+        formikFormCz.setFieldValue("transaction_features", data.data.transaction_features || "")
+        formikFormCz.setFieldValue("merchant_contact_name", data.data.merchant_contact_name || "")
+        formikFormCz.setFieldValue("mobile_contact_merchant", data.data.mobile_contact_merchant || "")
+        formikFormCz.setFieldValue("npwp_merchant_business_entity", data.data.npwp_merchant_business_entity || "")
+        formikFormCz.setFieldValue("average_transaction_per_month", data.data.average_transaction_per_month || "")
+        formikFormCz.setFieldValue("price_list", data.data.price_list || "")
+        formikFormCz.setFieldValue("savings_book_cover_photo", data.data.savings_book_cover_photo || "")
+        formikFormCz.setFieldValue("npwp_merchant_photo", data.data.npwp_merchant_photo || "")
+        formikFormCz.setFieldValue("deed_of_company_photo", data.data.deed_of_company_photo || "")
+        console.log("data.data.transaction_features luar", data.data.transaction_features)
+        
+        if(data.data.transaction_features) {
+          console.log("data.data.transaction_features dalam", data.data.transaction_features)
+          const parse_result = JSON.parse(data.data.transaction_features)
+          console.log("parse_result", parse_result)
+
+          const temp_transaction_feature = {...featureTransaction}
+          parse_result.map(value => {
+            temp_transaction_feature[value].checked = true
+          })
+          console.log("temp_transaction_feature", temp_transaction_feature)
+          setFeatureTransasction(temp_transaction_feature)
+        }
         
         setImageProduct(
           `${data.data.product_photo ? `${API_URL}/${data.data.product_photo}` : ""}`
@@ -557,6 +725,31 @@ export const PaymentModulPage = () => {
             data.data.siup_tdp_nib ? `${API_URL}/${data.data.siup_tdp_nib}` : ""
           }`
         );
+
+        setImagePriceList(
+          `${
+            data.data.price_list_photo ? `${API_URL}/${data.data.price_list_photo}` : ""
+          }`
+        );
+
+        setImageNPWPMerchant(
+          `${
+            data.data.npwp_merchant_photo ? `${API_URL}/${data.data.npwp_merchant_photo}` : ""
+          }`
+        );
+
+        setImagePassBook(
+          `${
+            data.data.savings_book_cover_photo ? `${API_URL}/${data.data.savings_book_cover_photo}` : ""
+          }`
+        );
+
+        setImageDeedCompany(
+          `${
+            data.data.deed_of_company_photo ? `${API_URL}/${data.data.deed_of_company_photo}` : ""
+          }`
+        );
+
       }
     } catch (error) {
       console.log(error)
@@ -675,6 +868,18 @@ export const PaymentModulPage = () => {
             handle_register_type_cz={handle_register_type_cz}
             handleFeatureTransaction={handleFeatureTransaction}
             featureTransaction={featureTransaction}
+            handlePreviewPriceList={handlePreviewPriceList}
+            handlePreviewNPWPMerchant={handlePreviewNPWPMerchant}
+            handlePreviewPassBook={handlePreviewPassBook}
+            handlePreviewDeedCompany={handlePreviewDeedCompany}
+            imagePriceList={imagePriceList}
+            previewPriceList={previewPriceList}
+            previewNPWPMerchant={previewNPWPMerchant}
+            imageNPWPMerchant={imageNPWPMerchant}
+            previewPassBook={previewPassBook}
+            imagePassBook={imagePassBook}
+            imageDeedCompany={imageDeedCompany}
+            previewDeedCompany={previewDeedCompany}
           />
         </Tab>
       </Tabs>

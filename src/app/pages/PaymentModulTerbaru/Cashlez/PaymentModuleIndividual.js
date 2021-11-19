@@ -38,6 +38,9 @@ const PaymentModuleIndividual = ({
   handlePreviewProduct,
   handlePreviewNpwp,
   handlePreviewKtp,
+  handlePreviewPriceList,
+  handlePreviewNPWPMerchant,
+  handlePreviewPassBook,
   handleOwnerName,
   openSignaturePad,
   business,
@@ -51,6 +54,12 @@ const PaymentModuleIndividual = ({
   previewNpwp,
   imageKtp,
   previewKtp,
+  imagePriceList,
+  previewPriceList,
+  previewNPWPMerchant,
+  imageNPWPMerchant,
+  previewPassBook,
+  imagePassBook,
   register_type_cz,
   handleFeatureTransaction,
   featureTransaction
@@ -59,22 +68,22 @@ const PaymentModuleIndividual = ({
     {
       id: "1", 
       key: "kartu_kredit",
-      name: "kartuKredit"
+      name: "creditCard"
     }, 
     {
       id: "2", 
       key: "kartu_debit",
-      name: "kartuDebit"
+      name: "debitCard"
     },
     {
       id: "3", 
       key: "cicilan",
-      name: "cicilan"
+      name: "instalment"
     }, 
     {
       id: "4", 
       key: "qris_uang_lektronik",
-      name: "qrisUangElektronik"
+      name: "qrisElectronicMoney"
     },
     {
       id: "5", 
@@ -87,6 +96,7 @@ const PaymentModuleIndividual = ({
       name: "ecommerce"
     }
   ]
+
   return (
     <div>
       <Signature
@@ -107,13 +117,13 @@ const PaymentModuleIndividual = ({
             <Col>
               
 
-              <div className="d-flex justify-content-center">
+              {/* <div className="d-flex justify-content-center">
                 <div>
                   <strong style={{fontSize:"15px", textDecoration: "underline"}}>{t("headers")}</strong>
                 </div>
-              </div>
+              </div> */}
 
-              <Form.Group as={Row} style={{ padding: "0 1rem", width: '80%' }} className="d-flex mt-2">
+              {/* <Form.Group as={Row} style={{ padding: "0 1rem", width: '80%' }} className="d-flex mt-2">
                 <div style={{ width: '27%' }}>
                   <Form.Label>{t('submissionAs')}:</Form.Label>
                 </div>
@@ -156,7 +166,7 @@ const PaymentModuleIndividual = ({
                     </div>
                   </div>
                 ) : null}
-              </Form.Group>
+              </Form.Group> */}
 
               <Form.Group as={Row} style={{ padding: "0 1rem", width: '80%' }} className="d-flex mt-2">
                 <div style={{ width: '27%' }}>
@@ -447,16 +457,16 @@ const PaymentModuleIndividual = ({
               <Form.Group>
                 <Form.Label>{t('individualMerchantBusinessEntityContactName')}**</Form.Label>
                 <Form.Control
-                  name="alamat_usaha_merchant"
+                  name="merchant_contact_name"
                   placeholder={t("enterMerchantBusinessAddress")}
-                  {...formikFormCz.getFieldProps("alamat_usaha_merchant")}
-                  className={validationFormCz("alamat_usaha_merchant")}
+                  {...formikFormCz.getFieldProps("merchant_contact_name")}
+                  className={validationFormCz("merchant_contact_name")}
                   required
                 />
-                {formikFormCz.touched.alamat_usaha_merchant && formikFormCz.errors.alamat_usaha_merchant ? (
+                {formikFormCz.touched.merchant_contact_name && formikFormCz.errors.merchant_contact_name ? (
                   <div className="fv-plugins-message-container">
                     <div className="fv-help-block">
-                      {formikFormCz.errors.alamat_usaha_merchant}
+                      {formikFormCz.errors.merchant_contact_name}
                     </div>
                   </div>
                 ) : null}
@@ -468,16 +478,16 @@ const PaymentModuleIndividual = ({
                   <Form.Group>
                     <Form.Label>{t('noMobileContactMerchant')}**</Form.Label>
                     <Form.Control
-                      name="nomor_telp_merchant"
+                      name="mobile_contact_merchant"
                       placeholder={t("enterMerchantPhoneNumber")}
-                      {...formikFormCz.getFieldProps("nomor_telp_merchant")}
-                      className={validationFormCz("nomor_telp_merchant")}
+                      {...formikFormCz.getFieldProps("mobile_contact_merchant")}
+                      className={validationFormCz("mobile_contact_merchant")}
                       required
                     />
-                    {formikFormCz.touched.nomor_telp_merchant && formikFormCz.errors.nomor_telp_merchant ? (
+                    {formikFormCz.touched.mobile_contact_merchant && formikFormCz.errors.mobile_contact_merchant ? (
                       <div className="fv-plugins-message-container">
                         <div className="fv-help-block">
-                          {formikFormCz.errors.nomor_telp_merchant}
+                          {formikFormCz.errors.mobile_contact_merchant}
                         </div>
                       </div>
                     ) : null}
@@ -509,16 +519,16 @@ const PaymentModuleIndividual = ({
                   <Form.Group>
                     <Form.Label>{t('noNpwpMerchantBusinessEntity')}*</Form.Label>
                     <Form.Control
-                      name="nomor_telp_merchant"
+                      name="npwp_merchant_business_entity"
                       placeholder={t("enterMerchantPhoneNumber")}
-                      {...formikFormCz.getFieldProps("nomor_telp_merchant")}
-                      className={validationFormCz("nomor_telp_merchant")}
+                      {...formikFormCz.getFieldProps("npwp_merchant_business_entity")}
+                      className={validationFormCz("npwp_merchant_business_entity")}
                       required
                     />
-                    {formikFormCz.touched.nomor_telp_merchant && formikFormCz.errors.nomor_telp_merchant ? (
+                    {formikFormCz.touched.npwp_merchant_business_entity && formikFormCz.errors.npwp_merchant_business_entity ? (
                       <div className="fv-plugins-message-container">
                         <div className="fv-help-block">
-                          {formikFormCz.errors.nomor_telp_merchant}
+                          {formikFormCz.errors.npwp_merchant_business_entity}
                         </div>
                       </div>
                     ) : null}
@@ -669,16 +679,16 @@ const PaymentModuleIndividual = ({
               <Form.Group>
                 <Form.Label>{t('averageTransactionsPerMonth')}*</Form.Label>
                 <Form.Control
-                  name="deskripsi_produk"
+                  name="average_transaction_per_month"
                   placeholder={t("enterProductDescriptionForSale")}
-                  {...formikFormCz.getFieldProps("deskripsi_produk")}
-                  className={validationFormCz("deskripsi_produk")}
+                  {...formikFormCz.getFieldProps("average_transaction_per_month")}
+                  className={validationFormCz("average_transaction_per_month")}
                   required
                 />
-                {formikFormCz.touched.deskripsi_produk && formikFormCz.errors.deskripsi_produk ? (
+                {formikFormCz.touched.average_transaction_per_month && formikFormCz.errors.average_transaction_per_month ? (
                   <div className="fv-plugins-message-container">
                     <div className="fv-help-block">
-                      {formikFormCz.errors.deskripsi_produk}
+                      {formikFormCz.errors.average_transaction_per_month}
                     </div>
                   </div>
                 ) : null}
@@ -983,7 +993,7 @@ const PaymentModuleIndividual = ({
                             overflow: "hidden",
                             backgroundSize: "cover",
                             backgroundPosition: "center",
-                            backgroundImage: `url(${previewLocation || imageLocation})`
+                            backgroundImage: `url(${previewPriceList || imagePriceList})`
                           }}
                         />
                       </div>
@@ -991,13 +1001,13 @@ const PaymentModuleIndividual = ({
                         <input
                           accept="image/jpeg,image/png"
                           style={{ display: "none" }}
-                          id="upload-location-file"
+                          id="upload-price-list"
                           type="file"
-                          onChange={handlePreviewLocation}
+                          onChange={handlePreviewPriceList}
                           required
                         />
                         <label
-                          htmlFor="upload-location-file"
+                          htmlFor="upload-price-list"
                           className="btn btn-primary"
                         >
                           {t("uploadFile")}
@@ -1011,7 +1021,7 @@ const PaymentModuleIndividual = ({
                 <Col>
                   <div className="px-2">
                     <label style={{fontSize: '10px', margin: 0}}>
-                    {t('photoOfPassbookCover')}
+                    {t('npwpMerchantPhoto')}
                     </label>
                     <div>
                       <small>{t("fileSizeLimit")}</small>
@@ -1025,7 +1035,7 @@ const PaymentModuleIndividual = ({
                             overflow: "hidden",
                             backgroundSize: "cover",
                             backgroundPosition: "center",
-                            backgroundImage: `url(${previewLocation || imageLocation})`
+                            backgroundImage: `url(${previewNPWPMerchant || imageNPWPMerchant})`
                           }}
                         />
                       </div>
@@ -1033,13 +1043,13 @@ const PaymentModuleIndividual = ({
                         <input
                           accept="image/jpeg,image/png"
                           style={{ display: "none" }}
-                          id="upload-location-file"
+                          id="upload-npwp-merchant-file"
                           type="file"
-                          onChange={handlePreviewLocation}
+                          onChange={handlePreviewNPWPMerchant}
                           required
                         />
                         <label
-                          htmlFor="upload-location-file"
+                          htmlFor="upload-npwp-merchant-file"
                           className="btn btn-primary"
                         >
                           {t("uploadFile")}
@@ -1048,7 +1058,46 @@ const PaymentModuleIndividual = ({
                     </Row>
                   </div>
                 </Col>
-                <Col />
+                <Col>
+                  <div className="px-2">
+                    <label style={{fontSize: '10px', margin: 0}}>
+                      {t('photoOfPassbookCover')}
+                    </label>
+                    <div>
+                      <small>{t("fileSizeLimit")}</small>
+                    </div>
+                    <Row className="d-flex justify-content-between box">
+                      <div>
+                        <div
+                          style={{
+                            width: "160px",
+                            height: "120px",
+                            overflow: "hidden",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundImage: `url(${previewPassBook || imagePassBook})`
+                          }}
+                        />
+                      </div>
+                      <div style={{ alignSelf: "center" }}>
+                        <input
+                          accept="image/jpeg,image/png"
+                          style={{ display: "none" }}
+                          id="upload-pass_book-file"
+                          type="file"
+                          onChange={handlePreviewPassBook}
+                          required
+                        />
+                        <label
+                          htmlFor="upload-pass_book-file"
+                          className="btn btn-primary"
+                        >
+                          {t("uploadFile")}
+                        </label>
+                      </div>
+                    </Row>
+                  </div>
+                </Col>
                 <Col />
               </Row>
               <div className="d-flex justify-content-end mt-4">
