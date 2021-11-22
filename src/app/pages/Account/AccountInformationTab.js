@@ -10,6 +10,9 @@ import { Paper } from "@material-ui/core";
 
 import "../style.css";
 
+import OpenEye from "../../../images/open-eye.png"
+import ClosedEye from "../../../images/closed-eye.png"
+
 export const AccountInformation = () => {
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
@@ -287,6 +290,79 @@ const ModalAccountInformation = ({
   validationAccount,
   isOwner
 }) => {
+  const [stateShowPassword, setStateShowPassword] = React.useState(false)
+  const [stateShowPassword2, setStateShowPassword2] = React.useState(false)
+  const [stateShowPassword3, setStateShowPassword3] = React.useState(false)
+  const [stateShowPassword4, setStateShowPassword4] = React.useState(false)
+  const [stateShowPassword5, setStateShowPassword5] = React.useState(false)
+  const [stateShowPassword6, setStateShowPassword6] = React.useState(false)
+
+  const showPassword = () => {
+    setStateShowPassword(!stateShowPassword)
+    console.log("hellow brow")
+    const password = document.getElementById('show')
+    if (password.type === 'password') {
+      password.type = 'text'
+    } else {
+      password.type = 'password'
+    }
+  };
+
+  const showPassword2 = () => {
+    setStateShowPassword2(!stateShowPassword2)
+    console.log("hellow brow")
+    const password = document.getElementById('show2')
+    if (password.type === 'password') {
+      password.type = 'text'
+    } else {
+      password.type = 'password'
+    }
+  };
+
+  const showPassword3 = () => {
+    setStateShowPassword3(!stateShowPassword3)
+    console.log("hellow brow")
+    const password = document.getElementById('show3')
+    if (password.type === 'password') {
+      password.type = 'text'
+    } else {
+      password.type = 'password'
+    }
+  };
+
+  const showPassword4 = () => {
+    setStateShowPassword4(!stateShowPassword4)
+    console.log("hellow brow")
+    const password = document.getElementById('show4')
+    if (password.type === 'password') {
+      password.type = 'text'
+    } else {
+      password.type = 'password'
+    }
+  };
+
+  const showPassword5 = () => {
+    setStateShowPassword5(!stateShowPassword5)
+    console.log("hellow brow")
+    const password = document.getElementById('show5')
+    if (password.type === 'password') {
+      password.type = 'text'
+    } else {
+      password.type = 'password'
+    }
+  };
+
+  const showPassword6 = () => {
+    setStateShowPassword6(!stateShowPassword6)
+    console.log("hellow brow")
+    const password = document.getElementById('show6')
+    if (password.type === 'password') {
+      password.type = 'text'
+    } else {
+      password.type = 'password'
+    }
+  };
+
   const { t } = useTranslation();
   return (
     <Modal show={state} onHide={closeModal}>
@@ -318,7 +394,7 @@ const ModalAccountInformation = ({
                 ) : null}
               </Form.Group>
 
-              <Form.Group>
+              <Form.Group className="container-form-password">
                 <Form.Label>{t("oldPassword")}</Form.Label>
                 <Form.Control
                   type="password"
@@ -326,7 +402,15 @@ const ModalAccountInformation = ({
                   {...formikAccount.getFieldProps("old_password")}
                   className={validationAccount("old_password")}
                   required
+                  id="show"
                 />
+                <div className="wrapper-icon-password-account-information" onClick={() => showPassword()}>
+                  {stateShowPassword ? (
+                    <img src={OpenEye} alt="Open-eye" />
+                  ) : (
+                    <img src={ClosedEye} alt="Closed-eye" />
+                  )}
+                </div>
                 {formikAccount.touched.old_password &&
                 formikAccount.errors.old_password ? (
                   <div className="fv-plugins-message-container">
@@ -337,7 +421,7 @@ const ModalAccountInformation = ({
                 ) : null}
               </Form.Group>
 
-              <Form.Group>
+              <Form.Group className="container-form-password">
                 <Form.Label>{t("newPassword")}</Form.Label>
                 <Form.Control
                   type="password"
@@ -345,7 +429,15 @@ const ModalAccountInformation = ({
                   {...formikAccount.getFieldProps("new_password")}
                   className={validationAccount("new_password")}
                   required
+                  id="show2"
                 />
+                <div className="wrapper-icon-password-account-information" onClick={() => showPassword2()}>
+                  {stateShowPassword2 ? (
+                    <img src={OpenEye} alt="Open-eye" />
+                  ) : (
+                    <img src={ClosedEye} alt="Closed-eye" />
+                  )}
+                </div>
                 {formikAccount.touched.new_password &&
                 formikAccount.errors.new_password ? (
                   <div className="fv-plugins-message-container">
@@ -356,7 +448,7 @@ const ModalAccountInformation = ({
                 ) : null}
               </Form.Group>
 
-              <Form.Group>
+              <Form.Group className="container-form-password">
                 <Form.Label>{t("confirmPassword")}</Form.Label>
                 <Form.Control
                   type="password"
@@ -364,7 +456,15 @@ const ModalAccountInformation = ({
                   {...formikAccount.getFieldProps("password_confirmation")}
                   className={validationAccount("password_confirmation")}
                   required
+                  id="show3"
                 />
+                <div className="wrapper-icon-password-account-information" onClick={() => showPassword3()}>
+                  {stateShowPassword3 ? (
+                    <img src={OpenEye} alt="Open-eye" />
+                  ) : (
+                    <img src={ClosedEye} alt="Closed-eye" />
+                  )}
+                </div>
                 {formikAccount.touched.password_confirmation &&
                 formikAccount.errors.password_confirmation ? (
                   <div className="fv-plugins-message-container">
@@ -398,7 +498,7 @@ const ModalAccountInformation = ({
 
               {!isOwner ? (
                 <>
-                  <Form.Group>
+                  <Form.Group className="container-form-password">
                     <Form.Label>{t("oldPin")}</Form.Label>
                     <Form.Control
                       type="password"
@@ -406,7 +506,15 @@ const ModalAccountInformation = ({
                       {...formikAccount.getFieldProps("old_pin")}
                       className={validationAccount("old_pin")}
                       required
+                      id="show4"
                     />
+                    <div className="wrapper-icon-password-account-information" onClick={() => showPassword4()}>
+                      {stateShowPassword4 ? (
+                        <img src={OpenEye} alt="Open-eye" />
+                      ) : (
+                        <img src={ClosedEye} alt="Closed-eye" />
+                      )}
+                    </div>
                     {formikAccount.touched.old_pin &&
                     formikAccount.errors.old_pin ? (
                       <div className="fv-plugins-message-container">
@@ -417,7 +525,7 @@ const ModalAccountInformation = ({
                     ) : null}
                   </Form.Group>
 
-                  <Form.Group>
+                  <Form.Group className="container-form-password">
                     <Form.Label>{t("newPin")}</Form.Label>
                     <Form.Control
                       type="password"
@@ -425,7 +533,15 @@ const ModalAccountInformation = ({
                       {...formikAccount.getFieldProps("new_pin")}
                       className={validationAccount("new_pin")}
                       required
+                      id="show5"
                     />
+                    <div className="wrapper-icon-password-account-information" onClick={() => showPassword5()}>
+                      {stateShowPassword5 ? (
+                        <img src={OpenEye} alt="Open-eye" />
+                      ) : (
+                        <img src={ClosedEye} alt="Closed-eye" />
+                      )}
+                    </div>
                     {formikAccount.touched.new_pin &&
                     formikAccount.errors.new_pin ? (
                       <div className="fv-plugins-message-container">
@@ -436,7 +552,7 @@ const ModalAccountInformation = ({
                     ) : null}
                   </Form.Group>
 
-                  <Form.Group>
+                  <Form.Group className="container-form-password">
                     <Form.Label>{t("confirmPin")}</Form.Label>
                     <Form.Control
                       type="password"
@@ -444,7 +560,15 @@ const ModalAccountInformation = ({
                       {...formikAccount.getFieldProps("pin_confirmation")}
                       className={validationAccount("pin_confirmation")}
                       required
+                      id="show6"
                     />
+                    <div className="wrapper-icon-password-account-information" onClick={() => showPassword6()}>
+                      {stateShowPassword6 ? (
+                        <img src={OpenEye} alt="Open-eye" />
+                      ) : (
+                        <img src={ClosedEye} alt="Closed-eye" />
+                      )}
+                    </div>
                     {formikAccount.touched.pin_confirmation &&
                     formikAccount.errors.pin_confirmation ? (
                       <div className="fv-plugins-message-container">

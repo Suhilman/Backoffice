@@ -361,8 +361,8 @@ export const PaymentModulPage = () => {
   };
 
   const InitialFormCz = {
-    submission_as: "1",
-    business_place_status: "1",
+    submission_as: "",
+    business_place_status: "",
     register_type_cz: "",
     nama_pemilik: "",
     tempat_tanggal_lahir: "",
@@ -432,7 +432,20 @@ export const PaymentModulPage = () => {
     initialValues: InitialFormCz,
     validationSchema: FormCzSchema,
     onSubmit: async (values) => {
+
+      const result_feature = []
+
+      const arrayFeatureTransaction = Object.keys(featureTransaction);
+
+      arrayFeatureTransaction.map(value => {
+        const result = featureTransaction[value].checked
+        if(result) {
+          result_feature.push(value)
+        }
+      })
+
       const dataSendPdf = {
+        register_type_cz: registerTypeCz,
         nama_pemilik: values.nama_pemilik,
         tempat_tanggal_lahir: values.tempat_tanggal_lahir,
         alamat_pemilik_merchant: values.alamat_pemilik_merchant,
@@ -457,20 +470,11 @@ export const PaymentModulPage = () => {
         nama_bank: values.nama_bank,
         nomor_rekening: values.nomor_rekening,
         nama_pemilik_rekening: values.nama_pemilik_rekening,
+        transaction_features: JSON.stringify(result_feature),
+        business_place_status: values.business_place_status
         // hari: values.hari,
         // tanggal: values.tanggal
       }
-
-      const result_feature = []
-
-      const arrayFeatureTransaction = Object.keys(featureTransaction);
-
-      arrayFeatureTransaction.map(value => {
-        const result = featureTransaction[value].checked
-        if(result) {
-          result_feature.push(value)
-        }
-      })
 
       const dataSendSave = {
         status: "Sudah Diajukan di Backoffice",
@@ -511,6 +515,8 @@ export const PaymentModulPage = () => {
       }
       if(baseSignature) dataSendPdf.signature = baseSignature
       console.log("dataSendSave", dataSendSave)
+      console.log("dataSendPdf", dataSendPdf)
+
       try {
         await axios.post(`${API_URL}/api/v1/business-form-data`, dataSendSave)
         getBusinessFormData()
@@ -519,9 +525,16 @@ export const PaymentModulPage = () => {
         const formatDate = dayjs(date).format('DD-MM-YYYY_HH_m_ss')
         const fileName = `FORMULIR APLIKASI MERCHANT - ${business.name} - ${values.payment_gateway_name} - ${registerTypeCz} - ${formatDate}.pdf`
         
-        const {data} = await axios.post(`${API_URL}/api/v1/modify-pdf?business_id=${user_info.business_id}&register_type_cz=${registerTypeCz}`, dataSendPdf, {
+        // Form Cashlez Lama
+        // const {data} = await axios.post(`${API_URL}/api/v1/modify-pdf?business_id=${user_info.business_id}&register_type_cz=${registerTypeCz}`, dataSendPdf, {
+        //   responseType: "blob"
+        // });
+
+        // Form Cashlez Terbaru
+        const {data} = await axios.post(`${API_URL}/api/v1/modify-pdf/new?business_id=${user_info.business_id}&register_type_cz=${registerTypeCz}`, dataSendPdf, {
           responseType: "blob"
         });
+
         const blob = new Blob([data], { type: 'application/pdf' })
         console.log("blob pdf", blob)
         // saveAs(blob, fileName)

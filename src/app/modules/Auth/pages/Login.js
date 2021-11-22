@@ -12,6 +12,10 @@ import ReCAPTCHA from "react-google-recaptcha";
 import ModalVerify from "../components/ModalVerify";
 import ModalRegister from "../components/ModalRegister";
 import dayjs from 'dayjs'
+import OpenEye from "../../../../images/open-eye.png"
+import ClosedEye from "../../../../images/closed-eye.png"
+
+import styles from "./auth.module.css";
 
 const initialValues = {
   email: "",
@@ -37,6 +41,8 @@ function Login(props) {
   const [code, setCode] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("")
+
+  const [stateShowPassword, setStateShowPassword] = useState(false)
 
   const [expiredApp, setExpiredApp] = useState(false)
   // expired_app
@@ -444,6 +450,17 @@ function Login(props) {
     setSelectedLanguage(currLanguage)
   }, [])
 
+  const showPassword = () => {
+    setStateShowPassword(!stateShowPassword)
+    console.log("hellow brow")
+    const password = document.getElementById('show')
+    if (password.type === 'password') {
+      password.type = 'text'
+    } else {
+      password.type = 'password'
+    }
+  };
+
   return (
     <>
       <ModalVerify
@@ -540,7 +557,7 @@ function Login(props) {
               </div>
             ) : null}
           </div>
-          <div className="form-group fv-plugins-icon-container">
+          <div className={`form-group fv-plugins-icon-container ${styles.containerFormPassword}`}>
             <input
               placeholder={t('password')}
               type="password"
@@ -549,7 +566,15 @@ function Login(props) {
               )}`}
               name="password"
               {...formik.getFieldProps("password")}
+              id="show"
             />
+            <div className={styles.wrapperIconEye} onClick={() => showPassword()}>
+              {stateShowPassword ? (
+                <img src={OpenEye} alt="Open-eye" />
+              ) : (
+                <img src={ClosedEye} alt="Closed-eye" />
+              )}
+            </div>
             {formik.touched.password && formik.errors.password ? (
               <div className="fv-plugins-message-container">
                 <div className="fv-help-block">{formik.errors.password}</div>

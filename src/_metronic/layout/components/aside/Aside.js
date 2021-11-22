@@ -41,8 +41,9 @@ export function Aside() {
                 {/* end::Header Logo */}
               </>
             )}
-            <AsideMenu className="flex-grow-8" disableScroll={layoutProps.disableScroll}/>
-            <ChatBox className="flex-grow-2" />
+            {/* className="flex-grow-8"  */}
+            <AsideMenu disableScroll={layoutProps.disableScroll}/>
+            {/* <ChatBox className="flex-grow-2" /> */}
           </div>
           {/* end::Aside Menu */}
         </div>

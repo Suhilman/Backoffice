@@ -29,6 +29,9 @@ import dayjs from "dayjs";
 
 import "../style.css";
 
+import OpenEye from "../../../images/open-eye.png"
+import ClosedEye from "../../../images/closed-eye.png"
+
 export const DetailStaffPage = ({ match, location }) => {
   const { staffId } = match.params;
   const { allOutlets, allRoles, allAccessLists } = location.state;
@@ -37,6 +40,9 @@ export const DetailStaffPage = ({ match, location }) => {
   const [alert, setAlert] = React.useState("");
   const [statePage, setStatePage] = React.useState("show");
   const [preview, setPreview] = React.useState("");
+
+  const [stateShowPassword, setStateShowPassword] = React.useState(false)
+  const [stateShowPassword2, setStateShowPassword2] = React.useState(false)
 
   const [selectedRole, setSelectedRole] = React.useState("");
   const [image, setImage] = React.useState("");
@@ -350,6 +356,28 @@ export const DetailStaffPage = ({ match, location }) => {
     );
   };
 
+  const showPassword = () => {
+    setStateShowPassword(!stateShowPassword)
+    console.log("hellow brow")
+    const password = document.getElementById('show')
+    if (password.type === 'password') {
+      password.type = 'text'
+    } else {
+      password.type = 'password'
+    }
+  };
+
+  const showPassword2 = () => {
+    setStateShowPassword2(!stateShowPassword2)
+    console.log("hellow brow")
+    const password = document.getElementById('show2')
+    if (password.type === 'password') {
+      password.type = 'text'
+    } else {
+      password.type = 'password'
+    }
+  };
+
   return (
     <>
       <Row>
@@ -519,15 +547,26 @@ export const DetailStaffPage = ({ match, location }) => {
                   
                   {statePage === "edit" ? (
                     <>
-                      <div className="title mt-5">{t("password")} ({t("optional")})</div>
-                      <Form.Control
-                        type="password"
-                        name="password"
-                        placeholder="Please insert for update password"
-                        onChange={(e) => {
-                          formikStaff.setFieldValue("password", e.target.value)
-                        }}
-                      />
+                      <div className="container-form-password">
+                        <div className="title mt-5">{t("password")} ({t("optional")})</div>
+                        <Form.Control
+                          style={{paddingRight: '40px'}}
+                          type="password"
+                          name="password"
+                          placeholder={t('pleaseInsertForUpdate')}
+                          onChange={(e) => {
+                            formikStaff.setFieldValue("password", e.target.value)
+                          }}
+                          id="show"
+                        />
+                        <div className="wrapper-icon-password-detail-staff" onClick={() => showPassword()}>
+                          {stateShowPassword ? (
+                            <img src={OpenEye} alt="Open-eye" />
+                          ) : (
+                            <img src={ClosedEye} alt="Closed-eye" />
+                          )}
+                        </div>
+                      </div>
                     </>
                   ) : null }
                 </Col>
@@ -638,15 +677,26 @@ export const DetailStaffPage = ({ match, location }) => {
                   )} */}
                   {statePage === "edit" ? (
                     <>
-                      <div className="title mt-5">{t("pin")} ({t("optional")})</div>
-                      <Form.Control
-                        type="password"
-                        name="pin"
-                        placeholder="Please insert for update pin"
-                        onChange={(e) => {
-                          formikStaff.setFieldValue("pin", e.target.value)
-                        }}
-                      />
+                      <div className="container-form-password">
+                        <div className="title mt-5">{t("pin")} ({t("optional")})</div>
+                        <Form.Control
+                          style={{paddingRight: '40px'}}
+                          type="password"
+                          name="pin"
+                          placeholder={t('pleaseInsertForUpdate')}
+                          onChange={(e) => {
+                            formikStaff.setFieldValue("pin", e.target.value)
+                          }}
+                          id="show2"
+                        />
+                        <div className="wrapper-icon-password-detail-staff" onClick={() => showPassword2()}>
+                          {stateShowPassword2 ? (
+                            <img src={OpenEye} alt="Open-eye" />
+                          ) : (
+                            <img src={ClosedEye} alt="Closed-eye" />
+                          )}
+                        </div>
+                      </div>
                     </>
                   ) : null }
                 </Col>

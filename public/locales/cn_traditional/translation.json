@@ -1133,5 +1133,6 @@
   "priceList": "Price List",
   "frontLook": "Front Look",
   "ecommerce": "ecommerce",
-  "npwpMerchantPhoto": "NPWP Merchant Photo"
+  "npwpMerchantPhoto": "NPWP Merchant Photo",
+  "pleaseInsertForUpdate": "請插入更新"
 }

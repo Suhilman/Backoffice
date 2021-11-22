@@ -12,8 +12,11 @@ import "react-toastify/dist/ReactToastify.css";
 import dayjs from "dayjs";
 
 import ReCAPTCHA from "react-google-recaptcha";
-import styles from "./registrationmarketing.module.css";
 import './style.css'
+import styles from "./auth.module.css";
+
+import OpenEye from "../../../../images/open-eye.png"
+import ClosedEye from "../../../../images/closed-eye.png"
 
 import LogoBeetpos from '../../../../images/logo beetPOS new.png'
 import LogoTwitter from '../../../../images/twitter-480.png'
@@ -98,6 +101,8 @@ const RegistrationTryNow = () => {
   const [loading, setLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("")
+  const [stateShowPassword, setStateShowPassword] = useState(false)
+  const [stateShowPassword2, setStateShowPassword2] = useState(false)
 
   const [countryCallingCode, setCountryCallingCode] = useState([])
   const [openOption, setOpenOption] = useState(false)
@@ -800,6 +805,28 @@ const RegistrationTryNow = () => {
     setOpenOption(params)
   }
 
+  const showPassword = () => {
+    setStateShowPassword(!stateShowPassword)
+    console.log("hellow brow")
+    const password = document.getElementById('show')
+    if (password.type === 'password') {
+      password.type = 'text'
+    } else {
+      password.type = 'password'
+    }
+  };
+
+  const showPassword2 = () => {
+    setStateShowPassword2(!stateShowPassword2)
+    console.log("hellow brow")
+    const password = document.getElementById('show2')
+    if (password.type === 'password') {
+      password.type = 'text'
+    } else {
+      password.type = 'password'
+    }
+  };
+
   return (
     <div className="login-form login-signin" style={{ display: "block" }}>
       <ModalVerify
@@ -942,7 +969,7 @@ const RegistrationTryNow = () => {
               
               {countryCallingCode.map((item) =>
                 openOption ? (
-                  <option styles={{width: '600px'}} key={item.id} value={item.phonecode}>
+                  <option style={{width: '600px'}} key={item.id} value={item.phonecode}>
                     {item.nicename}
                   </option>
                 ) : (
@@ -972,7 +999,7 @@ const RegistrationTryNow = () => {
         {/* end: Phone Number */}
 
         {/* begin: Password */}
-        <div className="form-group fv-plugins-icon-container">
+        <div className={`form-group fv-plugins-icon-container ${styles.containerFormPassword}`}>
           <input
             placeholder={t('password')}
             type="password"
@@ -980,7 +1007,15 @@ const RegistrationTryNow = () => {
             className={`form-control py-5 px-6 ${getInputClasses("password")}`}
             name="password"
             {...formik.getFieldProps("password")}
+            id="show"
           />
+          <div className={styles.wrapperIconEyeRegister} onClick={() => showPassword()}>
+            {stateShowPassword ? (
+              <img src={OpenEye} alt="Open-eye" />
+            ) : (
+              <img src={ClosedEye} alt="Closed-eye" />
+            )}
+          </div>
           {formik.touched.password && formik.errors.password ? (
             <div className="fv-plugins-message-container">
               <div className="fv-help-block">{formik.errors.password}</div>
@@ -990,7 +1025,7 @@ const RegistrationTryNow = () => {
         {/* end: Password */}
 
         {/* begin: Confirm Password */}
-        <div className="form-group fv-plugins-icon-container">
+        <div className={`form-group fv-plugins-icon-container ${styles.containerFormPassword}`}>
           <input
             placeholder={t('confirmPassword')}
             type="password"
@@ -999,7 +1034,15 @@ const RegistrationTryNow = () => {
             )}`}
             name="changepassword"
             {...formik.getFieldProps("changepassword")}
+            id="show2"
           />
+          <div className={styles.wrapperIconEyeRegister} onClick={() => showPassword2()}>
+            {stateShowPassword2 ? (
+              <img src={OpenEye} alt="Open-eye" />
+            ) : (
+              <img src={ClosedEye} alt="Closed-eye" />
+            )}
+          </div>
           {formik.touched.changepassword && formik.errors.changepassword ? (
             <div className="fv-plugins-message-container">
               <div className="fv-help-block">

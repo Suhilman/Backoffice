@@ -325,3 +325,33 @@ select.select-unit {
   font-size: 1rem;
   font-weight: 400;
 }
+
+/* Styling Show and Hide Password */
+.container-form-password{
+  position: relative;
+}
+
+.wrapper-icon-password-staff, .wrapper-icon-password-detail-staff, .wrapper-icon-password-account-information {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  position: absolute;
+}
+.wrapper-icon-password-staff {
+  right: 35px;
+  top: 35px;
+}
+.wrapper-icon-password-detail-staff  {
+  right: 15px;
+  top: 28px;
+}
+.wrapper-icon-password-account-information {
+  right: 34px;
+  top: 35px;
+}
+.wrapper-icon-password-staff > img, .wrapper-icon-password-detail-staff > img, .wrapper-icon-password-account-information > img {
+  width: 100%;
+  height: 100%;
+}
+
+/* End Styling Show and Hide Password */

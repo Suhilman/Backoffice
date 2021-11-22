@@ -23,12 +23,18 @@ import {
 
 import "../style.css";
 
+import OpenEye from "../../../images/open-eye.png"
+import ClosedEye from "../../../images/closed-eye.png"
+
 export const AddStaffPage = ({ location }) => {
   const history = useHistory();
   const { allOutlets, allAccessLists, allRoles } = location.state;
   const { t } = useTranslation();
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
+  const [stateShowPassword, setStateShowPassword] = React.useState(false)
+  const [stateShowPassword2, setStateShowPassword2] = React.useState(false)
+  const [stateShowPassword3, setStateShowPassword3] = React.useState(false)
 
   const [selectedPrivileges, setSelectedPrivileges] = React.useState([]);
 
@@ -168,6 +174,39 @@ export const AddStaffPage = ({ location }) => {
     })
 
     setSelectedPrivileges(sortedPrivileges);
+  };
+
+  const showPassword = () => {
+    setStateShowPassword(!stateShowPassword)
+    console.log("hellow brow")
+    const password = document.getElementById('show')
+    if (password.type === 'password') {
+      password.type = 'text'
+    } else {
+      password.type = 'password'
+    }
+  };
+
+  const showPassword2 = () => {
+    setStateShowPassword2(!stateShowPassword2)
+    console.log("hellow brow")
+    const password = document.getElementById('show2')
+    if (password.type === 'password') {
+      password.type = 'text'
+    } else {
+      password.type = 'password'
+    }
+  };
+
+  const showPassword3 = () => {
+    setStateShowPassword3(!stateShowPassword3)
+    console.log("hellow brow")
+    const password = document.getElementById('show3')
+    if (password.type === 'password') {
+      password.type = 'text'
+    } else {
+      password.type = 'password'
+    }
   };
 
   return (
@@ -372,7 +411,7 @@ export const AddStaffPage = ({ location }) => {
                     ) : null}
                   </Form.Group>
 
-                  <Form.Group>
+                  <Form.Group className="container-form-password">
                     <Form.Label>{t("password")}*</Form.Label>
                     <Form.Control
                       type="password"
@@ -381,7 +420,15 @@ export const AddStaffPage = ({ location }) => {
                       {...formikStaff.getFieldProps("password")}
                       className={validationStaff("password")}
                       required
+                      id="show"
                     />
+                    <div className="wrapper-icon-password-staff" onClick={() => showPassword()}>
+                      {stateShowPassword ? (
+                        <img src={OpenEye} alt="Open-eye" />
+                      ) : (
+                        <img src={ClosedEye} alt="Closed-eye" />
+                      )}
+                    </div>
                     {formikStaff.touched.password &&
                     formikStaff.errors.password ? (
                       <div className="fv-plugins-message-container">
@@ -392,7 +439,7 @@ export const AddStaffPage = ({ location }) => {
                     ) : null}
                   </Form.Group>
 
-                  <Form.Group>
+                  <Form.Group className="container-form-password">
                     <Form.Label>{t("passwordConfirmation")}*</Form.Label>
                     <Form.Control
                       type="password"
@@ -401,7 +448,15 @@ export const AddStaffPage = ({ location }) => {
                       {...formikStaff.getFieldProps("password_confirmation")}
                       className={validationStaff("password_confirmation")}
                       required
+                      id="show2"
                     />
+                    <div className="wrapper-icon-password-staff" onClick={() => showPassword2()}>
+                      {stateShowPassword2 ? (
+                        <img src={OpenEye} alt="Open-eye" />
+                      ) : (
+                        <img src={ClosedEye} alt="Closed-eye" />
+                      )}
+                    </div>
                     {formikStaff.touched.password_confirmation &&
                     formikStaff.errors.password_confirmation ? (
                       <div className="fv-plugins-message-container">
@@ -412,7 +467,7 @@ export const AddStaffPage = ({ location }) => {
                     ) : null}
                   </Form.Group>
 
-                  <Form.Group>
+                  <Form.Group className="container-form-password">
                     <Form.Label>{t("pin")}*</Form.Label>
                     <Form.Control
                       type="password"
@@ -421,7 +476,15 @@ export const AddStaffPage = ({ location }) => {
                       {...formikStaff.getFieldProps("pin")}
                       className={validationStaff("pin")}
                       required
+                      id="show3"
                     />
+                    <div className="wrapper-icon-password-staff" onClick={() => showPassword3()}>
+                      {stateShowPassword3 ? (
+                        <img src={OpenEye} alt="Open-eye" />
+                      ) : (
+                        <img src={ClosedEye} alt="Closed-eye" />
+                      )}
+                    </div>
                     {formikStaff.touched.pin && formikStaff.errors.pin ? (
                       <div className="fv-plugins-message-container">
                         <div className="fv-help-block">
