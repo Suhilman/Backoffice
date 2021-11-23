@@ -819,7 +819,7 @@ const RegistrationTryNow = () => {
   const showPassword2 = () => {
     setStateShowPassword2(!stateShowPassword2)
     console.log("hellow brow")
-    const password = document.getElementById('show')
+    const password = document.getElementById('show2')
     if (password.type === 'password') {
       password.type = 'text'
     } else {
