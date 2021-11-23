@@ -106,8 +106,8 @@ const RegistrationTryNow = () => {
 
   const [countryCallingCode, setCountryCallingCode] = useState([])
   const [openOption, setOpenOption] = useState(false)
-  const [countryCodeIso, setCountryCodeIso] = useState("")
-  const [phoneCode, setPhoneCode] = useState("")
+  const [countryCodeIso, setCountryCodeIso] = useState("IDN")
+  const [phoneCode, setPhoneCode] = useState("62")
   const [language, setLanguage] = useState("")
 
   const [width, height] = useWindowSize();
@@ -969,13 +969,19 @@ const RegistrationTryNow = () => {
               
               {countryCallingCode.map((item) =>
                 openOption ? (
-                  <option style={{width: '600px'}} key={item.id} value={item.phonecode}>
-                    {item.nicename}
-                  </option>
+                  <>
+                    <option value="62" selected disabled hidden>Indonesia</option>
+                    <option style={{width: '600px'}} key={item.id} value={item.phonecode}>
+                      {item.nicename}
+                    </option>
+                  </>
                 ) : (
-                  <option key={item.id} value={item.phonecode}>
-                    {`+${item.phonecode}`}
-                  </option>
+                  <>
+                    <option value="62" selected disabled hidden>+62</option>
+                    <option key={item.id} value={item.phonecode}>
+                      {`+${item.phonecode}`}
+                    </option>
+                  </>
                 )
               )}
             </Form.Control>
