@@ -62,7 +62,8 @@ const PaymentModuleIndividual = ({
   imagePassBook,
   register_type_cz,
   handleFeatureTransaction,
-  featureTransaction
+  featureTransaction,
+  loading
 }) => {
   const allFeatureTransaction = [
     {
@@ -272,7 +273,7 @@ const PaymentModuleIndividual = ({
                 ) : null}
               </Form.Group>
               <Form.Group>
-                <Form.Label>{t("merchantOwner'sAddress")} *</Form.Label>
+                <Form.Label>{t("merchantOwner'sAddress")}*</Form.Label>
                 <Form.Control
                   name="alamat_pemilik_merchant"
                   placeholder={t("enterMerchantOwner'sAddress")}
@@ -351,7 +352,7 @@ const PaymentModuleIndividual = ({
               <Row>
                 <Col>
                   <Form.Group>
-                    <Form.Label>{t("merchantOwner'sMobileNumber")} *</Form.Label>
+                    <Form.Label>{t("merchantOwner'sMobileNumber")}*</Form.Label>
                     <Form.Control
                       name="nomor_hp_merchant"
                       placeholder={t("enterMerchantOwner'sMobileNumber")}
@@ -371,7 +372,7 @@ const PaymentModuleIndividual = ({
                 </Col>
                 <Col>
                   <Form.Group>
-                    <Form.Label>{t("merchantOwnerEmailAddress")}</Form.Label>
+                    <Form.Label>{t("merchantOwnerEmailAddress")}*</Form.Label>
                     <Form.Control
                       name="alamat_email_pemilik_merchant"
                       placeholder={t("enterMerchantOwnerEmailAddress")}
@@ -392,7 +393,7 @@ const PaymentModuleIndividual = ({
               <Row>
                 <Col>
                   <Form.Group>
-                  <Form.Label>{t("noIdentityKtpPassportKitasForeigners")} *</Form.Label>
+                  <Form.Label>{t("noIdentityKtpPassportKitasForeigners")}*</Form.Label>
                   <Form.Control
                     name="ktp"
                     placeholder={t("enterNo.Identity(KTP/Pasport/KITAS)")}
@@ -412,7 +413,7 @@ const PaymentModuleIndividual = ({
                 </Col>
                 <Col>
                   <Form.Group>
-                    <Form.Label>{t("no.NPWP/KK")} *</Form.Label>
+                    <Form.Label>{t("no.NPWP/KK")}*</Form.Label>
                     <Form.Control
                       name="kk"
                       placeholder={t("enterNo.NPWP/KK")}
@@ -437,7 +438,7 @@ const PaymentModuleIndividual = ({
                 </div>
               </div>
               <Form.Group>
-                <Form.Label>{t("nameOfMerchantIndividualBusinessEntity")}</Form.Label>
+                <Form.Label>{t("nameOfMerchantIndividualBusinessEntity")}*</Form.Label>
                 <Form.Control
                   name="nama_merchant"
                   placeholder={t("enterMerchantName")}
@@ -537,7 +538,7 @@ const PaymentModuleIndividual = ({
                 </Col>
                 <Col>
                   <Form.Group>
-                    <Form.Label>{t("emailMerchant")}</Form.Label>
+                    <Form.Label>{t("emailMerchant")}*</Form.Label>
                     <Form.Control
                       name="alamat_email_merchant"
                       placeholder={t("enterMerchantEmailAddress")}
@@ -636,7 +637,7 @@ const PaymentModuleIndividual = ({
               <Row>
                 <Col>
                   <Form.Group>
-                    <Form.Label>{t("typeOfBusiness")}</Form.Label>
+                    <Form.Label>{t("typeOfBusiness")}*</Form.Label>
                     <Form.Control
                       name="tipe_usaha_merchant"
                       placeholder={t("enterMerchantBusinessType")}
@@ -677,7 +678,7 @@ const PaymentModuleIndividual = ({
               </Row>
 
               <Form.Group>
-                <Form.Label>{t('averageTransactionsPerMonth')}*</Form.Label>
+                <Form.Label>{t('averageTransactionsPerMonth')}</Form.Label>
                 <Form.Control
                   name="average_transaction_per_month"
                   placeholder={t("enterProductDescriptionForSale")}
@@ -707,7 +708,7 @@ const PaymentModuleIndividual = ({
               <Row className="mt-3">
                 <Col>
                   <Form.Group>
-                    <Form.Label>{t("hostBankAccountNumber")} *</Form.Label>
+                    <Form.Label>{t("hostBankAccountNumber")}</Form.Label>
                     <Form.Control
                       name="nomor_rekening"
                       placeholder={t("enterBankAccountNumber")}
@@ -1100,14 +1101,28 @@ const PaymentModuleIndividual = ({
                 </Col>
                 <Col />
               </Row>
-              <div className="d-flex justify-content-end mt-4">
+              <div className="d-flex justify-content-between mt-4">
+                <div>
+                  <i style={{fontSize: "10px"}}>
+                    *{t('mandatoryToBeFilledInByTheOwnerAuthorizedOfficialOfIndividualMerchantBusinessEntity')}
+                  </i>
+                  <br />
+                  <i style={{fontSize: "10px"}}>
+                    **{t('ifTheNameOfTheOwnerAuthorizedOfficial')}
+                  </i>
+                </div>
                 <div className="d-flex">
                   <div className="btn btn-info mr-2" onClick={openSignaturePad}>
                     {t("signaturePad")}
                   </div>
-                  <div className="btn btn-primary" onClick={handleSubmit}>
+                  <button 
+                    className="btn btn-primary" 
+                    onClick={handleSubmit}
+                    disabled={loading}
+                  >
                     {t("register")}
-                  </div>
+                    {/* {loading && <span className="ml-3 spinner spinner-white"></span>} */}
+                  </button>
                 </div>
               </div>
             </Col>

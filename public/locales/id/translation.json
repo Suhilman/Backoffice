@@ -111,7 +111,7 @@
   "accountSetting": "Pengaturan Akun",
   "account": "Akun",
   "managementSettings": "Pengaturan Manajemen",
-  "batch": "Batch",
+  "batch": "Sekumpulan",
   "products": "Produk",
   "close": "Tutup",
   "deleteProductCategory": "Hapus kategori produk",
@@ -1135,6 +1135,8 @@
   "ecommerce": "ecommerce",
   "npwpMerchantPhoto": "NPWP MERCHANT BADAN USAHA",
   "pleaseInsertForUpdate": "Silakan Sisipkan Untuk Pembaruan",
+  "mandatoryToBeFilledInByTheOwnerAuthorizedOfficialOfIndividualMerchantBusinessEntity": "Wajib diisi oleh Pemilik /Pejabat Berwenang Merchant Perorangan/Badan Usaha",
+  "ifTheNameOfTheOwnerAuthorizedOfficial": "Apabila Nama Pemilik/Pejabat Berwenang dan Kontak Person terdapat kesamaan, maka Nama Kontak Person, dan No. Handphone tidak perlu diisi",
 
   "currencyConversion": "Konversi Mata Uang",
   "currencyA": "Mata Uang A",

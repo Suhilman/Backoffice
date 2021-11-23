@@ -80,7 +80,8 @@ const PaymentModulePT = ({
   previewPassBook,
   imagePassBook,
   handleFeatureTransaction,
-  featureTransaction
+  featureTransaction,
+  loading
 }) => {
   
   const allFeatureTransaction = [
@@ -252,7 +253,7 @@ const PaymentModulePT = ({
                 </div>
               </div>
               <Form.Group>
-                <Form.Label>{t("nameOfMerchantOwnerAuthorizedOfficial")} *</Form.Label>
+                <Form.Label>{t("nameOfMerchantOwnerAuthorizedOfficial")}*</Form.Label>
                 <Form.Control
                   name="nama_pemilik"
                   placeholder={t("enterMerchantOwnerName")}
@@ -288,7 +289,7 @@ const PaymentModulePT = ({
                 ) : null}
               </Form.Group>
               <Form.Group>
-                <Form.Label>{t("merchantOwner'sAddress")} *</Form.Label>
+                <Form.Label>{t("merchantOwner'sAddress")}*</Form.Label>
                 <Form.Control
                   name="alamat_pemilik_merchant"
                   placeholder={t("enterMerchantOwner'sAddress")}
@@ -367,7 +368,7 @@ const PaymentModulePT = ({
               <Row>
                 <Col>
                   <Form.Group>
-                    <Form.Label>{t("merchantOwner'sMobileNumber")} *</Form.Label>
+                    <Form.Label>{t("merchantOwner'sMobileNumber")}*</Form.Label>
                     <Form.Control
                       name="nomor_hp_merchant"
                       placeholder={t("enterMerchantOwner'sMobileNumber")}
@@ -387,7 +388,7 @@ const PaymentModulePT = ({
                 </Col>
                 <Col>
                   <Form.Group>
-                    <Form.Label>{t("merchantOwnerEmailAddress")}</Form.Label>
+                    <Form.Label>{t("merchantOwnerEmailAddress")}*</Form.Label>
                     <Form.Control
                       name="alamat_email_pemilik_merchant"
                       placeholder={t("enterMerchantOwnerEmailAddress")}
@@ -408,7 +409,7 @@ const PaymentModulePT = ({
               <Row>
                 <Col>
                   <Form.Group>
-                  <Form.Label>{t("noIdentityKtpPassportKitasForeigners")} *</Form.Label>
+                  <Form.Label>{t("noIdentityKtpPassportKitasForeigners")}*</Form.Label>
                   <Form.Control
                     name="ktp"
                     placeholder={t("enterNo.Identity(KTP/Pasport/KITAS)")}
@@ -428,7 +429,7 @@ const PaymentModulePT = ({
                 </Col>
                 <Col>
                   <Form.Group>
-                    <Form.Label>{t("no.NPWP/KK")} *</Form.Label>
+                    <Form.Label>{t("no.NPWP/KK")}*</Form.Label>
                     <Form.Control
                       name="kk"
                       placeholder={t("enterNo.NPWP/KK")}
@@ -453,7 +454,7 @@ const PaymentModulePT = ({
                 </div>
               </div>
               <Form.Group>
-                <Form.Label>{t("nameOfMerchantIndividualBusinessEntity")}</Form.Label>
+                <Form.Label>{t("nameOfMerchantIndividualBusinessEntity")}*</Form.Label>
                 <Form.Control
                   name="nama_merchant"
                   placeholder={t("enterMerchantName")}
@@ -553,7 +554,7 @@ const PaymentModulePT = ({
                 </Col>
                 <Col>
                   <Form.Group>
-                    <Form.Label>{t("emailMerchant")}</Form.Label>
+                    <Form.Label>{t("emailMerchant")}*</Form.Label>
                     <Form.Control
                       name="alamat_email_merchant"
                       placeholder={t("enterMerchantEmailAddress")}
@@ -652,7 +653,7 @@ const PaymentModulePT = ({
               <Row>
                 <Col>
                   <Form.Group>
-                    <Form.Label>{t("typeOfBusiness")}</Form.Label>
+                    <Form.Label>{t("typeOfBusiness")}*</Form.Label>
                     <Form.Control
                       name="tipe_usaha_merchant"
                       placeholder={t("enterMerchantBusinessType")}
@@ -693,7 +694,7 @@ const PaymentModulePT = ({
               </Row>
 
               <Form.Group>
-                <Form.Label>{t('averageTransactionsPerMonth')}*</Form.Label>
+                <Form.Label>{t('averageTransactionsPerMonth')}</Form.Label>
                 <Form.Control
                   name="deskripsi_produk"
                   placeholder={t("enterProductDescriptionForSale")}
@@ -723,7 +724,7 @@ const PaymentModulePT = ({
               <Row className="mt-3">
                 <Col>
                   <Form.Group>
-                    <Form.Label>{t("hostBankAccountNumber")} *</Form.Label>
+                    <Form.Label>{t("hostBankAccountNumber")}</Form.Label>
                     <Form.Control
                       name="nomor_rekening"
                       placeholder={t("enterBankAccountNumber")}
@@ -1224,14 +1225,28 @@ const PaymentModulePT = ({
                 </Col>
                 <Col />
               </Row>
-              <div className="d-flex justify-content-end">
+              <div className="d-flex justify-content-between">
+                <div>
+                  <i style={{fontSize: "10px"}}>
+                    *{t('mandatoryToBeFilledInByTheOwnerAuthorizedOfficialOfIndividualMerchantBusinessEntity')}
+                  </i>
+                  <br />
+                  <i style={{fontSize: "10px"}}>
+                    **{t('ifTheNameOfTheOwnerAuthorizedOfficial')}
+                  </i>
+                </div>
                 <div className="d-flex">
                   <div className="btn btn-info mr-2" onClick={openSignaturePad}>
                     {t("signaturePad")}
                   </div>
-                  <div className="btn btn-primary" onClick={handleSubmit}>
+                  <button 
+                    className="btn btn-primary" 
+                    onClick={handleSubmit}
+                    disabled={loading}
+                  >
                     {t("register")}
-                  </div>
+                    {/* {loading && <span className="ml-3 spinner spinner-white"></span>} */}
+                  </button>
                 </div>
               </div>
             </Col>

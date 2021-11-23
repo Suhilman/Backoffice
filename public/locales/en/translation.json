@@ -110,7 +110,7 @@
     "accountSetting": "Account Setting",
     "account": "Account",
     "managementSettings": "Management Settings",
-    "batch": "Sekumpulan",
+    "batch": "Batch",
     "products": "Product",
     "close": "Close",
     "deleteProductCategory": "Delete Product Category",
@@ -1135,6 +1135,8 @@
     "ecommerce": "ecommerce",
     "npwpMerchantPhoto": "NPWP Merchant Photo",
     "pleaseInsertForUpdate": "Please Insert For Update",
+    "mandatoryToBeFilledInByTheOwnerAuthorizedOfficialOfIndividualMerchantBusinessEntity": "Mandatory to be filled in by the Owner/Authorized Official of Individual Merchant/Business Entity",
+    "ifTheNameOfTheOwnerAuthorizedOfficial": "If the Name of the Owner/Authorized Official and the Contact Person are similar, then the Contact Name of the Person, and the Contact No. The cellphone does not need to be charged",
 
     "currencyConversion": "Currency Convertion",
     "currencyA": "Currency A",

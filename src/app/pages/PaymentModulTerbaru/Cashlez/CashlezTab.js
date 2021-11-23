@@ -53,7 +53,8 @@ const CashlezTab = ({
   previewDeedCompany,
   handle_register_type_cz,
   handleFeatureTransaction,
-  featureTransaction
+  featureTransaction,
+  loading
 }) => {
   const [showModalIndividual, setShowModalIndividual] = useState(true)
   const [showModalPT, setShowModalPT] = useState(false)
@@ -151,6 +152,7 @@ const CashlezTab = ({
           imagePassBook={imagePassBook}
           imageDeedCompany={imageDeedCompany}
           previewDeedCompany={previewDeedCompany}
+          loading={loading}
         />
 
         <PaymentModulePT 
@@ -208,6 +210,7 @@ const CashlezTab = ({
           imagePassBook={imagePassBook}
           imageDeedCompany={imageDeedCompany}
           previewDeedCompany={previewDeedCompany}
+          loading={loading}
         />
       </Paper>
     </div>

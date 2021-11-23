@@ -64,6 +64,8 @@ export const PaymentModulPage = () => {
 
   const [business, setBusiness] = React.useState([])
 
+  const [loading, setLoading] = useState(false);
+
   const [featureTransaction, setFeatureTransasction] = React.useState({
     kartu_kredit: { checked: false },
     kartu_debit: { checked: false },
@@ -96,6 +98,9 @@ export const PaymentModulPage = () => {
     setRegisterTypeCz(register_type)
   }
 
+  const enableLoading = () => setLoading(true);
+  const disableLoading = () => setLoading(false);
+
   const handlePreviewKtp = async (e) => {
     let preview;
     let img;
@@ -112,7 +117,7 @@ export const PaymentModulPage = () => {
       formData.append("ktp_picture", img);
       await axios.patch(`${API_URL}/api/v1/business/update-photo/${user_info.business_id}`,formData);
       
-      formikFormCz.submitForm()
+      //formikFormCz.submitForm()
       setImageKtp(img)
     } else {
       preview = "";
@@ -135,7 +140,7 @@ export const PaymentModulPage = () => {
       formData.append("npwp_picture", img);
       await axios.patch(`${API_URL}/api/v1/business/update-photo/${user_info.business_id}`,formData);
       
-      formikFormCz.submitForm()
+      //formikFormCz.submitForm()
       setImageNpwp(img)
     } else {
       preview = "";
@@ -159,7 +164,7 @@ export const PaymentModulPage = () => {
       await axios.post(`${API_URL}/api/v1/business-form-data/first-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
       getBusinessFormData()
       
-      formikFormCz.submitForm()
+      //formikFormCz.submitForm()
       setImageProduct(img)
     } else {
       preview = "";
@@ -184,7 +189,7 @@ export const PaymentModulPage = () => {
       await axios.post(`${API_URL}/api/v1/business-form-data/first-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
       getBusinessFormData()
       
-      formikFormCz.submitForm()
+      //formikFormCz.submitForm()
       setImageSignpost(img)
     } else {
       preview = "";
@@ -208,7 +213,7 @@ export const PaymentModulPage = () => {
       await axios.post(`${API_URL}/api/v1/business-form-data/first-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
       getBusinessFormData()
       
-      formikFormCz.submitForm()
+      //formikFormCz.submitForm()
       setImageLocation(img)
     } else {
       preview = "";
@@ -233,7 +238,7 @@ export const PaymentModulPage = () => {
       await axios.post(`${API_URL}/api/v1/business-form-data/second-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
       getBusinessFormData()
       
-      formikFormCz.submitForm()
+      //formikFormCz.submitForm()
       setImageSiup(img)
     } else {
       preview = "";
@@ -257,7 +262,7 @@ export const PaymentModulPage = () => {
       await axios.post(`${API_URL}/api/v1/business-form-data/first-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
       getBusinessFormData()
       
-      formikFormCz.submitForm()
+      //formikFormCz.submitForm()
       setImageNpwpPt(img)
     } else {
       preview = "";
@@ -281,7 +286,7 @@ export const PaymentModulPage = () => {
       await axios.post(`${API_URL}/api/v1/business-form-data/second-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
       getBusinessFormData()
       
-      formikFormCz.submitForm()
+      //formikFormCz.submitForm()
       setImagePriceList(img)
     } else {
       preview = "";
@@ -305,7 +310,7 @@ export const PaymentModulPage = () => {
       await axios.post(`${API_URL}/api/v1/business-form-data/second-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
       getBusinessFormData()
       
-      formikFormCz.submitForm()
+      //formikFormCz.submitForm()
       setImageNPWPMerchant(img)
     } else {
       preview = "";
@@ -329,7 +334,7 @@ export const PaymentModulPage = () => {
       await axios.post(`${API_URL}/api/v1/business-form-data/second-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
       getBusinessFormData()
       
-      formikFormCz.submitForm()
+      //formikFormCz.submitForm()
       setImagePassBook(img)
     } else {
       preview = "";
@@ -353,7 +358,7 @@ export const PaymentModulPage = () => {
       await axios.post(`${API_URL}/api/v1/business-form-data/third-photo?register_type_cz=${registerTypeCz}&payment_gateway_name=${paymentGatewayName}`, formData)
       getBusinessFormData()
       
-      formikFormCz.submitForm()
+      //formikFormCz.submitForm()
       setImageDeedCompany(img)
     } else {
       preview = "";
@@ -421,8 +426,8 @@ export const PaymentModulPage = () => {
       .required(`${t("pleaseInputAProductDescriptionForSale")}`),
     nama_bank: Yup.string()
       .required(`${t("pleaseInputABankName")}`),
-    nomor_rekening: Yup.string()
-      .required(`${t("pleaseInputABankaccountnumber")}`),
+    // nomor_rekening: Yup.string()
+    //   .required(`${t("pleaseInputABankaccountnumber")}`),
     nama_pemilik_rekening: Yup.string()
       .required(`${t("pleaseInputANameOfOwnerMerchantAccount")}`)
   });
@@ -432,7 +437,7 @@ export const PaymentModulPage = () => {
     initialValues: InitialFormCz,
     validationSchema: FormCzSchema,
     onSubmit: async (values) => {
-
+      enableLoading();
       const result_feature = []
 
       const arrayFeatureTransaction = Object.keys(featureTransaction);
@@ -471,7 +476,11 @@ export const PaymentModulPage = () => {
         nomor_rekening: values.nomor_rekening,
         nama_pemilik_rekening: values.nama_pemilik_rekening,
         transaction_features: JSON.stringify(result_feature),
-        business_place_status: values.business_place_status
+        business_place_status: values.business_place_status,
+        merchant_contact_name: values.merchant_contact_name,
+        mobile_contact_merchant: values.mobile_contact_merchant,
+        npwp_merchant_business_entity: values.npwp_merchant_business_entity,
+        average_transaction_per_month: values.average_transaction_per_month
         // hari: values.hari,
         // tanggal: values.tanggal
       }
@@ -513,6 +522,7 @@ export const PaymentModulPage = () => {
         business_place_status: values.business_place_status,
         transaction_features: JSON.stringify(result_feature)
       }
+
       if(baseSignature) dataSendPdf.signature = baseSignature
       console.log("dataSendSave", dataSendSave)
       console.log("dataSendPdf", dataSendPdf)
@@ -539,8 +549,11 @@ export const PaymentModulPage = () => {
         console.log("blob pdf", blob)
         // saveAs(blob, fileName)
         fileDownload(data, fileName)
-
+        setTimeout(() => {
+          disableLoading();
+        }, 3000);
       } catch (err) {
+        disableLoading();
         console.log("error apa", err)
       }
     }
@@ -893,6 +906,7 @@ export const PaymentModulPage = () => {
             imagePassBook={imagePassBook}
             imageDeedCompany={imageDeedCompany}
             previewDeedCompany={previewDeedCompany}
+            loading={loading}
           />
         </Tab>
       </Tabs>
