@@ -60,7 +60,8 @@ const FormTemplate = ({
   thereShowSync,
   showModalSalesType
 }) => {  
-  console.log("defaultWeight", defaultWeight)
+  // console.log("defaultWeight", defaultWeight)
+  // console.log("defaultValueSupplier", defaultValueSupplier)
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
     maxSize: 3 * 1000 * 1000,
@@ -233,7 +234,7 @@ const FormTemplate = ({
             
             <Row>
               <Col>
-                {defaultWeight ? (
+                {/* {defaultWeight ? ( */}
                 <Form.Group>
                   <Form.Label>{t("weight")}<span className="ml-2">
                   (
@@ -265,7 +266,7 @@ const FormTemplate = ({
                     </div>
                   ) : null}
                 </Form.Group>
-              ) : null}
+              {/* ) : null} */}
               </Col>
               <Col>
                 <Form.Group>
@@ -624,38 +625,39 @@ const FormTemplate = ({
               ) : null}
             </Form.Group>
 
-            {showFeature.supplier ? (
-              <Form.Group>
-                <Form.Label>{t("supplier")}<span className="text-muted ml-1"></span></Form.Label>
-                <Select
-                  options={optionsSupplier}
-                  defaultValue={defaultValueSupplier}
-                  placeholder={t('select')}
-                  name="supplier_id"
-                  className="basic-single"
-                  classNamePrefix="select"
-                  onChange={(value) =>{
-                    formikProduct.setFieldValue(
-                      "supplier_id",
-                      value.value
-                    )
-                    formikProduct.setFieldValue(
-                      "supplier",
-                      value.label
-                    )
-                  }
-                  }
-                />
-                {formikProduct.touched.supplier_id &&
-                formikProduct.errors.supplier_id ? (
-                  <div className="fv-plugins-message-container">
-                    <div className="fv-help-block">
-                      {formikProduct.errors.supplier_id}
+            {showFeature.supplier ? 
+              defaultValueSupplier? (
+                <Form.Group>
+                  <Form.Label>{t("supplier")}<span className="text-muted ml-1"></span></Form.Label>
+                  <Select
+                    options={optionsSupplier}
+                    defaultValue={defaultValueSupplier}
+                    placeholder={t('select')}
+                    name="supplier_id"
+                    className="basic-single"
+                    classNamePrefix="select"
+                    onChange={(value) =>{
+                      formikProduct.setFieldValue(
+                        "supplier_id",
+                        value.value
+                      )
+                      formikProduct.setFieldValue(
+                        "supplier",
+                        value.label
+                      )
+                    }
+                    }
+                  />
+                  {formikProduct.touched.supplier_id &&
+                  formikProduct.errors.supplier_id ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikProduct.errors.supplier_id}
+                      </div>
                     </div>
-                  </div>
-                ) : null}
-              </Form.Group>
-            ) : null }
+                  ) : null}
+                </Form.Group>
+              ) : null : null }
 
             <Form.Group style={{ margin: 0 }}>
               <Form.Label style={{ alignSelf: "center", marginRight: "1rem" }}>

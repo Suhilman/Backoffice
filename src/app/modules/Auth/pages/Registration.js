@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { injectIntl } from "react-intl";
 import { useTranslation } from "react-i18next";
 import { Form } from "react-bootstrap";
-import { useHistory } from "react-router-dom";
+import { useHistory, Redirect } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./style.css";
@@ -689,7 +689,14 @@ function Registration(props) {
     }
   };
 
+  const redirectRegister = () => {
+    console.log("redirectRegister")
+    history.push('/auth/beetpos-registration')
+  }
+
   useEffect(() => {
+    // beetpos-registration
+    redirectRegister()
     getBusinessTypes();
     getProvinces();
   }, []);
