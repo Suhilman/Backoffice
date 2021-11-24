@@ -309,7 +309,7 @@ const SalesPerHour = ({
             </tr>
           )}
           <tr>
-            <th>Grand Total</th>
+            <th>{t('grandTotal')}</th>
             <th>{sumReports(salesPerHour, "jumlah_transaksi")}</th>
             <th>
               {<NumberFormat value={sumReports(salesPerHour, "total_penjualan")} displayType={'text'} thousandSeparator={true} prefix={currency} />}{" "}

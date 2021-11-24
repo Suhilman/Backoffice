@@ -341,7 +341,7 @@
     "totalCashRecap": "Total Cash Recap",
     "totalTransaction": "Total Transaction",
     "totalSales": "Total Sales",
-    "dataNotFound": "{t('dataNotFound')}",
+    "dataNotFound": "Data Not Found",
     "transactionID": "Transaction ID",
     "voidType": "Void Type",
     "totalVoidTransaction": "Total Void Transaction",
