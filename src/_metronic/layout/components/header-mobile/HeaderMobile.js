@@ -5,7 +5,9 @@ import SVG from "react-inlinesvg";
 import {toAbsoluteUrl} from "../../../_helpers";
 import {useHtmlClassService} from "../../_core/MetronicLayout";
 
+import { useTranslation } from "react-i18next";
 export function HeaderMobile() {
+  const { t } = useTranslation();
   const uiService = useHtmlClassService();
 
   const layoutProps = useMemo(() => {
@@ -28,9 +30,14 @@ export function HeaderMobile() {
             {...layoutProps.headerMobileAttributes}
         >
           {/*begin::Logo*/}
-          <Link to="/">
-            <img alt="logo" src={layoutProps.headerLogo}/>
-          </Link>
+          <div>
+            <Link to="/">
+              <img alt="logo" src={layoutProps.headerLogo}/>
+            </Link>
+            <div className="text-primary">
+              {t('owner')}
+            </div>
+          </div>
           {/*end::Logo*/}
 
           {/*begin::Toolbar*/}

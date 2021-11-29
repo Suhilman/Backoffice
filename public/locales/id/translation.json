@@ -1137,6 +1137,7 @@
   "pleaseInsertForUpdate": "Silakan Sisipkan Untuk Pembaruan",
   "mandatoryToBeFilledInByTheOwnerAuthorizedOfficialOfIndividualMerchantBusinessEntity": "Wajib diisi oleh Pemilik /Pejabat Berwenang Merchant Perorangan/Badan Usaha",
   "ifTheNameOfTheOwnerAuthorizedOfficial": "Apabila Nama Pemilik/Pejabat Berwenang dan Kontak Person terdapat kesamaan, maka Nama Kontak Person, dan No. Handphone tidak perlu diisi",
+  "owner": "Pemilik",
 
   "currencyConversion": "Konversi Mata Uang",
   "currencyA": "Mata Uang A",

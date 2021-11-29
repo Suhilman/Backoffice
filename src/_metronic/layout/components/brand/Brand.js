@@ -1,11 +1,17 @@
-import React, {useMemo} from "react";
+import React, {useMemo, useState} from "react";
 import {Link} from "react-router-dom";
 import objectPath from "object-path";
 import SVG from "react-inlinesvg";
 import {useHtmlClassService} from "../../_core/MetronicLayout";
 import {toAbsoluteUrl} from "../../../_helpers";
 
+import { useTranslation } from "react-i18next";
+
 export function Brand() {
+  const { t } = useTranslation();
+  
+  const [hide, setHide] = useState(false)
+
   const uiService = useHtmlClassService();
 
   const layoutProps = useMemo(() => {
@@ -20,6 +26,10 @@ export function Brand() {
     };
   }, [uiService]);
 
+  const hideLabel = () => {
+    setHide(!hide)
+  }
+
   return (
     <>
       {/* begin::Brand */}
@@ -28,15 +38,22 @@ export function Brand() {
           id="kt_brand"
       >
         {/* begin::Logo */}
-        <Link to="" className="brand-logo">
-          <img alt="logo" src={layoutProps.headerLogo}/>
-        </Link>
+        <div>
+          <Link to="" className="brand-logo">
+            <img alt="logo" src={layoutProps.headerLogo}/>
+          </Link>
+          {!hide ? (
+            <div className="text-primary">
+              {t('owner')}
+            </div>
+          ) : null }
+        </div>
         {/* end::Logo */}
 
         {layoutProps.asideSelfMinimizeToggle && (
           <>
             {/* begin::Toggle */}
-            <button className="brand-toggle btn btn-sm px-0" id="kt_aside_toggle">
+            <button className="brand-toggle btn btn-sm px-0" id="kt_aside_toggle" onClick={hideLabel}>
               <span className="svg-icon svg-icon-xl">
                   <SVG src={toAbsoluteUrl("/media/svg/icons/Navigation/Angle-double-left.svg")}/>
               </span>
