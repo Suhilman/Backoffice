@@ -16,6 +16,8 @@ import {
 } from "react-bootstrap";
 
 export const DiscountSalesTab = () => {
+  const [mdr, setMdr] = React.useState("")
+
   const [refresh, setRefresh] = React.useState(0)
   const handleRefresh = () => setRefresh((state) => state + 1)
 
@@ -99,7 +101,7 @@ export const DiscountSalesTab = () => {
       ...tabData,
       filename: `payment-method_${startDate}-${endDateFilename}` 
     })
-  }, [selectedOutlet, startDate, endDate, endDateFilename]);
+  }, [selectedOutlet, startDate, endDate, endDateFilename, mdr]);
 
   const promoSalesData = () => {
     const data = [];
@@ -265,6 +267,7 @@ export const DiscountSalesTab = () => {
   const handleSelectStatus = (status) => setStatus(status.target.value)
   const handleTimeStart = (time) => setStartTime(time)
   const handleTimeEnd = (time) => setEndTime(time)
+  const handleMdr = (params) => setMdr(params)
 
   return (
     <>
@@ -275,6 +278,7 @@ export const DiscountSalesTab = () => {
                 handleStartDate={handleStartDate}
                 handleEndDate={handleEndDate}
                 tabData={tabData}
+                handleMdr={handleMdr}
                 handleEndDateFilename={handleEndDateFilename}
                 handleSelectedOutlet={handleSelectedOutlet}
                 titleReport="reportDiscount"

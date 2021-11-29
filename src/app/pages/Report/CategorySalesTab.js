@@ -16,6 +16,8 @@ import {
 } from "react-bootstrap";
 
 export const CategorySalesTab = () => {
+  const [mdr, setMdr] = React.useState("")
+
   const [refresh, setRefresh] = React.useState(0)
   const handleRefresh = () => setRefresh((state) => state + 1)
 
@@ -111,7 +113,7 @@ export const CategorySalesTab = () => {
       ...tabData,
       filename: `table-category_${startDate}-${endDateFilename}`
     })
-  }, [selectedOutlet, startDate, endDate, refresh, endDateFilename]);
+  }, [selectedOutlet, startDate, endDate, refresh, mdr, endDateFilename]);
 
   React.useEffect(() => {
     getCategories();
@@ -238,6 +240,7 @@ export const CategorySalesTab = () => {
   const handleSelectStatus = (status) => setStatus(status.target.value)
   const handleTimeStart = (time) => setStartTime(time)
   const handleTimeEnd = (time) => setEndTime(time)
+  const handleMdr = (params) => setMdr(params)
 
   return (
     <>
@@ -246,6 +249,7 @@ export const CategorySalesTab = () => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <FeatureReport
               handleStartDate={handleStartDate}
+              handleMdr={handleMdr}
               handleEndDate={handleEndDate}
               tabData={tabData}
               handleEndDateFilename={handleEndDateFilename}

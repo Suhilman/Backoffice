@@ -50,7 +50,8 @@ export const FeatureReport = ({
   titleReport, 
   handleSelectStatus,
   handleTimeStart,
-  handleTimeEnd
+  handleTimeEnd,
+  handleMdr
 }) => {
   const { t } = useTranslation();
 
@@ -209,6 +210,7 @@ export const FeatureReport = ({
     const user_info = JSON.parse(localStorage.getItem("user_info"))
     const API_URL = process.env.REACT_APP_API_URL;
     try {
+      handleMdr(params)
       setShowMdr(params)
       const data = {}
       if(params === "Active") data.show_mdr = true

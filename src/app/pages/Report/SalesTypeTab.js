@@ -16,6 +16,7 @@ import {
 } from "react-bootstrap";
 
 export const SalesTypeTab = () => {
+  const [mdr, setMdr] = React.useState("")
   const [refresh, setRefresh] = React.useState(0)
   const handleRefresh = () => setRefresh((state) => state + 1)
 
@@ -117,7 +118,7 @@ export const SalesTypeTab = () => {
       ...tabData,
       filename: `sales-type_${startDate}-${endDateFilename}`
     })
-  }, [selectedOutlet, startDate, endDate, refresh, endDateFilename]);
+  }, [selectedOutlet, startDate, endDate, refresh, endDateFilename, mdr]);
 
   const salesTypeData = () => {
     const data = [];
@@ -195,6 +196,7 @@ export const SalesTypeTab = () => {
   const handleSelectStatus = (status) => setStatus(status.target.value)
   const handleTimeStart = (time) => setStartTime(time)
   const handleTimeEnd = (time) => setEndTime(time)
+  const handleMdr = (params) => setMdr(params)
 
   return (
     <>
@@ -205,6 +207,7 @@ export const SalesTypeTab = () => {
               handleStartDate={handleStartDate}
               handleEndDate={handleEndDate}
               tabData={tabData}
+              handleMdr={handleMdr}
               handleEndDateFilename={handleEndDateFilename}
               handleSelectedOutlet={handleSelectedOutlet}
               titleReport="reportSalesType"

@@ -16,6 +16,8 @@ import {
 } from "react-bootstrap";
 
 const COGSReport = () => {
+  const [mdr, setMdr] = React.useState("")
+
   const [refresh, setRefresh] = React.useState(0)
   const handleRefresh = () => setRefresh((state) => state + 1)
 
@@ -145,7 +147,7 @@ const COGSReport = () => {
       ...tabData,
       filename: `laporan-COGS_${startDate}-${endDateFilename}`
     })
-  }, [selectedOutlet, startDate, endDate, endDateFilename]);
+  }, [selectedOutlet, startDate, endDate, endDateFilename, mdr]);
 
   const handleStartDate = (date) => setStartDate(date)
   const handleEndDate = (date) => setEndDate(date)
@@ -154,6 +156,7 @@ const COGSReport = () => {
   const handleSelectStatus = (status) => setStatus(status.target.value)
   const handleTimeStart = (time) => setStartTime(time)
   const handleTimeEnd = (time) => setEndTime(time)
+  const handleMdr = (params) => setMdr(params)
 
   return (
     <>
@@ -163,6 +166,7 @@ const COGSReport = () => {
             <FeatureReport
               handleStartDate={handleStartDate}
               handleEndDate={handleEndDate}
+              handleMdr={handleMdr}
               tabData={tabData}
               handleEndDateFilename={handleEndDateFilename}
               handleSelectedOutlet={handleSelectedOutlet}

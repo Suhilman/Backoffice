@@ -16,6 +16,7 @@ import {
 } from "react-bootstrap";
 
 const StaffTransaction = () => {
+  const [mdr, setMdr] = React.useState("")
   const [refresh, setRefresh] = React.useState(0)
   const handleRefresh = () => setRefresh((state) => state + 1)
 
@@ -140,7 +141,7 @@ const StaffTransaction = () => {
       ...tabData,
       filename: `laporan-penjualan-staff_${startDate}-${endDateFilename}`
     })
-  }, [selectedOutlet, startDate, endDate, endDateFilename]);
+  }, [selectedOutlet, startDate, endDate, endDateFilename, mdr]);
   
   const handleStartDate = (date) => setStartDate(date)
   const handleEndDate = (date) => setEndDate(date)
@@ -149,6 +150,7 @@ const StaffTransaction = () => {
   const handleSelectStatus = (status) => setStatus(status.target.value)
   const handleTimeStart = (time) => setStartTime(time)
   const handleTimeEnd = (time) => setEndTime(time)
+  const handleMdr = (params) => setMdr(params)
 
   return (
     <>
@@ -159,6 +161,7 @@ const StaffTransaction = () => {
               handleStartDate={handleStartDate}
               handleEndDate={handleEndDate}
               tabData={tabData}
+              handleMdr={handleMdr}
               handleEndDateFilename={handleEndDateFilename}
               handleSelectedOutlet={handleSelectedOutlet}
               titleReport="reportStaffTransaction"

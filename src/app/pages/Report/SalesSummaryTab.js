@@ -26,6 +26,7 @@ import {
 import { FeatureReport } from './components/FeatureReport'
 
 export const SalesSummaryTab = () => {
+  const [mdr, setMdr] = React.useState("")
   const [allTransactions, setAllTransactions] = React.useState([]);
   const [currency, setCurrency] = React.useState("")
 
@@ -282,7 +283,7 @@ export const SalesSummaryTab = () => {
       ...tabData,
       filename: `transaksi-penjualan-produk_${startDate}-${endDateFilename}` 
     })
-  }, [selectedOutlet, startDate, endDate, refresh, endDateFilename]);
+  }, [selectedOutlet, startDate, endDate, refresh, mdr, endDateFilename]);
 
   const summaryData = () => {
     const data = [
@@ -469,6 +470,7 @@ export const SalesSummaryTab = () => {
   const handleSelectStatus = (status) => setStatus(status.target.value)
   const handleTimeStart = (time) => setStartTime(time)
   const handleTimeEnd = (time) => setEndTime(time)
+  const handleMdr = (params) => setMdr(params)
 
   return (
     <>
@@ -477,6 +479,7 @@ export const SalesSummaryTab = () => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <FeatureReport
               handleStartDate={handleStartDate}
+              handleMdr={handleMdr}
               handleEndDate={handleEndDate}
               tabData={tabData}
               handleEndDateFilename={handleEndDateFilename}

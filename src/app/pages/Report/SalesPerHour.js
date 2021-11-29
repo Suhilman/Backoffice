@@ -16,6 +16,7 @@ import {
 } from "react-bootstrap";
 
 const SalesPerHour = () => {
+  const [mdr, setMdr] = React.useState("")
   const [refresh, setRefresh] = React.useState(0)
   const handleRefresh = () => setRefresh((state) => state + 1)
 
@@ -156,10 +157,6 @@ const SalesPerHour = () => {
     return array;
   };
 
-  const handleMdr = (data) => {
-    console.log("handleMdrdata ", data)
-  }
-
   const renderTime = (array) => {
     let final = [];
     let seen2 = {};
@@ -223,7 +220,7 @@ const SalesPerHour = () => {
       ...tabData,
       filename: `laporan-transaksi-penjualan-per-jam_${startDate}-${endDateFilename}`
     })
-  }, [selectedOutlet, startDate, endDate, startTime, endTime, refresh, endDateFilename]);
+  }, [selectedOutlet, startDate, endDate, startTime, endTime, refresh, endDateFilename, mdr]);
 
   const handleStartDate = (date) => setStartDate(date)
   const handleEndDate = (date) => setEndDate(date)
@@ -232,6 +229,7 @@ const SalesPerHour = () => {
   const handleSelectStatus = (status) => setStatus(status.target.value)
   const handleTimeStart = (time) => setStartTime(time)
   const handleTimeEnd = (time) => setEndTime(time)
+  const handleMdr = (params) => setMdr(params)
 
   return (
     <>
@@ -242,6 +240,7 @@ const SalesPerHour = () => {
               handleStartDate={handleStartDate}
               handleEndDate={handleEndDate}
               tabData={tabData}
+              handleMdr={handleMdr}
               handleEndDateFilename={handleEndDateFilename}
               handleSelectedOutlet={handleSelectedOutlet}
               titleReport="reportSalesPerHour"

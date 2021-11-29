@@ -13,6 +13,7 @@ import {
 import { FeatureReport } from './components/FeatureReport'
 
 export const TransactionHistoryTab = () => {
+  const [mdr, setMdr] = React.useState("")
   const [refresh, setRefresh] = React.useState(0)
   const handleRefresh = () => setRefresh((state) => state + 1)
 
@@ -135,7 +136,7 @@ export const TransactionHistoryTab = () => {
       ...tabData,
       filename: `riwayat-transaksi_${startDate}-${endDateFilename}`
     })
-  }, [selectedOutlet, status, startDate, endDate, refresh, endDateFilename]);
+  }, [selectedOutlet, status, startDate, endDate, refresh, endDateFilename, mdr]);
 
   const columns = [
     {
@@ -243,6 +244,7 @@ export const TransactionHistoryTab = () => {
   const handleSelectStatus = (status) => setStatus(status.target.value)
   const handleTimeStart = (time) => setStartTime(time)
   const handleTimeEnd = (time) => setEndTime(time)
+  const handleMdr = (params) => setMdr(params)
 
   return (
     <>
@@ -253,6 +255,7 @@ export const TransactionHistoryTab = () => {
               handleStartDate={handleStartDate}
               handleEndDate={handleEndDate}
               tabData={tabData}
+              handleMdr={handleMdr}
               handleEndDateFilename={handleEndDateFilename}
               handleSelectedOutlet={handleSelectedOutlet}
               titleReport="reportTransactionHistory"

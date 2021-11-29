@@ -12,6 +12,8 @@ import {
 import { FeatureReport } from './components/FeatureReport'
 
 export const AttendanceTab = () => {
+  const [mdr, setMdr] = React.useState("")
+
   const [refresh, setRefresh] = React.useState(0)
   const handleRefresh = () => setRefresh((state) => state + 1)
 
@@ -99,7 +101,7 @@ export const AttendanceTab = () => {
       ...tabData,
       filename: `table-category_${startDate}-${endDateFilename}`
     })
-  }, [selectedOutlet, startDate, endDate, endDateFilename]);
+  }, [selectedOutlet, startDate, endDate, endDateFilename, mdr]);
 
   const columns = [
     {
@@ -207,6 +209,7 @@ export const AttendanceTab = () => {
   const handleSelectStatus = (status) => setStatus(status.target.value)
   const handleTimeStart = (time) => setStartTime(time)
   const handleTimeEnd = (time) => setEndTime(time)
+  const handleMdr = (params) => setMdr(params)
 
   return (
     <>
@@ -215,6 +218,7 @@ export const AttendanceTab = () => {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <FeatureReport
               handleStartDate={handleStartDate}
+              handleMdr={handleMdr}
               handleEndDate={handleEndDate}
               tabData={tabData}
               handleEndDateFilename={handleEndDateFilename}

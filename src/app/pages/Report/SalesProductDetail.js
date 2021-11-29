@@ -19,6 +19,7 @@ import {
 } from "react-bootstrap";
 
 export const SalesProductDetail = () => {
+  const [mdr, setMdr] = React.useState("")
   const { t } = useTranslation();
   const [refresh, setRefresh] = React.useState(0)
   const handleRefresh = () => setRefresh((state) => state + 1)
@@ -163,7 +164,7 @@ export const SalesProductDetail = () => {
       ...tabData,
       filename: `laporan-detail-penjualan-per-produk_${startDate}-${endDateFilename}`
     })
-  }, [selectedOutlet, startDate, endDate, endDateFilename]);
+  }, [selectedOutlet, startDate, endDate, endDateFilename,mdr]);
   
   const columns = [
     {
@@ -266,6 +267,7 @@ export const SalesProductDetail = () => {
   const handleSelectStatus = (status) => setStatus(status.target.value)
   const handleTimeStart = (time) => setStartTime(time)
   const handleTimeEnd = (time) => setEndTime(time)
+  const handleMdr = (params) => setMdr(params)
 
   return (
     <>
@@ -276,6 +278,7 @@ export const SalesProductDetail = () => {
               handleStartDate={handleStartDate}
               handleEndDate={handleEndDate}
               tabData={tabData}
+              handleMdr={handleMdr}
               handleEndDateFilename={handleEndDateFilename}
               handleSelectedOutlet={handleSelectedOutlet}
               titleReport="reportDetailSalesPerProduct"

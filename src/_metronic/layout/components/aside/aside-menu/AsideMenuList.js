@@ -332,6 +332,30 @@ function AsideMenuList(props) {
     try {
       const tempDropdownSales = [
         {
+          route: 'sales-summary',
+          name: 'salesSummary'
+        },
+        {
+          route: 'recap',
+          name: 'recap'
+        },
+        {
+          route: 'payment-method',
+          name: 'paymentMethod'
+        },
+        {
+          route: 'sales-type',
+          name: 'salesType'
+        },
+        {
+          route: 'sales-per-product',
+          name: 'salesPerProduct'
+        },
+        {
+          route: 'sales-per-hour',
+          name: 'salesPerHour'
+        },
+        {
           route: 'category-sales',
           name: 'categorySales'
         },
@@ -340,44 +364,20 @@ function AsideMenuList(props) {
           name: 'cogs'
         },
         {
-          route: 'sales-detail',
-          name: 'detailSalesPerProduct'
+          route: 'transaction-history',
+          name: 'transactionHistory'
         },
         {
-          route: 'payment-method',
-          name: 'paymentMethod'
+          route: 'sales-detail',
+          name: 'detailSalesPerProduct'
         },
         {
           route: 'profit-calculation',
           name: 'profitCalculation'
         },
         {
-          route: 'recap',
-          name: 'recap'
-        },
-        {
-          route: 'sales-per-hour',
-          name: 'salesPerHour'
-        },
-        {
-          route: 'sales-per-product',
-          name: 'salesPerProduct'
-        },
-        {
-          route: 'sales-summary',
-          name: 'salesSummary'
-        },
-        {
-          route: 'sales-type',
-          name: 'salesType'
-        },
-        {
           route: 'staff-transaction',
           name: 'staffTransaction'
-        },
-        {
-          route: 'transaction-history',
-          name: 'transactionHistory'
         },
         {
           route: 'void-transaction',
@@ -407,7 +407,7 @@ function AsideMenuList(props) {
       const subscription_partition_id = data.data[0].subscription_partition_id
       
       if(subscription_partition_id === 3) {
-        tempDropdownSales.splice(2, 0, 
+        tempDropdownSales.splice(11, 0, 
           {
             route: 'discount-sales',
             name: 'discountSales'

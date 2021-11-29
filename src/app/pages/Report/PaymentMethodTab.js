@@ -17,9 +17,17 @@ import {
 } from "react-bootstrap";
 
 export const PaymentMethodTab = () => {
-
+  const [mdr, setMdr] = React.useState("")
   const [refresh, setRefresh] = React.useState(0)
   const handleRefresh = () => setRefresh((state) => state + 1)
+
+  const [dataRevenue, setDataRevenue] = React.useState({})
+  const [resultRevenueBusiness, setResultRevenueBusiness] = React.useState({
+    result_revenue_manager: "",
+    result_revenue_business: ""
+  })
+
+  
 
   const [selectedOutlet, setSelectedOutlet] = React.useState({
     id: "",
@@ -85,6 +93,7 @@ export const PaymentMethodTab = () => {
       );
       
       setAllPaymentMethods(data.data);
+      console.log("getPaymentMethod", data.data)
     } catch (err) {
       if (err.response.status === 404) {
         setAllPaymentMethods([]);
@@ -93,13 +102,25 @@ export const PaymentMethodTab = () => {
     }
   };
 
+  const calculateRevenue = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+   try {
+     const {data} = await axios.get(`${API_URL}/api/v1/business-revenue-sharing/business-id/${userInfo.business_id}`)
+     console.log("calculateRevenue", data.data)
+     setDataRevenue(data.data)
+   } catch (err) {
+    console.log(err);
+   }
+ }
   React.useEffect(() => {
     getPaymentMethod(selectedOutlet.id, startDate, endDate);
+    calculateRevenue()
     setTabData({
       ...tabData,
       filename: `payment-method_${startDate}-${endDateFilename}` 
     })
-  }, [selectedOutlet, startDate, endDate, refresh, endDateFilename]);
+  }, [selectedOutlet, startDate, endDate, refresh, endDateFilename, mdr]);
 
   const paymentMethodData = () => {
     const data = [];
@@ -135,7 +156,33 @@ export const PaymentMethodTab = () => {
       total: totalAmount
     });
 
-    return data;
+    // Calculate Revenue Sharing
+    const percentage_manager = dataRevenue.manager_percent_share / 100
+    const temp_kali_manager = totalAmount * percentage_manager
+
+    const percentage_business = dataRevenue.business_percent_share / 100
+    const temp_kali_business = totalAmount * percentage_business
+
+    const result_revenue_manager =  temp_kali_manager
+    const result_revenue_business =  temp_kali_business
+    // setResultRevenueBusiness({
+    //   result_revenue_manager,
+    //   result_revenue_business
+    // })
+    console.log("result_revenue_manager", result_revenue_manager)
+    console.log("result_revenue_business", result_revenue_business)
+    // End Calculate Revenue Sharing
+
+    console.log("dataRevenue",dataRevenue)
+    console.log("data",data)
+
+    return {
+      data,
+      resultRevenueBusiness: {
+        result_revenue_manager,
+        result_revenue_business
+      }
+    };
   };
 
   const handleStartDate = (date) => setStartDate(date)
@@ -145,6 +192,7 @@ export const PaymentMethodTab = () => {
   const handleSelectStatus = (status) => setStatus(status.target.value)
   const handleTimeStart = (time) => setStartTime(time)
   const handleTimeEnd = (time) => setEndTime(time)
+  const handleMdr = (params) => setMdr(params)
 
   return (
     <>
@@ -154,6 +202,7 @@ export const PaymentMethodTab = () => {
             <FeatureReport
                 handleStartDate={handleStartDate}
                 handleEndDate={handleEndDate}
+                handleMdr={handleMdr}
                 tabData={tabData}
                 handleEndDateFilename={handleEndDateFilename}
                 handleSelectedOutlet={handleSelectedOutlet}
@@ -172,19 +221,25 @@ export const PaymentMethodTab = () => {
                 </tr>
               </thead>
               <tbody>
-                {paymentMethodData().map((item, index) => {
+                {paymentMethodData().data.map((item, index) => {
                   return (
                     <tr key={index}>
                       <td></td>
                       <td>{item.method}</td>
                       <td>{item.transaction}</td>
                       <td><NumberFormat value={item.total} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
+                      {/* <td>Salto</td> */}
                     </tr>
                   );
                 })}
               </tbody>
             </Table>
-
+            {paymentMethodData().resultRevenueBusiness.result_revenue_manager ||  paymentMethodData().resultRevenueBusiness.result_revenue_business ? (
+              <div className="d-flex flex-column align-items-end" style={{marginRight: "19%"}}>
+                <div className="text-danger">- {paymentMethodData().resultRevenueBusiness.result_revenue_manager}</div>
+                <div className="text-success">{paymentMethodData().resultRevenueBusiness.result_revenue_business}</div>
+              </div>
+            ) : null}
           </Paper>
         </Col>
       </Row>
