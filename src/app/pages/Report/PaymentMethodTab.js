@@ -150,11 +150,11 @@ export const PaymentMethodTab = () => {
     );
     const totalAmount = data.reduce((init, curr) => (init += curr.total), 0);
 
-    data.push({
-      method: "",
-      transaction: totalTransactions,
-      total: totalAmount
-    });
+    // data.push({
+    //   method: "",
+    //   transaction: totalTransactions,
+    //   total: totalAmount
+    // });
 
     // Calculate Revenue Sharing
     const percentage_manager = dataRevenue.manager_percent_share / 100
@@ -170,9 +170,13 @@ export const PaymentMethodTab = () => {
 
     return {
       data,
+      totalCollected: {
+          transaction: totalTransactions,
+          total: totalAmount
+      },
       resultRevenueBusiness: {
-        result_revenue_manager,
-        result_revenue_business
+        result_revenue_manager: result_revenue_manager > 0 ? result_revenue_manager : "",
+        result_revenue_business: result_revenue_business > 0 ? result_revenue_business : "-"
       }
     };
   };
@@ -224,13 +228,39 @@ export const PaymentMethodTab = () => {
                   );
                 })}
               </tbody>
+              <tfoot>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>Total Collected</td>
+                  <td>{paymentMethodData().totalCollected.transaction}</td>
+                  <td><NumberFormat value={paymentMethodData().totalCollected.total} displayType={'text'} thousandSeparator={true} prefix={"Rp."} /></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td className="text-danger">Profit Sharing ({dataRevenue.manager_percent_share}%)</td>
+                  <td></td>
+                  <td className="text-danger">- <NumberFormat value={paymentMethodData().resultRevenueBusiness.result_revenue_manager} displayType={'text'} thousandSeparator={true} prefix={"Rp."} /></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td className="text-success">Net ({dataRevenue.business_percent_share}%)</td>
+                  <td></td>
+                  <td className="text-success"><NumberFormat value={paymentMethodData().resultRevenueBusiness.result_revenue_business} displayType={'text'} thousandSeparator={true} prefix={"Rp."} /></td>
+                </tr>
+              </tfoot>
             </Table>
-            {paymentMethodData().resultRevenueBusiness.result_revenue_manager ||  paymentMethodData().resultRevenueBusiness.result_revenue_business ? (
+            {/* {paymentMethodData().resultRevenueBusiness.result_revenue_manager ||  paymentMethodData().resultRevenueBusiness.result_revenue_business ? (
               <div className="d-flex flex-column align-items-end" style={{marginRight: "19%"}}>
                 <div className="text-danger">- {paymentMethodData().resultRevenueBusiness.result_revenue_manager}</div>
                 <div className="text-success">{paymentMethodData().resultRevenueBusiness.result_revenue_business}</div>
               </div>
-            ) : null}
+            ) : null} */}
           </Paper>
         </Col>
       </Row>
