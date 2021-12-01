@@ -46,7 +46,7 @@ const ProductCategoryModal = ({
               <Form.Label>{t("hiddenCategory")}</Form.Label>
             </div>
             <div className="d-flex align-items-center">
-              <h4 className="text-muted h6 mr-3">{hiddenCategory}</h4>
+              <h5 className="text-muted h6 mr-3">{hiddenCategory}</h5>
               <FormControlLabel
                 value={hiddenCategory}
                 control={

@@ -165,16 +165,8 @@ export const PaymentMethodTab = () => {
 
     const result_revenue_manager =  temp_kali_manager
     const result_revenue_business =  temp_kali_business
-    // setResultRevenueBusiness({
-    //   result_revenue_manager,
-    //   result_revenue_business
-    // })
-    console.log("result_revenue_manager", result_revenue_manager)
-    console.log("result_revenue_business", result_revenue_business)
+    
     // End Calculate Revenue Sharing
-
-    console.log("dataRevenue",dataRevenue)
-    console.log("data",data)
 
     return {
       data,
@@ -228,7 +220,6 @@ export const PaymentMethodTab = () => {
                       <td>{item.method}</td>
                       <td>{item.transaction}</td>
                       <td><NumberFormat value={item.total} displayType={'text'} thousandSeparator={true} prefix={currency} /></td>
-                      {/* <td>Salto</td> */}
                     </tr>
                   );
                 })}
