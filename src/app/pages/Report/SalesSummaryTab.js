@@ -26,6 +26,8 @@ import {
 import { FeatureReport } from './components/FeatureReport'
 
 export const SalesSummaryTab = () => {
+  const [dataRevenue, setDataRevenue] = React.useState({})
+
   const [mdr, setMdr] = React.useState("")
   const [allTransactions, setAllTransactions] = React.useState([]);
   const [currency, setCurrency] = React.useState("")
@@ -277,8 +279,21 @@ export const SalesSummaryTab = () => {
     setReports(compileReports);
   };
 
+  const calculateRevenue = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+   try {
+     const {data} = await axios.get(`${API_URL}/api/v1/business-revenue-sharing/business-id/${userInfo.business_id}`)
+     console.log("calculateRevenue", data.data)
+     setDataRevenue(data.data)
+   } catch (err) {
+    console.log(err);
+   }
+ }
+
   React.useEffect(() => {
     getTransactions(selectedOutlet.id, startDate, endDate);
+    calculateRevenue()
     setTabData({
       ...tabData,
       filename: `transaksi-penjualan-produk_${startDate}-${endDateFilename}` 
@@ -394,7 +409,24 @@ export const SalesSummaryTab = () => {
     const totalCollected = nettSales + bonus - taxSales + roundingSales;
     data[8].value = totalCollected;
 
-    return data;
+    // Calculate Revenue Sharing
+    const percentage_manager = dataRevenue.manager_percent_share / 100
+    const temp_kali_manager = totalCollected * percentage_manager
+
+    const percentage_business = dataRevenue.business_percent_share / 100
+    const temp_kali_business = totalCollected * percentage_business
+
+    const result_revenue_manager =  temp_kali_manager
+    const result_revenue_business =  temp_kali_business
+    // End Calculate Revenue Sharing
+
+    return {
+      data,
+      resultRevenueBusiness: {
+        result_revenue_manager: result_revenue_manager > 0 ? result_revenue_manager : "",
+        result_revenue_business: result_revenue_business > 0 ? result_revenue_business : "-"
+      }
+    };
   };
 
   const sumReports = (data, key) => {
@@ -581,7 +613,7 @@ export const SalesSummaryTab = () => {
 
             <Table striped>
               <tbody>
-                {summaryData().map((item, index) => {
+                {summaryData().data.map((item, index) => {
                   return (
                     <tr key={index}>
                       <td></td>
@@ -591,6 +623,23 @@ export const SalesSummaryTab = () => {
                   );
                 })}
               </tbody>
+              <tfoot>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td className="text-danger">Profit Sharing ({dataRevenue.manager_percent_share}%)</td>
+                  <td className="text-danger">- <NumberFormat value={summaryData().resultRevenueBusiness.result_revenue_manager} displayType={'text'} thousandSeparator={true} prefix={"Rp."} /></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td className="text-success">Net ({dataRevenue.business_percent_share}%)</td>
+                  <td className="text-success"><NumberFormat value={summaryData().resultRevenueBusiness.result_revenue_business} displayType={'text'} thousandSeparator={true} prefix={"Rp."} /></td>
+                </tr>
+              </tfoot>
             </Table>
           </Paper>
         </Col>

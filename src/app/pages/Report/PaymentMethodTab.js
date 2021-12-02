@@ -113,6 +113,7 @@ export const PaymentMethodTab = () => {
     console.log(err);
    }
  }
+
   React.useEffect(() => {
     getPaymentMethod(selectedOutlet.id, startDate, endDate);
     calculateRevenue()
@@ -165,7 +166,6 @@ export const PaymentMethodTab = () => {
 
     const result_revenue_manager =  temp_kali_manager
     const result_revenue_business =  temp_kali_business
-    
     // End Calculate Revenue Sharing
 
     return {

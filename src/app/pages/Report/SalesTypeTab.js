@@ -16,6 +16,7 @@ import {
 } from "react-bootstrap";
 
 export const SalesTypeTab = () => {
+  const [dataRevenue, setDataRevenue] = React.useState({})
   const [mdr, setMdr] = React.useState("")
   const [refresh, setRefresh] = React.useState(0)
   const handleRefresh = () => setRefresh((state) => state + 1)
@@ -112,8 +113,21 @@ export const SalesTypeTab = () => {
     getTypes();
   }, []);
 
+  const calculateRevenue = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+   try {
+     const {data} = await axios.get(`${API_URL}/api/v1/business-revenue-sharing/business-id/${userInfo.business_id}`)
+     console.log("calculateRevenue", data.data)
+     setDataRevenue(data.data)
+   } catch (err) {
+    console.log(err);
+   }
+ }
+
   React.useEffect(() => {
     getSalesType(selectedOutlet.id, startDate, endDate);
+    calculateRevenue()
     setTabData({
       ...tabData,
       filename: `sales-type_${startDate}-${endDateFilename}`
@@ -180,13 +194,34 @@ export const SalesTypeTab = () => {
     );
     const totalAmount = data.reduce((init, curr) => (init += curr.total), 0);
 
-    data.push({
-      type: "",
-      transaction: totalTransactions,
-      total: totalAmount
-    });
+    // data.push({
+    //   type: "",
+    //   transaction: totalTransactions,
+    //   total: totalAmount
+    // });
 
-    return data;
+    // Calculate Revenue Sharing
+    const percentage_manager = dataRevenue.manager_percent_share / 100
+    const temp_kali_manager = totalAmount * percentage_manager
+
+    const percentage_business = dataRevenue.business_percent_share / 100
+    const temp_kali_business = totalAmount * percentage_business
+
+    const result_revenue_manager =  temp_kali_manager
+    const result_revenue_business =  temp_kali_business
+    // End Calculate Revenue Sharing
+
+    return {
+      data,
+      totalCollected: {
+          transaction: totalTransactions,
+          total: totalAmount
+      },
+      resultRevenueBusiness: {
+        result_revenue_manager: result_revenue_manager > 0 ? result_revenue_manager : "",
+        result_revenue_business: result_revenue_business > 0 ? result_revenue_business : "-"
+      }
+    };
   };
 
   const handleStartDate = (date) => setStartDate(date)
@@ -225,7 +260,7 @@ export const SalesTypeTab = () => {
                 </tr>
               </thead>
               <tbody>
-                {salesTypeData().map((item, index) => {
+                {salesTypeData().data.map((item, index) => {
                   return (
                     <tr key={index}>
                       <td></td>
@@ -236,6 +271,33 @@ export const SalesTypeTab = () => {
                   );
                 })}
               </tbody>
+              <tfoot>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>Total Collected</td>
+                  <td>{salesTypeData().totalCollected.transaction}</td>
+                  <td><NumberFormat value={salesTypeData().totalCollected.total} displayType={'text'} thousandSeparator={true} prefix={"Rp."} /></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td className="text-danger">Profit Sharing ({dataRevenue.manager_percent_share}%)</td>
+                  <td></td>
+                  <td className="text-danger">- <NumberFormat value={salesTypeData().resultRevenueBusiness.result_revenue_manager} displayType={'text'} thousandSeparator={true} prefix={"Rp."} /></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td className="text-success">Net ({dataRevenue.business_percent_share}%)</td>
+                  <td></td>
+                  <td className="text-success"><NumberFormat value={salesTypeData().resultRevenueBusiness.result_revenue_business} displayType={'text'} thousandSeparator={true} prefix={"Rp."} /></td>
+                </tr>
+              </tfoot>
             </Table>
           </Paper>
         </Col>
