@@ -6,6 +6,9 @@ import { useTranslation } from "react-i18next";
 import qs from 'qs'
 import { useLocation, useHistory } from 'react-router-dom'
 import axios from 'axios'
+import {
+  Alert
+} from 'react-bootstrap'
 
 export default function VerifyEmail({location}) {
   const API_URL = process.env.REACT_APP_API_URL;
@@ -21,6 +24,8 @@ export default function VerifyEmail({location}) {
   const [timeCount, setTimeCount] = useState(false)
   const [second, setSecond] = useState(0);
   const [defaultValue, setDefaultValue] = useState("")
+  const [inputCode, setInputCode] = useState("")
+  const [alert, setAlert] = useState("")
 
   // const location = useLocation();
 
@@ -56,18 +61,28 @@ export default function VerifyEmail({location}) {
     }
   }
 
-  const handleFillCode = () => setDefaultValue(code)
+  const handleFillCode = () => {
+    setDefaultValue(code)
+    setInputCode(code)
+  }
+
+  const handleInputCode  = (value) => {
+    setInputCode(value)
+  }
 
   const checkCode = async () => {
+    console.log("inputCode", inputCode)
+    if(!inputCode) return setAlert(t('codeIsInvalid'))
+    const API_URL = process.env.REACT_APP_API_URL;
     try {
-      const API_URL = process.env.REACT_APP_API_URL;
       await axios.post(
         `${API_URL}/api/v1/auth/verify-account`,
-        { code },
+        { code: inputCode },
         { headers: { Authorization: token } }
       );
       history.push(`/register-process/business-location?session=${session}`)
     } catch (err) {
+      setAlert(t('codeIsInvalid'))
       console.log("error", err.response?.data.message)
     }
   };
@@ -205,6 +220,9 @@ export default function VerifyEmail({location}) {
           </select>
         </div> */}
         {/* End Choose Language */}
+
+        {alert ? <Alert variant="danger">{alert}</Alert> : ""}
+
         <div className="form-group fv-plugins-icon-container mb-4">
           <input
             placeholder={t("pleaseInputVerifyCode")}
@@ -212,6 +230,9 @@ export default function VerifyEmail({location}) {
             className="form-control h-auto py-3 px-4"
             name="code_verification"
             defaultValue={defaultValue}
+            onChange={(e) => {
+              handleInputCode(e.target.value)
+            }}
           />
         </div>
         <button

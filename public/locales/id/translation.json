@@ -419,7 +419,7 @@
   "discountRate": "Nilai diskon",
   "promoTime": "Waktu Promo",
   "promoDate-Start": "Tanggal Promo - Mulai",
-  "promoDate-End": "Tanggal Promo - Mulai",
+  "promoDate-End": "Tanggal Promo - Selesai",
   "promoDays": "Hari Promo",
   "monday": "Senin",
   "thursday": "Kamis",
@@ -1138,6 +1138,7 @@
   "mandatoryToBeFilledInByTheOwnerAuthorizedOfficialOfIndividualMerchantBusinessEntity": "Wajib diisi oleh Pemilik /Pejabat Berwenang Merchant Perorangan/Badan Usaha",
   "ifTheNameOfTheOwnerAuthorizedOfficial": "Apabila Nama Pemilik/Pejabat Berwenang dan Kontak Person terdapat kesamaan, maka Nama Kontak Person, dan No. Handphone tidak perlu diisi",
   "owner": "Pemilik",
+  "codeIsInvalid": "Kode Tidak Valid",
 
   "currencyConversion": "Konversi Mata Uang",
   "currencyA": "Mata Uang A",

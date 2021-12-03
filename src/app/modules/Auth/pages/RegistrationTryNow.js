@@ -1090,6 +1090,10 @@ const RegistrationTryNow = () => {
           <button
             type="submit"
             className="btn btn-primary font-weight-bold px-9 py-4 mt-3"
+            disabled={
+              formik.isSubmitting ||
+              !formik.values.acceptTerms
+            }
           >
             <span>{t('submit')}</span>
             {loading && <span className="ml-3 spinner spinner-white"></span>}

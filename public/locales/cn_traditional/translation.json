@@ -1137,5 +1137,6 @@
   "pleaseInsertForUpdate": "請插入更新",
   "mandatoryToBeFilledInByTheOwnerAuthorizedOfficialOfIndividualMerchantBusinessEntity": "Mandatory to be filled in by the Owner/Authorized Official of Individual Merchant/Business Entity",
   "ifTheNameOfTheOwnerAuthorizedOfficial": "If the Name of the Owner/Authorized Official and the Contact Person are similar, then the Contact Name of the Person, and the Contact No. The cellphone does not need to be charged",
-  "owner": "所有者"
+  "owner": "所有者",
+  "codeIsInvalid": "代碼無效"
 }
