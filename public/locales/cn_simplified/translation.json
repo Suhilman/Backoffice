@@ -1138,5 +1138,7 @@
     "mandatoryToBeFilledInByTheOwnerAuthorizedOfficialOfIndividualMerchantBusinessEntity": "Mandatory to be filled in by the Owner/Authorized Official of Individual Merchant/Business Entity",
     "ifTheNameOfTheOwnerAuthorizedOfficial": "If the Name of the Owner/Authorized Official and the Contact Person are similar, then the Contact Name of the Person, and the Contact No. The cellphone does not need to be charged",
     "owner": "所有者",
-    "codeIsInvalid": "代码无效"
+    "codeIsInvalid": "代码无效",
+    "valueMustBeGreaterThanOrEqualTo0": "值必须大于或等于 0",
+    "emailMustBeAValidEmail": "电子邮件必须是有效的电子邮件"
 }

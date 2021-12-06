@@ -79,7 +79,7 @@ export const VoucherPromoPage = () => {
       .matches(/percentage|currency/)
       .required(`${t("pleaseChooseType")}`),
     value: Yup.number()
-      .min(0)
+      .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`)
       .required(`${t("pleaseInputValue")}`)
   });
 

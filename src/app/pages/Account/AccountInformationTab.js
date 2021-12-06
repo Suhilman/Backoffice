@@ -41,7 +41,7 @@ export const AccountInformation = () => {
 
   const AccountSchema = Yup.object().shape({
     email: Yup.string()
-      .email()
+      .email(`${t('emailMustBeAValidEmail')}`)
       .required(`${t("pleaseInputAnEmail")}`),
     phone_number: Yup.string()
       .max(15, `${t("maximum15Character")}`)
@@ -65,7 +65,7 @@ export const AccountInformation = () => {
 
   const AccountStaffSchema = Yup.object().shape({
     email: Yup.string()
-      .email()
+      .email(`${t('emailMustBeAValidEmail')}`)
       .required(`${t("pleaseInputAnEmail")}`),
     phone_number: Yup.number().typeError("Please input a number only"),
     old_password: Yup.string()

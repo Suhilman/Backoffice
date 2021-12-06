@@ -1139,6 +1139,8 @@
     "ifTheNameOfTheOwnerAuthorizedOfficial": "If the Name of the Owner/Authorized Official and the Contact Person are similar, then the Contact Name of the Person, and the Contact No. The cellphone does not need to be charged",
     "owner": "Owner",
     "codeIsInvalid": "Code Is Invalid",
+    "valueMustBeGreaterThanOrEqualTo0": "Value Must be Greater Than Or Equal To 0",
+    "emailMustBeAValidEmail": "Email Must Be A Valid Email",
 
     "currencyConversion": "Currency Convertion",
     "currencyA": "Currency A",

@@ -73,7 +73,7 @@ export const SalesTypeTab = ({ handleRefresh, refresh, t, optionsEcommerce, show
     is_delivery: Yup.boolean(),
     charge: Yup.number()
       .integer()
-      .min(0)
+      .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`)
       .required(`${t("pleaseInputACharge")}`)
   });
 

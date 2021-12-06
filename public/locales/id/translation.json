@@ -518,7 +518,7 @@
   "privilege": "Hak Akses",
   "addCustomer": "Tambahkan Pelanggan",
   "customerName": "Nama Pelanggan",
-  "customerEmail": "Nama Pelanggan",
+  "customerEmail": "Email Pelanggan",
   "customerPhoneNumber": "Nomor Telepon Pelanggan",
   "customerAddress": "Alamat pelanggan",
   "customerDetail": "Rincian Pelanggan",
@@ -1139,6 +1139,8 @@
   "ifTheNameOfTheOwnerAuthorizedOfficial": "Apabila Nama Pemilik/Pejabat Berwenang dan Kontak Person terdapat kesamaan, maka Nama Kontak Person, dan No. Handphone tidak perlu diisi",
   "owner": "Pemilik",
   "codeIsInvalid": "Kode Tidak Valid",
+  "valueMustBeGreaterThanOrEqualTo0": "Nilai Harus Lebih Besar Dari Atau Sama Dengan 0",
+  "emailMustBeAValidEmail": "Nama email Harus Email yang Valid",
 
   "currencyConversion": "Konversi Mata Uang",
   "currencyA": "Mata Uang A",

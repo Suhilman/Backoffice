@@ -109,7 +109,7 @@ export const TaxTab = ({ handleRefresh, refresh }) => {
       .required(`${t("pleaseInputAName")}`),
     value: Yup.number()
       // .integer()
-      .min(0)
+      .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`)
       .required(`${t("pleaseInputValue")}`),
     tax_type_id: Yup.number()
       .integer()
