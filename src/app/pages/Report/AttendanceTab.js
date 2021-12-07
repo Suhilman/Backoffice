@@ -29,9 +29,9 @@ export const AttendanceTab = () => {
   const [startTime, setStartTime] = React.useState(new Date());
   const [endTime, setEndTime] = React.useState(new Date());
   const [tabData, setTabData] = React.useState({
-    no: 4,
-    table: "table-category",
-    filename: `table-category_${startDate}-${endDateFilename}`
+    no: 6,
+    table: "table-attendance-report",
+    filename: `laporan-absensi_${startDate}-${endDateFilename}`
   })
   const [status, setStatus] = React.useState("");
 
@@ -99,7 +99,7 @@ export const AttendanceTab = () => {
     getAttendances(selectedOutlet.id, startDate, endDate);
     setTabData({
       ...tabData,
-      filename: `table-category_${startDate}-${endDateFilename}`
+      filename: `laporan-absensi_${startDate}-${endDateFilename}`
     })
   }, [selectedOutlet, startDate, endDate, endDateFilename, mdr]);
 
