@@ -165,7 +165,7 @@ export const StockOpnamePage = () => {
       sortable: true
     },
     {
-      name: "Actions",
+      name: t('actions'),
       cell: (rows) => {
         return (
           <Dropdown>
@@ -183,10 +183,10 @@ export const StockOpnamePage = () => {
                   }
                 }}
               >
-                <Dropdown.Item as="button">Detail</Dropdown.Item>
+                <Dropdown.Item as="button">{t('detail')}</Dropdown.Item>
               </Link>
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                Delete
+                {t('delete')}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>

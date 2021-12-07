@@ -249,7 +249,7 @@ export const RecapTab = () => {
                   );
                 })}
                 <tr>
-                  <th>Grand Total</th>
+                  <th>{t("grandTotal")}</th>
                   <th></th>
                   <th>{sumReports(reports, "cash")} </th>
                   <th>{sumReports(reports, "cash_in")} </th>

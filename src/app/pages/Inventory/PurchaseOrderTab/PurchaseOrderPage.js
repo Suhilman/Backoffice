@@ -203,13 +203,13 @@ const PurchaseOrderPage = ({ refresh, handleRefresh, t }) => {
                   }
                 }}
               >
-                <Dropdown.Item as="button">Detail</Dropdown.Item>
+                <Dropdown.Item as="button">{t('detail')}</Dropdown.Item>
               </Link>
               {/* <Dropdown.Item as="button" onClick={() => handleGetPDF(rows.id)}>
                 Save to PDF
               </Dropdown.Item> */}
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                Delete
+                {t('delete')}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>

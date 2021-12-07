@@ -189,7 +189,7 @@ export const OutcomingMaterialPage = () => {
                   }
                 }}
               >
-                <Dropdown.Item as="button">Detail</Dropdown.Item>
+                <Dropdown.Item as="button">{t('detail')}</Dropdown.Item>
               </Link>
               {rows.status === 'Pending' ? (
                 <>
@@ -206,7 +206,7 @@ export const OutcomingMaterialPage = () => {
                     <Dropdown.Item as="button">{t("edit")}</Dropdown.Item>
                   </Link>
                   <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                    Delete
+                    {t('delete')}
                   </Dropdown.Item>
                 </>
               ) : null }

@@ -210,7 +210,7 @@ const PurchaseOrderPage = ({ refresh, handleRefresh, t }) => {
                   }
                 }}
               >
-                <Dropdown.Item as="button">Detail</Dropdown.Item>
+                <Dropdown.Item as="button">{t('detail')}</Dropdown.Item>
               </Link>
               {rows.status === 'pending' ? (
                 <Link
@@ -230,7 +230,7 @@ const PurchaseOrderPage = ({ refresh, handleRefresh, t }) => {
                 Save to PDF
               </Dropdown.Item> */}
               <Dropdown.Item as="button" onClick={() => showDeleteModal(rows)}>
-                Delete
+                {t('delete')}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
