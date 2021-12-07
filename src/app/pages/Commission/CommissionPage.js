@@ -84,7 +84,7 @@ const CommissionPage = () => {
   const getOutlets = async () => {
     try {
       const {data} = await axios.get(`${API_URL}/api/v1/outlet`)
-      console.log("all outlet", data.data)
+      // console.log("all outlet", data.data)
       setAllOutlets(data.data)
     } catch (error) {
       console.log(error)
@@ -94,7 +94,7 @@ const CommissionPage = () => {
   const getStaff = async () => {
     try {
       const {data} = await axios.get(`${API_URL}/api/v1/staff`)
-      console.log("all staff", data.data)
+      // console.log("all staff", data.data)
       setAllStaff(data.data)
     } catch (error) {
       console.log(error)
@@ -136,7 +136,7 @@ const CommissionPage = () => {
   }, [refresh, debouncedSearch, filter])
   
   const dataCommission = allCommission.map(value => {
-    console.log("value allcommission", value)
+    // console.log("value allcommission", value)
     return {
       id: value.id,
       groupName: value.name,
@@ -156,7 +156,7 @@ const CommissionPage = () => {
   })
 
   const ExpandableComponent = ({ data }) => {
-    console.log("data expand", data)
+    // console.log("data expand", data)
     const keys = [
       {
         key: "Staff",
@@ -194,7 +194,7 @@ const CommissionPage = () => {
     );
   };
 
-  console.log("diluar staffName", staffName)
+  // console.log("diluar staffName", staffName)
 
   const columns = [
     {
@@ -220,7 +220,7 @@ const CommissionPage = () => {
     {
       name: `${t("actions")}`,
       cell: (rows) => {
-        console.log("rows id nya", rows.id)
+        // console.log("rows id nya", rows.id)
         return (
           <Dropdown>
             <Dropdown.Toggle variant="secondary">
@@ -255,7 +255,7 @@ const CommissionPage = () => {
     }
   ];
 
-  console.log("dataCommission", dataCommission)
+  // console.log("dataCommission", dataCommission)
 
   const handleOptionsOutlet = () => {
     const uniqueArray = [];

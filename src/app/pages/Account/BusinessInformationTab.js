@@ -39,7 +39,6 @@ export const BusinessInformation = ({updateState}) => {
   const [refresh, setRefresh] = React.useState("show");
 
   React.useEffect(() => {
-    console.log("updateState", updateState)
     if(updateState) {
       setStateComponent(updateState)
     }
@@ -132,7 +131,6 @@ export const BusinessInformation = ({updateState}) => {
   const handleAllCurrencies = async () => {
     const {data} = await axios.get(`${API_URL}/api/v1/currency`)
     setAllCurrencies(data.data)
-    console.log("semua mata uang", data.data)
   }
   React.useEffect(() => {
     handleAllCurrencies()
@@ -228,7 +226,6 @@ export const BusinessInformation = ({updateState}) => {
         `${API_URL}/api/v1/business/${userInfo.business_id}`
       );
 
-      console.log("getBusinessInfo", data.data)
 
       const businessInfo = {
         name: data.data.name,

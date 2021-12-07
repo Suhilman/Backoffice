@@ -41,8 +41,8 @@ const AddGroupCommission = ({location}) => {
     }
   ]
   
-  console.log("optionsOutlet", optionsOutlet)
-  console.log("allOutlets", allOutlets)
+  // console.log("optionsOutlet", optionsOutlet)
+  // console.log("allOutlets", allOutlets)
 
   const initialValueCommission = {
     outlet_id: 0,

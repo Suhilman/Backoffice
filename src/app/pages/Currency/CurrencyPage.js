@@ -126,7 +126,7 @@ export default function CurrencyPage() {
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
 
-      console.log("values =====>", values)
+      // console.log("values =====>", values)
       const data = {
         outlet_id: values.outlet_id,
         currency_a: values.currency_a,
@@ -251,7 +251,7 @@ export default function CurrencyPage() {
   const handleSelectOutlet = (value, formik) => {
     if (value) {
       const outlet = value.map((item) => item.value);
-      console.log("outletnya", outlet);
+      // console.log("outletnya", outlet);
       formik.setFieldValue("outlet_id", outlet);
     } else {
       formik.setFieldValue("outlet_id", []);

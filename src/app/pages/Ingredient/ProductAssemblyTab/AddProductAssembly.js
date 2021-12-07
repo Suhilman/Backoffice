@@ -76,7 +76,7 @@ export const AddProductAssembly = ({ location }) => {
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
 
-      console.log("data yang akan dikirim", values)
+      // console.log("data yang akan dikirim", values)
 
       const dataAssembly = {
         outlet_id: values.outlet_id,
@@ -200,7 +200,7 @@ export const AddProductAssembly = ({ location }) => {
         })
         .filter((item) => item);
 
-      console.log("resOption", resOption)
+      // console.log("resOption", resOption)
 
       setOptionRecipe(resOption)
     } catch (error) {
@@ -219,7 +219,7 @@ export const AddProductAssembly = ({ location }) => {
   };
 
   const defaultValueUnit = (index) => {
-    console.log("ini unit nya", formikProductAssembly.values.items[index]);
+    // console.log("ini unit nya", formikProductAssembly.values.items[index]);
     let result;
     optionsUnit.map((item) => {
       if (item.value === formikProductAssembly.values.items[index].unit_id) {
@@ -416,7 +416,7 @@ export const AddProductAssembly = ({ location }) => {
                                             `items[${index}].expired_date`,
                                             resDate
                                           )
-                                          console.log("value.unit", value.unit)
+                                          // console.log("value.unit", value.unit)
                                           if (value.unit.id) {
                                             formikProductAssembly.setFieldValue(
                                               `items[${index}].unit_id`,

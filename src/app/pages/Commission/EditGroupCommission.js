@@ -67,7 +67,7 @@ const EditGroupCommission = ({location, match}) => {
   const getStaff = async () => {
     try {
       const {data} = await axios.get(`${API_URL}/api/v1/staff`)
-      console.log("all staff", data.data)
+      // console.log("all staff", data.data)
       // setAllStaff(data.data)
     } catch (error) {
       console.log(error)
@@ -96,8 +96,8 @@ const EditGroupCommission = ({location, match}) => {
 
   // const default =
 
-  console.log("currCommission staff_id", )
-  console.log("cek product_id", product_id)
+  // console.log("currCommission staff_id", )
+  // console.log("cek product_id", product_id)
   const initialValueCommission = {
     outlet_id,
     name_group_commission: currCommission.name,
@@ -111,8 +111,8 @@ const EditGroupCommission = ({location, match}) => {
   };
 
 
-  console.log("currCommission", currCommission)
-  console.log("initialValueCommission", initialValueCommission)
+  // console.log("currCommission", currCommission)
+  // console.log("initialValueCommission", initialValueCommission)
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
@@ -147,7 +147,7 @@ const EditGroupCommission = ({location, match}) => {
     initialValues: initialValueCommission,
     // validationSchema: commissionSchema,
     onSubmit: async (values) => {
-      console.log("Data sebelum diedit", values)
+      // console.log("Data sebelum diedit", values)
       const API_URL = process.env.REACT_APP_API_URL;
       const data = {
         outlet_id: values.outlet_id,
@@ -162,7 +162,7 @@ const EditGroupCommission = ({location, match}) => {
       if(values.nominal_commission) {
         data.nominal = values.nominal_commission
       }
-      console.log("persiapan edit data", data)
+      // console.log("persiapan edit data", data)
       try {
         enableLoading();
         await axios.put(`${API_URL}/api/v1/commission/${commission_id}`, data);
@@ -245,9 +245,9 @@ const EditGroupCommission = ({location, match}) => {
   // )
 
   const handleSelectOutlet = (value, formik) => {
-    console.log("valuenya", value)
+    // console.log("valuenya", value)
     if (value) {
-      console.log("handleSelectOutlet", value)
+      // console.log("handleSelectOutlet", value)
       const outlet = value.map((item) => item.value);
       formik.setFieldValue("staff_id", outlet);
       const resultListStaff = []
@@ -267,7 +267,7 @@ const EditGroupCommission = ({location, match}) => {
 
   const handleSelectProduct = (value, formik) => {
     if (value) {
-      console.log("handleSelectProduct", value)
+      // console.log("handleSelectProduct", value)
       const outlet = value.map((item) => item.value);
       formik.setFieldValue("product_id", outlet);
       const resultListProduct = []
@@ -285,8 +285,8 @@ const EditGroupCommission = ({location, match}) => {
     }
   };
 
-  console.log("listStaffCommission", listStaffCommission)
-  console.log("listProduct", listProduct)
+  // console.log("listStaffCommission", listStaffCommission)
+  // console.log("listProduct", listProduct)
   
 
   const handleListStaffCommission = () => {
@@ -301,7 +301,7 @@ const EditGroupCommission = ({location, match}) => {
     // console.log("pertama di render", resultListStaff)
     setListStaffCommission(resultListStaff)
   }
-  console.log("defaultValueProduct", defaultValueProduct)
+  // console.log("defaultValueProduct", defaultValueProduct)
 
   const handleListProduct = () => {
     const resultListProduct = []

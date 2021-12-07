@@ -68,7 +68,7 @@ export const EditOutcomingMaterialPage = ({ location, match }) => {
         items: values.items
       };
 
-      console.log("outcoming stock Kitchen", stockData)
+      // console.log("outcoming stock Kitchen", stockData)
 
       try {
         enableLoading();
@@ -76,7 +76,7 @@ export const EditOutcomingMaterialPage = ({ location, match }) => {
         disableLoading();
         history.push("/ingredient-inventory/outcoming-stock");
       } catch (err) {
-        console.log("Error formiknye breee", err)
+        console.log("Error formiknye", err)
         disableLoading();
       }
     }
@@ -108,7 +108,7 @@ export const EditOutcomingMaterialPage = ({ location, match }) => {
         `${API_URL}/api/v1/outcoming-stock/${id}`
       );
       
-      console.log("outcoming stock", data.data)
+      // console.log("outcoming stock", data.data)
 
       formikStock.setValues({
         notes: data.data.notes || "-",
@@ -170,7 +170,7 @@ export const EditOutcomingMaterialPage = ({ location, match }) => {
       };
     });
   
-  console.log("optionsMaterial", optionsMaterial)
+  // console.log("optionsMaterial", optionsMaterial)
 
   const optionsUnit = allUnits.map((item) => {
     return { value: item.id, label: item.name };
@@ -221,7 +221,7 @@ export const EditOutcomingMaterialPage = ({ location, match }) => {
         items: outcomingStock.Outcoming_Stock_Products,
         status: 'done'
       }
-      console.log("sendStock", sendStock)
+      // console.log("sendStock", sendStock)
 
       await axios.patch(`${API_URL}/api/v1/outcoming-stock/status/${outcomingStock.id}`, sendStock)
       disableLoading()
@@ -238,7 +238,7 @@ export const EditOutcomingMaterialPage = ({ location, match }) => {
   const closeConfirmModal = () => setShowConfirm(false);
 
   const handleConfirm = () => {
-    console.log("trigger handleConfirm")
+    // console.log("trigger handleConfirm")
     handleStatus()
     closeConfirmModal()
   };

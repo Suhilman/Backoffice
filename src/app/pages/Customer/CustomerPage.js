@@ -189,13 +189,13 @@ export const CustomerPage = () => {
       const reader = new FileReader();
       reader.onload = () =>{
         if(reader.readyState === 2){
-          console.log("reader.result", reader.result)
+          // console.log("reader.result", reader.result)
           setPhotoPreview(reader.result);
         }
       }
       reader.readAsDataURL(e.target.files[0])
       img = e.target.files[0];
-      console.log("img", img)
+      // console.log("img", img)
       setPhoto(img)
     } else {
       preview = "";

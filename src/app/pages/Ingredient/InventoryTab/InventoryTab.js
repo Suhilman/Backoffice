@@ -178,7 +178,7 @@ const InventoryIngredientTab = ({
         stock_id: values.stock_id,
         is_sold: values.is_sold
       };
-      console.log('data edit', materialData)
+      // console.log('data edit', materialData)
       try {
         const API_URL = process.env.REACT_APP_API_URL;
         enableLoading();
@@ -232,7 +232,7 @@ const InventoryIngredientTab = ({
       const { data } = await axios.get(
         `${API_URL}/api/v1/raw-material${filter}`
       );
-      console.log("get raw material", data.data)
+      // console.log("get raw material", data.data)
       setRawMaterial(data.data);
     } catch (err) {
       setRawMaterial([]);
@@ -417,7 +417,7 @@ const InventoryIngredientTab = ({
     return result
   }
   const tempOptionOutlet = handleOptionsOutlet()
-  console.log("handleOptionsOutlet", tempOptionOutlet)
+  // console.log("handleOptionsOutlet", tempOptionOutlet)
 
   const optionsOutlet = tempOptionOutlet.map((item) => {
     return { value: item.id, label: item.name };
@@ -433,14 +433,14 @@ const InventoryIngredientTab = ({
           }
         })
       })
-      console.log("data export", result)
+      // console.log("data export", result)
       setDataExport(result)
     } else {
       setDataExport([])
     }
   }
 
-  console.log("optionsOutlet", optionsOutlet)
+  // console.log("optionsOutlet", optionsOutlet)
   const ExpandableComponent = ({ data }) => {
     const stockData = data.stocks.map((item) => {
       return {
@@ -510,7 +510,7 @@ const InventoryIngredientTab = ({
     const API_URL = process.env.REACT_APP_API_URL;
     const raw_material_id = data.map((item) => item.id);
 
-    console.log("handleBulkDelete", data)
+    // console.log("handleBulkDelete", data)
 
     try {
       enableLoading();

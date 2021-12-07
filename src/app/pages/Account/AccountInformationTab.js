@@ -299,7 +299,6 @@ const ModalAccountInformation = ({
 
   const showPassword = () => {
     setStateShowPassword(!stateShowPassword)
-    console.log("hellow brow")
     const password = document.getElementById('show')
     if (password.type === 'password') {
       password.type = 'text'
@@ -310,7 +309,6 @@ const ModalAccountInformation = ({
 
   const showPassword2 = () => {
     setStateShowPassword2(!stateShowPassword2)
-    console.log("hellow brow")
     const password = document.getElementById('show2')
     if (password.type === 'password') {
       password.type = 'text'
@@ -321,7 +319,6 @@ const ModalAccountInformation = ({
 
   const showPassword3 = () => {
     setStateShowPassword3(!stateShowPassword3)
-    console.log("hellow brow")
     const password = document.getElementById('show3')
     if (password.type === 'password') {
       password.type = 'text'
@@ -332,7 +329,6 @@ const ModalAccountInformation = ({
 
   const showPassword4 = () => {
     setStateShowPassword4(!stateShowPassword4)
-    console.log("hellow brow")
     const password = document.getElementById('show4')
     if (password.type === 'password') {
       password.type = 'text'
@@ -343,7 +339,6 @@ const ModalAccountInformation = ({
 
   const showPassword5 = () => {
     setStateShowPassword5(!stateShowPassword5)
-    console.log("hellow brow")
     const password = document.getElementById('show5')
     if (password.type === 'password') {
       password.type = 'text'
@@ -354,7 +349,6 @@ const ModalAccountInformation = ({
 
   const showPassword6 = () => {
     setStateShowPassword6(!stateShowPassword6)
-    console.log("hellow brow")
     const password = document.getElementById('show6')
     if (password.type === 'password') {
       password.type = 'text'

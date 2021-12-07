@@ -47,7 +47,7 @@ export const DetailIncomingMaterialPage = ({ match }) => {
       const { data } = await axios.get(
         `${API_URL}/api/v1/incoming-stock/${id}`
       );
-      console.log("getIncomingStock", data.data)
+      // console.log("getIncomingStock", data.data)
       setIncomingStock(data.data);
     } catch (err) {
       console.log(err);

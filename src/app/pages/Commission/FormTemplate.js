@@ -28,17 +28,17 @@ import { FormikConsumer } from 'formik';
 
 const FormTemplate = ({title, loading, formikCommission, alert, t, optionsOutlet, optionsStaff, optionsTypeTotalCommission, listStaffCommission, listProduct, optionsProduct, handleSelectOutlet, handleSelectProduct, validationCommission, defaultValueStaff, defaultCommissionType, defaultValueProduct, handleStatusGroup, statusGroup}) => {
 
-  console.log("optionsOutlet", optionsOutlet)
+  // console.log("optionsOutlet", optionsOutlet)
 
   const defaultValueOutlet = optionsOutlet.find((val) => {
-    console.log("val.value", val.value)
-    console.log("val outlet_id", formikCommission.values.outlet_id)
+    // console.log("val.value", val.value)
+    // console.log("val outlet_id", formikCommission.values.outlet_id)
     return val.value === formikCommission.values.outlet_id
   });
 
-  console.log("defaultValueOutlet commission", defaultValueOutlet)
-  console.log("defaultValueStaff commission", defaultValueStaff)
-  console.log("defaultValueProduct commission", defaultValueProduct)
+  // console.log("defaultValueOutlet commission", defaultValueOutlet)
+  // console.log("defaultValueStaff commission", defaultValueStaff)
+  // console.log("defaultValueProduct commission", defaultValueProduct)
 
   return (
     <div>
