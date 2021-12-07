@@ -1141,6 +1141,10 @@
   "codeIsInvalid": "Kode Tidak Valid",
   "valueMustBeGreaterThanOrEqualTo0": "Nilai Harus Lebih Besar Dari Atau Sama Dengan 0",
   "emailMustBeAValidEmail": "Nama email Harus Email yang Valid",
+  "calorie": "Kalori",
+  "kiloCalorie": "Kilokalori",
+  "unitCalorie": "kal",
+  "unitKiloCalorie": "Kkal",
 
   "currencyConversion": "Konversi Mata Uang",
   "currencyA": "Mata Uang A",

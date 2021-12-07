@@ -1140,5 +1140,9 @@
   "owner": "所有者",
   "codeIsInvalid": "代碼無效",
   "valueMustBeGreaterThanOrEqualTo0": "值必須大於或等於 0",
-  "emailMustBeAValidEmail": "電子郵件必須是有效的電子郵件"
+  "emailMustBeAValidEmail": "電子郵件必須是有效的電子郵件",
+  "calorie": "卡路里",
+  "kiloCalorie": "千卡",
+  "unitCalorie": "卡路里",
+  "unitKiloCalorie": "千卡"
 }

@@ -30,8 +30,17 @@ const AddModal = ({
     return { value: item.id, label: item.name };
   });
 
-  const optionsCalorie = ["kcal", "cal"].map((item) => {
-    return { value: item, label: item };
+  const optionsCalorie = [
+    {
+      key: "kcal",
+      name: `${t('unitKiloCalorie')}`
+    },
+    {
+      key: "cal",
+      name: `${t('unitCalorie')}`
+    }
+  ].map((item) => {
+    return { value: item.key, label: item.name };
   });
 
   return (

@@ -39,9 +39,23 @@ const EditModal = ({
     (val) => val.value === formikMaterial.values.unit_id
   );
 
-  const optionsCalorie = ["kcal", "cal"].map((item) => {
-    return { value: item, label: item };
+  // const optionsCalorie = ["kcal", "cal"].map((item) => {
+  //   return { value: item, label: item };
+  // });
+
+  const optionsCalorie = [
+    {
+      key: "kcal",
+      name: `${t('unitKiloCalorie')}`
+    },
+    {
+      key: "cal",
+      name: `${t('unitCalorie')}`
+    }
+  ].map((item) => {
+    return { value: item.key, label: item.name };
   });
+
   const defaultValueCalorie = optionsCalorie.find(
     (val) => val.value === formikMaterial.values.calorie_unit
   );

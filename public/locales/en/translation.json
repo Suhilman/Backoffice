@@ -1141,6 +1141,10 @@
     "codeIsInvalid": "Code Is Invalid",
     "valueMustBeGreaterThanOrEqualTo0": "Value Must be Greater Than Or Equal To 0",
     "emailMustBeAValidEmail": "Email Must Be A Valid Email",
+    "caloricalorie": "Cal",
+    "kiloCalorie": "Kcal",
+    "unitCalorie": "Cal",
+    "unitKiloCalorie": "Kcal",
 
     "currencyConversion": "Currency Convertion",
     "currencyA": "Currency A",
