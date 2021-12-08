@@ -4,6 +4,7 @@ import axios from "axios";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
+import { ExcelRenderer } from "react-excel-renderer";
 import { Paper } from "@material-ui/core";
 import {
   Button,
@@ -25,6 +26,8 @@ import EditModal from "./RawMaterial/EditModal";
 import ConfirmModal from "../../../components/ConfirmModal";
 import { Delete } from "@material-ui/icons";
 
+import ImportModal from './ImportModal'
+
 const InventoryIngredientTab = ({
   allOutlets,
   allCategories,
@@ -33,12 +36,16 @@ const InventoryIngredientTab = ({
   handleRefresh
 }) => {
   const [alert, setAlert] = React.useState("");
+  const [filename, setFilename] = React.useState("");
+
   const [loading, setLoading] = React.useState(false);
   const { t } = useTranslation();
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
   const [stateDeleteModal, setStateDeleteModal] = React.useState(false);
   const [stateExport, setStateExportExcel] = React.useState(false);
+  const [stateImport, setStateImport] = React.useState(false);
+
   const [dataExport, setDataExport] = React.useState([])
 
   const [multiSelect, setMultiSelect] = React.useState(false);
@@ -525,6 +532,56 @@ const InventoryIngredientTab = ({
     }
   };
 
+  const handleFile = (file) => {
+    setFilename(file[0].name);
+    ExcelRenderer(file[0], (err, resp) => {
+      if (err) {
+        console.log("handleFile", err)
+        setAlert(err);
+      } else {
+        const data = []
+        const obj = {};
+        const content = resp.rows.slice(4)
+        const keys = [
+          "name",
+          "category",
+          "stock",
+          "unit",
+          "price_per_unit",
+          "calorie_per_unit",
+          "calorie_unit",
+          "notes",
+          "sell_as_product"
+        ]
+        content.map((value) => {
+          keys.map((value2, index) => {
+            obj[value2] = value[index];
+          })
+          data.push({
+            name: obj.name,
+            category: obj.category,
+            stock: obj.stock,
+            unit: obj.unit,
+            price_per_unit: obj.price_per_unit,
+            calorie_per_unit: obj.calorie_per_unit,
+            calorie_unit: obj.calorie_unit,
+            notes: obj.notes,
+            sell_as_product: obj.sell_as_product
+          });
+        })
+        console.log("data dari excel", data)
+      }
+    });
+  };
+
+  const handleOpenImport = () => setStateImport(true);
+  const handleCloseImport = () => {
+    setStateImport(false);
+    setFilename("");
+    // formikImportProduct.setFieldValue("outlet_id", []);
+    // formikImportProduct.setFieldValue("products", []);
+  };
+
   return (
     <>
       <AddModal
@@ -585,6 +642,18 @@ const InventoryIngredientTab = ({
         dataExport={dataExport}
       />
 
+      <ImportModal
+        state={stateImport}
+        loading={loading}
+        alert={alert}
+        closeModal={handleCloseImport}
+        // formikImportProduct={formikImportProduct}
+        allOutlets={allOutlets}
+        handleFile={handleFile}
+        filename={filename}
+        // subscriptionType={subscriptionType}
+      />
+      
       <Row>
         <Col>
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
@@ -601,6 +670,9 @@ const InventoryIngredientTab = ({
                 <>
                   <Button style={{ marginRight: "0.5rem" }} variant="secondary" onClick={() => setStateExportExcel(true)}>
                   {t("export")}
+                  </Button>
+                  <Button style={{ marginRight: "0.5rem" }} variant="secondary" onClick={handleOpenImport}>
+                  {t("import")}
                   </Button>
                   <div style={{ marginRight: "0.5rem" }}>
                     <Button variant="primary" onClick={showAddModal}>

@@ -548,8 +548,6 @@ const ProductTab = ({
           const output = [];
           for (const val of values.products) {
             if(val.name && val.sku) {
-              console.log("val.price_purchase", val.price_purchase)
-              console.log("val.price", val.price)
               if(!val.price_purchase) throw new Error(t('thereIsProductWithoutPrice'));
               if(!val.category) throw new Error(t('thereIsProductWithoutCategory'));
 
