@@ -595,10 +595,10 @@ function Login(props) {
             >
               {t('staff?LoginHere')}
             </Link>
-            {/* <ReCAPTCHA
+            <ReCAPTCHA
               sitekey={process.env.REACT_APP_SITE_KEY}
               onChange={handleCaptcha}
-            /> */}
+            />
             <button
               id="kt_login_signin_submit"
               type="submit"
