@@ -1081,10 +1081,10 @@ const RegistrationTryNow = () => {
           ) : null}
         </div>
         {/* end: Terms and Conditions */}
-        <ReCAPTCHA
+        {/* <ReCAPTCHA
           sitekey={process.env.REACT_APP_SITE_KEY}
           onChange={handleCaptcha}
-        />
+        /> */}
 
         <div className="form-group d-flex flex-wrap flex-end">
           <button
