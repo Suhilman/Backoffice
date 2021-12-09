@@ -1144,5 +1144,6 @@
   "calorie": "卡路里",
   "kiloCalorie": "千卡",
   "unitCalorie": "卡路里",
-  "unitKiloCalorie": "千卡"
+  "unitKiloCalorie": "千卡",
+  "importRawMaterial": "進口原材料"
 }

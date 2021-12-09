@@ -1145,6 +1145,7 @@
     "kiloCalorie": "Kcal",
     "unitCalorie": "Cal",
     "unitKiloCalorie": "Kcal",
+    "importRawMaterial": "Import Raw Material",
 
     "currencyConversion": "Currency Convertion",
     "currencyA": "Currency A",

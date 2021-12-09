@@ -8,7 +8,7 @@ const ConfirmModal = ({
   loading,
   alert,
   closeModal,
-  // formikImportProduct,
+  formikImportRawMaterial,
   allOutlets,
   handleFile,
   filename,
@@ -17,9 +17,9 @@ const ConfirmModal = ({
   const handleSelectOutlet = (value) => {
     if (value) {
       const outlet = value.map((item) => item.value);
-      // formikImportProduct.setFieldValue("outlet_id", outlet);
+      formikImportRawMaterial.setFieldValue("outlets_id", outlet);
     } else {
-      // formikImportProduct.setFieldValue("outlet_id", []);
+      formikImportRawMaterial.setFieldValue("outlets_id", []);
     }
   };
   const { t } = useTranslation();
@@ -38,12 +38,8 @@ const ConfirmModal = ({
 
   const handleDownload = () => {
     const API_URL = process.env.REACT_APP_API_URL;
-    let template;
-    // if(subscriptionType === 1) template = "templates/template-product-basic.xlsx"
-    // if(subscriptionType === 2) template = "templates/template-product-standard.xlsx"
-    // if(subscriptionType === 3) template = "templates/template-product-complete.xlsx"
     const newWindow = window.open(
-      `${API_URL}/${template}`,
+      `${API_URL}/templates/template-raw-material.xlsx`,
       "_blank",
       "noopener,noreferrer"
     );
@@ -55,8 +51,7 @@ const ConfirmModal = ({
       <Modal.Header closeButton>
         <Modal.Title>{t("importRawMaterial")}</Modal.Title>
       </Modal.Header>
-      {/* onSubmit={formikImportProduct.handleSubmit} */}
-      <Form>
+      <Form onSubmit={formikImportRawMaterial.handleSubmit}>
         <Modal.Body>
           {alert ? <Alert variant="danger">{alert}</Alert> : ""}
 
@@ -68,19 +63,19 @@ const ConfirmModal = ({
                   options={optionsOutlet}
                   isMulti
                   placeholder={t('select')}
-                  name="outlet_id"
+                  name="outlets_id"
                   className="basic-multi-select"
                   classNamePrefix="select"
                   onChange={(value) => handleSelectOutlet(value)}
                 />
-                {/* {formikImportProduct.touched.outlet_id &&
-                formikImportProduct.errors.outlet_id ? (
+                {formikImportRawMaterial.touched.outlets_id &&
+                formikImportRawMaterial.errors.outlets_id ? (
                   <div className="fv-plugins-message-container">
                     <div className="fv-help-block">
-                      {formikImportProduct.errors.outlet_id}
+                      {formikImportRawMaterial.errors.outlets_id}
                     </div>
                   </div>
-                ) : null} */}
+                ) : null}
               </Form.Group>
             </Col>
           </Row>
@@ -121,7 +116,7 @@ const ConfirmModal = ({
                     size="sm"
                     onClick={handleDownload}
                   >
-                      {t("downloadTemplate")}
+                    {t("downloadTemplate")}
                   </Button>
                 </div>
               </Form.Group>

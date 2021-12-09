@@ -532,6 +532,46 @@ const InventoryIngredientTab = ({
     }
   };
 
+  const initialValueImportRawMaterial = {
+    outlets_id: [],
+    items: [
+      {
+        name: "",
+        category: "",
+        stock: null,
+        unit: "",
+        price_per_unit: 0,
+        calorie_per_unit: 0,
+        calorie_unit: "",
+        notes: "",
+        sell_as_product: 0
+      }
+    ]
+  }
+
+  const formikImportRawMaterial = useFormik({
+    initialValues: initialValueImportRawMaterial,
+    onSubmit: async (values) => {
+      const API_URL = process.env.REACT_APP_API_URL;
+      try {
+        if (!values.outlets_id.length) {
+          throw new Error(`${t("pleaseChooseOutlet")}`);
+        }
+        enableLoading();
+        await axios.post(`${API_URL}/api/v1/raw-material/bulk-create`, {
+          outlets_id: values.outlets_id,
+          items: values.items
+        });
+        disableLoading()
+        handleRefresh()
+        handleCloseImport()
+      } catch (err) {
+        setAlert(err.response?.data.message || err.message);
+        disableLoading();
+      }
+    }
+  });
+
   const handleFile = (file) => {
     setFilename(file[0].name);
     ExcelRenderer(file[0], (err, resp) => {
@@ -560,16 +600,17 @@ const InventoryIngredientTab = ({
           data.push({
             name: obj.name,
             category: obj.category,
-            stock: obj.stock,
+            stock: obj.stock === "-" ? 0 : obj.stock,
             unit: obj.unit,
             price_per_unit: obj.price_per_unit,
-            calorie_per_unit: obj.calorie_per_unit,
+            calorie_per_unit: obj.calorie_per_unit === "-" ? 0 : obj.calorie_per_unit,
             calorie_unit: obj.calorie_unit,
             notes: obj.notes,
             sell_as_product: obj.sell_as_product
           });
         })
-        console.log("data dari excel", data)
+        console.log("itemsnya ====>", data)
+        formikImportRawMaterial.setFieldValue("items", data);
       }
     });
   };
@@ -578,8 +619,8 @@ const InventoryIngredientTab = ({
   const handleCloseImport = () => {
     setStateImport(false);
     setFilename("");
-    // formikImportProduct.setFieldValue("outlet_id", []);
-    // formikImportProduct.setFieldValue("products", []);
+    formikImportRawMaterial.setFieldValue("outlets_id", []);
+    formikImportRawMaterial.setFieldValue("items", []);
   };
 
   return (
@@ -647,7 +688,7 @@ const InventoryIngredientTab = ({
         loading={loading}
         alert={alert}
         closeModal={handleCloseImport}
-        // formikImportProduct={formikImportProduct}
+        formikImportRawMaterial={formikImportRawMaterial}
         allOutlets={allOutlets}
         handleFile={handleFile}
         filename={filename}
