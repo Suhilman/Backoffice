@@ -36,13 +36,34 @@ export const SalesTypeTab = ({ handleRefresh, refresh, t, optionsEcommerce, show
   const getSalesTypes = async (search) => {
     const API_URL = process.env.REACT_APP_API_URL;
     const filterSalesType = search ? `?name=${search}` : "";
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
 
     try {
       const { data } = await axios.get(
         `${API_URL}/api/v1/sales-type${filterSalesType}`
       );
-      setAllSalesTypes(data.data);
+
+      // partisi business type
+      const business = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+      const business_type_id = business.data.data.business_type_id
+
+      console.log("business_type_id =====>", business_type_id)
+
+      const result = data.data.filter((value) => {
+        // Jika business type nya Retail (1) dan Service (3), Sales Type dengan nama Dine-In dan Take-Away akan di Hide  
+        if(business_type_id === 3 || business_type_id === 1) {
+          if(value.name.toLowerCase() !== 'dine-in' && value.name.toLowerCase() !== 'take-away') {
+            return value
+          }
+        } else {
+          return value
+        }
+      })
+      
+      setAllSalesTypes(result);
+      // setAllSalesTypes(data.data);
     } catch (err) {
+      console.log("err ====>", err)
       setAllSalesTypes([]);
     }
   };

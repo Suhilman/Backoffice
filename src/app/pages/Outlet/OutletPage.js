@@ -22,6 +22,8 @@ export const OutletPage = () => {
     mdr: false
   })
 
+  const [businessTypeId, setBusinessTypeId] = React.useState(0)
+
   const getProvinces = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
 
@@ -95,7 +97,19 @@ export const OutletPage = () => {
     }
   }
 
+  const handleBusiness = async () => {
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+    try {
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/business/${userInfo.business_id}`)
+      console.log("business_type_id", data.data.business_type_id)
+      setBusinessTypeId(data.data.business_type_id)
+    } catch (error) {
+      console.log("error handleBusiness", error)
+    }
+  }
+
   React.useEffect(() => {
+    handleBusiness()
     handleSubscriptionPartition()
     handleEcommerceIntegrate()
     handleOptionEcommerce()
@@ -141,9 +155,12 @@ export const OutletPage = () => {
         />
       </Tab>
 
-      <Tab eventKey="table-management" title={t("tableManagement")}>
-        <TableManagementTab handleRefresh={handleRefresh} refresh={refresh} t={t}/>
-      </Tab>
+      {/* partisi business type */}
+      {businessTypeId === 2 ? (
+        <Tab eventKey="table-management" title={t("tableManagement")}>
+          <TableManagementTab handleRefresh={handleRefresh} refresh={refresh} t={t}/>
+        </Tab>
+      ) : null}
     </Tabs>
   );
 };
