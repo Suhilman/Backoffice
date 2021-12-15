@@ -42,6 +42,7 @@ function AsideMenuList(props) {
   const [dashboardSections, setDashboardSections] = React.useState([]);
   const [productSections, setProductSections] = React.useState([]);
   const [managementSections, setManagementSections] = React.useState([]);
+
   const [showDropdownReport, setShowDropdownReport] = React.useState(false)
   const [showDropdownReportSales, setShowDropdownReportSales] = React.useState(false)
   const [showDropdownReportInventory, setShowDropdownInventory] = React.useState(false)
@@ -55,6 +56,12 @@ function AsideMenuList(props) {
   const [showIntegrate, setShowIntegrate] = React.useState(false)
   const [showPayment, setShowPayment] = React.useState(false)
 
+  const [showDropdownSalesChannel, setShowDropdownSalesChannel] = React.useState(false)
+  const [showDropdownWebstore, setShowDropdownWebstore] = React.useState(false)
+  const [showDropdownMarketplace, setShowDropdownMarketplace] = React.useState(false)
+
+  const [webstore, setWebstore] = React.useState([])
+  const [marketPlace, setMarketPlace] = React.useState([])
   const location = useLocation();
   const getMenuItemActive = (url, hasSubmenu = false) => {
     return checkIsActive(location, url)
@@ -328,6 +335,10 @@ function AsideMenuList(props) {
   const handleDropdownReportInventory = () => setShowDropdownInventory(!showDropdownReportInventory)
   const handleDropdownReportEmployee = () => setShowDropdownEmployee(!showDropdownReportEmployee)
 
+  const handleDropdownSalesChannel = () => setShowDropdownSalesChannel(!showDropdownSalesChannel)
+  const handleDropdownWebstore = () => setShowDropdownWebstore(!showDropdownWebstore)
+  const handleDropdownMarketplace = () => setShowDropdownMarketplace(!showDropdownMarketplace)
+
   const handlePartitionReport = async () => {
     try {
       const tempDropdownSales = [
@@ -434,8 +445,30 @@ function AsideMenuList(props) {
     }
   }
 
+  const handleSubListOnlineShop = () => {
+    const tempDropdownWebstore = [
+      {
+        route: 'beetstore',
+        name: 'Beet Store'
+      }
+    ]
+    const tempDropdownMarketplace = [
+      {
+        route: 'blibli',
+        name: 'Blibli'
+      },
+      {
+        route: 'shopee',
+        name: 'Shopee'
+      }
+    ]
+    setWebstore(tempDropdownWebstore)
+    setMarketPlace(tempDropdownMarketplace)
+  }
+
   React.useEffect(() => {
     handlePartitionReport()
+    handleSubListOnlineShop()
   }, [])
 
   console.log("dropdownSalesReport", dropdownSalesReport)
@@ -852,6 +885,82 @@ function AsideMenuList(props) {
 
         <li className="menu-section" style={{ margin: "0" }}>
           <h4 className="menu-text">{t("accountSetting")}</h4>
+        </li>
+
+        
+
+        <li
+          className={`menu-item ${getMenuItemActive(
+            "/sales-channel",
+            false
+          )}`}
+          aria-haspopup="true"
+        >
+          <div className="menu-link" width="100%" onClick={handleDropdownSalesChannel}>
+            <div className="wrapper-icon">
+              <img src={reportIcon} alt="Icon Report" />
+            </div>
+            <div className="handle-between-dropdown-report">
+              <span className="menu-text">{t("onlineShop")}</span>
+              {showDropdownSalesChannel ? (
+                <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
+              ) : (
+                <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
+              )}
+            </div>
+          </div>
+          <div className={showDropdownSalesChannel ? 'show-dropdown-report' : 'hide-dropdown-report'}>
+            <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
+              
+              <li className={`menu-item ${getMenuItemActive("/report",false)}`} aria-haspopup="true">
+                <div className="menu-link d-flex justify-content-between align-items-center" onClick={handleDropdownWebstore}>
+                  <span className="dropdown-menu-lv1 menu-text">{t("webStore")}</span>
+                  {showDropdownWebstore ? (
+                    <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
+                  ) : (
+                    <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
+                  )}
+                </div>
+
+                <div className={showDropdownWebstore ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
+                  <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
+                    {webstore.map((value, index2) => 
+                      <li key={index2} className={`menu-item ${getMenuItemActive(`/${value.route}`,false)}`}  aria-haspopup="true">
+                        <NavLink className="menu-link" to={`/online-shop/${value.route}`}>
+                          <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
+                        </NavLink>
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              </li>
+
+              {marketPlace.length > 0 ? (
+                <li className={`menu-item ${getMenuItemActive("/report",false)}`}  aria-haspopup="true">
+                  <div className="menu-link d-flex justify-content-between align-items-center" onClick={handleDropdownMarketplace}>
+                    <span className="dropdown-menu-lv1 menu-text">{t("marketplace")}</span>
+                    {showDropdownMarketplace ? (
+                      <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
+                    ) : (
+                      <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
+                    )}
+                  </div>
+                  <div className={showDropdownMarketplace ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
+                    <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
+                      {marketPlace.map((value, index2) => 
+                        <li key={index2} className={`menu-item ${getMenuItemActive(`/${value.route}`,false)}`}  aria-haspopup="true">
+                          <NavLink className="menu-link" to={`/online-shop/${value.route}`}>
+                            <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
+                          </NavLink>
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+                </li>
+              ) : null }
+
+            </ul>
+          </div>
         </li>
 
         <li className={`menu-item ${getMenuItemActive("/account", false)}`}>

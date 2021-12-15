@@ -89,6 +89,10 @@ import { DetailOpnameMaterialPage } from "./pages/Ingredient/InventoryTab/StockO
 import { AddBundlePage } from "./pages/Product/ProductTab/AddBundle";
 import { EditBundlePage } from "./pages/Product/ProductTab/EditBundle";
 
+import BeetstorePage from './pages/OnlineShop/WebStore/BeetstorePage'
+import ShopeePage from './pages/OnlineShop/MarketPlace/ShopeePage'
+import BlibliPage from './pages/OnlineShop/MarketPlace/BlibliPage'
+
 // Form Cashlez Lama
 // import { PaymentModulPage } from './pages/PaymentModul/PaymentModulePage'
 
@@ -120,7 +124,8 @@ export default function BasePage() {
     subscription: true,
     payment_module: true,
     about: true,
-    sales_channel: true
+    sales_channel: true,
+    online_shop: true
   });
 
   const localData = JSON.parse(localStorage.getItem("user_info"));
@@ -797,6 +802,30 @@ export default function BasePage() {
           exact={false}
           path="/sales-channel"
           component={SalesChannelPage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.online_shop}
+          isRoute={false}
+          exact={true}
+          path="/online-shop/beetstore"
+          component={BeetstorePage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.online_shop}
+          isRoute={false}
+          exact={true}
+          path="/online-shop/blibli"
+          component={BlibliPage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.online_shop}
+          isRoute={false}
+          exact={true}
+          path="/online-shop/shopee"
+          component={ShopeePage}
         />
 
         <ContentRoute path="/account" component={AccountPage} />

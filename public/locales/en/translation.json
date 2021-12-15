@@ -1146,6 +1146,9 @@
     "unitCalorie": "Cal",
     "unitKiloCalorie": "Kcal",
     "importRawMaterial": "Import Raw Material",
+    "marketplace": "Marketplace",
+    "webStore": "Web Store",
+    "onlineShop": "Online Shop",
 
     "currencyConversion": "Currency Convertion",
     "currencyA": "Currency A",
