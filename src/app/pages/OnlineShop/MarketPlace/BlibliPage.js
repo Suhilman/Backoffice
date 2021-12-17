@@ -64,7 +64,7 @@ export default function BlibliPage() {
 
       let status_integrate = {
         key: false,
-        label: "Belum Integrasi"
+        label: t('notYetIntegrated')
       }
       // Cek duls, apakah status_integrate_beetstorenya true?
       console.log("semua outlet", item)
@@ -77,12 +77,12 @@ export default function BlibliPage() {
           if(find_online_shop_name.status === 'done' && item.status_integrate_blibli) {
             status_integrate = {
               key: true,
-              label: "Sudah Integrasi"
+              label: t('alreadyIntegrated')
             }
           } else {
             status_integrate = {
               key: false,
-              label: "Pending"
+              label: t('pending')
             }
           }
         }
@@ -178,7 +178,7 @@ export default function BlibliPage() {
       }
       console.log("data sebelum dikirim", data)
       await axios.post(`${API_URL}/api/v1/request-integration-online-shop`, data)
-      toast.success('Success apply for integration ', {
+      toast.success(t('successApplyForIntegration'), {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -190,7 +190,7 @@ export default function BlibliPage() {
       closeConfirmIntegration()
       handleRefresh()
     } catch (error) {
-      toast.error("Something wen't wrong, please try again", {
+      toast.error(t('somethingWentWrong'), {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -216,15 +216,15 @@ export default function BlibliPage() {
       sortable: true
     },
     {
-      name: `${t("statusIntegrate")}`,
+      name: `${t("integrationStatus")}`,
       cell: (rows) => {
         return (
-          <div className={rows.status_integrate.key ? 'integrated' : rows.status_integrate.label === 'Pending' ? 'pendingIntegration' : 'notIntegrated'}>{rows.status_integrate.label}</div>
+          <div className={rows.status_integrate.key ? 'integrated' : rows.status_integrate.label === t('pending') ? 'pendingIntegration' : 'notIntegrated'}>{rows.status_integrate.label}</div>
         );
       }
     },
     {
-      name: "Tanggal Aktivasi",
+      name: t('activationDate'),
       sortable: true,
       cell: (rows) => {
         return (
@@ -235,7 +235,7 @@ export default function BlibliPage() {
       }
     },
     {
-      name: "Tanggal Update",
+      name: t('updateDate'),
       sortable: true,
       cell: (rows) => {
         return (
@@ -249,7 +249,7 @@ export default function BlibliPage() {
       name: `${t("actions")}`,
       cell: (rows) => {
         return (
-          <button onClick={() => handleConfirmIntegration(rows)} style={{padding:"5px 7px"}} className='btn btn-primary' disabled={rows.status_integrate.key || rows.status_integrate.label === 'Pending'}>Ajukan Integrasi</button>
+          <button onClick={() => handleConfirmIntegration(rows)} style={{padding:"5px 7px"}} className='btn btn-primary' disabled={rows.status_integrate.key || rows.status_integrate.label === t('pending')}>{t('applyForIntegration')}</button>
         );
       }
     }
@@ -262,8 +262,8 @@ export default function BlibliPage() {
   return (
     <div>
       <ConfirmModal
-        title="Blibli Integration"
-        body="Are you sure about applying for Blibli integration?"
+        title={t('blibliIntegration')}
+        body={t('areYouSureAboutApplyingForBlibliIntegration')}
         buttonColor="danger"
         handleClick={handleApply}
         state={showConfirmIntegration}
@@ -275,7 +275,7 @@ export default function BlibliPage() {
           <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
             <div className="headerPage">
               <div className="headerStart">
-                <h3>Pilih Outlet - Integrasi Blibli</h3>
+                <h3>{t('chooseOutlet')} - {t('blibliIntegration')}</h3>
               </div>
             </div>
 

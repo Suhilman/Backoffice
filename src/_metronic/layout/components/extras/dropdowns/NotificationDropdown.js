@@ -109,6 +109,7 @@ export function NotificationDropdown() {
               <div className="text-center text-muted">{t('notificationNotFound')}</div>
             ) }
           </div>
+
           <div className="navi-separator mt-3"></div>
 
           {/* navi-footer px-8 py-5 */}

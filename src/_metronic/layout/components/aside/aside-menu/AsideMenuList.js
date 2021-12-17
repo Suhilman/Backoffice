@@ -81,7 +81,6 @@ function AsideMenuList(props) {
       if (data.data.business_type_id == 2) nameKithcenModul = "kitchen";
       if (data.data.business_type_id == 3) nameKithcenModul = "assembly";
 
-      console.log("nameKithcenModul", nameKithcenModul);
 
       const show_payment = data.data.country_code_iso3 === "IDN" ? true : false
 
@@ -89,7 +88,6 @@ function AsideMenuList(props) {
       setShowIntegrate(data.data.ecommerce_integrate)
       setKitchenModul(nameKithcenModul);
 
-      console.log();
     } catch (error) {
       console.log(error);
     }
@@ -104,7 +102,6 @@ function AsideMenuList(props) {
     const resultSubscriptionPrivileges = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/v1/subscription-partition-privilege?subscription_partition_id=${data.data[0].subscription_partition_id}`
     );
-    console.log("resultSubscriptionPrivileges", resultSubscriptionPrivileges);
     const resLocalData = resultSubscriptionPrivileges.data.data.map((value) => {
       const tempData = {
         id: value.privilege_id,
@@ -115,7 +112,6 @@ function AsideMenuList(props) {
           .join("_"),
         access: value.Privilege.Access.name
       };
-      console.log("tempData", tempData);
       return tempData;
     });
     return resLocalData;
@@ -123,9 +119,7 @@ function AsideMenuList(props) {
 
   const handleSetPrivileges = async () => {
     const localDataOwner = await handleSubscriptionPartitionId();
-    console.log("localDataOwner", localDataOwner);
     const localData = JSON.parse(localStorage.getItem("user_info"));
-    console.log("localData user-id", localData.user_id);
     let privileges;
     // const privileges = localData?.privileges ? localData.privileges : localDataOwner;
 
@@ -146,16 +140,12 @@ function AsideMenuList(props) {
       });
       privileges = resultPrivileges;
       localData.privileges = resultPrivileges;
-      console.log("localstorage privilege", localData);
       localStorage.setItem("user_info", JSON.stringify(localData));
-      console.log("resultPrivileges", resultPrivileges);
     } else {
       privileges = localDataOwner;
     }
 
     const currUser = privileges.length ? "staff" : "owner";
-    console.log("privileges1", privileges);
-    console.log("currUser", currUser);
     setCurrPrivileges(privileges);
     setUser(currUser);
   };
@@ -207,7 +197,6 @@ function AsideMenuList(props) {
       ps.push("kitchen_management");
     }
 
-    console.log("productSections", ps);
     setProductSections(ps);
 
     // management sections
@@ -470,8 +459,6 @@ function AsideMenuList(props) {
     handlePartitionReport()
     handleSubListOnlineShop()
   }, [])
-
-  console.log("dropdownSalesReport", dropdownSalesReport)
 
   return (
     <>
@@ -887,9 +874,19 @@ function AsideMenuList(props) {
           <h4 className="menu-text">{t("accountSetting")}</h4>
         </li>
 
-        
+        <li className={`menu-item ${getMenuItemActive("/account", false)}`}>
+          <NavLink className="menu-link" to="/account">
+            {/* <span className="svg-icon menu-icon">
+              <SVG src={toAbsoluteUrl("/media/svg/icons/Shopping/Bag2.svg")} />
+            </span> */}
+            <div className="wrapper-icon">
+              <img src={accountIcon} alt="Icon Account" />
+            </div>
+            <span className="menu-text">{t("account")}</span>
+          </NavLink>
+        </li>
 
-        <li
+        {/* <li
           className={`menu-item ${getMenuItemActive(
             "/sales-channel",
             false
@@ -961,20 +958,8 @@ function AsideMenuList(props) {
 
             </ul>
           </div>
-        </li>
-
-        <li className={`menu-item ${getMenuItemActive("/account", false)}`}>
-          <NavLink className="menu-link" to="/account">
-            {/* <span className="svg-icon menu-icon">
-              <SVG src={toAbsoluteUrl("/media/svg/icons/Shopping/Bag2.svg")} />
-            </span> */}
-            <div className="wrapper-icon">
-              <img src={accountIcon} alt="Icon Account" />
-            </div>
-            <span className="menu-text">{t("account")}</span>
-          </NavLink>
-        </li>
-
+        </li> */}
+        
         {/* <li className={`menu-item ${getMenuItemActive("/currency", false)}`}>
           <NavLink className="menu-link" to="/currency">
             <div className="wrapper-icon">

@@ -474,9 +474,13 @@ export const EditProductPage = ({ match, location }) => {
       setThereShowSync(temp_boolean)
       setSyncEcommerce(data.data)
     } catch (error) {
-      
+      console.log(error)
     }
   }
+
+  React.useEffect(() => {
+    handleOptionSync(currProduct.outlet_id)
+  }, [currProduct.outlet_id]) 
 
   const showModalSalesType = () => {
     if (!formikProduct.values.sales_types.length) {

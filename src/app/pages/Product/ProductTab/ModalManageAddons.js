@@ -6,6 +6,14 @@ import { Delete } from "@material-ui/icons";
 import { FormikProvider, FieldArray } from "formik";
 import { useTranslation } from "react-i18next";
 
+import {
+  Switch,
+  FormGroup,
+  FormControl,
+  FormControlLabel,
+  Paper
+} from "@material-ui/core";
+
 const ModalManageVariant = ({
   title,
   showManageAddons,
@@ -167,7 +175,7 @@ const ModalManageVariant = ({
                                                       />
                                                     </>
                                                   )}
-                                                  <Form.Check
+                                                  {/* <Form.Check
                                                     type="checkbox"
                                                     label={t('usingRawMaterial')}
                                                     style={{
@@ -194,7 +202,7 @@ const ModalManageVariant = ({
                                                         );
                                                       }
                                                     }}
-                                                  />
+                                                  /> */}
                                                 </Form.Group>
                                               </Col>
 
@@ -253,6 +261,49 @@ const ModalManageVariant = ({
                                                   )}
                                                   required
                                                 />
+                                              </Col>
+
+                                              <Col>
+                                                <div style={{height: '100%'}} className="d-flex align-items-center justify-content-center">
+                                                  <h5 className="text-muted h6 mr-3">{formikProduct.values
+                                                      .groupAddons[index]
+                                                      .addons[valIndex]
+                                                      .status}</h5>
+                                                  <FormControlLabel
+                                                    value={formikProduct.values
+                                                      .groupAddons[index]
+                                                      .addons[valIndex]
+                                                      .status}
+                                                    control={
+                                                      <Switch
+                                                        color="primary"
+                                                        checked={
+                                                          formikProduct.values
+                                                          .groupAddons[index]
+                                                          .addons[valIndex]
+                                                          .status === 'active' ? true : false
+                                                        }
+                                                        onChange={(e) => {
+                                                          console.log("switch hidden", e.target.value)
+                                                          const temp_status = formikProduct.values
+                                                          .groupAddons[index]
+                                                          .addons[valIndex]
+                                                          .status
+                                                          if (temp_status === e.target.value) {
+                                                            if (temp_status === "active") {
+                                                              // ("Inactive");
+                                                              formikProduct.setFieldValue(`groupAddons[${index}].addons[${valIndex}].status`, "inactive")
+                                                            } else {
+                                                              // ("Active");
+                                                              formikProduct.setFieldValue(`groupAddons[${index}].addons[${valIndex}].status`, "active")
+                                                            }
+                                                          }
+                                                        }}
+                                                        name=""
+                                                      />
+                                                    }
+                                                  />
+                                                </div>
                                               </Col>
 
                                               {formikProduct.values.groupAddons
