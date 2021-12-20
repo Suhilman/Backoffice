@@ -206,6 +206,7 @@ export const PaymentMethodTab = () => {
                 handleSelectStatus={handleSelectStatus}
                 handleTimeStart={handleTimeStart}
                 handleTimeEnd={handleTimeEnd}
+                stateShowMdr={true}
               />
             <Table id="table-payment" striped>
               <thead>

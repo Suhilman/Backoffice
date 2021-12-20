@@ -227,6 +227,7 @@ export const AttendanceTab = () => {
               handleSelectStatus={handleSelectStatus}
               handleTimeStart={handleTimeStart}
               handleTimeEnd={handleTimeEnd}
+              stateShowMdr={false}
             />
             <div style={{ display: "none" }}>
               <table id="table-attendance-report">

@@ -226,6 +226,7 @@ const CommissionReport = () => {
               handleSelectStatus={handleSelectStatus}
               handleTimeStart={handleTimeStart}
               handleTimeEnd={handleTimeEnd}
+              stateShowMdr={true}
             />
             <div>
               <div style={{ display: "none" }}>

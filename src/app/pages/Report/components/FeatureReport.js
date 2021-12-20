@@ -51,7 +51,8 @@ export const FeatureReport = ({
   handleSelectStatus,
   handleTimeStart,
   handleTimeEnd,
-  handleMdr
+  handleMdr,
+  stateShowMdr
 }) => {
   const { t } = useTranslation();
 
@@ -391,7 +392,7 @@ export const FeatureReport = ({
 
             <div className="headerEnd">
               <Row>
-                {showFeature.mdr ? (
+                {showFeature.mdr && stateShowMdr ? (
                   <div className="d-flex align-items-center">
                     <Form.Label className="mr-1">{t("mdr")}</Form.Label>
                     <FormControl component="fieldset">

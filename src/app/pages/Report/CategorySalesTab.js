@@ -258,6 +258,7 @@ export const CategorySalesTab = () => {
               handleSelectStatus={handleSelectStatus}
               handleTimeStart={handleTimeStart}
               handleTimeEnd={handleTimeEnd}
+              stateShowMdr={true}
             />
           <Table id="table-category" striped>
             <thead>

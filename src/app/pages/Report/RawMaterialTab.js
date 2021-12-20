@@ -217,6 +217,7 @@ const RawMaterialTab = () => {
               handleSelectStatus={handleSelectStatus}
               handleTimeStart={handleTimeStart}
               handleTimeEnd={handleTimeEnd}
+              stateShowMdr={true}
             />
 
             <div style={{ display: "none" }}>
