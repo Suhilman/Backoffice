@@ -27,8 +27,8 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
   const [endDate, setEndDate] = React.useState(
     new Date(promoData.promo_date_end)
   );
-  const [startHour, setStartHour] = React.useState(promoData.promo_hour_start);
-  const [endHour, setEndHour] = React.useState(promoData.promo_hour_end);
+  const [startHour, setStartHour] = React.useState(new Date(`2021-12-21 ${promoData.promo_hour_start}:00`));
+  const [endHour, setEndHour] = React.useState(new Date(`2021-12-21 ${promoData.promo_hour_end}:00`));
 
   const [weekdays, setWeekdays] = React.useState({
     monday: { checked: false },
@@ -59,8 +59,8 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
     promo_date_start: promoData.promo_date_start,
     promo_date_end: promoData.promo_date_end,
     promo_days: promoData.promo_days,
-    promo_hour_start: promoData.promo_hour_start,
-    promo_hour_end: promoData.promo_hour_end,
+    promo_hour_start: new Date(`2021-12-21 ${promoData.promo_hour_start}:00`),
+    promo_hour_end: new Date(`2021-12-21 ${promoData.promo_hour_end}:00`),
     description_type: promoData.description_type,
     description: promoData.description ? promoData.description : ""
   };
@@ -196,8 +196,16 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
       formData.append("promo_date_start", values.promo_date_start);
       formData.append("promo_date_end", values.promo_date_end);
       formData.append("promo_days", values.promo_days);
-      formData.append("promo_hour_start", values.promo_hour_start);
-      formData.append("promo_hour_end", values.promo_hour_end);
+
+      const format_hour_start = dayjs(values.promo_hour_start).format("HH:mm")
+      const format_hour_end = dayjs(values.promo_hour_end).format("HH:mm")
+
+      formData.append("promo_hour_start", format_hour_start);
+      formData.append("promo_hour_end", format_hour_end);
+      
+      // formData.append("promo_hour_start", values.promo_hour_start);
+      // formData.append("promo_hour_end", values.promo_hour_end);
+
       formData.append("quantity_product_id", values.quantity_product_id);
       formData.append("quantity_value", values.quantity_value);
       formData.append("quantity_type", values.quantity_type);
@@ -243,8 +251,16 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
       formData.append("promo_date_start", values.promo_date_start);
       formData.append("promo_date_end", values.promo_date_end);
       formData.append("promo_days", values.promo_days);
-      formData.append("promo_hour_start", values.promo_hour_start);
-      formData.append("promo_hour_end", values.promo_hour_end);
+
+      const format_hour_start = dayjs(values.promo_hour_start).format("HH:mm")
+      const format_hour_end = dayjs(values.promo_hour_end).format("HH:mm")
+
+      formData.append("promo_hour_start", format_hour_start);
+      formData.append("promo_hour_end", format_hour_end);
+
+      // formData.append("promo_hour_start", values.promo_hour_start);
+      // formData.append("promo_hour_end", values.promo_hour_end);
+
       formData.append("transaction_value", values.transaction_value);
       formData.append("transaction_type", values.transaction_type);
       formData.append("transaction_amount", values.transaction_amount);
@@ -288,8 +304,16 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
       formData.append("promo_date_start", values.promo_date_start);
       formData.append("promo_date_end", values.promo_date_end);
       formData.append("promo_days", values.promo_days);
-      formData.append("promo_hour_start", values.promo_hour_start);
-      formData.append("promo_hour_end", values.promo_hour_end);
+
+      const format_hour_start = dayjs(values.promo_hour_start).format("HH:mm")
+      const format_hour_end = dayjs(values.promo_hour_end).format("HH:mm")
+
+      formData.append("promo_hour_start", format_hour_start);
+      formData.append("promo_hour_end", format_hour_end);
+
+      // formData.append("promo_hour_start", values.promo_hour_start);
+      // formData.append("promo_hour_end", values.promo_hour_end);
+
       formData.append(
         "xy_product_x_id",
         JSON.stringify(values.xy_product_x_id)
@@ -491,36 +515,38 @@ export const EditAutomaticPromoPage = ({ match, location }) => {
     }
   };
 
-  const handlePromoHour = (e) => {
-    const { name, value } = e.target;
+  const handlePromoHour = (date, value, name) => {
+    // const { name, value } = e.target;
+
+    const format_hour = dayjs(date).format()
 
     if (name === "promo_hour_start") {
-      setStartHour(value);
+      setStartHour(format_hour);
 
       if (promoData.type === "quantity") {
-        formikPromoQuantity.setFieldValue("promo_hour_start", value);
+        formikPromoQuantity.setFieldValue("promo_hour_start", format_hour);
       }
 
       if (promoData.type === "transaction") {
-        formikPromoTransaction.setFieldValue("promo_hour_start", value);
+        formikPromoTransaction.setFieldValue("promo_hour_start", format_hour);
       }
 
       if (promoData.type === "xy") {
-        formikPromoXY.setFieldValue("promo_hour_start", value);
+        formikPromoXY.setFieldValue("promo_hour_start", format_hour);
       }
     } else {
-      setEndHour(value);
+      setEndHour(format_hour);
 
       if (promoData.type === "quantity") {
-        formikPromoQuantity.setFieldValue("promo_hour_end", value);
+        formikPromoQuantity.setFieldValue("promo_hour_end", format_hour);
       }
 
       if (promoData.type === "transaction") {
-        formikPromoTransaction.setFieldValue("promo_hour_end", value);
+        formikPromoTransaction.setFieldValue("promo_hour_end", format_hour);
       }
 
       if (promoData.type === "xy") {
-        formikPromoXY.setFieldValue("promo_hour_end", value);
+        formikPromoXY.setFieldValue("promo_hour_end", format_hour);
       }
     }
   };

@@ -27,8 +27,10 @@ export const AddAutomaticPromoPage = ({ location }) => {
 
   const [startDate, setStartDate] = React.useState(new Date());
   const [endDate, setEndDate] = React.useState(new Date());
-  const [startHour, setStartHour] = React.useState(dayjs().format("HH:mm"));
-  const [endHour, setEndHour] = React.useState(dayjs().format("HH:mm"));
+  // const [startHour, setStartHour] = React.useState(dayjs().format("HH:mm"));
+  // const [endHour, setEndHour] = React.useState(dayjs().format("HH:mm"));
+  const [startHour, setStartHour] = React.useState(new Date());
+  const [endHour, setEndHour] = React.useState(new Date());
 
   const [weekdays, setWeekdays] = React.useState({
     monday: { checked: false },
@@ -181,8 +183,16 @@ export const AddAutomaticPromoPage = ({ location }) => {
         formData.append("promo_date_start", values.promo_date_start);
         formData.append("promo_date_end", values.promo_date_end);
         formData.append("promo_days", values.promo_days);
-        formData.append("promo_hour_start", values.promo_hour_start);
-        formData.append("promo_hour_end", values.promo_hour_end);
+
+        const format_hour_start = dayjs(values.promo_hour_start).format("HH:mm")
+        const format_hour_end = dayjs(values.promo_hour_end).format("HH:mm")
+
+        formData.append("promo_hour_start", format_hour_start);
+        formData.append("promo_hour_end", format_hour_end);
+
+        // formData.append("promo_hour_start", values.promo_hour_start);
+        // formData.append("promo_hour_end", values.promo_hour_end);
+
         formData.append("quantity_product_id", values.quantity_product_id);
         formData.append("quantity_value", values.quantity_value);
         formData.append("quantity_type", values.quantity_type);
@@ -225,8 +235,16 @@ export const AddAutomaticPromoPage = ({ location }) => {
         formData.append("promo_date_start", values.promo_date_start);
         formData.append("promo_date_end", values.promo_date_end);
         formData.append("promo_days", values.promo_days);
-        formData.append("promo_hour_start", values.promo_hour_start);
-        formData.append("promo_hour_end", values.promo_hour_end);
+
+        const format_hour_start = dayjs(values.promo_hour_start).format("HH:mm")
+        const format_hour_end = dayjs(values.promo_hour_end).format("HH:mm")
+
+        formData.append("promo_hour_start", format_hour_start);
+        formData.append("promo_hour_end", format_hour_end);
+
+        // formData.append("promo_hour_start", values.promo_hour_start);
+        // formData.append("promo_hour_end", values.promo_hour_end);
+
         formData.append("transaction_value", values.transaction_value);
         formData.append("transaction_type", values.transaction_type);
         formData.append("transaction_amount", values.transaction_amount);
@@ -272,8 +290,16 @@ export const AddAutomaticPromoPage = ({ location }) => {
         formData.append("promo_date_end",
          values.promo_date_end);
         formData.append("promo_days", values.promo_days);
-        formData.append("promo_hour_start", values.promo_hour_start);
-        formData.append("promo_hour_end", values.promo_hour_end);
+
+        const format_hour_start = dayjs(values.promo_hour_start).format("HH:mm")
+        const format_hour_end = dayjs(values.promo_hour_end).format("HH:mm")
+
+        formData.append("promo_hour_start", format_hour_start);
+        formData.append("promo_hour_end", format_hour_end);
+
+        // formData.append("promo_hour_start", values.promo_hour_start);
+        // formData.append("promo_hour_end", values.promo_hour_end);
+        
         formData.append(
           "xy_product_x_id",
           JSON.stringify(values.xy_product_x_id)
@@ -495,36 +521,39 @@ export const AddAutomaticPromoPage = ({ location }) => {
     }
   };
 
-  const handlePromoHour = (e) => {
-    const { name, value } = e.target;
+  const handlePromoHour = (date, value, name) => {
+    // const { name, value } = e.target;
+
+    const format_hour = dayjs(date).format()
+    // format_hour ("HH:mm")
 
     if (name === "promo_hour_start") {
-      setStartHour(value);
+      setStartHour(format_hour);
 
       if (tabs === "quantity") {
-        formikPromoQuantity.setFieldValue("promo_hour_start", value);
+        formikPromoQuantity.setFieldValue("promo_hour_start", format_hour);
       }
 
       if (tabs === "transaction") {
-        formikPromoTransaction.setFieldValue("promo_hour_start", value);
+        formikPromoTransaction.setFieldValue("promo_hour_start", format_hour);
       }
 
       if (tabs === "xy") {
-        formikPromoXY.setFieldValue("promo_hour_start", value);
+        formikPromoXY.setFieldValue("promo_hour_start", format_hour);
       }
     } else {
-      setEndHour(value);
+      setEndHour(format_hour);
 
       if (tabs === "quantity") {
-        formikPromoQuantity.setFieldValue("promo_hour_end", value);
+        formikPromoQuantity.setFieldValue("promo_hour_end", format_hour);
       }
 
       if (tabs === "transaction") {
-        formikPromoTransaction.setFieldValue("promo_hour_end", value);
+        formikPromoTransaction.setFieldValue("promo_hour_end", format_hour);
       }
 
       if (tabs === "xy") {
-        formikPromoXY.setFieldValue("promo_hour_end", value);
+        formikPromoXY.setFieldValue("promo_hour_end", format_hour);
       }
     }
   };
@@ -564,8 +593,10 @@ export const AddAutomaticPromoPage = ({ location }) => {
 
     setStartDate(new Date());
     setEndDate(new Date());
-    setStartHour(dayjs().format("HH:mm"));
-    setEndHour(dayjs().format("HH:mm"));
+    // setStartHour(dayjs().format("HH:mm"));
+    // setEndHour(dayjs().format("HH:mm"));
+    setStartHour(dayjs().format());
+    setEndHour(dayjs().format());
 
     setWeekdays({
       monday: { checked: false },

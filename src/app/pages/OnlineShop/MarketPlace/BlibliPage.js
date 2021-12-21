@@ -31,6 +31,8 @@ export default function BlibliPage() {
   const allStatuses = ["Newest", "Oldest"];
 
   const [showConfirmIntegration, setShowConfirmIntegration] = React.useState(false)
+  const [showCancelIntegration, setShowCancelIntegration] = React.useState(false)
+  
   const [loading, setLoading] = React.useState(false) 
   const [dataOutlet, setDataOutlet] = React.useState({})
 
@@ -161,9 +163,60 @@ export default function BlibliPage() {
   const openConfirmIntegration = () => setShowConfirmIntegration(true)
   const closeConfirmIntegration = () => setShowConfirmIntegration(false)
 
+  const openCancelIntegration = () => setShowCancelIntegration(true)
+  const closeCancelIntegration = () => setShowCancelIntegration(false)
+  
   const handleConfirmIntegration = (data_outlet) => {
     setDataOutlet(data_outlet)
     openConfirmIntegration()
+  }
+
+  const handleCancleIntegration = (data_outlet) => {
+    setDataOutlet(data_outlet)
+    openCancelIntegration()
+  }
+
+  const handleCancel = async () => {
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+    const API_URL = process.env.REACT_APP_API_URL;
+    console.log("dataOutlet", dataOutlet)
+    try {
+      await axios.delete(`${API_URL}/api/v1/request-integration-online-shop/delete-by-outlet?business_id=${userInfo.business_id}&outlet_id=${dataOutlet.id}&online_shop_name=blibli`)
+
+      handleRefresh()
+      closeCancelIntegration()
+
+      toast.success(t('successCancelIntegration'), {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      console.log("error ", error)
+      toast.error(t('cancelIntegrationFailed'), {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  }
+
+  const handleaAction = (data_outlet) => {
+    // Jika status integrasinya masih pending, bisa di cancel
+    if(data_outlet.status_integrate.label === t('pending')) {
+      handleCancleIntegration(data_outlet)
+    } else {
+    // Jika statusnya sudah terintegrasi, maka tidak bisa di cancel dan buttonya jadi disable
+      handleConfirmIntegration(data_outlet)
+    }
   }
 
   const handleApply = async () => {
@@ -249,7 +302,11 @@ export default function BlibliPage() {
       name: `${t("actions")}`,
       cell: (rows) => {
         return (
-          <button onClick={() => handleConfirmIntegration(rows)} style={{padding:"5px 7px"}} className='btn btn-primary' disabled={rows.status_integrate.key || rows.status_integrate.label === t('pending')}>{t('applyForIntegration')}</button>
+          // Tombol disable ketika status integrasi sudah aktif
+          // Jika status integrasi pending, maka muncul 'Cancel Integration'
+          // Jika status integrasinya 'belum integrasi' maka muncul 'Apply for Integration'
+
+          <button onClick={() => handleaAction(rows)} style={{padding:"5px 7px"}} className='btn btn-primary' disabled={rows.status_integrate.key}>{rows.status_integrate.label === t('pending') || rows.status_integrate.key ?  t('cancelIntegration') : t('applyForIntegration')}</button>
         );
       }
     }
@@ -268,6 +325,15 @@ export default function BlibliPage() {
         handleClick={handleApply}
         state={showConfirmIntegration}
         closeModal={closeConfirmIntegration}
+        loading={loading}
+      />
+      <ConfirmModal
+        title={t('cancelApplyForIntegration')}
+        body={t('areYouSureCancelingApplyingIntegrationBlibli')}
+        buttonColor="danger"
+        handleClick={handleCancel}
+        state={showCancelIntegration}
+        closeModal={closeCancelIntegration}
         loading={loading}
       />
       <Row>

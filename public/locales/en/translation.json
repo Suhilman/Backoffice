@@ -1172,6 +1172,7 @@
     "march": "March",
     "february": "February",
     "january": "January",
+    "cancelIntegration": "Cancel Integration",
 
     "currencyConversion": "Currency Convertion",
     "currencyA": "Currency A",

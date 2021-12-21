@@ -8,6 +8,7 @@ import { CalendarToday } from "@material-ui/icons";
 import Select from "react-select";
 import { useTranslation } from "react-i18next";
 import "../../style.css";
+import { KeyboardTimePicker } from "@material-ui/pickers";
 
 const useStyles = makeStyles({
   input: {
@@ -229,7 +230,22 @@ const FormTemplate = ({
               <Form.Group>
                 <Form.Label>{t("promoHour-Start")}:</Form.Label>
                 <div>
-                  <OutlinedInput
+                  {/* Time picker jam Analog */}
+                  <KeyboardTimePicker
+                    id="promo_hour_start"
+                    name="promo_hour_start"
+                    margin="normal"
+                    label="Start"
+                    ampm={false}
+                    value={startHour}
+                    onChange={(date, val) => handlePromoHour(date, val, "promo_hour_start")}
+                    KeyboardButtonProps={{
+                      "aria-label": "change time"
+                    }}
+                  />
+
+                  {/* Time picker jam Digital */}
+                  {/* <OutlinedInput
                     type="time"
                     name="promo_hour_start"
                     value={startHour}
@@ -237,7 +253,7 @@ const FormTemplate = ({
                     variant="outlined"
                     classes={{ input: classes.input }}
                     onChange={handlePromoHour}
-                  />
+                  /> */}
                 </div>
                 {formikPromo.touched.promo_hour_start &&
                 formikPromo.errors.promo_hour_start ? (
@@ -252,7 +268,22 @@ const FormTemplate = ({
               <Form.Group>
                 <Form.Label>{t("promoHour-End")}</Form.Label>
                 <div>
-                  <OutlinedInput
+                  {/* Time picker jam Analog */}
+                  <KeyboardTimePicker
+                    id="promo_hour_end"
+                    name="promo_hour_end"
+                    margin="normal"
+                    label="Close"
+                    ampm={false}
+                    value={endHour}
+                    onChange={(date, val) => handlePromoHour(date, val, "promo_hour_end")}
+                    KeyboardButtonProps={{
+                      "aria-label": "change time"
+                    }}
+                  />
+
+                  {/* Time picker jam Digital */}
+                  {/* <OutlinedInput
                     type="time"
                     name="promo_hour_end"
                     value={endHour}
@@ -260,7 +291,7 @@ const FormTemplate = ({
                     variant="outlined"
                     classes={{ input: classes.input }}
                     onChange={handlePromoHour}
-                  />
+                  /> */}
                 </div>
                 {formikPromo.touched.promo_hour_end &&
                 formikPromo.errors.promo_hour_end ? (
