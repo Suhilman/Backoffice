@@ -13,8 +13,10 @@ import { QuickPanel } from "./extras/offcanvas/QuickPanel";
 import { QuickUser } from "./extras/offcanvas/QuickUser";
 import { ScrollTop } from "./extras/ScrollTop";
 import { StickyToolbar } from "./extras/StickyToolbar";
+import { useTranslation } from "react-i18next";
 
 export function Layout({ children }) {
+  const { t } = useTranslation();
   const uiService = useHtmlClassService();
   // Layout settings (cssClasses/cssAttributes)
   const layoutProps = useMemo(() => {
@@ -40,7 +42,7 @@ export function Layout({ children }) {
       <div className="d-flex flex-column flex-root">
         {/*begin::Page*/}
         <div className="d-flex flex-row flex-column-fluid page">
-          {layoutProps.asideDisplay && <Aside />}
+          {layoutProps.asideDisplay && <Aside t={t}/>}
           {/*begin::Wrapper*/}
           <div
             className="d-flex flex-column flex-row-fluid wrapper"

@@ -6,7 +6,7 @@ import {AsideMenu} from "./aside-menu/AsideMenu";
 import {useHtmlClassService} from "../../_core/MetronicLayout";
 import ChatBox from '../ChatBox'
 
-export function Aside() {
+export function Aside({t}) {
   const uiService = useHtmlClassService();
 
   const layoutProps = useMemo(() => {
@@ -26,7 +26,7 @@ export function Aside() {
         {/* begin::Aside */}
         <div id="kt_aside"
              className={`aside aside-left  ${layoutProps.asideClassesFromConfig} d-flex flex-column flex-row-auto`}>
-          <Brand/>
+          <Brand t={t}/>
 
           {/* begin::Aside Menu */}
           <div id="kt_aside_menu_wrapper" className="aside-menu-wrapper flex-column-fluid d-flex flex-column justify-content-between">

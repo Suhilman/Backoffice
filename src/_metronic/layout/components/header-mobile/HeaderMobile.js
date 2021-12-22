@@ -30,14 +30,14 @@ export function HeaderMobile() {
             {...layoutProps.headerMobileAttributes}
         >
           {/*begin::Logo*/}
-          <div>
             <Link to="/">
               <img alt="logo" src={layoutProps.headerLogo}/>
             </Link>
+          {/* <div>
             <div className="text-primary">
               {t('owner')}
             </div>
-          </div>
+          </div> */}
           {/*end::Logo*/}
 
           {/*begin::Toolbar*/}

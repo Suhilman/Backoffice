@@ -5,10 +5,8 @@ import SVG from "react-inlinesvg";
 import {useHtmlClassService} from "../../_core/MetronicLayout";
 import {toAbsoluteUrl} from "../../../_helpers";
 
-import { useTranslation } from "react-i18next";
 
-export function Brand() {
-  const { t } = useTranslation();
+export function Brand({t}) {
   
   const [hide, setHide] = useState(false)
 

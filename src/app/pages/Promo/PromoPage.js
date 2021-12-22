@@ -94,26 +94,49 @@ export const PromoPage = () => {
           .toLowerCase();
 
         let activePromos = [];
-        if (item.name === t("specialPromo")) {
+        // if (item.name === t("specialPromo")) {
+        //   activePromos = item.Promos.filter(
+        //     (val) => val.Special_Promo?.status === "active"
+        //   );
+        // }
+        // if (item.name === t("automaticPromo")) {
+        //   activePromos = item.Promos.filter(
+        //     (val) => val.Automatic_Promo?.status === "active"
+        //   );
+        // }
+        // if (item.name === t("voucherPromo")) {
+        //   activePromos = item.Promos.filter(
+        //     (val) => val.Voucher_Promo?.status === "active"
+        //   );
+        // }
+        // if (item.name === t("point/LoyaltySystem")) {
+        //   activePromos = item.Promos.filter(
+        //     (val) => val.Loyalty_Promo?.status === "active"
+        //   );
+        // }
+
+        if (item.title_name === t("specialPromo")) {
           activePromos = item.Promos.filter(
             (val) => val.Special_Promo?.status === "active"
           );
         }
-        if (item.name === t("automaticPromo")) {
+        if (item.title_name === t("automaticPromo")) {
           activePromos = item.Promos.filter(
             (val) => val.Automatic_Promo?.status === "active"
           );
         }
-        if (item.name === t("voucherPromo")) {
+        if (item.title_name === t("voucherPromo")) {
           activePromos = item.Promos.filter(
             (val) => val.Voucher_Promo?.status === "active"
           );
         }
-        if (item.name === t("point/LoyaltySystem")) {
+        if (item.title_name === t("point/LoyaltySystem")) {
           activePromos = item.Promos.filter(
             (val) => val.Loyalty_Promo?.status === "active"
           );
         }
+
+        console.log("activePromos", activePromos)
 
         return (
           <Row key={index} style={{ marginBottom: "2rem" }}>
