@@ -258,6 +258,13 @@ const InventoryTab = ({ refresh, t, handleRefresh }) => {
     }
   };
 
+  const paginationComponentOptions = {
+    rowsPerPageText: t('rowsPerPage'),
+    rangeSeparatorText: t('of'),
+    selectAllRowsItem: true,
+    selectAllRowsItemText: t('showAll'),
+  };
+
   return (
     <>
       <ConfirmModal
@@ -372,6 +379,7 @@ const InventoryTab = ({ refresh, t, handleRefresh }) => {
             <DataTable
               noHeader
               pagination
+              paginationComponentOptions={paginationComponentOptions}
               columns={columns}
               data={dataInventory}
               expandableRows

@@ -1175,6 +1175,9 @@
   "february": "Februari",
   "january": "Januari",
   "cancelIntegration": "Batalkan Integrasi",
+  "rowsPerPage": "Baris per Halaman",
+  "per": "Per",
+  "showAll": "Semua",
 
   "currencyConversion": "Konversi Mata Uang",
   "currencyA": "Mata Uang A",

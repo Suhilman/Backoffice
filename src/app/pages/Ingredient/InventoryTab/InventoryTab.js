@@ -57,7 +57,10 @@ const InventoryIngredientTab = ({
   const debouncedSearch = useDebounce(search, 1000);
 
   const [filter, setFilter] = React.useState({
-    time: "newest"
+    time: "",
+    category: "",
+    status: "",
+    outlet: ""
   });
 
   const [rawMaterial, setRawMaterial] = React.useState([]);
@@ -231,15 +234,15 @@ const InventoryIngredientTab = ({
     setSelectedData(state.selectedRows);
   };
 
-  const getRawMaterial = async (search) => {
+  const getRawMaterial = async (search, filter) => {
     const API_URL = process.env.REACT_APP_API_URL;
-    const filter = `?name=${search}`;
-
+    const result_filter = `?name=${search}&raw_material_category_id=${filter.category}&outlet_id=${filter.outlet}`;
+    
     try {
       const { data } = await axios.get(
-        `${API_URL}/api/v1/raw-material${filter}`
+        `${API_URL}/api/v1/raw-material${result_filter}`
       );
-      // console.log("get raw material", data.data)
+      console.log("get raw material", data.data)
       setRawMaterial(data.data);
     } catch (err) {
       setRawMaterial([]);
@@ -247,19 +250,19 @@ const InventoryIngredientTab = ({
   };
 
   React.useEffect(() => {
-    getRawMaterial(debouncedSearch);
-  }, [refresh, debouncedSearch]);
+    getRawMaterial(debouncedSearch, filter);
+  }, [refresh, debouncedSearch, filter]);
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
 
   const handleSearch = (e) => setSearch(e.target.value);
-  // const handleFilter = (e) => {
-  //   const { name, value } = e.target;
-  //   const filterData = { ...filter };
-  //   filterData[name] = value;
-  //   setFilter(filterData);
-  // };
+  const handleFilter = (e) => {
+    const { name, value } = e.target;
+    const filterData = { ...filter };
+    filterData[name] = value;
+    setFilter(filterData);
+  };
 
   const showAddModal = () => setStateAddModal(true);
   const closeAddModal = () => {
@@ -623,6 +626,13 @@ const InventoryIngredientTab = ({
     formikImportRawMaterial.setFieldValue("items", []);
   };
 
+  const paginationComponentOptions = {
+    rowsPerPageText: t('rowsPerPage'),
+    rangeSeparatorText: t('of'),
+    selectAllRowsItem: true,
+    selectAllRowsItemText: t('showAll'),
+  };
+
   return (
     <>
       <AddModal
@@ -802,6 +812,60 @@ const InventoryIngredientTab = ({
                   </InputGroup>
                 </Col>
 
+                <Col>
+                    <Form.Group as={Row}>
+                      <Form.Label
+                        style={{ alignSelf: "center", marginBottom: "0" }}
+                      >
+                        {t("category")}
+                      </Form.Label>
+                      <Col>
+                        <Form.Control
+                          as="select"
+                          name="category"
+                          value={filter.category}
+                          onChange={handleFilter}
+                        >
+                          <option value="">{t("all")}</option>
+                          {allCategories.map((item) => {
+                            return (
+                              <option key={item.id} value={item.id}>
+                                {item.name}
+                              </option>
+                            );
+                          })}
+                        </Form.Control>
+                      </Col>
+                    </Form.Group>
+                  </Col>
+
+                  <Col>
+                    <Form.Group as={Row}>
+                      <Form.Label
+                        style={{ alignSelf: "center", marginBottom: "0" }}
+                      >
+                        {t("outlet")}
+                      </Form.Label>
+                      <Col>
+                        <Form.Control
+                          as="select"
+                          name="outlet"
+                          value={filter.outlet}
+                          onChange={handleFilter}
+                        >
+                          <option value="">{t("all")}</option>
+                          {allOutlets.map((item) => {
+                            return (
+                              <option key={item.id} value={item.id}>
+                                {item.name}
+                              </option>
+                            );
+                          })}
+                        </Form.Control>
+                      </Col>
+                    </Form.Group>
+                  </Col>
+
                 {/* <Col>
                   <Form.Group as={Row}>
                     <Form.Label
@@ -828,6 +892,7 @@ const InventoryIngredientTab = ({
             <DataTable
               noHeader
               pagination
+              paginationComponentOptions={paginationComponentOptions}
               columns={columns}
               data={dataRawMaterial}
               expandableRows

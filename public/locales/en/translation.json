@@ -1157,6 +1157,8 @@
     "updateDate": "Update Date",
     "applyForIntegration" : "Apply For Integration",
     "areYouSureAboutApplyingForBeetstoreIntegration" : "Are you sure about applying for beetstore integration?",
+    "areYouSureAboutApplyingForShopeeIntegration" : "Are You Sure About Applying For Shopee Integration?",
+    "areYouSureAboutApplyingForBlibliIntegration" : "Are You Sure About Applying For Blibli Integration?",
     "alreadyIntegrated": "Already Integrated",
     "notYetIntegrated": "Not yet integrated",
     "successApplyForIntegration": "Success apply for integration",
@@ -1173,6 +1175,9 @@
     "february": "February",
     "january": "January",
     "cancelIntegration": "Cancel Integration",
+    "rowsPerPage": "Rows per Page",
+    "per": "Per",
+    "showAll": "Show All",
 
     "currencyConversion": "Currency Convertion",
     "currencyA": "Currency A",

@@ -352,6 +352,7 @@ const ProductTab = ({
         //   ? rupiahFormat.convert(item.price_purchase)
         //   : rupiahFormat.convert(0),
         price: <NumberFormat value={item.price} displayType={'text'} thousandSeparator={true} prefix={currency} />,
+        sku: item.sku,
         stock: item.stock,
         outlet: item.Outlet?.name,
         unit: item.Unit?.name || "-",
@@ -547,7 +548,8 @@ const ProductTab = ({
         const merged = values.outlet_id.map((item) => {
           const output = [];
           for (const val of values.products) {
-            if(val.name && val.sku) {
+            // if(val.name && val.sku) {
+            if(true) {
               if(!val.price_purchase) throw new Error(t('thereIsProductWithoutPrice'));
               if(!val.category) throw new Error(t('thereIsProductWithoutCategory'));
 
@@ -561,7 +563,10 @@ const ProductTab = ({
                       .format("YYYY-MM-DD")
                   : ""
               };
-              obj.sku = obj.sku.toString();
+
+              // Jika sku nya selain "-" atau kosong, maka diisi sesuai sku yg di masukkan
+              obj.sku = obj.sku ? obj.sku : obj.sku === '-' ? '-' : '-'
+
               // if (!val.barcode) delete obj.barcode;
               // if (!val.category) delete obj.category;
               if (!val.with_recipe) delete obj.with_recipe;
@@ -569,10 +574,12 @@ const ProductTab = ({
               if (!val.unit) delete obj.unit;
               if (!val.expired_date) delete obj.expired_date;
               output.push(obj);
-            } else {
-              console.log("SKU atau Nama produk tidak ada")
-              throw new Error(t('thereIsProductWithoutNameOrSku'));
-            }
+            } 
+            // else 
+            // {
+            //   console.log("SKU atau Nama produk tidak ada")
+            //   throw new Error(t('thereIsProductWithoutNameOrSku'));
+            // }
           }
           return output;
         });
@@ -581,9 +588,9 @@ const ProductTab = ({
           if (!item.name) {
             throw new Error("there is product without name");
           }
-          if (!item.sku) {
-            throw new Error("there is product without sku");
-          }
+          // if (!item.sku) {
+          //   throw new Error("there is product without sku");
+          // }
         }
         console.log("product nya", merged.flat(1))
         await axios.post(`${API_URL}/api/v1/product/bulk-create`, {
@@ -705,12 +712,16 @@ const ProductTab = ({
   const ExpandableComponent = ({ data }) => {
     const keys = [
       {
-        key: "Unit",
+        key: t('unit'),
         value: "unit"
       },
       {
-        key: "Stock",
+        key: t('stock'),
         value: "stock"
+      },
+      {
+        key: t('sku'),
+        value: "sku"
       }
     ];
 
@@ -725,6 +736,7 @@ const ProductTab = ({
                     {val.key}
                   </Col>
                   <Col>{data[val.value] || "-"}</Col>
+                  <Col>{data[val.sku] || "-"}</Col>
                 </Row>
               </ListGroup.Item>
             );
@@ -734,6 +746,13 @@ const ProductTab = ({
     );
   };
 
+  const paginationComponentOptions = {
+    rowsPerPageText: t('rowsPerPage'),
+    rangeSeparatorText: t('of'),
+    selectAllRowsItem: true,
+    selectAllRowsItemText: t('showAll'),
+  };
+  
   return (
     <Row>
       <ConfirmModal
@@ -994,6 +1013,7 @@ const ProductTab = ({
             pointerOnHover
             highlightOnHover
             pagination
+            paginationComponentOptions={paginationComponentOptions}
             responsive
             columns={columns}
             data={productData(allProducts)}

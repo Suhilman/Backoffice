@@ -1157,6 +1157,8 @@
     "updateDate": "更新日期",
     "applyForIntegration" : "申请整合",
     "areYouSureAboutApplyingForBeetstoreIntegration" : "您确定要申请 Beetstore 整合吗？",
+    "areYouSureAboutApplyingForShopeeIntegration" : "你確定要申請 Shopee 整合嗎? ",
+    "areYouSureAboutApplyingForBlibliIntegration" : "您確定要申請 Blibli 集成嗎？",
     "alreadyIntegrated": "已经集成",
     "notYetIntegrated": "尚未整合",
     "successApplyForIntegration": "成功申请整合",
@@ -1172,5 +1174,8 @@
     "march": "三月",
     "february": "二月",
     "january": "一月",
-    "cancelIntegration": "取消整合"
+    "cancelIntegration": "取消整合",
+    "rowsPerPage": "每页行数",
+    "per": "每",
+    "showAll": "显示所有"
 }
