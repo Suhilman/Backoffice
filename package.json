@@ -117,6 +117,7 @@
     "react-responsive-combo-box": "^1.2.4",
     "react-router-dom": "5.1.2",
     "react-scripts": "3.2.0",
+    "react-scroll": "^1.8.4",
     "react-select": "^3.1.0",
     "react-signature-canvas": "^1.0.3",
     "react-swipeable-views": "0.13.9",

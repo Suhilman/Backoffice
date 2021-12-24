@@ -20,7 +20,7 @@ dayjs.extend(weekday);
 dayjs.extend(dayOfYear);
 dayjs.extend(customParseFormat);
 
-export function Demo1Dashboard() {
+export function Demo1Dashboard({handleScrollBottom}) {
   const [realTimeTransactions, setRealTimeTransactions] = React.useState([]);
   const [realTimeRange, setRealTimeRange] = React.useState([]);
   const { t } = useTranslation();
@@ -1015,6 +1015,7 @@ export function Demo1Dashboard() {
         {/* Sales Stat */}
         <div className="col-lg-12 col-xxl-12">
           <MixedWidget1
+            handleScrollBottom={handleScrollBottom}
             className="card-stretch gutter-b"
             currentSales={currentSales}
             currentRange={currentRange}

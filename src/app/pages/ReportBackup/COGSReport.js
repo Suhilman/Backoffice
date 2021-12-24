@@ -194,7 +194,7 @@ const COGSReport = ({ selectedOutlet, startDate, endDate, endDateFilename }) => 
             <th>{t("productName")}</th>
             <th>{t("category")}</th>
             <th>{t("soldQuantity")}</th>
-            <th>{t("purchasePrice")}</th>
+            <th>{t("capitalPrice")}</th>
             <th>{t("sellingPrice")}</th>
             <th>{t("profit")}</th>
           </tr>

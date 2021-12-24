@@ -23,6 +23,7 @@ import "react-date-range/dist/theme/default.css";
 import './style.css'
 
 export function MixedWidget1({
+  handleScrollBottom,
   className,
   currentSales,
   currentRange,
@@ -138,6 +139,7 @@ export function MixedWidget1({
   return (
     <>
       <ModalCustomRange
+        handleScrollBottom={handleScrollBottom}
         show={selectDate}
         handleClose={handleSelectDate}
         startRange={startRange}
@@ -533,6 +535,7 @@ function getChartOptions(layoutProps, currentSales, currentRange, t) {
 }
 
 const ModalCustomRange = ({
+  handleScrollBottom,
   show,
   handleClose,
   startRange,
@@ -578,6 +581,7 @@ const ModalCustomRange = ({
 
   const handleShowGuide = async (state) => {
     if (state === 'finish_guide') {
+      handleScrollBottom()
       await axios.patch(`${API_URL}/api/v1/business/update-guide/${userInfo.business_id}`, {
         user_guide: 1
       })

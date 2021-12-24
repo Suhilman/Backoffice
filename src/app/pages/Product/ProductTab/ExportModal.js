@@ -102,7 +102,7 @@ const ExportModal = ({state, closeModal, optionsOutlet, handleExports, loading, 
                       <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("barcode")}</th>
                       <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("sku")}</th>
                       <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("price")}</th>
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("purchasePrice")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("capitalPrice")}</th>
                       <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("favorite")}</th>
                       <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("category")}</th>
                       {showFeature.recipe ? (

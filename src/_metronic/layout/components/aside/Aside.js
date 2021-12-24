@@ -6,8 +6,9 @@ import {AsideMenu} from "./aside-menu/AsideMenu";
 import {useHtmlClassService} from "../../_core/MetronicLayout";
 import ChatBox from '../ChatBox'
 
-export function Aside({t}) {
+export function Aside({t, stateScroll}) {
   const uiService = useHtmlClassService();
+  const [hide, setHide] = React.useState(false)
 
   const layoutProps = useMemo(() => {
     return {
@@ -21,12 +22,16 @@ export function Aside({t}) {
     };
   }, [uiService]);
 
+  const hideLabel = () => {
+    setHide(!hide)
+  }
+
   return (
       <>
         {/* begin::Aside */}
         <div id="kt_aside"
              className={`aside aside-left  ${layoutProps.asideClassesFromConfig} d-flex flex-column flex-row-auto`}>
-          <Brand t={t}/>
+          <Brand t={t} hide={hide} hideLabel={hideLabel}/>
 
           {/* begin::Aside Menu */}
           <div id="kt_aside_menu_wrapper" className="aside-menu-wrapper flex-column-fluid d-flex flex-column justify-content-between">
@@ -42,7 +47,7 @@ export function Aside({t}) {
               </>
             )}
             {/* className="flex-grow-8"  */}
-            <AsideMenu disableScroll={layoutProps.disableScroll}/>
+            <AsideMenu disableScroll={layoutProps.disableScroll} hideLabel={hideLabel} hide={hide} stateScroll={stateScroll}/>
             {/* <ChatBox className="flex-grow-2" /> */}
           </div>
           {/* end::Aside Menu */}

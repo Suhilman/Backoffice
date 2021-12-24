@@ -33,7 +33,7 @@ import useDebounce from "../../../hooks/useDebounce";
 import ConfirmModal from "../../../components/ConfirmModal";
 import ImportModal from "./ImportModal";
 import ExportModal from "./ExportModal"
-import ModalSync from "./ModalSync";
+import ModalSyncBlibli from "./ModalSyncBlibli";
 import LogoSync from "../../../../images/cloud-sync-100.png"
 
 import "../../style.css";
@@ -54,8 +54,15 @@ const ProductTab = ({
   const [showConfirmBulk, setShowConfirmBulk] = React.useState(false);
   const [stateImport, setStateImport] = React.useState(false);
   const [stateExport, setStateExport] = React.useState(false);
-  const [stateModalSync, setStateModalSync] = React.useState(false);
+  const [stateModalSyncBlibli, setStateModalSyncBlibli] = React.useState(false);
   const [productOfOutlet, setProductOfOutlet] = React.useState([])
+  const [integratedName, setIntegratedName] = React.useState({
+    shopee: false,
+    blibli: false,
+    show_sync_product: false
+  })
+  const [outletIntegratedShopee, setOutletIntegratedShopee] = React.useState([])
+  const [outletIntegratedBlibli, setOutletIntegratedBlibli] = React.useState([])
 
   const [alert, setAlert] = React.useState("");
   const [filename, setFilename] = React.useState("");
@@ -618,8 +625,8 @@ const ProductTab = ({
     setDataProduct([])
   };
 
-  const handleCloseModalSync = () => {
-    setStateModalSync(false);
+  const handleCloseModalSyncBlibli = () => {
+    setStateModalSyncBlibli(false);
     setDataProduct([])
   };
   const getJsDateFromExcel = (excelDate) => {
@@ -697,7 +704,7 @@ const ProductTab = ({
   };
 
   const handleOptionOutlet = async (outlet_id) => {
-    console.log("Call handleOptionOutlet")
+    console.log("Call handleOptionOutlet", outlet_id)
     const API_URL = process.env.REACT_APP_API_URL;
     try {
       const { data } = await axios.get(
@@ -745,6 +752,98 @@ const ProductTab = ({
       </>
     );
   };
+
+  const handleShowSyncProduct = (allOutlets) => {
+    let status_integrate_shopee = {
+      key: false,
+      label: t('notYetIntegrated')
+    }
+    let status_integrate_blibli = {
+      key: false,
+      label: t('notYetIntegrated')
+    }
+    const temp_outlet_integrated_blibli = []
+    const temp_outlet_integrated_shopee = []
+    let count = 0 
+    allOutlets.map(item => {
+      // Cek duls, apakah status_integrate_beetstorenya true?
+      if(item.Request_Integration_Online_Shops) {
+        // Shopee
+        const find_online_shop_name_shopee = item.Request_Integration_Online_Shops.find(
+          (val) => val.online_shop_name === 'shopee'
+        )
+        if(find_online_shop_name_shopee){
+          if(find_online_shop_name_shopee.status === 'done' && item.status_integrate_blibli) {
+            // Cari semua outlet yang status request integrasi dan status integrasi nya true 
+            temp_outlet_integrated_shopee.push(item.name)
+          }
+          if(!status_integrate_shopee.key) {
+            // Cari semua outlet yang status request integrasi dan status integrasi nya true, jika sudah ada yang true, maka tidak diproses lagi
+            if(find_online_shop_name_shopee.status === 'done' && item.status_integrate_shopee) {
+              status_integrate_shopee = {
+                key: true,
+                label: t('alreadyIntegrated')
+              }
+            } else {
+              status_integrate_shopee = {
+                key: false,
+                label: t('pending')
+              }
+            }
+          }
+        }
+        // End Shopee
+        // Blibli
+        const find_online_shop_name_blibli = item.Request_Integration_Online_Shops.find(
+          (val) => val.online_shop_name === 'blibli'
+        )
+        if(find_online_shop_name_blibli){
+          if(find_online_shop_name_blibli.status === 'done' && item.status_integrate_blibli) {
+            // Cari semua outlet yang status request integrasi dan status integrasi nya true 
+            temp_outlet_integrated_blibli.push(item.name)
+          }
+          if(!status_integrate_blibli.key){
+            // Cari semua outlet yang status request integrasi dan status integrasi nya true, jika sudah ada yang true, maka tidak diproses lagi
+            if(find_online_shop_name_blibli.status === 'done' && item.status_integrate_blibli) {
+              status_integrate_blibli = {
+                key: true,
+                label: t('alreadyIntegrated')
+              }
+            } else {
+              status_integrate_blibli = {
+                key: false,
+                label: t('pending')
+              }
+            }
+          }
+        }
+        // End Blibli
+      }
+    })
+
+    const result_status_integrate = {
+      shopee: status_integrate_shopee.key,
+      blibli: status_integrate_blibli.key
+    }
+
+    const keys = Object.keys(result_status_integrate)
+    console.log("keys", keys)
+    const result = keys.find(value => {
+      console.log("result_status_integrate[value]", result_status_integrate[value])
+      return result_status_integrate[value] === true
+    })
+    setIntegratedName({
+      ...integratedName,
+      ...result_status_integrate,
+      show_sync_product: result ? true : false
+    })
+    setOutletIntegratedShopee(temp_outlet_integrated_shopee)
+    setOutletIntegratedBlibli(temp_outlet_integrated_blibli)
+  }
+
+  React.useEffect(() => {
+    handleShowSyncProduct(allOutlets)
+  }, [allOutlets])
 
   const paginationComponentOptions = {
     rowsPerPageText: t('rowsPerPage'),
@@ -797,10 +896,10 @@ const ProductTab = ({
         showFeature={showFeature}
       />
 
-      <ModalSync 
+      <ModalSyncBlibli 
         loading={loading}
-        state={stateModalSync}
-        closeModal={handleCloseModalSync}
+        state={stateModalSyncBlibli}
+        closeModal={handleCloseModalSyncBlibli}
         optionsOutlet={optionsOutlet}
         handleExports={handleExports}
         dataProduct={dataProduct}
@@ -808,6 +907,7 @@ const ProductTab = ({
         handleOptionOutlet={handleOptionOutlet}
         productOfOutlet={productOfOutlet}
         tempOptionOutlet={tempOptionOutlet}
+        outletIntegratedBlibli={outletIntegratedBlibli}
       />
 
       <Col md={12}>
@@ -823,21 +923,40 @@ const ProductTab = ({
             <div className="headerEnd" style={{ display: "flex" }}>
               {!multiSelect ? (
                 <>
-                  {/* <div style={{width: '150px'}} className="mr-2">
-                    <Select
-                      placeholder={<div>{t('syncProduct')}</div>}
-                      options={optionsOutlet}
-                      // defaultValue={defaultValueOutlet}
-                      name="outlet_id"
-                      className="basic-single"
-                      classNamePrefix="select"
-                      onChange={(value) =>{
-                        console.log("value.value", value.value)
-                      }}
-                    />
-                  </div> */}
+                  {integratedName.show_sync_product ? (
+                    <>
+                      <Dropdown className="mr-2">
+                        <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                          {t("syncProduct")}
+                        </Dropdown.Toggle>
 
-                  {/* <div className="btn btn-info mr-2" onClick={() => setStateModalSync(true)}>
+                        <Dropdown.Menu>
+                          {integratedName.shopee ? 
+                          (
+                            <Dropdown.Item>Shopee</Dropdown.Item>
+                          ) : null}
+                          {integratedName.blibli ? 
+                          (
+                            <Dropdown.Item onClick={() => setStateModalSyncBlibli(true)}>Blibli</Dropdown.Item>
+                          ) : null}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                      {/* <div style={{width: '150px'}} className="mr-2">
+                        <Select
+                          placeholder={<div>{t('syncProduct')}</div>}
+                          options={optionsOutlet}
+                          // defaultValue={defaultValueOutlet}
+                          name="outlet_id"
+                          className="basic-single"
+                          classNamePrefix="select"
+                          onChange={(value) =>{
+                            console.log("value.value", value.value)
+                          }}
+                        />
+                      </div> */}
+                    </>
+                  ) : null }
+                  {/* <div className="btn btn-info mr-2" onClick={() => setStateModalSyncBlibli(true)}>
                     {t('syncProduct')}
                   </div> */}
                   <Button style={{ marginRight: "0.5rem" }} variant="secondary" onClick={() => setStateExport(true)}>

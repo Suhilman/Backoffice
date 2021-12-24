@@ -15,7 +15,7 @@ import { ScrollTop } from "./extras/ScrollTop";
 import { StickyToolbar } from "./extras/StickyToolbar";
 import { useTranslation } from "react-i18next";
 
-export function Layout({ children }) {
+export function Layout({ children, stateScroll }) {
   const { t } = useTranslation();
   const uiService = useHtmlClassService();
   // Layout settings (cssClasses/cssAttributes)
@@ -42,7 +42,7 @@ export function Layout({ children }) {
       <div className="d-flex flex-column flex-root">
         {/*begin::Page*/}
         <div className="d-flex flex-row flex-column-fluid page">
-          {layoutProps.asideDisplay && <Aside t={t}/>}
+          {layoutProps.asideDisplay && <Aside t={t} stateScroll={stateScroll}/>}
           {/*begin::Wrapper*/}
           <div
             className="d-flex flex-column flex-row-fluid wrapper"

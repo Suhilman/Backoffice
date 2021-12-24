@@ -214,7 +214,7 @@ const FormTemplate = ({
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>{t("purchasePrice")}*</Form.Label>
+              <Form.Label>{t("capitalPrice")}*</Form.Label>
               <Form.Control
                 type="number"
                 name="price_purchase"
@@ -826,120 +826,186 @@ const FormTemplate = ({
             </Form.Group>
 
             {showFeature.recipe ? (
-              <Form.Group>
-                <Form.Label>{t("productType")}*</Form.Label>
-                <Row style={{ padding: "1rem" }}>
-                  {[
-                    {
-                      name: `${t("noRecipe")}`,
-                      value: false,
-                      checked: formikProduct.values.has_recipe ? false : true
-                    },
-                    {
-                      name: `${t("withRecipe")}`,
-                      value: true,
-                      checked: formikProduct.values.has_recipe ? true : false
-                    }
-                  ].map((item, index) => {
-                    return (
-                      <Col
-                        key={index}
-                        className="box"
-                        style={{ marginRight: "1rem" }}
-                      >
-                        <Row>
-                          <Col md={3}>
-                            <Form.Check
-                              type="radio"
-                              name="has_recipe"
-                              value={formikProduct.values.has_recipe}
-                              onChange={(e) => {
-                                const { value } = e.target;
+              <>
+                {/* <Form.Group>
+                  <Form.Label>{t("productType")}*</Form.Label>
+                  <Row style={{ padding: "1rem" }}>
+                    {[
+                      {
+                        name: `${t("noRecipe")}`,
+                        value: false,
+                        checked: formikProduct.values.has_recipe ? false : true
+                      },
+                      {
+                        name: `${t("withRecipe")}`,
+                        value: true,
+                        checked: formikProduct.values.has_recipe ? true : false
+                      }
+                    ].map((item, index) => {
+                      return (
+                        <Col
+                          key={index}
+                          className="box"
+                          style={{ marginRight: "1rem" }}
+                        >
+                          <Row>
+                            <Col md={3}>
+                              <Form.Check
+                                type="radio"
+                                name="has_recipe"
+                                value={formikProduct.values.has_recipe}
+                                onChange={(e) => {
+                                  const { value } = e.target;
 
-                                if (value === "true") {
-                                  formikProduct.setFieldValue(
-                                    "has_recipe",
-                                    false
-                                  );
-                                  formikProduct.setFieldValue("recipe_id", null);
-                                } else {
-                                  formikProduct.setFieldValue("has_recipe", true);
-                                }
-                              }}
-                              checked={item.checked}
-                              className={validationProduct("has_recipe")}
-                              required
-                              feedback={formikProduct.errors.has_recipe}
-                            />
-                          </Col>
-                          <Col>
-                            <Row>{item.name}</Row>
-                          </Col>
-                        </Row>
-                      </Col>
-                    );
-                  })}
-                </Row>
-              </Form.Group>
+                                  if (value === "true") {
+                                    formikProduct.setFieldValue(
+                                      "has_recipe",
+                                      false
+                                    );
+                                    formikProduct.setFieldValue("recipe_id", null);
+                                  } else {
+                                    formikProduct.setFieldValue("has_recipe", true);
+                                  }
+                                }}
+                                checked={item.checked}
+                                className={validationProduct("has_recipe")}
+                                required
+                                feedback={formikProduct.errors.has_recipe}
+                              />
+                            </Col>
+                            <Col>
+                              <Row>{item.name}</Row>
+                            </Col>
+                          </Row>
+                        </Col>
+                      );
+                    })}
+                  </Row>
+                </Form.Group> */}
+                <Form.Group>
+                  <div>
+                    <Form.Label>{t("withRecipe")}*</Form.Label>
+                  </div>
+                  <div className="d-flex align-items-center">
+                    <h5 className="text-muted h6 mr-3">{formikProduct.values.has_recipe ? "Active" : "Inactive"}</h5>
+                    <FormControlLabel
+                      value={formikProduct.values.has_recipe ? true : false}
+                      control={
+                        <Switch
+                          color="primary"
+                          checked={formikProduct.values.has_recipe ? true : false}
+                          onChange={(e) => {
+                            const { value } = e.target;
+                            if (value === "true") {
+                              formikProduct.setFieldValue(
+                                "has_recipe",
+                                false
+                              );
+                              formikProduct.setFieldValue("recipe_id", null);
+                            } else {
+                              formikProduct.setFieldValue("has_recipe", true);
+                            }
+                          }}
+                          name=""
+                        />
+                      }
+                    />
+                  </div>
+                </Form.Group>
+              </>
             ) : null}
 
             {showFeature.has_assembly ? (
-              <Form.Group>
-                <Form.Label>{t("productAssembly")}*</Form.Label>
-                <Row style={{ padding: "1rem" }}>
-                  {[
-                    {
-                      name: `${t("noProductAssembly")}`,
-                      value: false,
-                      checked: formikProduct.values.has_assembly ? false : true
-                    },
-                    {
-                      name: `${t("withProductAssembly")}`,
-                      value: true,
-                      checked: formikProduct.values.has_assembly ? true : false
-                    }
-                  ].map((item, index) => {
-                    return (
-                      <Col
-                        key={index}
-                        className="box"
-                        style={{ marginRight: "1rem" }}
-                      >
-                        <Row>
-                          <Col md={3}>
-                            <Form.Check
-                              type="radio"
-                              name="has_assembly"
-                              value={formikProduct.values.has_assembly}
-                              onChange={(e) => {
-                                const { value } = e.target;
+              <>
+                {/* <Form.Group>
+                  <Form.Label>{t("productAssembly")}*</Form.Label>
+                  <Row style={{ padding: "1rem" }}>
+                    {[
+                      {
+                        name: `${t("noProductAssembly")}`,
+                        value: false,
+                        checked: formikProduct.values.has_assembly ? false : true
+                      },
+                      {
+                        name: `${t("withProductAssembly")}`,
+                        value: true,
+                        checked: formikProduct.values.has_assembly ? true : false
+                      }
+                    ].map((item, index) => {
+                      return (
+                        <Col
+                          key={index}
+                          className="box"
+                          style={{ marginRight: "1rem" }}
+                        >
+                          <Row>
+                            <Col md={3}>
+                              <Form.Check
+                                type="radio"
+                                name="has_assembly"
+                                value={formikProduct.values.has_assembly}
+                                onChange={(e) => {
+                                  const { value } = e.target;
 
-                                if (value === "true") {
-                                  formikProduct.setFieldValue(
-                                    "has_assembly",
-                                    false
-                                  );
-                                  // formikProduct.setFieldValue("recipe_id", null);
-                                } else {
-                                  formikProduct.setFieldValue("has_assembly", true);
-                                  formikProduct.setFieldValue("has_recipe", true);
-                                }
-                              }}
-                              checked={item.checked}
-                              className={validationProduct("has_assembly")}
-                              required
-                              feedback={formikProduct.errors.has_assembly}
-                            />
-                          </Col>
-                          <Col>
-                            <Row>{item.name}</Row>
-                          </Col>
-                        </Row>
-                      </Col>
-                    );
-                  })}
-                </Row>
-              </Form.Group>
+                                  if (value === "true") {
+                                    formikProduct.setFieldValue(
+                                      "has_assembly",
+                                      false
+                                    );
+                                    // formikProduct.setFieldValue("recipe_id", null);
+                                  } else {
+                                    formikProduct.setFieldValue("has_assembly", true);
+                                    formikProduct.setFieldValue("has_recipe", true);
+                                  }
+                                }}
+                                checked={item.checked}
+                                className={validationProduct("has_assembly")}
+                                required
+                                feedback={formikProduct.errors.has_assembly}
+                              />
+                            </Col>
+                            <Col>
+                              <Row>{item.name}</Row>
+                            </Col>
+                          </Row>
+                        </Col>
+                      );
+                    })}
+                  </Row>
+                </Form.Group> */}
+
+                <Form.Group>
+                  <div>
+                    <Form.Label>{t("productAssembly")}*</Form.Label>
+                  </div>
+                  <div className="d-flex align-items-center">
+                    <h5 className="text-muted h6 mr-3">{formikProduct.values.has_assembly ? "Active" : "Inactive"}</h5>
+                    <FormControlLabel
+                      value={formikProduct.values.has_assembly ? true : false}
+                      control={
+                        <Switch
+                          color="primary"
+                          checked={formikProduct.values.has_assembly ? true : false}
+                          onChange={(e) => {
+                            const { value } = e.target;
+                            if (value === "true") {
+                              formikProduct.setFieldValue(
+                                "has_assembly",
+                                false
+                              );
+                              // formikProduct.setFieldValue("recipe_id", null);
+                            } else {
+                              formikProduct.setFieldValue("has_assembly", true);
+                              formikProduct.setFieldValue("has_recipe", true);
+                            }
+                          }}
+                          name=""
+                        />
+                      }
+                    />
+                  </div>
+                </Form.Group>
+              </>
             ) : null}
 
             <Form.Group>

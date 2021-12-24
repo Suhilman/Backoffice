@@ -6,9 +6,7 @@ import {useHtmlClassService} from "../../_core/MetronicLayout";
 import {toAbsoluteUrl} from "../../../_helpers";
 
 
-export function Brand({t}) {
-  
-  const [hide, setHide] = useState(false)
+export function Brand({t, hide, hideLabel}) {
 
   const uiService = useHtmlClassService();
 
@@ -23,10 +21,6 @@ export function Brand({t}) {
       headerStickyLogo: uiService.getStickyLogo()
     };
   }, [uiService]);
-
-  const hideLabel = () => {
-    setHide(!hide)
-  }
 
   return (
     <>

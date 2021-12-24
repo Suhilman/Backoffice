@@ -9,7 +9,7 @@ import {Demo5Dashboard} from "./Demo5Dashboard";
 import {Demo6Dashboard} from "./Demo6Dashboard";
 import {Demo7Dashboard} from "./Demo7Dashboard";
 
-export function Dashboard() {
+export function Dashboard({handleScrollBottom}) {
     const uiService = useHtmlClassService();
     const layoutProps = useMemo(() => {
         return {
@@ -19,7 +19,7 @@ export function Dashboard() {
             )};
     }, [uiService]);
     return <>
-        {layoutProps.demo === 'demo1' && <Demo1Dashboard />}
+        {layoutProps.demo === 'demo1' && <Demo1Dashboard handleScrollBottom={handleScrollBottom}/>}
         {layoutProps.demo === 'demo2' && <Demo2Dashboard />}
         {layoutProps.demo === 'demo3' && <Demo3Dashboard />}
         {layoutProps.demo === 'demo4' && <Demo4Dashboard />}

@@ -1,5 +1,5 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
-import React from "react";
+import React, { useRef } from "react";
 import { useLocation } from "react-router";
 import { NavLink } from "react-router-dom";
 import SVG from "react-inlinesvg";
@@ -27,6 +27,7 @@ import axios from "axios";
 import ArrowUp from '../../../../../images/arrow-up.png'
 import ArrowDown from '../../../../../images/arrow-down.png'
 import "./style.css";
+import {animateScroll as scroll, Link} from 'react-scroll'
 
 // TODO: ambil privileges dari store
 const select = (appState) => {
@@ -460,492 +461,482 @@ function AsideMenuList(props) {
     handleSubListOnlineShop()
   }, [])
 
+  // const handleScrollEnd = () => {
+  //   scroll.scrollToBottom()
+  // }
+
+  // React.useEffect(() => {
+  //   handleScrollEnd()
+  // }, [props.stateScroll])
+
+
   return (
     <>
       {/* <div style={{marginLeft: '20px', marginTop: '-50px'}}>{t('owner')}</div> */}
-      <ul
-        className={`menu-nav ${props.layoutProps.ulClasses}`}
-        style={{ padding: 0 }}
-      >
-        {dashboardSections.length
-          ? dashboardSections.map((section, index) => {
-              if (section === "view_dashboard") {
-                return (
-                  <li
-                    key={index}
-                    className={`menu-item ${getMenuItemActive(
-                      "/dashboard",
-                      false
-                    )}`}
-                    aria-haspopup="true"
-                  >
-                    <NavLink className="menu-link" to="/dashboard">
-                      {/* <span className="svg-icon menu-icon">
-                        <SVG
-                          src={toAbsoluteUrl(
-                            "/media/svg/icons/Design/Layers.svg"
-                          )}
-                        />
-                      </span> */}
-                      <div className="wrapper-icon">
-                        <img src={dashboardIcon} alt="Icon Dashboard" />
-                      </div>
-                      <span className="menu-text">{t("dashboard")}</span>
-                    </NavLink>
-                  </li>
-                );
-              }
-
-              if (section === "view_report") {
-                return (
-                  <>
+        <ul
+          className={`menu-nav ${props.layoutProps.ulClasses}`}
+          style={{ padding: 0 }}
+        >
+          {dashboardSections.length
+            ? dashboardSections.map((section, index) => {
+                if (section === "view_dashboard") {
+                  return (
                     <li
                       key={index}
                       className={`menu-item ${getMenuItemActive(
-                        "/report",
+                        "/dashboard",
                         false
                       )}`}
                       aria-haspopup="true"
                     >
-                      <div className="menu-link" width="100%" onClick={handleDropdownReport}>
-                        <div className="wrapper-icon">
+                      <NavLink className="menu-link" to="/dashboard">
+                        {/* <span className="svg-icon menu-icon">
+                          <SVG
+                            src={toAbsoluteUrl(
+                              "/media/svg/icons/Design/Layers.svg"
+                            )}
+                          />
+                        </span> */}
+                        <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                          <img src={dashboardIcon} alt="Icon Dashboard" />
+                        </div>
+                        <span className="menu-text">{t("dashboard")}</span>
+                      </NavLink>
+                    </li>
+                  );
+                }
+
+                if (section === "view_report") {
+                  return (
+                    <>
+                      <li
+                        key={index}
+                        className={`menu-item ${getMenuItemActive(
+                          "/report",
+                          false
+                        )}`}
+                        aria-haspopup="true"
+                      >
+                        <div className="menu-link" width="100%" onClick={handleDropdownReport}>
+                          <div className={props.hide ? 'hide-aside' : 'show-aside'}>
+                            <img src={reportIcon} alt="Icon Report" />
+                          </div>
+                            <div className={!props.hide ? 'handle-between-dropdown-report' : ''}>
+                              <span className="menu-text">{t("report")}</span>
+                              {!props.hide ? (
+                                showDropdownReport ? (
+                                  <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
+                                ) : (
+                                  <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
+                                )
+                              ) : null }
+                            </div>
+                        </div>
+                        <div className={showDropdownReport ? 'show-dropdown-report' : 'hide-dropdown-report'}>
+                          <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
+                            
+                            <li key={index} className={`menu-item ${getMenuItemActive("/report",false)}`} aria-haspopup="true">
+                              <div className="menu-link d-flex justify-content-between align-items-center" onClick={handleDropdownReportSales}>
+                                <span className="dropdown-menu-lv1 menu-text">{t("salesReport")}</span>
+                                {showDropdownReportSales ? (
+                                  <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
+                                ) : (
+                                  <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
+                                )}
+                              </div>
+
+                              <div className={showDropdownReportSales ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
+                                <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
+                                  {dropdownSalesReport.map((value, index2) => 
+                                    <li key={index2} className={`menu-item ${getMenuItemActive(`/${value.route}`,false)}`}  aria-haspopup="true">
+                                      <NavLink className="menu-link" to={`/report/${value.route}`}>
+                                        <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
+                                      </NavLink>
+                                    </li>
+                                  )}
+                                </ul>
+                              </div>
+                            </li>
+
+                            {dropdownInventoryReport.length > 0 ? (
+                              <li key={index} className={`menu-item ${getMenuItemActive("/report",false)}`}  aria-haspopup="true">
+                                <div className="menu-link d-flex justify-content-between align-items-center">
+                                  <span className="dropdown-menu-lv1 menu-text" onClick={handleDropdownReportInventory}>{t("inventoryReport")}</span>
+                                  {showDropdownReportInventory ? (
+                                    <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
+                                  ) : (
+                                    <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
+                                  )}
+                                </div>
+                                <div className={showDropdownReportInventory ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
+                                  <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
+                                    {dropdownInventoryReport.map((value, index2) => 
+                                      <li key={index2} className={`menu-item ${getMenuItemActive(`/${value.route}`,false)}`}  aria-haspopup="true">
+                                        <NavLink className="menu-link" to={`/report/${value.route}`}>
+                                          <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
+                                        </NavLink>
+                                      </li>
+                                    )}
+                                  </ul>
+                                </div>
+                              </li>
+                            ) : null }
+                            
+                            {dropdownEmployeeReport.length > 0 ? (
+                              <li key={index} className={`menu-item ${getMenuItemActive("/report",false)}`}  aria-haspopup="true">
+                                <div className="menu-link d-flex justify-content-between align-items-center">
+                                  <span className="dropdown-menu-lv1 menu-text" onClick={handleDropdownReportEmployee}>{t("employeeReport")}</span>
+                                  {showDropdownReportEmployee ? (
+                                    <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
+                                  ) : (
+                                    <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
+                                  )}
+                                </div>
+                                <div className={showDropdownReportEmployee ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
+                                  <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
+                                    {dropdownEmployeeReport.map((value, index2) => 
+                                      <li key={index2} className={`menu-item ${getMenuItemActive(`/${value.route}`,false)}`}  aria-haspopup="true">
+                                        <NavLink className="menu-link" to={`/report/${value.route}`}>
+                                          <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
+                                        </NavLink>
+                                      </li>
+                                    )}
+                                  </ul>
+                                </div>
+                              </li>
+                            ) : null}
+                            
+                          </ul>
+                        </div>
+                      </li>
+
+                      {/* <li
+                        key={index}
+                        className={`menu-item ${getMenuItemActive(
+                          "/report",
+                          false
+                        )}`}
+                        aria-haspopup="true"
+                      >
+                      <NavLink className="menu-link" to="/report">
+                        <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
                           <img src={reportIcon} alt="Icon Report" />
                         </div>
-                        <div className="handle-between-dropdown-report">
-                          <span className="menu-text">{t("report")}</span>
-                          {showDropdownReport ? (
-                            <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
-                          ) : (
-                            <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
-                          )}
-                        </div>
-                      </div>
-                      <div className={showDropdownReport ? 'show-dropdown-report' : 'hide-dropdown-report'}>
-                        <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
-                          
-                          <li key={index} className={`menu-item ${getMenuItemActive("/report",false)}`} aria-haspopup="true">
-                            <div className="menu-link d-flex justify-content-between align-items-center" onClick={handleDropdownReportSales}>
-                              <span className="dropdown-menu-lv1 menu-text">{t("salesReport")}</span>
-                              {showDropdownReportSales ? (
-                                <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
-                              ) : (
-                                <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
-                              )}
-                            </div>
+                        <span className="menu-text">{t("report")}</span>
+                      </NavLink>
+                      </li> */}
+                    </>
+                  );
+                }
+              })
+            : ""}
 
-                            <div className={showDropdownReportSales ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
-                              <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
-                                {dropdownSalesReport.map((value, index2) => 
-                                  <li key={index2} className={`menu-item ${getMenuItemActive(`/${value.route}`,false)}`}  aria-haspopup="true">
-                                    <NavLink className="menu-link" to={`/report/${value.route}`}>
-                                      <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
-                                    </NavLink>
-                                  </li>
-                                )}
-                              </ul>
-                            </div>
-                          </li>
+          {productSections.length ? (
+            <li className="menu-section" style={{ margin: "0" }}>
+              <h4 className="menu-text">{t("products")}</h4>
+            </li>
+          ) : (
+            ""
+          )}
 
-                          {dropdownInventoryReport.length > 0 ? (
-                            <li key={index} className={`menu-item ${getMenuItemActive("/report",false)}`}  aria-haspopup="true">
-                              <div className="menu-link d-flex justify-content-between align-items-center">
-                                <span className="dropdown-menu-lv1 menu-text" onClick={handleDropdownReportInventory}>{t("inventoryReport")}</span>
-                                {showDropdownReportInventory ? (
-                                  <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
-                                ) : (
-                                  <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
-                                )}
-                              </div>
-                              <div className={showDropdownReportInventory ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
-                                <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
-                                  {dropdownInventoryReport.map((value, index2) => 
-                                    <li key={index2} className={`menu-item ${getMenuItemActive(`/${value.route}`,false)}`}  aria-haspopup="true">
-                                      <NavLink className="menu-link" to={`/report/${value.route}`}>
-                                        <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
-                                      </NavLink>
-                                    </li>
-                                  )}
-                                </ul>
-                              </div>
-                            </li>
-                          ) : null }
-                          
-                          {dropdownEmployeeReport.length > 0 ? (
-                            <li key={index} className={`menu-item ${getMenuItemActive("/report",false)}`}  aria-haspopup="true">
-                              <div className="menu-link d-flex justify-content-between align-items-center">
-                                <span className="dropdown-menu-lv1 menu-text" onClick={handleDropdownReportEmployee}>{t("employeeReport")}</span>
-                                {showDropdownReportEmployee ? (
-                                  <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
-                                ) : (
-                                  <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
-                                )}
-                              </div>
-                              <div className={showDropdownReportEmployee ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
-                                <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
-                                  {dropdownEmployeeReport.map((value, index2) => 
-                                    <li key={index2} className={`menu-item ${getMenuItemActive(`/${value.route}`,false)}`}  aria-haspopup="true">
-                                      <NavLink className="menu-link" to={`/report/${value.route}`}>
-                                        <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
-                                      </NavLink>
-                                    </li>
-                                  )}
-                                </ul>
-                              </div>
-                            </li>
-                          ) : null}
-                          
-                        </ul>
-                      </div>
-                    </li>
-
-                    {/* <li
+          {productSections.length
+            ? productSections.map((section, index) => {
+                if (section === "product_management") {
+                  return (
+                    <li
                       key={index}
                       className={`menu-item ${getMenuItemActive(
-                        "/report",
+                        "/product",
                         false
                       )}`}
-                      aria-haspopup="true"
                     >
-                    <NavLink className="menu-link" to="/report">
-                      <div className="wrapper-icon">
-                        <img src={reportIcon} alt="Icon Report" />
-                      </div>
-                      <span className="menu-text">{t("report")}</span>
-                    </NavLink>
-                    </li> */}
-                  </>
-                );
-              }
-            })
-          : ""}
+                      <NavLink className="menu-link" to="/product">
+                        {/* <span className="svg-icon menu-icon">
+                          <SVG
+                            src={toAbsoluteUrl(
+                              "/media/svg/icons/Shopping/Bag2.svg"
+                            )}
+                          />
+                        </span> */}
+                        <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                          <img src={productIcon} alt="Icon Product" />
+                        </div>
+                        <span className="menu-text">{t("product")}</span>
+                      </NavLink>
+                    </li>
+                  );
+                }
 
-        {productSections.length ? (
+                if (section === "inventory_management") {
+                  return (
+                    <li
+                      key={index}
+                      className={`menu-item ${getMenuItemActive(
+                        "/inventory",
+                        false
+                      )}`}
+                    >
+                      <NavLink className="menu-link" to="/inventory">
+                        {/* <span className="svg-icon menu-icon">
+                          <SVG
+                            src={toAbsoluteUrl(
+                              "/media/svg/icons/Shopping/Bag2.svg"
+                            )}
+                          />
+                        </span> */}
+                        <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                          <img src={inventoryIcon} alt="Icon Inventory" />
+                        </div>
+                        <span className="menu-text">{t("inventory")}</span>
+                      </NavLink>
+                    </li>
+                  );
+                }
+
+                if (section === "kitchen_management") {
+                  return (
+                    <li
+                      key={index}
+                      className={`menu-item ${getMenuItemActive(
+                        "/ingredient-inventory",
+                        false
+                      )}`}
+                    >
+                      <NavLink className="menu-link" to="/ingredient-inventory">
+                        {/* <span className="svg-icon menu-icon">
+                          <SVG
+                            src={toAbsoluteUrl(
+                              "/media/svg/icons/Shopping/Bag2.svg"
+                            )}
+                          />
+                        </span> */}
+                        <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                          <img src={kitchenIcon} alt="Icon Kitchen" />
+                        </div>
+                        <span className="menu-text">{t(kitchenModul)}</span>
+                      </NavLink>
+                    </li>
+                  );
+                }
+              })
+            : ""}
+
+          {managementSections.length ? (
+            <li className="menu-section" style={{ margin: "0" }}>
+              <h4 className="menu-text">{t("managementSettings")}</h4>
+            </li>
+          ) : (
+            ""
+          )}
+
+          {managementSections.length
+            ? managementSections.map((section, index) => {
+                if (section === "outlet_management") {
+                  return (
+                    <li
+                      key={index}
+                      className={`menu-item ${getMenuItemActive(
+                        "/outlet",
+                        false
+                      )}`}
+                    >
+                      <NavLink className="menu-link" to="/outlet">
+                        {/* <span className="svg-icon menu-icon">
+                          <SVG
+                            src={toAbsoluteUrl(
+                              "/media/svg/icons/Shopping/Bag2.svg"
+                            )}
+                          />
+                        </span> */}
+                        <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                          <img src={outletIcon} alt="Icon Outlet" />
+                        </div>
+                        <span className="menu-text">{t("outlet")}</span>
+                      </NavLink>
+                    </li>
+                  );
+                }
+
+                if (section === "promo_management") {
+                  return (
+                    <li
+                      key={index}
+                      className={`menu-item ${getMenuItemActive(
+                        "/promo",
+                        false
+                      )}`}
+                    >
+                      <NavLink className="menu-link" to="/promo">
+                        {/* <span className="svg-icon menu-icon">
+                          <SVG
+                            src={toAbsoluteUrl(
+                              "/media/svg/icons/Shopping/Bag2.svg"
+                            )}
+                          />
+                        </span> */}
+                        <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                          <img src={promoIcon} alt="Icon Promo" />
+                        </div>
+                        <span className="menu-text">{t("promo")}</span>
+                      </NavLink>
+                    </li>
+                  );
+                }
+
+                if (section === "staff_management") {
+                  return (
+                    <li
+                      key={index}
+                      className={`menu-item ${getMenuItemActive(
+                        "/staff",
+                        false
+                      )}`}
+                    >
+                      <NavLink className="menu-link" to="/staff">
+                        {/* <span className="svg-icon menu-icon">
+                          <SVG
+                            src={toAbsoluteUrl(
+                              "/media/svg/icons/Shopping/Bag2.svg"
+                            )}
+                          />
+                        </span> */}
+                        <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                          <img src={staffIcon} alt="Icon Staff" />
+                        </div>
+                        <span className="menu-text">{t("staff")}</span>
+                      </NavLink>
+                    </li>
+                  );
+                }
+                if (section === "role_management") {
+                  return (
+                    <li
+                      key={index}
+                      className={`menu-item ${getMenuItemActive("/role", false)}`}
+                    >
+                      <NavLink className="menu-link" to="/role">
+                        {/* <span className="svg-icon menu-icon">
+                          <SVG
+                            src={toAbsoluteUrl(
+                              "/media/svg/icons/Shopping/Bag2.svg"
+                            )}
+                          />
+                        </span> */}
+                        <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                          <img src={roleIcon} alt="Icon Role" />
+                        </div>
+                        <span className="menu-text">{t("role")}</span>
+                      </NavLink>
+                    </li>
+                  );
+                }
+                if (section === "customer_management") {
+                  return (
+                    <li
+                      key={index}
+                      className={`menu-item ${getMenuItemActive(
+                        "/customer",
+                        false
+                      )}`}
+                    >
+                      <NavLink className="menu-link" to="/customer">
+                        {/* <span className="svg-icon menu-icon">
+                          <SVG
+                            src={toAbsoluteUrl(
+                              "/media/svg/icons/Shopping/Bag2.svg"
+                            )}
+                          />
+                        </span> */}
+                        <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                          <img src={customerIcon} alt="Icon Customer" />
+                        </div>
+                        <span className="menu-text">{t("customer")}</span>
+                      </NavLink>
+                    </li>
+                  );
+                }
+                // if (section === "commission_management") {
+                //   return (
+                //     <li
+                //       key={index}
+                //       className={`menu-item ${getMenuItemActive(
+                //         "/commission",
+                //         false
+                //       )}`}
+                //     >
+                //       <NavLink className="menu-link" to="/commission">
+                //         {/* <span className="svg-icon menu-icon">
+                //           <SVG
+                //             src={toAbsoluteUrl(
+                //               "/media/svg/icons/Shopping/Bag2.svg"
+                //             )}
+                //           />
+                //         </span> */}
+                //         <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                //           <img src={commissionIcon} alt="Icon Commission" />
+                //         </div>
+                //         <span className="menu-text">{t("Commission")}</span>
+                //       </NavLink>
+                //     </li>
+                //   );
+                // }
+              })
+            : ""}
+
           <li className="menu-section" style={{ margin: "0" }}>
-            <h4 className="menu-text">{t("products")}</h4>
+            <h4 className="menu-text">{t("accountSetting")}</h4>
           </li>
-        ) : (
-          ""
-        )}
 
-        {productSections.length
-          ? productSections.map((section, index) => {
-              if (section === "product_management") {
-                return (
-                  <li
-                    key={index}
-                    className={`menu-item ${getMenuItemActive(
-                      "/product",
-                      false
-                    )}`}
-                  >
-                    <NavLink className="menu-link" to="/product">
-                      {/* <span className="svg-icon menu-icon">
-                        <SVG
-                          src={toAbsoluteUrl(
-                            "/media/svg/icons/Shopping/Bag2.svg"
-                          )}
-                        />
-                      </span> */}
-                      <div className="wrapper-icon">
-                        <img src={productIcon} alt="Icon Product" />
-                      </div>
-                      <span className="menu-text">{t("product")}</span>
-                    </NavLink>
-                  </li>
-                );
-              }
-
-              if (section === "inventory_management") {
-                return (
-                  <li
-                    key={index}
-                    className={`menu-item ${getMenuItemActive(
-                      "/inventory",
-                      false
-                    )}`}
-                  >
-                    <NavLink className="menu-link" to="/inventory">
-                      {/* <span className="svg-icon menu-icon">
-                        <SVG
-                          src={toAbsoluteUrl(
-                            "/media/svg/icons/Shopping/Bag2.svg"
-                          )}
-                        />
-                      </span> */}
-                      <div className="wrapper-icon">
-                        <img src={inventoryIcon} alt="Icon Inventory" />
-                      </div>
-                      <span className="menu-text">{t("inventory")}</span>
-                    </NavLink>
-                  </li>
-                );
-              }
-
-              if (section === "kitchen_management") {
-                return (
-                  <li
-                    key={index}
-                    className={`menu-item ${getMenuItemActive(
-                      "/ingredient-inventory",
-                      false
-                    )}`}
-                  >
-                    <NavLink className="menu-link" to="/ingredient-inventory">
-                      {/* <span className="svg-icon menu-icon">
-                        <SVG
-                          src={toAbsoluteUrl(
-                            "/media/svg/icons/Shopping/Bag2.svg"
-                          )}
-                        />
-                      </span> */}
-                      <div className="wrapper-icon">
-                        <img src={kitchenIcon} alt="Icon Kitchen" />
-                      </div>
-                      <span className="menu-text">{t(kitchenModul)}</span>
-                    </NavLink>
-                  </li>
-                );
-              }
-            })
-          : ""}
-
-        {managementSections.length ? (
-          <li className="menu-section" style={{ margin: "0" }}>
-            <h4 className="menu-text">{t("managementSettings")}</h4>
+          <li className={`menu-item ${getMenuItemActive("/account", false)}`}>
+            <NavLink className="menu-link" to="/account">
+              {/* <span className="svg-icon menu-icon">
+                <SVG src={toAbsoluteUrl("/media/svg/icons/Shopping/Bag2.svg")} />
+              </span> */}
+              <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                <img src={accountIcon} alt="Icon Account" />
+              </div>
+              <span className="menu-text">{t("account")}</span>
+            </NavLink>
           </li>
-        ) : (
-          ""
-        )}
 
-        {managementSections.length
-          ? managementSections.map((section, index) => {
-              if (section === "outlet_management") {
-                return (
-                  <li
-                    key={index}
-                    className={`menu-item ${getMenuItemActive(
-                      "/outlet",
-                      false
-                    )}`}
-                  >
-                    <NavLink className="menu-link" to="/outlet">
-                      {/* <span className="svg-icon menu-icon">
-                        <SVG
-                          src={toAbsoluteUrl(
-                            "/media/svg/icons/Shopping/Bag2.svg"
-                          )}
-                        />
-                      </span> */}
-                      <div className="wrapper-icon">
-                        <img src={outletIcon} alt="Icon Outlet" />
-                      </div>
-                      <span className="menu-text">{t("outlet")}</span>
-                    </NavLink>
-                  </li>
-                );
-              }
-
-              if (section === "promo_management") {
-                return (
-                  <li
-                    key={index}
-                    className={`menu-item ${getMenuItemActive(
-                      "/promo",
-                      false
-                    )}`}
-                  >
-                    <NavLink className="menu-link" to="/promo">
-                      {/* <span className="svg-icon menu-icon">
-                        <SVG
-                          src={toAbsoluteUrl(
-                            "/media/svg/icons/Shopping/Bag2.svg"
-                          )}
-                        />
-                      </span> */}
-                      <div className="wrapper-icon">
-                        <img src={promoIcon} alt="Icon Promo" />
-                      </div>
-                      <span className="menu-text">{t("promo")}</span>
-                    </NavLink>
-                  </li>
-                );
-              }
-
-              if (section === "staff_management") {
-                return (
-                  <li
-                    key={index}
-                    className={`menu-item ${getMenuItemActive(
-                      "/staff",
-                      false
-                    )}`}
-                  >
-                    <NavLink className="menu-link" to="/staff">
-                      {/* <span className="svg-icon menu-icon">
-                        <SVG
-                          src={toAbsoluteUrl(
-                            "/media/svg/icons/Shopping/Bag2.svg"
-                          )}
-                        />
-                      </span> */}
-                      <div className="wrapper-icon">
-                        <img src={staffIcon} alt="Icon Staff" />
-                      </div>
-                      <span className="menu-text">{t("staff")}</span>
-                    </NavLink>
-                  </li>
-                );
-              }
-              if (section === "role_management") {
-                return (
-                  <li
-                    key={index}
-                    className={`menu-item ${getMenuItemActive("/role", false)}`}
-                  >
-                    <NavLink className="menu-link" to="/role">
-                      {/* <span className="svg-icon menu-icon">
-                        <SVG
-                          src={toAbsoluteUrl(
-                            "/media/svg/icons/Shopping/Bag2.svg"
-                          )}
-                        />
-                      </span> */}
-                      <div className="wrapper-icon">
-                        <img src={roleIcon} alt="Icon Role" />
-                      </div>
-                      <span className="menu-text">{t("role")}</span>
-                    </NavLink>
-                  </li>
-                );
-              }
-              if (section === "customer_management") {
-                return (
-                  <li
-                    key={index}
-                    className={`menu-item ${getMenuItemActive(
-                      "/customer",
-                      false
-                    )}`}
-                  >
-                    <NavLink className="menu-link" to="/customer">
-                      {/* <span className="svg-icon menu-icon">
-                        <SVG
-                          src={toAbsoluteUrl(
-                            "/media/svg/icons/Shopping/Bag2.svg"
-                          )}
-                        />
-                      </span> */}
-                      <div className="wrapper-icon">
-                        <img src={customerIcon} alt="Icon Customer" />
-                      </div>
-                      <span className="menu-text">{t("customer")}</span>
-                    </NavLink>
-                  </li>
-                );
-              }
-              // if (section === "commission_management") {
-              //   return (
-              //     <li
-              //       key={index}
-              //       className={`menu-item ${getMenuItemActive(
-              //         "/commission",
-              //         false
-              //       )}`}
-              //     >
-              //       <NavLink className="menu-link" to="/commission">
-              //         {/* <span className="svg-icon menu-icon">
-              //           <SVG
-              //             src={toAbsoluteUrl(
-              //               "/media/svg/icons/Shopping/Bag2.svg"
-              //             )}
-              //           />
-              //         </span> */}
-              //         <div className="wrapper-icon">
-              //           <img src={commissionIcon} alt="Icon Commission" />
-              //         </div>
-              //         <span className="menu-text">{t("Commission")}</span>
-              //       </NavLink>
-              //     </li>
-              //   );
-              // }
-            })
-          : ""}
-
-        <li className="menu-section" style={{ margin: "0" }}>
-          <h4 className="menu-text">{t("accountSetting")}</h4>
-        </li>
-
-        <li className={`menu-item ${getMenuItemActive("/account", false)}`}>
-          <NavLink className="menu-link" to="/account">
-            {/* <span className="svg-icon menu-icon">
-              <SVG src={toAbsoluteUrl("/media/svg/icons/Shopping/Bag2.svg")} />
-            </span> */}
-            <div className="wrapper-icon">
-              <img src={accountIcon} alt="Icon Account" />
-            </div>
-            <span className="menu-text">{t("account")}</span>
-          </NavLink>
-        </li>
-
-        <li
-          className={`menu-item ${getMenuItemActive(
-            "/sales-channel",
-            false
-          )}`}
-          aria-haspopup="true"
-        >
-          <div className="menu-link" width="100%" onClick={handleDropdownSalesChannel}>
-            <div className="wrapper-icon">
-              <img src={reportIcon} alt="Icon Report" />
-            </div>
-            <div className="handle-between-dropdown-report">
-              <span className="menu-text">{t("onlineShop")}</span>
-              {showDropdownSalesChannel ? (
-                <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
-              ) : (
-                <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
-              )}
-            </div>
-          </div>
-          <div className={showDropdownSalesChannel ? 'show-dropdown-report' : 'hide-dropdown-report'}>
-            <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
-              
-              <li className={`menu-item ${getMenuItemActive("/report",false)}`} aria-haspopup="true">
-                <div className="menu-link d-flex justify-content-between align-items-center" onClick={handleDropdownWebstore}>
-                  <span className="dropdown-menu-lv1 menu-text">{t("webStore")}</span>
-                  {showDropdownWebstore ? (
-                    <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
-                  ) : (
-                    <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
-                  )}
+          <li
+            className={`menu-item ${getMenuItemActive(
+              "/sales-channel",
+              false
+            )}`}
+            aria-haspopup="true"
+          >
+            <div className="menu-link" width="100%" onClick={handleDropdownSalesChannel}>
+              <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                <img src={reportIcon} alt="Icon Report" />
+              </div>
+                <div className={!props.hide ? 'handle-between-dropdown-report' : ''}>
+                  <span className="menu-text">{t("onlineShop")}</span>
+                  {!props.hide ? (
+                    showDropdownSalesChannel ? (
+                      <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
+                    ) : (
+                      <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
+                    )
+                  ) : null }
                 </div>
-
-                <div className={showDropdownWebstore ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
-                  <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
-                    {webstore.map((value, index2) => 
-                      <li key={index2} className={`menu-item ${getMenuItemActive(`/${value.route}`,false)}`}  aria-haspopup="true">
-                        <NavLink className="menu-link" to={`/online-shop/${value.route}`}>
-                          <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
-                        </NavLink>
-                      </li>
-                    )}
-                  </ul>
-                </div>
-              </li>
-
-              {marketPlace.length > 0 ? (
-                <li className={`menu-item ${getMenuItemActive("/report",false)}`}  aria-haspopup="true">
-                  <div className="menu-link d-flex justify-content-between align-items-center" onClick={handleDropdownMarketplace}>
-                    <span className="dropdown-menu-lv1 menu-text">{t("marketplace")}</span>
-                    {showDropdownMarketplace ? (
+            </div>
+            <div className={showDropdownSalesChannel ? 'show-dropdown-report' : 'hide-dropdown-report'}>
+              <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
+                
+                <li className={`menu-item ${getMenuItemActive("/report",false)}`} aria-haspopup="true">
+                  <div className="menu-link d-flex justify-content-between align-items-center" onClick={handleDropdownWebstore}>
+                    <span className="dropdown-menu-lv1 menu-text">{t("webStore")}</span>
+                    {showDropdownWebstore ? (
                       <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
                     ) : (
                       <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
                     )}
                   </div>
-                  <div className={showDropdownMarketplace ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
+
+                  <div className={showDropdownWebstore ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
                     <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
-                      {marketPlace.map((value, index2) => 
+                      {webstore.map((value, index2) => 
                         <li key={index2} className={`menu-item ${getMenuItemActive(`/${value.route}`,false)}`}  aria-haspopup="true">
                           <NavLink className="menu-link" to={`/online-shop/${value.route}`}>
                             <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
@@ -955,61 +946,84 @@ function AsideMenuList(props) {
                     </ul>
                   </div>
                 </li>
-              ) : null }
 
-            </ul>
-          </div>
-        </li>
-        
-        {/* <li className={`menu-item ${getMenuItemActive("/currency", false)}`}>
-          <NavLink className="menu-link" to="/currency">
-            <div className="wrapper-icon">
-              <img src={currencyIcon} alt="Icon Currency" />
+                {marketPlace.length > 0 ? (
+                  <li className={`menu-item ${getMenuItemActive("/report",false)}`}  aria-haspopup="true">
+                    <div className="menu-link d-flex justify-content-between align-items-center" onClick={handleDropdownMarketplace}>
+                      <span className="dropdown-menu-lv1 menu-text">{t("marketplace")}</span>
+                      {showDropdownMarketplace ? (
+                        <img src={ArrowUp} alt="Arrow Up" width={12} height={12}/>
+                      ) : (
+                        <img src={ArrowDown} alt="Arrow Down" width={12} height={12}/>
+                      )}
+                    </div>
+                    <div className={showDropdownMarketplace ? 'show-dropdown-report-sales' : 'hide-dropdown-report-sales'}>
+                      <ul className={`menu-nav ${props.layoutProps.ulClasses}`} style={{ padding: 0 }}>
+                        {marketPlace.map((value, index2) => 
+                          <li key={index2} className={`menu-item ${getMenuItemActive(`/${value.route}`,false)}`}  aria-haspopup="true">
+                            <NavLink className="menu-link" to={`/online-shop/${value.route}`}>
+                              <span className="dropdown-menu-lv2 menu-text">{t(value.name)}</span>
+                            </NavLink>
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                  </li>
+                ) : null }
+
+              </ul>
             </div>
-            <span className="menu-text">{t("currencyConversion")}</span>
-          </NavLink>
-        </li> */}
-
-        {/* <li className={`menu-item ${getMenuItemActive("/subscription", false)}`}>
-          <NavLink className="menu-link" to="/subscription">
-            <div className="wrapper-icon">
-              <img src={subscriptionIcon} alt="Icon Subscription"/>
-            </div>
-            <span className="menu-text">{t("subscription")}</span>
-          </NavLink>
-        </li> */}
-
-        {showPayment ? (
-          <li className={`menu-item ${getMenuItemActive("/payment", false)}`}>
-            <NavLink className="menu-link" to="/payment">
-              <div className="wrapper-icon">
-                <img src={paymentIcon} alt="Icon Payment" />
+          </li>
+          
+          {/* <li className={`menu-item ${getMenuItemActive("/currency", false)}`}>
+            <NavLink className="menu-link" to="/currency">
+              <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                <img src={currencyIcon} alt="Icon Currency" />
               </div>
-              <span className="menu-text">{t("payment")}</span>
+              <span className="menu-text">{t("currencyConversion")}</span>
+            </NavLink>
+          </li> */}
+
+          {/* <li className={`menu-item ${getMenuItemActive("/subscription", false)}`}>
+            <NavLink className="menu-link" to="/subscription">
+              <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                <img src={subscriptionIcon} alt="Icon Subscription"/>
+              </div>
+              <span className="menu-text">{t("subscription")}</span>
+            </NavLink>
+          </li> */}
+
+          {showPayment ? (
+            <li className={`menu-item ${getMenuItemActive("/payment", false)}`}>
+              <NavLink className="menu-link" to="/payment">
+                <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                  <img src={paymentIcon} alt="Icon Payment" />
+                </div>
+                <span className="menu-text">{t("payment")}</span>
+              </NavLink>
+            </li>
+          ) : null }
+
+          {/* {showIntegrate ? (
+            <li className={`menu-item ${getMenuItemActive("/sales-channel", false)}`}>
+              <NavLink className="menu-link" to="/sales-channel">
+                <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                  <img src={paymentSalesChannel} alt="Icon Sales Channel" />
+                </div>
+                <span className="menu-text">{t("salesChannel")}</span>
+              </NavLink>
+            </li>) 
+          : null } */}
+
+          <li id="about" className={`menu-item ${getMenuItemActive("/about", false)}`}>
+            <NavLink className="menu-link" to="/about">
+              <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                <img src={aboutIcon} alt="Icon About" />
+              </div>
+              <span className="menu-text">{t("about")}</span>
             </NavLink>
           </li>
-        ) : null }
-
-        {/* {showIntegrate ? (
-          <li className={`menu-item ${getMenuItemActive("/sales-channel", false)}`}>
-            <NavLink className="menu-link" to="/sales-channel">
-              <div className="wrapper-icon">
-                <img src={paymentSalesChannel} alt="Icon Sales Channel" />
-              </div>
-              <span className="menu-text">{t("salesChannel")}</span>
-            </NavLink>
-          </li>) 
-        : null } */}
-
-        <li className={`menu-item ${getMenuItemActive("/about", false)}`}>
-          <NavLink className="menu-link" to="/about">
-            <div className="wrapper-icon">
-              <img src={aboutIcon} alt="Icon About" />
-            </div>
-            <span className="menu-text">{t("about")}</span>
-          </NavLink>
-        </li>
-      </ul>
+        </ul>
     </>
   );
 }

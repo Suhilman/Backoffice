@@ -27,6 +27,13 @@ export function Routes() {
     shallowEqual
   );
 
+  const [stateScroll, setStateScroll] = React.useState(false)
+
+  const handleScrollBottom = () => {
+    console.log("Triggered scroll")
+    setStateScroll(!stateScroll)
+  }
+
   return (
     <Switch>
       <Route path="/auth/registration-backoffice" component={RegistrationMarketing} />
@@ -61,8 +68,8 @@ export function Routes() {
         /*Redirect to `/auth` when user is not authorized*/
         <Redirect to="/auth/login" />
       ) : (
-        <Layout>
-          <BasePage />
+        <Layout stateScroll={stateScroll}>
+          <BasePage handleScrollBottom={handleScrollBottom}/>
         </Layout>
       )}
     </Switch>

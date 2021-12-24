@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import styles from './modalsync.module.css'
 toast.configure();
-const ModalSync = ({
+const ModalSyncBlibli = ({
   state,
   closeModal,
   optionsOutlet,
@@ -23,7 +23,8 @@ const ModalSync = ({
   showFeature,
   handleOptionOutlet,
   productOfOutlet,
-  tempOptionOutlet
+  tempOptionOutlet,
+  outletIntegratedBlibli
 }) => {
   const { t } = useTranslation();
 
@@ -59,18 +60,21 @@ const ModalSync = ({
     setCurrProduct(uniqueArray)
   };
 
-  const optionOutletIntegrate = (alOutlet) => {
-    console.log("optionOutletIntegrate", alOutlet)
+  const optionOutletIntegrate = (allOutlet) => {
     const result = []
-    alOutlet.map(value => {
-      if(value.blibli_store_id && value.blibli_auth) {
-        result.push(value)
-      }
+    allOutlet.map(value => {
+      outletIntegratedBlibli.map(value2 => {
+        console.log("value.name", value.name)
+        console.log("value2", value2)
+        if(value.name === value2) {
+          result.push(value)
+        }
+      })
     })
+    console.log("result", result)
     const optionsOutlet = result.map((item) => {
       return { value: item.id, label: item.name };
     });
-    console.log("optionsOutlet", optionsOutlet)
     setOutletWithIntegrate(optionsOutlet)
   }
 
@@ -153,7 +157,8 @@ const ModalSync = ({
 
   const handleSyncBlili = async () => {
     try {
-      if(checkOutletIntegrate()) {
+      if(true) {
+      // if(checkOutletIntegrate()) {
         setAlert("")
       
         const request_id = `Lifetech - ${outletId} - ${moment(new Date()).format("YYYYMMDDHHmmss")}`
@@ -185,14 +190,13 @@ const ModalSync = ({
             await axios.post(`${API_URL}/api/v1/blibli/save-temp-product`, send_save_temp_product)
           })
         }
-        container_gdnsku_blibli.map(async (value) => {
+        for(const value of container_gdnsku_blibli) {
           const send_sync_in_single = {
             sku: value,
             outlet_id: outletId,
           }
           await axios.post(`${API_URL}/api/v1/blibli/sync-in-single`, send_sync_in_single)
-        })
-        console.log("Sebelum Call handleOptionOutlet")
+        }
         await handleOptionOutlet(outletId)
         toast.success(t('synsBlibliProductSuccess'), {
           position: "top-right",
@@ -216,7 +220,7 @@ const ModalSync = ({
     <div>
       <Modal show={state} onHide={closeModal}>
         <Modal.Header closeButton>
-          <Modal.Title>{t("syncProduct")}</Modal.Title>
+          <Modal.Title>{t("syncProduct")} Blibli</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {alert ? <Alert variant="danger">{alert}</Alert> : ""}
@@ -233,7 +237,7 @@ const ModalSync = ({
                   ) : null }
                 </div>
                 <Select
-                  options={optionsOutlet}
+                  options={outletWithIntegrate}
                   placeholder={t('select')}
                   name="outlet_id"
                   className="basic-select"
@@ -285,4 +289,4 @@ const ModalSync = ({
   );
 };
 
-export default ModalSync;
+export default ModalSyncBlibli;

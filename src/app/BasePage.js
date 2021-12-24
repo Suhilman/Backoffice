@@ -107,7 +107,7 @@ import About from "./pages/About/AboutPage"
 import { SalesChannelPage } from './pages/SalesChannel/SalesChannelPage'
 
 
-export default function BasePage() {
+export default function BasePage({handleScrollBottom}) {
   const [currPrivileges, setCurrPrivileges] = React.useState({
     view_dashboard: false,
     view_report: false,
@@ -181,7 +181,7 @@ export default function BasePage() {
           isRoute={false}
           exact={false}
           path="/dashboard"
-          component={DashboardPage}
+          component={() => <DashboardPage handleScrollBottom={handleScrollBottom}/>}
         />
         <ProtectedRoute
           isAllowed={currPrivileges.view_report}
