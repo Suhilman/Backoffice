@@ -581,7 +581,7 @@ const ModalCustomRange = ({
 
   const handleShowGuide = async (state) => {
     if (state === 'finish_guide') {
-      handleScrollBottom()
+      // handleScrollBottom()
       await axios.patch(`${API_URL}/api/v1/business/update-guide/${userInfo.business_id}`, {
         user_guide: 1
       })

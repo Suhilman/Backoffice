@@ -4,6 +4,7 @@ import Select from "react-select";
 import { useDropzone } from "react-dropzone";
 import { useTranslation } from "react-i18next";
 const ConfirmModal = ({
+  title,
   state,
   loading,
   alert,
@@ -53,7 +54,7 @@ const ConfirmModal = ({
   return (
     <Modal show={state} onHide={closeModal}>
       <Modal.Header closeButton>
-        <Modal.Title>{t("importProduct")}</Modal.Title>
+        <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
 
       <Form onSubmit={formikImportProduct.handleSubmit}>

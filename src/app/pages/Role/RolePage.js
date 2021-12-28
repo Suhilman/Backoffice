@@ -403,7 +403,7 @@ export const RolePage = () => {
       return {
         id: item.id,
         no: index + 1,
-        name: item.name,
+        name: camelize(item.name) === 'superadmin' ? t('superadmin') : camelize(item.name) === 'admin' ? t('admin') : camelize(item.name) === 'common' ? t('common') : item.name,
         access: filterAccess.join(", "),
         privileges: privilegeData,
         default: item.is_deletable ? "No" : "Yes"

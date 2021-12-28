@@ -31,7 +31,9 @@ import rupiahFormat from "rupiah-format";
 import useDebounce from "../../../hooks/useDebounce";
 
 import ConfirmModal from "../../../components/ConfirmModal";
-import ImportModal from "./ImportModal";
+import ImportModalAdd from "./ImportModal";
+import ImportModalEdit from "./ImportModal";
+
 import ExportModal from "./ExportModal"
 import ModalSyncBlibli from "./ModalSyncBlibli";
 import LogoSync from "../../../../images/cloud-sync-100.png"
@@ -52,7 +54,8 @@ const ProductTab = ({
   const [loading, setLoading] = React.useState(false);
   const [showConfirm, setShowConfirm] = React.useState(false);
   const [showConfirmBulk, setShowConfirmBulk] = React.useState(false);
-  const [stateImport, setStateImport] = React.useState(false);
+  const [stateImportAdd, setStateImportAdd] = React.useState(false);
+  const [stateImportEdit, setStateImportEdit] = React.useState(false);
   const [stateExport, setStateExport] = React.useState(false);
   const [stateModalSyncBlibli, setStateModalSyncBlibli] = React.useState(false);
   const [productOfOutlet, setProductOfOutlet] = React.useState([])
@@ -521,7 +524,7 @@ const ProductTab = ({
     }
   };
 
-  const initialValueImportProduct = {
+  const initialValueImportProductAdd = {
     outlet_id: [],
     products: [
       {
@@ -542,8 +545,100 @@ const ProductTab = ({
     ]
   };
 
-  const formikImportProduct = useFormik({
-    initialValues: initialValueImportProduct,
+  const initialValueImportProductEdit = {
+    outlet_id: [],
+    products: [
+      {
+        outlet: "",
+        name: "",
+        category: "",
+        price: 0,
+        price_purchase: 0,
+        description: "",
+        status: false,
+        is_favorite: false,
+        sku: 0,
+        barcode: 0,
+        pajak: 0,
+        with_recipe: false,
+        stok_awal: 0
+      }
+    ]
+  };
+
+  const formikImportProductAdd = useFormik({
+    initialValues: initialValueImportProductAdd,
+    onSubmit: async (values) => {
+      const API_URL = process.env.REACT_APP_API_URL;
+
+      try {
+        if (!values.outlet_id.length) {
+          throw new Error(`${t("pleaseChooseOutlet")}`);
+        }
+
+        const merged = values.outlet_id.map((item) => {
+          const output = [];
+          for (const val of values.products) {
+            // if(val.name && val.sku) {
+            if(true) {
+              if(!val.price_purchase) throw new Error(t('thereIsProductWithoutPrice'));
+              if(!val.category) throw new Error(t('thereIsProductWithoutCategory'));
+
+              const obj = {
+                ...val,
+                outlet_id: item,
+                stock: val.stock === "-" ? 0 : val.stock,
+                expired_date: val.expired_date
+                  ? dayjs(val.expired_date)
+                      .subtract(1, "days")
+                      .format("YYYY-MM-DD")
+                  : ""
+              };
+
+              // Jika sku nya selain "-" atau kosong, maka diisi sesuai sku yg di masukkan
+              obj.sku = obj.sku ? obj.sku : obj.sku === '-' ? '-' : '-'
+
+              // if (!val.barcode) delete obj.barcode;
+              // if (!val.category) delete obj.category;
+              if (!val.with_recipe) delete obj.with_recipe;
+              if (!val.stock) delete obj.stock;
+              if (!val.unit) delete obj.unit;
+              if (!val.expired_date) delete obj.expired_date;
+              output.push(obj);
+            }
+            // else 
+            // {
+            //   console.log("SKU atau Nama produk tidak ada")
+            //   throw new Error(t('thereIsProductWithoutNameOrSku'));
+            // }
+          }
+          return output;
+        });
+        enableLoading();
+        for (const item of merged.flat(1)) {
+          if (!item.name) {
+            throw new Error("there is product without name");
+          }
+          // if (!item.sku) {
+          //   throw new Error("there is product without sku");
+          // }
+        }
+        console.log("product nya", merged.flat(1))
+        await axios.post(`${API_URL}/api/v1/product/bulk-create`, {
+          products: merged.flat(1)
+        });
+        disableLoading();
+        handleRefresh();
+        handleCloseImportAdd();
+      } catch (err) {
+        setAlert(err.response?.data.message || err.message);
+        disableLoading();
+      }
+    }
+  });
+
+  const formikImportProductEdit = useFormik({
+    initialValues: initialValueImportProductEdit,
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
 
@@ -599,13 +694,13 @@ const ProductTab = ({
           //   throw new Error("there is product without sku");
           // }
         }
-        console.log("product nya", merged.flat(1))
-        await axios.post(`${API_URL}/api/v1/product/bulk-create`, {
+        console.log("product update nya", merged.flat(1))
+        await axios.put(`${API_URL}/api/v1/product/bulk-update`, {
           products: merged.flat(1)
         });
         disableLoading();
         handleRefresh();
-        handleCloseImport();
+        handleCloseImportEdit();
       } catch (err) {
         setAlert(err.response?.data.message || err.message);
         disableLoading();
@@ -613,13 +708,22 @@ const ProductTab = ({
     }
   });
 
-  const handleOpenImport = () => setStateImport(true);
-  const handleCloseImport = () => {
-    setStateImport(false);
+  const handleOpenImportAdd = () => setStateImportAdd(true);
+  const handleOpenImportEdit = () => setStateImportEdit(true);
+
+  const handleCloseImportAdd = () => {
+    setStateImportAdd(false);
     setFilename("");
-    formikImportProduct.setFieldValue("outlet_id", []);
-    formikImportProduct.setFieldValue("products", []);
+    formikImportProductAdd.setFieldValue("outlet_id", []);
+    formikImportProductAdd.setFieldValue("products", []);
   };
+  const handleCloseImportEdit = () => {
+    setStateImportEdit(false);
+    setFilename("");
+    formikImportProductEdit.setFieldValue("outlet_id", []);
+    formikImportProductEdit.setFieldValue("products", []);
+  };
+
   const handleCloseExport = () => {
     setStateExport(false);
     setDataProduct([])
@@ -632,15 +736,14 @@ const ProductTab = ({
   const getJsDateFromExcel = (excelDate) => {
     return new Date((excelDate - (25567 + 1)) * 86400 * 1000);
   };
-  const handleFile = (file) => {
+
+  const handleFileAdd = (file) => {
     setFilename(file[0].name);
     ExcelRenderer(file[0], (err, resp) => {
       if (err) {
-        console.log("handleFile", err)
         setAlert(err);
       } else {
         const { rows } = resp;
-        console.log("handleFile", rows)
         const keys = [
           "name",
           "description",
@@ -698,7 +801,76 @@ const ProductTab = ({
           });
           // console.log("data excel", data)
         });
-        formikImportProduct.setFieldValue("products", data);
+        formikImportProductAdd.setFieldValue("products", data);
+      }
+    });
+  };
+
+  const handleFileEdit = (file) => {
+    setFilename(file[0].name);
+    ExcelRenderer(file[0], (err, resp) => {
+      if (err) {
+        setAlert(err);
+      } else {
+        const { rows } = resp;
+        const keys = [
+          "name",
+          "description",
+          "barcode",
+          "sku",
+          "price_purchase",
+          "price",
+          "is_favorite",
+          "category",
+          // "with_recipe",
+          "stock",
+          "unit",
+          // "expired_date"
+        ];
+        if(subscriptionType === 3) {
+          keys.splice(8, 0, "with_recipe")
+          keys.splice(11, 0, "expired_date")
+        }
+        if(subscriptionType === 2) {
+          keys.splice(11, 0, "expired_date")
+        }
+        const data = [];
+        const obj = {};
+        rows.slice(4).map((j) => {
+          keys.map((i, index) => {
+            if (i === "barcode") {
+              if (j[index]) {
+                obj[i] = j[index].toString();
+              } else {
+                obj[i] = "-";
+              }
+            } else if (i === "expired_date") {
+              if (j[index]) {
+                obj[i] = j[index];
+              } else {
+                obj[i] = "-";
+              }
+            } else {
+              obj[i] = j[index];
+            }
+          });
+          data.push({
+            name: obj.name,
+            category: obj.category,
+            price: obj.price,
+            price_purchase: obj.price_purchase,
+            description: obj.description,
+            is_favorite: obj.is_favorite,
+            sku: obj.sku,
+            barcode: obj.barcode,
+            with_recipe: obj.with_recipe,
+            stock: obj.stock,
+            unit: obj.unit,
+            expired_date: getJsDateFromExcel(obj.expired_date)
+          });
+          // console.log("data excel", data)
+        });
+        formikImportProductEdit.setFieldValue("products", data);
       }
     });
   };
@@ -874,14 +1046,28 @@ const ProductTab = ({
         loading={loading}
       />
 
-      <ImportModal
-        state={stateImport}
+      <ImportModalAdd
+        title={t('importAddProduct')}
+        state={stateImportAdd}
         loading={loading}
         alert={alert}
-        closeModal={handleCloseImport}
-        formikImportProduct={formikImportProduct}
+        closeModal={handleCloseImportAdd}
+        formikImportProduct={formikImportProductAdd}
         allOutlets={allOutlets}
-        handleFile={handleFile}
+        handleFile={handleFileAdd}
+        filename={filename}
+        subscriptionType={subscriptionType}
+      />
+
+      <ImportModalEdit
+        title={t('importEditProduct')}
+        state={stateImportEdit}
+        loading={loading}
+        alert={alert}
+        closeModal={handleCloseImportEdit}
+        formikImportProduct={formikImportProductEdit}
+        allOutlets={allOutlets}
+        handleFile={handleFileEdit}
         filename={filename}
         subscriptionType={subscriptionType}
       />
@@ -962,9 +1148,21 @@ const ProductTab = ({
                   <Button style={{ marginRight: "0.5rem" }} variant="secondary" onClick={() => setStateExport(true)}>
                     {t("export")}
                   </Button>
-                  <Button variant="secondary" onClick={handleOpenImport}>
+
+                  <Dropdown>
+                    <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+                      {t("import")}
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                      <Dropdown.Item onClick={handleOpenImportAdd}>{t("addProduct")}</Dropdown.Item>
+                      <Dropdown.Item onClick={handleOpenImportEdit}>{t("editProduct")}</Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+
+                  {/* <Button variant="secondary" onClick={handleOpenImportAdd}>
                     {t("import")}
-                  </Button>
+                  </Button> */}
 
                   <Dropdown as={ButtonGroup} style={{ marginLeft: "0.5rem" }}>
                     <Link

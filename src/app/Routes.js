@@ -30,7 +30,6 @@ export function Routes() {
   const [stateScroll, setStateScroll] = React.useState(false)
 
   const handleScrollBottom = () => {
-    console.log("Triggered scroll")
     setStateScroll(!stateScroll)
   }
 
