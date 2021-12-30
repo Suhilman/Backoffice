@@ -33,6 +33,7 @@ import useDebounce from "../../../hooks/useDebounce";
 import ConfirmModal from "../../../components/ConfirmModal";
 import ImportModalAdd from "./ImportModal";
 import ImportModalEdit from "./ImportModal";
+import ImportModalAddons from "./ImportModalAddons";
 
 import ExportModal from "./ExportModal"
 import ModalSyncBlibli from "./ModalSyncBlibli";
@@ -56,6 +57,8 @@ const ProductTab = ({
   const [showConfirmBulk, setShowConfirmBulk] = React.useState(false);
   const [stateImportAdd, setStateImportAdd] = React.useState(false);
   const [stateImportEdit, setStateImportEdit] = React.useState(false);
+  const [stateImportAddons, setStateImportAddons] = React.useState(false);
+
   const [stateExport, setStateExport] = React.useState(false);
   const [stateModalSyncBlibli, setStateModalSyncBlibli] = React.useState(false);
   const [productOfOutlet, setProductOfOutlet] = React.useState([])
@@ -566,11 +569,15 @@ const ProductTab = ({
     ]
   };
 
+  const initialValueImportAddons = {
+    outlet_id: [],
+    groupAddons: []
+  };
+
   const formikImportProductAdd = useFormik({
     initialValues: initialValueImportProductAdd,
     onSubmit: async (values) => {
       const API_URL = process.env.REACT_APP_API_URL;
-
       try {
         if (!values.outlet_id.length) {
           throw new Error(`${t("pleaseChooseOutlet")}`);
@@ -588,7 +595,7 @@ const ProductTab = ({
                 ...val,
                 outlet_id: item,
                 stock: val.stock === "-" ? 0 : val.stock,
-                expired_date: val.expired_date
+                expired_date: val.expired_date !== "-"
                   ? dayjs(val.expired_date)
                       .subtract(1, "days")
                       .format("YYYY-MM-DD")
@@ -659,7 +666,7 @@ const ProductTab = ({
                 ...val,
                 outlet_id: item,
                 stock: val.stock === "-" ? 0 : val.stock,
-                expired_date: val.expired_date
+                expired_date: val.expired_date !== '-'
                   ? dayjs(val.expired_date)
                       .subtract(1, "days")
                       .format("YYYY-MM-DD")
@@ -672,7 +679,7 @@ const ProductTab = ({
               // if (!val.barcode) delete obj.barcode;
               // if (!val.category) delete obj.category;
               if (!val.with_recipe) delete obj.with_recipe;
-              if (!val.stock) delete obj.stock;
+              // if (!val.stock) delete obj.stock;
               if (!val.unit) delete obj.unit;
               if (!val.expired_date) delete obj.expired_date;
               output.push(obj);
@@ -708,8 +715,34 @@ const ProductTab = ({
     }
   });
 
+  const formikImportAddons = useFormik({
+    initialValues: initialValueImportAddons,
+    onSubmit: async (values) => {
+      const API_URL = process.env.REACT_APP_API_URL;
+      try {
+        if (!values.outlet_id.length) {
+          throw new Error(`${t("pleaseChooseOutlet")}`);
+        }
+        const data = {
+          outlet_id: JSON.stringify(values.outlet_id),
+          groupAddons: JSON.stringify(values.groupAddons)
+        }
+
+        enableLoading();
+        await axios.post(`${API_URL}/api/v1/addons/bulk-create`, data);
+        disableLoading();
+        handleRefresh();
+        handleCloseImportAddons();
+      } catch (err) {
+        setAlert(err.response?.data.message || err.message);
+        disableLoading();
+      }
+    }
+  });
+
   const handleOpenImportAdd = () => setStateImportAdd(true);
   const handleOpenImportEdit = () => setStateImportEdit(true);
+  const handleOpenImportAddons = () => setStateImportAddons(true);
 
   const handleCloseImportAdd = () => {
     setStateImportAdd(false);
@@ -722,6 +755,12 @@ const ProductTab = ({
     setFilename("");
     formikImportProductEdit.setFieldValue("outlet_id", []);
     formikImportProductEdit.setFieldValue("products", []);
+  };
+  const handleCloseImportAddons = () => {
+    setStateImportAddons(false);
+    setFilename("");
+    formikImportAddons.setFieldValue("outlet_id", []);
+    formikImportAddons.setFieldValue("groupAddons", []);
   };
 
   const handleCloseExport = () => {
@@ -871,6 +910,77 @@ const ProductTab = ({
           // console.log("data excel", data)
         });
         formikImportProductEdit.setFieldValue("products", data);
+      }
+    });
+  };
+
+  const handleFileAddons = (file) => {
+    setFilename(file[0].name);
+    ExcelRenderer(file[0], (err, resp) => {
+      if (err) {
+        setAlert(err);
+      } else {
+        const obj = {}
+        const data = []
+        const {rows} = resp
+        const keys = [
+          "sku_product",
+          "group_name",
+          "group_type",
+          "addon_name",
+          "price",
+          "status_addon"
+        ]
+        rows.slice(3).map((value) => {
+          keys.map((value2, index) => {
+            obj[value2] = value[index]
+          })
+          data.push({
+            sku_product: obj.sku_product,
+            group_name: obj.group_name,
+            group_type: obj.group_type,
+            addon_name: obj.addon_name,
+            price: obj.price,
+            status_addon: obj.status_addon
+          })
+        })
+        
+        const result = []
+        
+        data.map(value => {
+          const group_name = value.group_name.split("|")
+          const group_type = value.group_type.split("|")
+          const addon_name = value.addon_name.split("|")
+          const price = value.price.split("|")
+          const status_addon = value.status_addon.split("|")
+        
+          group_name.map((value2, index) => {
+            const addons = []
+            const every_addon_name = addon_name[index].split(',')
+            const every_price = price[index].split(',')
+            const every_status_addon = status_addon[index].split(',')
+        
+            every_addon_name.map((value2, index2) => {
+              addons.push({
+                has_raw_material: false,
+                id: "",
+                raw_material_id: "",
+                unit_id: "",
+                name: value2,
+                price: every_price[index2],
+                status: every_status_addon[index2]
+              })
+            })
+        
+            result.push({
+              sku_product: value.sku_product,
+              group_name: value2,
+              group_type: group_type[index],
+              addons
+            })
+          })
+        })
+        formikImportAddons.setFieldValue("groupAddons", result);
       }
     });
   };
@@ -1072,6 +1182,19 @@ const ProductTab = ({
         subscriptionType={subscriptionType}
       />
 
+      <ImportModalAddons
+        title={t('importEditProduct')}
+        state={stateImportAddons}
+        loading={loading}
+        alert={alert}
+        closeModal={handleCloseImportAddons}
+        formikImportProduct={formikImportAddons}
+        allOutlets={allOutlets}
+        handleFile={handleFileAddons}
+        filename={filename}
+        subscriptionType={subscriptionType}
+      />
+
       <ExportModal 
         loading={loading}
         state={stateExport}
@@ -1157,6 +1280,7 @@ const ProductTab = ({
                     <Dropdown.Menu>
                       <Dropdown.Item onClick={handleOpenImportAdd}>{t("addProduct")}</Dropdown.Item>
                       <Dropdown.Item onClick={handleOpenImportEdit}>{t("editProduct")}</Dropdown.Item>
+                      <Dropdown.Item onClick={handleOpenImportAddons}>{t("addAddons")}</Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
 
