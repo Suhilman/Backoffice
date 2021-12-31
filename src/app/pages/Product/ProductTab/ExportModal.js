@@ -4,8 +4,8 @@ import Select from "react-select";
 import axios from 'axios'
 import ExportExcel from "react-html-table-to-excel";
 import NumberFormat from 'react-number-format';
-import rupiahFormat from "rupiah-format";
 import Moment from 'react-moment';
+import rupiahFormat from "rupiah-format";
 import { useTranslation } from "react-i18next";
 const ExportModal = ({state, closeModal, optionsOutlet, handleExports, loading, dataProduct, showFeature}) => {
   const { t } = useTranslation();
@@ -86,32 +86,68 @@ const ExportModal = ({state, closeModal, optionsOutlet, handleExports, loading, 
                 <ExportExcel
                   id="test-table-xls-button"
                   className="btn btn-outline-primary mx-2"
-                  table="table-to-xls"
+                  table="table-to-xlsx"
                   filename={fileName}
-                  sheet="tablexls"
+                  sheet="tablexlsx"
                   buttonText={t("export")}
                 />
                 <div style={{ display: "none" }}>
-                  <table id="table-to-xls">
+                  <table id="table-to-xlsx">
                     <tr>
                       <th>{t("exportProductResult")}</th>
                     </tr>
-                    <tr>
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("productName")}</th>
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("description")}</th>
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("barcode")}</th>
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("sku")}</th>
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("price")}</th>
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("capitalPrice")}</th>
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("favorite")}</th>
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("category")}</th>
+                    <tr >
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("productName")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("description")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("barcode")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("sku")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("price")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("capitalPrice")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("favorite")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("category")}</th>
                       {showFeature.recipe ? (
-                        <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("withRecipe")}</th>
+                        <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("withRecipe")}</th>
                       ) : null}
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("stock")}</th>
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("unit")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("stock")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("unit")}</th>
                       {showFeature.expired ? (
-                        <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("expiredDate")}</th>
+                        <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("expiredDate")}</th>
+                      ) : null}
+                    </tr>
+                    <tr>
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('nameOfProductBeingSold')}</th>
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('explanationOfTheProductBeingSold')}</th>
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('canBeNumbersLetters&Symbols')}</th>
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('canBeNumbersLetters&SymbolsIfYouWantToAutoGenerateYouCanLeaveItBlankOrEnter')}</th>
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('nameOfProductBeingSold')}</th>
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('mustBeAnumber(WithoutSymbolsLike)')}</th>
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('1IfYouWantToAddToFavoriteMenu')}</th>
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('groupNameOfAProduct')}</th>
+                      {showFeature.recipe ? (
+                        <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('1IfProductHasRecipe(ForRawMaterial)')}</th>
+                      ) : null}
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('mustBeAnumber(WithoutSymbolsLike)')}</th>
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('enterTheUnitNameAccordingToTheUnitNameInTheSystem')}</th>
+                      {showFeature.expired ? (
+                        <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('enterTheDateInDD/MM/YYYYFormatTextFormat')}</th>
+                      ) : null}
+                    </tr>
+                    <tr>
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('willAppearInTheBeetPOSListMenu')}</th>
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}> </th>
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('noProductsCanHaveTheSameBarcode')}</th>
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('noProductsCanHaveTheSameSku')}</th>
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('productSalesPrice')}</th>
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('productPurchasePrice(HPP)')}</th>
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('0IfYouDontWantToAddToFavoriteMenu')}</th>
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('ifYouAlreadyHaveACategoryWriteItAccordingToTheNameOfTheCategory (IfItDoesntMatchANewCategoryWillBeCreated)')}</th>
+                      {showFeature.recipe ? (
+                        <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('0IfTheProductDoesNotHaveARecipe(SoldSingly)')}</th>
+                      ) : null}
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('enterIfEmpty')}</th>
+                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('ifItDoesntMatchANewUnitWillBeCreatedCapitalLettersMatter')}</th>
+                      {showFeature.expired ? (
+                        <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('enterIfEmpty')}</th>
                       ) : null}
                     </tr>
                     {dataProduct.map((value, index) =>
@@ -120,14 +156,12 @@ const ExportModal = ({state, closeModal, optionsOutlet, handleExports, loading, 
                         <td>{value.description ? value.description : "-"}</td>
                         <td>{value.barcode ? value.barcode : "-"}</td>
                         <td>{value.sku ? value.sku : "-"}</td>
-                        {/* <td>{value.price ? <NumberFormat value={parseInt(value.price)} className="foo" displayType={'text'} thousandSeparator={true} prefix={'Rp.'} renderText={(value, props) => <div {...props}>{value},00</div>} /> : "-"}</td> */}
                         <td>{value.price ? <NumberFormat value={value.price} displayType={'text'} thousandSeparator={true} prefix={currency} /> : "-"}</td>
-                        {/* <td>{value.price_purchase ? <NumberFormat value={parseInt(value.price_purchase)} className="foo" displayType={'text'} thousandSeparator={true} prefix={'Rp.'} renderText={(value, props) => <div {...props}>{value},00</div>} /> : "-"}</td> */}
                         <td>{value.price_purchase ? <NumberFormat value={value.price_purchase} displayType={'text'} thousandSeparator={true} prefix={currency} /> : "-"}</td>
-                        <td>{value.is_favorite ? "Is Favorite" : "-"}</td>
+                        <td>{value.is_favorite ? 1 : 0}</td>
                         <td>{value.Product_Category === null ? "-" : value.Product_Category.name}</td>
                         {showFeature.recipe ? (
-                          <td>{value.recipe_id ? "With Recipe" : "-"}</td>
+                          <td>{value.recipe_id ? 1 : 0}</td>
                         ) : null}
                         <td>{value.stock ? value.stock : "-"}</td>
                         <td>{value.Unit === null ? "-" : value.Unit.name}</td>

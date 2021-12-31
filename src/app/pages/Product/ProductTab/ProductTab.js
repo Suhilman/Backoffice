@@ -32,7 +32,7 @@ import useDebounce from "../../../hooks/useDebounce";
 
 import ConfirmModal from "../../../components/ConfirmModal";
 import ImportModalAdd from "./ImportModal";
-import ImportModalEdit from "./ImportModal";
+import ImportModalEdit from "./ImportModalEdit";
 import ImportModalAddons from "./ImportModalAddons";
 
 import ExportModal from "./ExportModal"
@@ -583,13 +583,26 @@ const ProductTab = ({
           throw new Error(`${t("pleaseChooseOutlet")}`);
         }
 
+        // console.log("values.products", values.products)
         const merged = values.outlet_id.map((item) => {
           const output = [];
-          for (const val of values.products) {
+          for (const [index, val] of values.products.entries()) {
             // if(val.name && val.sku) {
             if(true) {
               if(!val.price_purchase) throw new Error(t('thereIsProductWithoutPrice'));
               if(!val.category) throw new Error(t('thereIsProductWithoutCategory'));
+
+              // Fungsi untuk check price & price purchase apakah ada prefix currency  e.g Rp. 12.000
+              const get_prefix_price = val.price.toString().split(" ")
+              if(get_prefix_price.length > 1) {
+                const get_price = get_prefix_price[1].replace(/\,/g,'')
+                values.products[index].price = parseInt(get_price)
+              }
+              const get_prefix_price_purchase = val.price_purchase.toString().split(" ")
+              if(get_prefix_price_purchase.length > 1) {
+                const get_price_purchase = get_prefix_price_purchase[1].replace(/\,/g,'')
+                values.products[index].price_purchase = parseInt(get_price_purchase)
+              }
 
               const obj = {
                 ...val,
@@ -654,14 +667,28 @@ const ProductTab = ({
           throw new Error(`${t("pleaseChooseOutlet")}`);
         }
 
+        console.log("values.products", values.products)
+
         const merged = values.outlet_id.map((item) => {
           const output = [];
-          for (const val of values.products) {
+          for (const [index, val] of values.products.entries()) {
             // if(val.name && val.sku) {
             if(true) {
               if(!val.price_purchase) throw new Error(t('thereIsProductWithoutPrice'));
               if(!val.category) throw new Error(t('thereIsProductWithoutCategory'));
 
+              // Fungsi untuk check price & price purchase apakah ada prefix currency  e.g Rp. 12.000
+              const get_prefix_price = val.price.toString().split(" ")
+              if(get_prefix_price.length > 1) {
+                const get_price = get_prefix_price[1].replace(/\,/g,'')
+                values.products[index].price = parseInt(get_price)
+              }
+              const get_prefix_price_purchase = val.price_purchase.toString().split(" ")
+              if(get_prefix_price_purchase.length > 1) {
+                const get_price_purchase = get_prefix_price_purchase[1].replace(/\,/g,'')
+                values.products[index].price_purchase = parseInt(get_price_purchase)
+              }
+              
               const obj = {
                 ...val,
                 outlet_id: item,
@@ -692,6 +719,7 @@ const ProductTab = ({
           }
           return output;
         });
+        console.log("merged", merged)
         enableLoading();
         for (const item of merged.flat(1)) {
           if (!item.name) {
@@ -824,21 +852,23 @@ const ProductTab = ({
               obj[i] = j[index];
             }
           });
-          data.push({
-            name: obj.name,
-            category: obj.category,
-            price: obj.price,
-            price_purchase: obj.price_purchase,
-            description: obj.description,
-            is_favorite: obj.is_favorite,
-            sku: obj.sku,
-            barcode: obj.barcode,
-            with_recipe: obj.with_recipe,
-            stock: obj.stock,
-            unit: obj.unit,
-            expired_date: getJsDateFromExcel(obj.expired_date)
-          });
-          // console.log("data excel", data)
+          if(obj.name && obj.price) {
+            data.push({
+              name: obj.name,
+              category: obj.category,
+              price: obj.price,
+              price_purchase: obj.price_purchase,
+              description: obj.description,
+              is_favorite: obj.is_favorite,
+              sku: obj.sku,
+              barcode: obj.barcode,
+              with_recipe: obj.with_recipe,
+              stock: obj.stock,
+              unit: obj.unit,
+              expired_date: getJsDateFromExcel(obj.expired_date)
+            });
+          }
+          console.log("data excel", data)
         });
         formikImportProductAdd.setFieldValue("products", data);
       }
@@ -935,14 +965,16 @@ const ProductTab = ({
           keys.map((value2, index) => {
             obj[value2] = value[index]
           })
-          data.push({
-            sku_product: obj.sku_product,
-            group_name: obj.group_name,
-            group_type: obj.group_type,
-            addon_name: obj.addon_name,
-            price: obj.price,
-            status_addon: obj.status_addon
-          })
+          if(value.length) {
+            data.push({
+              sku_product: obj.sku_product,
+              group_name: obj.group_name,
+              group_type: obj.group_type,
+              addon_name: obj.addon_name,
+              price: obj.price,
+              status_addon: obj.status_addon
+            })
+          }
         })
         
         const result = []
@@ -1180,10 +1212,14 @@ const ProductTab = ({
         handleFile={handleFileEdit}
         filename={filename}
         subscriptionType={subscriptionType}
+        showFeature={showFeature}
+        handleExports={handleExports}
+        dataProduct={dataProduct}
+        optionsOutlet={optionsOutlet}
       />
 
       <ImportModalAddons
-        title={t('importEditProduct')}
+        title={t('importAddAddons')}
         state={stateImportAddons}
         loading={loading}
         alert={alert}
