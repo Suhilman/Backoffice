@@ -1199,5 +1199,9 @@
     "ifYouAlreadyHaveACategoryWriteItAccordingToTheNameOfTheCategory (IfItDoesntMatchANewCategoryWillBeCreated)": "'0' 如果您不想添加到收藏夾菜單",
     "0IfTheProductDoesNotHaveARecipe(SoldSingly)": "'0' 如果產品沒有配方（單獨出售）",
     "enterIfEmpty": "如果為空，請輸入“-”",
-    "ifItDoesntMatchANewUnitWillBeCreatedCapitalLettersMatter": "如果不匹配，將創建一個新單元。 大寫字母很重要"
+    "ifItDoesntMatchANewUnitWillBeCreatedCapitalLettersMatter": "如果不匹配，將創建一個新單元。 大寫字母很重要",
+    "pleaseCheckTheBoxAboveToAgreeToTheTermsAndConditions": "请勾选上面的方框以同意条款和条件",
+    "importAddAddons": "导入插件",
+    "resendCodeSuccess,PleaseCheckYourEmail": "重新发送代码成功，请检查您的电子邮件",
+    "resendCodeFailed,PleaseTryAgain": "重新发送代码失败，请重试"
 }

@@ -1200,6 +1200,10 @@
     "0IfTheProductDoesNotHaveARecipe(SoldSingly)": "'0' if the product does not have a Recipe (Sold singly)",
     "enterIfEmpty": "Enter '-' if empty",
     "ifItDoesntMatchANewUnitWillBeCreatedCapitalLettersMatter": "If it doesn't match, a new unit will be created. Capital letters matter",
+    "pleaseCheckTheBoxAboveToAgreeToTheTermsAndConditions": "Please check the box above to agree to the terms and conditions",
+    "importAddAddons": "Import Add Addons",
+    "resendCodeSuccess,PleaseCheckYourEmail": "Resend Code Success, Please Check Your Email",
+    "resendCodeFailed,PleaseTryAgain": "Resend Code Failed, Please Try Again",
 
     "currencyConversion": "Currency Convertion",
     "currencyA": "Currency A",

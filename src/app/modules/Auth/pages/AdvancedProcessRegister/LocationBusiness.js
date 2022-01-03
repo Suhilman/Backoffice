@@ -1060,7 +1060,7 @@ export default function LocationBusiness({location}) {
         </div>
       </div>
       <div>
-        <div className={`${styles.footer} text-muted`}>&copy; 2021 Lifetech</div>
+        {/* <div className={`${styles.footer} text-muted`}>&copy; 2021 Lifetech</div> */}
       </div>
     </div>
   )

@@ -124,7 +124,6 @@ const RegistrationTryNow = () => {
     const dateNowFormat = dayjs(dateNow);
     const dateExpired = dayjs("2021-08-26");
     const resDate = dateExpired.diff(dateNowFormat, "day");
-    console.log("resDate", resDate);
     if (resDate < 1) {
       setExpiredApp(true);
     }
@@ -175,7 +174,7 @@ const RegistrationTryNow = () => {
       .integer(),
     outlet_location_id: Yup.number()
       .integer(),
-    acceptTerms: Yup.bool().required("You must accept the terms and conditions")
+    acceptTerms: Yup.bool().oneOf([true], t('pleaseCheckTheBoxAboveToAgreeToTheTermsAndConditions'))
   });
 
   const [dataSentOTP, setDataSentOTP] = useState({});
@@ -313,7 +312,6 @@ const RegistrationTryNow = () => {
 
   const changeLanguage = (language, noLanugage) => {
     setLanguage(language)
-    console.log("language", language)
     i18n.changeLanguage(language);
   };
 
@@ -383,8 +381,6 @@ const RegistrationTryNow = () => {
   const openOTPModal = () => setShowOTPModal(true);
 
   const handleCaptcha = (value) => {
-    console.log("handle captcha");
-    console.log("value handle captcha", value);
     setCaptchaToken(value);
   };
 
@@ -436,7 +432,6 @@ const RegistrationTryNow = () => {
 
   const handleMethodSentOTP = async (param) => {
     setMethodSendOTP(param);
-    console.log("dataSentOTP", dataSentOTP);
     if (param === "whatsapp") {
       setSecond(15);
       const resSendWhatsapp = await handleSendWhatsapp(
@@ -444,14 +439,12 @@ const RegistrationTryNow = () => {
         dataSentOTP.verifyCode
       );
       if (resSendWhatsapp) {
-        console.log("send message whatsapp success");
         closeOTPModal();
         openVerifyModal();
         setTimeout(() => {
           setMessageNotSent(true);
         }, 50000);
       } else {
-        console.log("send message whatsapp failed");
         setMethodSendOTP("gmail");
         setSentEmail(formik.values.email);
         await handleSendEmail(formik.values.email, dataSentOTP.verifyCode);
@@ -516,11 +509,9 @@ const RegistrationTryNow = () => {
     validationSchema: RegistrationSchema,
     onSubmit: (values, { setStatus, setSubmitting }) => {
       const phoneNumber = `${phoneCode}${values.phone_number}`
-      console.log("phoneNumber", phoneNumber)
       enableLoading();
       setPhonenumber(phoneNumber);
       setDataFormik(values);
-      console.log("Data registrasi", values)
       register(
         values.email,
         values.name,
@@ -555,15 +546,12 @@ const RegistrationTryNow = () => {
       // console.log("response send whatsapp ==>", sendWhatsapp)
 
       const tempSplit = phone.split("");
-      console.log("tempSplit", tempSplit);
       if (tempSplit[0] == 0 || tempSplit[0].length == 0) {
         tempSplit[0] = "62";
       } else if (tempSplit[0] == 8) {
         tempSplit.unshift(62);
       }
       const resultPhone = tempSplit.join("");
-
-      console.log("resultPhone", resultPhone);
       const dataSend = {
         message: `
           Verify Code = ${verifyCode}\nPowered By Beetpos
@@ -591,11 +579,8 @@ const RegistrationTryNow = () => {
         }
       );
 
-      console.log("sendMessage =========>", sendMessage);
-
       // status whatsapp untuk cek response server error tidak
       setStatusWhatsapp(true);
-      console.log("send whataspp berhasil");
       toast.success("Verification code sent", {
         position: "top-right",
         autoClose: 3000,
@@ -700,7 +685,6 @@ const RegistrationTryNow = () => {
       data.data.map(value => {
         value.nicename = "   " + value.nicename.substring(0, value.nicename.length)
       })
-      console.log("countryCallingCode", data.data)
       setCountryCallingCode(data.data)
     } catch (error) {
       console.log(error)
@@ -798,7 +782,6 @@ const RegistrationTryNow = () => {
       return item.phonecode == value
     })
     setCountryCodeIso(result.iso3)
-    console.log("setCountryCodeIso", result.iso3)
   }
 
   const handleOpenOption = (params) => {
@@ -807,7 +790,6 @@ const RegistrationTryNow = () => {
 
   const showPassword = () => {
     setStateShowPassword(!stateShowPassword)
-    console.log("hellow brow")
     const password = document.getElementById('show')
     if (password.type === 'password') {
       password.type = 'text'
@@ -818,7 +800,6 @@ const RegistrationTryNow = () => {
 
   const showPassword2 = () => {
     setStateShowPassword2(!stateShowPassword2)
-    console.log("hellow brow")
     const password = document.getElementById('show2')
     if (password.type === 'password') {
       password.type = 'text'
@@ -955,7 +936,7 @@ const RegistrationTryNow = () => {
 
         {/* begin: Phone Number */}
         <div className="row no-gutters form-group fv-plugins-icon-container">
-          <div className="col-md-4">
+          <div className="col-4">
             <Form.Control
               as="select"
               required
@@ -986,7 +967,7 @@ const RegistrationTryNow = () => {
               )}
             </Form.Control>
           </div>
-          <div className="col-md-8 pl-2">
+          <div className="col-8 pl-2">
             <input
               placeholder={t('phoneNumber')}
               type="number"
@@ -1060,7 +1041,7 @@ const RegistrationTryNow = () => {
         {/* end: Confirm Password */}
 
         {/* begin: Terms and Conditions */}
-        <div className="form-group">
+        {/* <div className="form-group">
           <label className="checkbox">
             <input
               type="checkbox"
@@ -1068,10 +1049,9 @@ const RegistrationTryNow = () => {
               {...formik.getFieldProps("acceptTerms")}
             />
             {t('iAgreeThe')}{" "}
-            <Link to="/terms" target="_blank" rel="noopener noreferrer">
+            <Link to="/terms" target="_blank" rel="noopener noreferrer" className='mx-2'>
               {t('terms&Conditions')}
             </Link>
-            .
             <span />
           </label>
           {formik.touched.acceptTerms && formik.errors.acceptTerms ? (
@@ -1079,8 +1059,33 @@ const RegistrationTryNow = () => {
               <div className="fv-help-block">{formik.errors.acceptTerms}</div>
             </div>
           ) : null}
-        </div>
+        </div> */}
         {/* end: Terms and Conditions */}
+
+        {/* begin: New Terms and Conditions */}
+        <div className="form-group">
+          <div className="d-flex align-items-center">
+            {t('iAgreeThe')}
+            <Link to="/terms" target="_blank" rel="noopener noreferrer" className='mx-2'>
+              {t('terms&Conditions')}
+            </Link>
+            <input 
+              type="checkbox" 
+              className={`${styles.checkbox} ${getInputClasses(
+                "acceptTerms"
+              )}`} 
+              name="acceptTerms"
+              {...formik.getFieldProps("acceptTerms")}
+            />
+          </div>
+          {formik.touched.acceptTerms && formik.errors.acceptTerms ? (
+            <div className="fv-plugins-message-container">
+              <div className="fv-help-block">{formik.errors.acceptTerms}</div>
+            </div>
+          ) : null}
+        </div>
+        {/* end: New Terms and Conditions */}
+
         <ReCAPTCHA
           sitekey={process.env.REACT_APP_SITE_KEY}
           onChange={handleCaptcha}
@@ -1090,10 +1095,9 @@ const RegistrationTryNow = () => {
           <button
             type="submit"
             className="btn btn-primary font-weight-bold px-9 py-4 mt-3"
-            disabled={
-              formik.isSubmitting ||
-              !formik.values.acceptTerms
-            }
+            // disabled={
+            //   formik.isSubmitting
+            // }
           >
             <span>{t('submit')}</span>
             {loading && <span className="ml-3 spinner spinner-white"></span>}

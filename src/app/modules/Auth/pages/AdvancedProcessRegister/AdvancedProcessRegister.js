@@ -66,7 +66,7 @@ export function AdvancedProcessRegister() {
             {/*end::Content header*/}
 
             {/* begin::Content body */}
-            <div className="d-flex flex-column-fluid justify-content-center mt-30 mt-lg-0 ml-lg-3 my-lg-3">
+            <div className="d-flex flex-column-fluid justify-content-center mt-lg-0 ml-lg-3 my-lg-3">
               <Switch>
                 <ContentRoute path="/register-process/verify-email" component={VerifyEmail} />
                 <ContentRoute path="/register-process/business-location" component={LocationBusiness} />

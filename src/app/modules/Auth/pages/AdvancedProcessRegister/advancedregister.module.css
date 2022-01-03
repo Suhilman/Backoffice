@@ -25,3 +25,23 @@
 .resendCode{
   cursor: pointer;
 }
+
+.wrapperLoading{
+  width: 32px;
+  height: 32px;
+}
+.wrapperLoading > img {
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+}
+
+.contentVerifyEmail{
+  margin-top: 50px;
+}
+
+@media screen and (max-width: 768px) {
+  .container{
+    width: 100%;
+  }
+}

@@ -9,6 +9,10 @@ import axios from 'axios'
 import {
   Alert
 } from 'react-bootstrap'
+import { ToastContainer, toast } from "react-toastify";
+import LoadingAnimated from '../../../../../images/Spinner-0.5s-504px.svg'
+
+toast.configure();
 
 export default function VerifyEmail({location}) {
   const API_URL = process.env.REACT_APP_API_URL;
@@ -26,8 +30,33 @@ export default function VerifyEmail({location}) {
   const [defaultValue, setDefaultValue] = useState("")
   const [inputCode, setInputCode] = useState("")
   const [alert, setAlert] = useState("")
+  const [loadingResend, setLoadingResend] = useState(false)
 
   // const location = useLocation();
+
+  const responseToast = (status, message, position = 'top-right', autoClose = 4500) => {
+    if(status === 'success') {
+      return toast.success(message, {
+        position,
+        autoClose,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    } else if (status === 'error') {
+      return toast.error(message, {
+        position,
+        autoClose,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    }
+  }
 
   const getCode = async (token) => {
     try {
@@ -41,15 +70,21 @@ export default function VerifyEmail({location}) {
   }
 
   const resendCode = async () => {
-    console.log("resendCode email", email)
-    try {
-      await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/v1/send-email/verify-otp?email=${email}&verifyCode=${code}`,
-        { headers: { Authorization: token } }
-      );
-    } catch (error) {
-      console.log("error", error);
-      return false;
+    if(!loadingResend) {
+      try {
+        setLoadingResend(true)
+        await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/v1/send-email/verify-otp?email=${email}&verifyCode=${code}`,
+          { headers: { Authorization: token } }
+        );
+        setLoadingResend(false)
+        responseToast('success', t('resendCodeSuccess,PleaseCheckYourEmail'))
+      } catch (error) {
+        setLoadingResend(false)
+        responseToast('error', t('resendCodeFailed,PleaseTryAgain'))
+        console.log("error", error);
+        return false;
+      }
     }
   };
 
@@ -183,14 +218,14 @@ export default function VerifyEmail({location}) {
   });
 
   return (
-    <div className={styles.container}>
+    <div>
       <div className="d-flex justify-content-end">
         <div className={styles.wrapperLogoBeetpos}>
           <img src={IconBackoffice} alt="Icon Backoffice" />
         </div>
       </div>
       
-      <div>
+      <div className={styles.contentVerifyEmail}>
         <div className={styles.title}>{t("accountVerification")}</div>
         <div className="my-3">
           <div>{t("enterTheVerificationCodeWeSend")}</div>
@@ -244,7 +279,14 @@ export default function VerifyEmail({location}) {
           <span>{t("confirm")}</span>
         </button>
         <div>{t("didntReceiveTheVerificationCode")}</div>
-        <div className={`${styles.resendCode} text-primary`} onClick={resendCode}>{t("resendVerificationCode")}</div>
+        <div className="d-flex align-items-center">
+          <div className={`${styles.resendCode} ${loadingResend ? 'text-muted' : 'text-primary '}`} onClick={resendCode}>{t("resendVerificationCode")}</div>
+          {loadingResend ? (
+            <div className={styles.wrapperLoading}>
+              <img src={LoadingAnimated} alt="Loading"/>
+            </div>
+          ) : null }
+        </div>
         {timeCount ? 
           showCode ? (
             <div className="text-primary" onClick={handleFillCode}>{code}</div>
@@ -252,11 +294,8 @@ export default function VerifyEmail({location}) {
             <div className={`${styles.resendCode} ${second > 0 ? 'text-muted' : 'text-primary'}`} onClick={showHere}>{t("showHere")}{second > 0 && (<span className="ml-2">{second}</span>)}</div>
           )
         : null }
-
       </div>
-      <div>
-        <div className={`${styles.footer} text-muted`}>&copy; 2021 Lifetech</div>
-      </div>
+      <div />
     </div>
   )
 }
