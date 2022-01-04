@@ -97,57 +97,21 @@ const ExportModal = ({state, closeModal, optionsOutlet, handleExports, loading, 
                       <th>{t("exportProductResult")}</th>
                     </tr>
                     <tr >
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("productName")}</th>
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("description")}</th>
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("barcode")}</th>
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("sku")}</th>
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("price")}</th>
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("capitalPrice")}</th>
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("favorite")}</th>
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("category")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("productName")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("description")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("barcode")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("sku")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("price")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("capitalPrice")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("favorite")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("category")}</th>
                       {showFeature.recipe ? (
-                        <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("withRecipe")}</th>
+                        <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("withRecipe")}</th>
                       ) : null}
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("stock")}</th>
-                      <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("unit")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("stock")}</th>
+                      <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("unit")}</th>
                       {showFeature.expired ? (
-                        <th style={{ backgroundColor: "yellow", fontWeight: "700", border: "1px solid"}}>{t("expiredDate")}</th>
-                      ) : null}
-                    </tr>
-                    <tr>
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('nameOfProductBeingSold')}</th>
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('explanationOfTheProductBeingSold')}</th>
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('canBeNumbersLetters&Symbols')}</th>
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('canBeNumbersLetters&SymbolsIfYouWantToAutoGenerateYouCanLeaveItBlankOrEnter')}</th>
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('nameOfProductBeingSold')}</th>
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('mustBeAnumber(WithoutSymbolsLike)')}</th>
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('1IfYouWantToAddToFavoriteMenu')}</th>
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('groupNameOfAProduct')}</th>
-                      {showFeature.recipe ? (
-                        <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('1IfProductHasRecipe(ForRawMaterial)')}</th>
-                      ) : null}
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('mustBeAnumber(WithoutSymbolsLike)')}</th>
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('enterTheUnitNameAccordingToTheUnitNameInTheSystem')}</th>
-                      {showFeature.expired ? (
-                        <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('enterTheDateInDD/MM/YYYYFormatTextFormat')}</th>
-                      ) : null}
-                    </tr>
-                    <tr>
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('willAppearInTheBeetPOSListMenu')}</th>
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}> </th>
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('noProductsCanHaveTheSameBarcode')}</th>
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('noProductsCanHaveTheSameSku')}</th>
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('productSalesPrice')}</th>
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('productPurchasePrice(HPP)')}</th>
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('0IfYouDontWantToAddToFavoriteMenu')}</th>
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('ifYouAlreadyHaveACategoryWriteItAccordingToTheNameOfTheCategory (IfItDoesntMatchANewCategoryWillBeCreated)')}</th>
-                      {showFeature.recipe ? (
-                        <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('0IfTheProductDoesNotHaveARecipe(SoldSingly)')}</th>
-                      ) : null}
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('enterIfEmpty')}</th>
-                      <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('ifItDoesntMatchANewUnitWillBeCreatedCapitalLettersMatter')}</th>
-                      {showFeature.expired ? (
-                        <th style={{ backgroundColor: "#FEDE00", fontWeight: "700", border: "1px solid"}}>{t('enterIfEmpty')}</th>
+                        <th style={{ backgroundColor: "yellow", fontWeight: "700"}}>{t("expiredDate")}</th>
                       ) : null}
                     </tr>
                     {dataProduct.map((value, index) =>

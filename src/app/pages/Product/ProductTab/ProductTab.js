@@ -70,6 +70,8 @@ const ProductTab = ({
   const [outletIntegratedShopee, setOutletIntegratedShopee] = React.useState([])
   const [outletIntegratedBlibli, setOutletIntegratedBlibli] = React.useState([])
 
+  const [dataBusiness, setDataBusiness] = React.useState({})
+
   const [alert, setAlert] = React.useState("");
   const [filename, setFilename] = React.useState("");
   const [outletProduct, setOutletProduct] = React.useState([])
@@ -183,6 +185,7 @@ const ProductTab = ({
     const userInfo = JSON.parse(localStorage.getItem("user_info"));
     const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
     setCurrency(data.data.Currency.name)
+    setDataBusiness(data.data)
   }
 
   
@@ -1216,6 +1219,7 @@ const ProductTab = ({
         handleExports={handleExports}
         dataProduct={dataProduct}
         optionsOutlet={optionsOutlet}
+        dataBusiness={dataBusiness}
       />
 
       <ImportModalAddons
