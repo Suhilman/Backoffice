@@ -61,6 +61,30 @@ export const EditProductPage = ({ match, location }) => {
 
   const [allIdDelete, setAllIdDelete] = React.useState([])
 
+  const responseToast = (status, message, position = 'top-right', autoClose = 4500) => {
+    if(status === 'success') {
+      return toast.success(message, {
+        position,
+        autoClose,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    } else if (status === 'error') {
+      return toast.error(message, {
+        position,
+        autoClose,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    }
+  }
+
   const product = {
     outlet_id: currProduct.outlet_id,
     name: currProduct.name,
@@ -278,10 +302,12 @@ export const EditProductPage = ({ match, location }) => {
           });
         }
         disableLoading();
+        responseToast('success', t('successEditProduct'))
         history.push("/product");
       } catch (err) {
         console.log("error edit product", err.response)
         setAlert(err.response.data.message);
+        responseToast('error', t('failedEditProduct'))
         disableLoading();
       }
     }

@@ -34,13 +34,17 @@ import ConfirmModal from "../../../components/ConfirmModal";
 import ImportModalAdd from "./ImportModal";
 import ImportModalEdit from "./ImportModalEdit";
 import ImportModalAddons from "./ImportModalAddons";
+import ImportModalAddonsEdit from "./ImportModalAddonsEdit";
 
 import ExportModal from "./ExportModal"
+import ExportModalAddons from "./ExportModalAddons"
+
 import ModalSyncBlibli from "./ModalSyncBlibli";
 import LogoSync from "../../../../images/cloud-sync-100.png"
+import { ToastContainer, toast } from "react-toastify"
+import "../../style.css";;
 
-import "../../style.css";
-
+toast.configure();
 const ProductTab = ({
   t,
   refresh,
@@ -58,8 +62,11 @@ const ProductTab = ({
   const [stateImportAdd, setStateImportAdd] = React.useState(false);
   const [stateImportEdit, setStateImportEdit] = React.useState(false);
   const [stateImportAddons, setStateImportAddons] = React.useState(false);
-
+  const [stateImportAddonsEdit, setStateImportAddonsEdit] = React.useState(false);
+  
   const [stateExport, setStateExport] = React.useState(false);
+  const [stateExportAddons, setStateExportAddons] = React.useState(false);
+
   const [stateModalSyncBlibli, setStateModalSyncBlibli] = React.useState(false);
   const [productOfOutlet, setProductOfOutlet] = React.useState([])
   const [integratedName, setIntegratedName] = React.useState({
@@ -76,6 +83,9 @@ const ProductTab = ({
   const [filename, setFilename] = React.useState("");
   const [outletProduct, setOutletProduct] = React.useState([])
   const [dataProduct, setDataProduct] = React.useState([])
+  const [dataAddonsProduct, setDataAddonsProduct] = React.useState([])
+  
+  const [dataAddons, setDataAddons] = React.useState([])
   const [currency, setCurrency] = React.useState("")
 
   const [search, setSearch] = React.useState("");
@@ -129,6 +139,102 @@ const ProductTab = ({
       setDataProduct(result)
     } else {
       setDataProduct([])
+    }
+  }
+
+  const handleExportsAddons = (data) => {
+    if (data) {
+      const product_outlet = []
+      allProducts.map((value) => {
+        data.map(value2 => {
+          if (value.Outlet.name === value2.label) {
+            product_outlet.push(value)
+          }
+        })
+      })
+      console.log("product_outlet", product_outlet)
+      const result = []
+      product_outlet.map(value => {
+        if(value.Group_Addons.length) {
+          let group_name, group_type, addon_name, price, status_addon
+          const sku_product = value.sku
+          const name_product = value.name
+
+          value.Group_Addons.map((value2, index) => {
+            let temp_addon_name, temp_price, temp_status_addon
+      
+            if(group_name) {
+              group_name += `|${value2.name}`
+            } else {
+              group_name = value2.name
+            }
+      
+            if(group_type) {
+              group_type += `|${value2.type}`
+            } else {
+              group_type = value2.type
+            }
+      
+            if(value2.Addons) {
+              value2.Addons.map(value3 => {
+                if(temp_addon_name) {
+                  temp_addon_name += `,${value3.name}`
+                } else {
+                  temp_addon_name = value3.name
+                }
+                
+                if(temp_price) {
+                  temp_price += `,${value3.price}`
+                } else {
+                  temp_price = value3.price
+                }
+      
+      
+                if(temp_status_addon) {
+                  temp_status_addon += `,${value3.status}`
+                } else {
+                  temp_status_addon = value3.status
+                }
+              })
+            }
+      
+            if(addon_name) {
+              addon_name += `|${temp_addon_name}`
+            } else {
+              addon_name = temp_addon_name
+            }
+      
+            if(price) {
+              price += `|${temp_price}`
+            } else {
+              price = temp_price
+            }
+      
+            if(status_addon) {
+              status_addon += `|${temp_status_addon}`
+            } else {
+              status_addon = temp_status_addon
+            }
+      
+          })
+          result.push({
+            name_product: name_product,
+            sku_product: sku_product,
+            group_name: group_name,
+            group_type: group_type,
+            addon_name: addon_name,
+            price: `"${price}"`,
+            status_addon: status_addon
+          })
+        }
+        return true
+      })
+      console.log("result",result)
+      setDataProduct(product_outlet)
+      setDataAddonsProduct(result)
+    } else {
+      setDataProduct([])
+      setDataAddonsProduct([])
     }
   }
 
@@ -267,8 +373,12 @@ const ProductTab = ({
       disableLoading();
       handleRefresh();
       closeConfirmBulkModal();
+      responseToast('success', t('successDeleteProduct'))
     } catch (err) {
       console.log(err);
+      responseToast('error', t('failedDeleteProduct'))
+      disableLoading();
+      closeConfirmBulkModal();
     }
   };
 
@@ -294,8 +404,10 @@ const ProductTab = ({
       await axios.patch(`${API_URL}/api/v1/product/status/${id}`, {
         status: currentStatus
       });
+      responseToast('success', t('successChangeProductStatus'))
     } catch (err) {
       console.log(err);
+      responseToast('error', t('failedChangeProductStatus'))
     }
 
     setAllProducts(edited);
@@ -399,6 +511,30 @@ const ProductTab = ({
     return result
   }
   const tempOptionOutlet = handleOptionsOutlet()
+
+  const responseToast = (status, message, position = 'top-right', autoClose = 4500) => {
+    if(status === 'success') {
+      return toast.success(message, {
+        position,
+        autoClose,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    } else if (status === 'error') {
+      return toast.error(message, {
+        position,
+        autoClose,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    }
+  }
 
   const optionsOutlet = tempOptionOutlet.map((item) => {
     return { value: item.id, label: item.name };
@@ -525,8 +661,12 @@ const ProductTab = ({
       handleRefresh();
       disableLoading();
       closeConfirmModal();
+      responseToast('success', t('successDeleteProduct'))
     } catch (err) {
       console.log(err);
+      responseToast('error', t('failedDeleteProduct'))
+      disableLoading();
+      closeConfirmModal();
     }
   };
 
@@ -573,6 +713,11 @@ const ProductTab = ({
   };
 
   const initialValueImportAddons = {
+    outlet_id: [],
+    groupAddons: []
+  };
+
+  const initialValueImportAddonsEdit = {
     outlet_id: [],
     groupAddons: []
   };
@@ -653,9 +798,11 @@ const ProductTab = ({
         disableLoading();
         handleRefresh();
         handleCloseImportAdd();
+        responseToast('success', t('successImportAddProduct'))
       } catch (err) {
         setAlert(err.response?.data.message || err.message);
         disableLoading();
+        responseToast('error', t('failedImportAddProduct'))
       }
     }
   });
@@ -739,9 +886,13 @@ const ProductTab = ({
         disableLoading();
         handleRefresh();
         handleCloseImportEdit();
+        responseToast('success', t('successImportUpdateProduct'))
       } catch (err) {
         setAlert(err.response?.data.message || err.message);
         disableLoading();
+        responseToast('error', t('failedImportUpdateProduct'))
+        disableLoading();
+        handleCloseImportEdit();
       }
     }
   });
@@ -764,9 +915,38 @@ const ProductTab = ({
         disableLoading();
         handleRefresh();
         handleCloseImportAddons();
+        responseToast('success', t('successImportAddAddons'))
       } catch (err) {
         setAlert(err.response?.data.message || err.message);
         disableLoading();
+        responseToast('error', t('failedImportAddAddons'))
+      }
+    }
+  });
+
+  const formikImportAddonsEdit = useFormik({
+    initialValues: initialValueImportAddonsEdit,
+    onSubmit: async (values) => {
+      const API_URL = process.env.REACT_APP_API_URL;
+      try {
+        if (!values.outlet_id.length) {
+          throw new Error(`${t("pleaseChooseOutlet")}`);
+        }
+        const data = {
+          outlet_id: JSON.stringify(values.outlet_id),
+          groupAddons: JSON.stringify(values.groupAddons)
+        }
+
+        enableLoading();
+        await axios.post(`${API_URL}/api/v1/addons/bulk-create`, data);
+        disableLoading();
+        handleRefresh();
+        handleCloseImportAddons();
+        responseToast('success', t('successImportEditAddons'))
+      } catch (err) {
+        setAlert(err.response?.data.message || err.message);
+        disableLoading();
+        responseToast('error', t('failedImportEditAddons'))
       }
     }
   });
@@ -774,6 +954,7 @@ const ProductTab = ({
   const handleOpenImportAdd = () => setStateImportAdd(true);
   const handleOpenImportEdit = () => setStateImportEdit(true);
   const handleOpenImportAddons = () => setStateImportAddons(true);
+  const handleOpenImportAddonsEdit = () => setStateImportAddonsEdit(true);
 
   const handleCloseImportAdd = () => {
     setStateImportAdd(false);
@@ -793,10 +974,21 @@ const ProductTab = ({
     formikImportAddons.setFieldValue("outlet_id", []);
     formikImportAddons.setFieldValue("groupAddons", []);
   };
+  const handleCloseImportAddonsEdit = () => {
+    setStateImportAddonsEdit(false);
+    setFilename("");
+    formikImportAddonsEdit.setFieldValue("outlet_id", []);
+    formikImportAddonsEdit.setFieldValue("groupAddons", []);
+  };
 
   const handleCloseExport = () => {
     setStateExport(false);
     setDataProduct([])
+  };
+
+  const handleCloseExportAddons = () => {
+    setStateExportAddons(false);
+    setDataAddons([])
   };
 
   const handleCloseModalSyncBlibli = () => {
@@ -957,6 +1149,7 @@ const ProductTab = ({
         const data = []
         const {rows} = resp
         const keys = [
+          "product_name",
           "sku_product",
           "group_name",
           "group_type",
@@ -970,6 +1163,95 @@ const ProductTab = ({
           })
           if(value.length) {
             data.push({
+              product_name: obj.product_name,
+              sku_product: obj.sku_product,
+              group_name: obj.group_name,
+              group_type: obj.group_type,
+              addon_name: obj.addon_name,
+              price: obj.price,
+              status_addon: obj.status_addon
+            })
+          }
+        })
+        
+        const result = []
+        
+        console.log("data import addons", data)
+
+        data.map(value => {
+          if(typeof value.group_name !== 'string' || 
+            typeof value.group_type !== 'string' || 
+            typeof value.addon_name !== 'string' || 
+            typeof value.price !== 'string' || 
+            typeof value.status_addon !== 'string' 
+          ) {
+            setAlert(t("somethingWentWrongPleaseCheckTheExcelTemplate"))
+            return 
+          } else {
+            const group_name = value.group_name.split("|")
+            const group_type = value.group_type.split("|")
+            const addon_name = value.addon_name.split("|")
+            const price = value.price.split("|")
+            const status_addon = value.status_addon.split("|")
+          
+            group_name.map((value2, index) => {
+              const addons = []
+              const every_addon_name = addon_name[index].split(',')
+              const every_price = price[index].split(',')
+              const every_status_addon = status_addon[index].split(',')
+          
+              every_addon_name.map((value2, index2) => {
+                addons.push({
+                  has_raw_material: false,
+                  id: "",
+                  raw_material_id: "",
+                  unit_id: "",
+                  name: value2,
+                  price: every_price[index2],
+                  status: every_status_addon[index2]
+                })
+              })
+          
+              result.push({
+                sku_product: value.sku_product,
+                group_name: value2,
+                group_type: group_type[index],
+                addons
+              })
+            })
+          }
+          
+        })
+        formikImportAddons.setFieldValue("groupAddons", result);
+      }
+    });
+  };
+
+  const handleFileAddonsEdit = (file) => {
+    setFilename(file[0].name);
+    ExcelRenderer(file[0], (err, resp) => {
+      if (err) {
+        setAlert(err);
+      } else {
+        const obj = {}
+        const data = []
+        const {rows} = resp
+        const keys = [
+          "product_name",
+          "sku_product",
+          "group_name",
+          "group_type",
+          "addon_name",
+          "price",
+          "status_addon"
+        ]
+        rows.slice(3).map((value) => {
+          keys.map((value2, index) => {
+            obj[value2] = value[index]
+          })
+          if(value.length) {
+            data.push({
+              product_name: obj.product_name,
               sku_product: obj.sku_product,
               group_name: obj.group_name,
               group_type: obj.group_type,
@@ -1235,6 +1517,23 @@ const ProductTab = ({
         subscriptionType={subscriptionType}
       />
 
+      <ImportModalAddonsEdit
+        title={t('importEditAddons')}
+        state={stateImportAddonsEdit}
+        loading={loading}
+        alert={alert}
+        closeModal={handleCloseImportAddonsEdit}
+        formikImportProduct={formikImportAddonsEdit}
+        allOutlets={allOutlets}
+        handleFile={handleFileAddonsEdit}
+        filename={filename}
+        subscriptionType={subscriptionType}
+        dataAddonsProduct={dataAddonsProduct}
+        dataProduct={dataProduct}
+        dataBusiness={dataBusiness}
+        handleExports={handleExportsAddons}
+      />
+
       <ExportModal 
         loading={loading}
         state={stateExport}
@@ -1242,6 +1541,17 @@ const ProductTab = ({
         optionsOutlet={optionsOutlet}
         handleExports={handleExports}
         dataProduct={dataProduct}
+        showFeature={showFeature}
+      />
+
+      <ExportModalAddons 
+        loading={loading}
+        state={stateExportAddons}
+        closeModal={handleCloseExportAddons}
+        optionsOutlet={optionsOutlet}
+        handleExports={handleExportsAddons}
+        dataProduct={dataProduct}
+        dataAddonsProduct={dataAddonsProduct}
         showFeature={showFeature}
       />
 
@@ -1308,9 +1618,16 @@ const ProductTab = ({
                   {/* <div className="btn btn-info mr-2" onClick={() => setStateModalSyncBlibli(true)}>
                     {t('syncProduct')}
                   </div> */}
-                  <Button style={{ marginRight: "0.5rem" }} variant="secondary" onClick={() => setStateExport(true)}>
-                    {t("export")}
-                  </Button>
+                  <Dropdown className='mr-2'>
+                    <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+                      {t("export")}
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                      <Dropdown.Item onClick={() => setStateExport(true)}>{t("exportProduct")}</Dropdown.Item>
+                      <Dropdown.Item onClick={() => setStateExportAddons(true)}>{t("exportAddons")}</Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
 
                   <Dropdown>
                     <Dropdown.Toggle variant="secondary" id="dropdown-basic">
@@ -1321,6 +1638,7 @@ const ProductTab = ({
                       <Dropdown.Item onClick={handleOpenImportAdd}>{t("addProduct")}</Dropdown.Item>
                       <Dropdown.Item onClick={handleOpenImportEdit}>{t("editProduct")}</Dropdown.Item>
                       <Dropdown.Item onClick={handleOpenImportAddons}>{t("addAddons")}</Dropdown.Item>
+                      {/* <Dropdown.Item onClick={handleOpenImportAddonsEdit}>{t("editAddAddons")}</Dropdown.Item> */}
                     </Dropdown.Menu>
                   </Dropdown>
 

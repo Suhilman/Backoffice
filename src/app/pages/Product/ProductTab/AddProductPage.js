@@ -70,6 +70,30 @@ export const AddProductPage = ({ location }) => {
       active: "Active"
     }]
   );
+  
+  const responseToast = (status, message, position = 'top-right', autoClose = 4500) => {
+    if(status === 'success') {
+      return toast.success(message, {
+        position,
+        autoClose,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    } else if (status === 'error') {
+      return toast.error(message, {
+        position,
+        autoClose,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    }
+  }
 
   const initialValueProduct = {
     outlet_id: "",
@@ -290,11 +314,13 @@ export const AddProductPage = ({ location }) => {
           await axios.post(`${API_URL}/api/v1/sales-type-product/create-array`, data_sales_type_product);
         }
         disableLoading();
+        responseToast('success', t('successAddProduct'))
         history.push("/product");
       } catch (err) {
         console.log("error", err)
         setAlert(err.response.data.message);
         disableLoading();
+        responseToast('error', t('failedAddProduct'))
       }
     }
   });
