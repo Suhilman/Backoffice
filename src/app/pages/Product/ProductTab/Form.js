@@ -58,7 +58,8 @@ const FormTemplate = ({
   handleOptionSync,
   syncEcommerce,
   thereShowSync,
-  showModalSalesType
+  showModalSalesType,
+  handleSetAlert
 }) => {  
   // console.log("defaultWeight", defaultWeight)
   // console.log("defaultValueSupplier", defaultValueSupplier)
@@ -95,7 +96,7 @@ const FormTemplate = ({
             <h3>{title}</h3>
           </div>
           <div className="headerEnd">
-            <Link to="/product">
+            <Link to="/product" onClick={handleSetAlert}>
               <Button variant="outline-secondary">{t("cancel")}</Button>
             </Link>
             <Button

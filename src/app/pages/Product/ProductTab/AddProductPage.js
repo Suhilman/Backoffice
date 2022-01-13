@@ -575,6 +575,8 @@ export const AddProductPage = ({ location }) => {
     console.log("temp_id", temp_id)
   }
 
+  const handleSetAlert = () => setAlert('')
+
   return (
     <Row>
       <ModalManageAddons
@@ -636,6 +638,7 @@ export const AddProductPage = ({ location }) => {
           syncEcommerce={syncEcommerce}
           thereShowSync={thereShowSync}
           showModalSalesType={showModalSalesType}
+          handleSetAlert={handleSetAlert}
         />
       </Col>
     </Row>

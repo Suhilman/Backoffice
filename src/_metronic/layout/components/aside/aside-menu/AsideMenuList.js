@@ -899,7 +899,8 @@ function AsideMenuList(props) {
             </NavLink>
           </li>
 
-          <li
+          {/* Online Shop */}
+          {/* <li
             className={`menu-item ${getMenuItemActive(
               "/sales-channel",
               false
@@ -973,7 +974,7 @@ function AsideMenuList(props) {
 
               </ul>
             </div>
-          </li>
+          </li> */}
           
           {/* <li className={`menu-item ${getMenuItemActive("/currency", false)}`}>
             <NavLink className="menu-link" to="/currency">

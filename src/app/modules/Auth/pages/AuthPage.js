@@ -46,8 +46,9 @@ export function AuthPage() {
           id="kt_login"
         >
           {/*begin::Aside*/}
+          {/* className="login-aside d-flex flex-row-auto bgi-size-cover bgi-no-repeat p-10 p-lg-10"*/}
           <div
-            className="login-aside d-flex flex-row-auto bgi-size-cover bgi-no-repeat p-10 p-lg-10"
+            className="login-aside d-flex flex-row-auto bgi-size-cover bgi-no-repeat p-lg-10"
             style={{
               backgroundImage: `url(${toAbsoluteUrl("/media/bg/bg-11.jpg")})`
             }}
@@ -105,7 +106,7 @@ export function AuthPage() {
           {/*begin::Content*/}
           <div className="flex-row-fluid d-flex flex-column position-relative p-7 overflow-hidden">
             {/*begin::Content header*/}
-            <div className="position-absolute top-0 right-0 text-right mt-5 mb-15 mb-lg-0 flex-column-auto justify-content-center py-5 px-10">
+            <div className="position-absolute top-0 right-0 text-right mt-5 mb-0 mb-lg-15 flex-column-auto justify-content-center py-5 px-10">
               {authState === 'login' ? (
                 <>
                 <div className="d-flex justify-content-between align-items-center">
@@ -133,7 +134,7 @@ export function AuthPage() {
             {/*end::Content header*/}
 
             {/* begin::Content body */}
-            <div className="d-flex flex-column-fluid flex-center mt-30 mt-lg-0">
+            <div className="d-flex flex-column-fluid flex-center mt-20 mt-lg-30">
               <Switch>
                 <ContentRoute path="/auth/login/staff" component={LoginStaff} />
 

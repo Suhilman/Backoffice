@@ -23,9 +23,10 @@ export function AdvancedProcessRegister() {
           className="login login-1 login-signin-on d-flex flex-column flex-lg-row flex-row-fluid bg-white"
           id="kt_login"
         >
+          {/* className="login-aside d-flex flex-row-auto bgi-size-cover bgi-no-repeat p-10 p-lg-10" */}
           {/*begin::Aside*/}
           <div
-            className="login-aside d-flex flex-row-auto bgi-size-cover bgi-no-repeat p-10 p-lg-10"
+            className="login-aside d-flex flex-row-auto bgi-size-cover bgi-no-repeat p-lg-10"
             style={{
               backgroundImage: `url(${toAbsoluteUrl("/media/bg/bg-11.jpg")})`
             }}

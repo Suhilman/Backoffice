@@ -737,7 +737,7 @@ const ProductTab = ({
           for (const [index, val] of values.products.entries()) {
             // if(val.name && val.sku) {
             if(true) {
-              if(!val.price_purchase) throw new Error(t('thereIsProductWithoutPrice'));
+              if(!val.price) throw new Error(t('thereIsProductWithoutPrice'));
               if(!val.category) throw new Error(t('thereIsProductWithoutCategory'));
 
               // Fungsi untuk check price & price purchase apakah ada prefix currency  e.g Rp. 12.000
@@ -959,24 +959,28 @@ const ProductTab = ({
   const handleCloseImportAdd = () => {
     setStateImportAdd(false);
     setFilename("");
+    setAlert("")
     formikImportProductAdd.setFieldValue("outlet_id", []);
     formikImportProductAdd.setFieldValue("products", []);
   };
   const handleCloseImportEdit = () => {
     setStateImportEdit(false);
     setFilename("");
+    setAlert("")
     formikImportProductEdit.setFieldValue("outlet_id", []);
     formikImportProductEdit.setFieldValue("products", []);
   };
   const handleCloseImportAddons = () => {
     setStateImportAddons(false);
     setFilename("");
+    setAlert("")
     formikImportAddons.setFieldValue("outlet_id", []);
     formikImportAddons.setFieldValue("groupAddons", []);
   };
   const handleCloseImportAddonsEdit = () => {
     setStateImportAddonsEdit(false);
     setFilename("");
+    setAlert("")
     formikImportAddonsEdit.setFieldValue("outlet_id", []);
     formikImportAddonsEdit.setFieldValue("groupAddons", []);
   };
@@ -1006,13 +1010,14 @@ const ProductTab = ({
         setAlert(err);
       } else {
         const { rows } = resp;
+        console.log("response", rows)
         const keys = [
           "name",
           "description",
           "barcode",
           "sku",
-          "price_purchase",
           "price",
+          "price_purchase",
           "is_favorite",
           "category",
           // "with_recipe",
