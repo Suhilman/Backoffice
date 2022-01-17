@@ -71,23 +71,34 @@ export default function LocationBusiness({location}) {
       .min(3, `${t("minimum3Symbols")}`)
       .max(50, `${t("maximum50Symbols")}`)
       .required(`${t('pleaseInputABusinessName')}`),
-    
     business_type_id: Yup.number()
       .integer()
       .min(1)
       .required(`${t("pleaseChooseABusinessType")}`),
     business_province_id: Yup.number()
       .integer()
-      .min(1),
-      // .required(`${t("pleaseChooseAProvince")}`),
+      .min(1)
+      .required(`${t("pleaseChooseAProvince")}`),
     business_city_id: Yup.number()
       .integer()
-      .min(1),
-      // .required(`${t("pleaseChooseACity")}`),
+      .min(1)
+      .required(`${t("pleaseChooseACity")}`),
     business_location_id: Yup.number()
       .integer()
       .min(1)
-      // .required(`${t("pleaseChooseABusinessLocation")}`),
+      .required(`${t("pleaseChooseABusinessLocation")}`),
+    province: Yup.string()
+      .min(3, `${t("minimum3Symbols")}`)
+      .max(50, `${t("maximum50Symbols")}`)
+      .required(`${t('pleaseInputProvince')}`),
+    city: Yup.string()
+      .min(3, `${t("minimum3Symbols")}`)
+      .max(50, `${t("maximum50Symbols")}`)
+      .required(`${t('pleaseInputCity')}`),
+    location: Yup.string()
+      .min(3, `${t("minimum3Symbols")}`)
+      .max(50, `${t("maximum50Symbols")}`)
+      .required(`${t('pleaseInputLocation')}`),
     // outlet_location_id: Yup.number()
     //   .integer()
     //   .min(1)
@@ -759,6 +770,15 @@ export default function LocationBusiness({location}) {
   }
 
   const handleChangeBusinessType = (e) => {
+    if(countryCodeIso3 === 'IDN') {
+      formik.setFieldValue("province", "default")
+      formik.setFieldValue("city", "default")
+      formik.setFieldValue("location", "default")
+    } else {
+      formik.setFieldValue("business_province_id", 1)
+      formik.setFieldValue("business_city_id", 1)
+      formik.setFieldValue("business_location_id", 1)
+    }
     formik.setFieldValue("business_type_id", e.target.value)
   }
 
@@ -815,7 +835,7 @@ export default function LocationBusiness({location}) {
             id="business_name"
             placeholder={t('businessName')}
             type="text"
-            className={`${validationBusiness("business_type_id")} form-control h-auto py-3 px-4`}
+            className={`${validationBusiness("business_name")} form-control h-auto py-3 px-4`}
             name="business_name"
             {...formik.getFieldProps("business_name")}
           />

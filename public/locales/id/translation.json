@@ -1239,6 +1239,7 @@
   "failedAddProduct": "Gagal Tambah Produk",
   "successEditProduct": "Berhasil Mengedit Produk",
   "failedEditProduct": "Failed Edit Product",
+  "userIsLoggedInPleaseLogOutOfTheUserFirst": "staff sedang login, silakan keluar terlebih dahulu",
 
   "currencyConversion": "Konversi Mata Uang",
   "currencyA": "Mata Uang A",

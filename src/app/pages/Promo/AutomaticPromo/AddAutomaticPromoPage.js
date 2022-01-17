@@ -168,7 +168,7 @@ export const AddAutomaticPromoPage = ({ location }) => {
   const formikPromoQuantity = useFormik({
     initialValues: initialValuePromoQuantity,
     validationSchema: PromoQuantitySchema,
-    enableReinitialize: true,
+    // enableReinitialize: true,
     onSubmit: async (values) => {
       if(errorDate) {
         console.log("tanggal akhir harus lebih besar dari tanggal mulai")

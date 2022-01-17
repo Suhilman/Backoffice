@@ -1238,5 +1238,6 @@
   "successAddProduct": "成功添加產品",
   "failedAddProduct": "添加產品失敗",
   "successEditProduct": "成功編輯產品",
-  "failedEditProduct": "編輯產品失敗"
+  "failedEditProduct": "編輯產品失敗",
+  "userIsLoggedInPleaseLogOutOfTheUserFirst": "用戶已登錄，請先退出該用戶"
 }

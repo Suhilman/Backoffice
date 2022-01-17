@@ -9,6 +9,7 @@ import DataTable from "react-data-table-component";
 import { Search, MoreHoriz } from "@material-ui/icons";
 
 import ConfirmModal from "../../components/ConfirmModal";
+import ConfirmModalDelete from "../../components/ConfirmModalDelete";
 import useDebounce from "../../hooks/useDebounce";
 
 import "../style.css";
@@ -16,6 +17,10 @@ import "../style.css";
 export const StaffPage = () => {
   const [loading, setLoading] = React.useState(false);
   const [confirmModal, setConfirmModal] = React.useState(false);
+
+  const [warning, setWarning] = React.useState("")
+  const [body, setBody] = React.useState("")
+  const [second, setSecond] = React.useState(0);
 
   const [search, setSearch] = React.useState("");
   const [filter, setFilter] = React.useState({
@@ -47,10 +52,31 @@ export const StaffPage = () => {
     setFilter(filterData);
   };
 
-  const closeConfirmModal = () => setConfirmModal(false);
-  const openConfirmModal = (data) => {
-    setStaffInfo({ id: data.id, name: data.name });
+  const handleCheckDevice = async (params) => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    try {
+      const { data } = await axios.get(`${API_URL}/api/v1/staff/check-device/${params.id}`)
+      // Jika device nya ada, kasi peringatan
+      if(data.data.message === "Device Available") {
+        setWarning("userIsLoggedInPleaseLogOutOfTheUserFirst")
+        setBody("areYouSureWantToDelete?")
+        setSecond(10)
+      } else {
+        setBody("areYouSureWantToDelete?")
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const closeConfirmModal = () => {
+    setConfirmModal(false)
+    setSecond(0)
+  };
+  const openConfirmModal = async (data) => {
     setConfirmModal(true);
+    await handleCheckDevice(data)
+    setStaffInfo({ id: data.id, name: data.name });
   };
 
   const getStaffData = async (search, filter) => {
@@ -196,16 +222,41 @@ export const StaffPage = () => {
     };
   });
 
+  React.useEffect(() => {
+    let timer;
+    if (second > 0) {
+      timer = setTimeout(function() {
+        setSecond((now) => now - 1);
+      }, 1000);
+    } else {
+      clearTimeout(timer);
+    }
+
+    return () => clearTimeout(timer);
+  });
+
   return (
     <>
-      <ConfirmModal
+      {/* <ConfirmModal
         title={`${t("deleteStaff")} - ${staffInfo.name}`}
-        body={t("areYouSureWantToDelete?")}
+        body={t(warningDelete)}
         buttonColor="danger"
         state={confirmModal}
         closeModal={closeConfirmModal}
         handleClick={() => handleDelete(staffInfo.id)}
         loading={loading}
+      /> */}
+      
+      <ConfirmModalDelete
+        title={`${t("deleteStaff")} - ${staffInfo.name}`}
+        body={t(body)}
+        warning={t(warning)}
+        buttonColor="danger"
+        state={confirmModal}
+        closeModal={closeConfirmModal}
+        handleClick={() => handleDelete(staffInfo.id)}
+        loading={loading}
+        second={second}
       />
 
       <Row>
