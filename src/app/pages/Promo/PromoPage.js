@@ -168,6 +168,33 @@ export const PromoPage = () => {
           </Row>
         );
       })}
+      <Row style={{ marginBottom: "2rem" }}>
+        <Col>
+          <Paper elevation={2} style={{ padding: "1rem", height: "100%" }}>
+            <div className="headerPage">
+              <div className="headerStart">
+                <h5>{t('voucherCustomer')}</h5>
+              </div>
+              <div className="headerEnd" style={{ display: "inline-flex" }}>
+                <p style={{ margin: 0, alignSelf: "center" }}>
+                  No {t("activePromo")}
+                </p>
+
+                <Link to='promo/voucher-promo-customer'>
+                  <Button
+                    variant="primary"
+                    style={{ marginLeft: "1rem", borderRadius: "2rem" }}
+                  >
+                    {t("viewPromo")}
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            <div style={{ padding: "1rem" }}>Description Promo</div>
+          </Paper>
+        </Col>
+      </Row>
     </>
   );
 };

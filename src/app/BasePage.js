@@ -45,6 +45,7 @@ import { AutomaticPromoPage } from "./pages/Promo/AutomaticPromo/AutomaticPromoP
 import { AddAutomaticPromoPage } from "./pages/Promo/AutomaticPromo/AddAutomaticPromoPage";
 import { EditAutomaticPromoPage } from "./pages/Promo/AutomaticPromo/EditAutomaticPromoPage";
 import { LoyaltyPromoPage } from "./pages/Promo/LoyaltyPromo/LoyaltyPromoPage";
+import { VoucherPromoCustomerPage } from "./pages/Promo/VoucherPromoCustomer/VoucherPromoCustomerPage";
 import { InventoryPage } from "./pages/Inventory/InventoryPage";
 import { IncomingStockPage } from "./pages/Inventory/InventoryTab/IncomingStock/IncomingStockPage";
 import { AddIncomingStockPage } from "./pages/Inventory/InventoryTab/IncomingStock/AddPage";
@@ -722,6 +723,14 @@ export default function BasePage({handleScrollBottom}) {
           exact={true}
           path="/promo/point-loyalty-system"
           component={LoyaltyPromoPage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.promo_management}
+          isRoute={false}
+          exact={true}
+          path="/promo/voucher-promo-customer"
+          component={VoucherPromoCustomerPage}
         />
 
         <ProtectedRoute

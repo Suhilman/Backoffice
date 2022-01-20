@@ -1240,6 +1240,7 @@
     "successEditProduct": "Success Edit Product",
     "failedEditProduct": "Failed Edit Product",
     "userIsLoggedInPleaseLogOutOfTheUserFirst": "User is logged in, please log out of the user first",
+    "voucherCustomer": "Voucher Customer",
 
     "currencyConversion": "Currency Convertion",
     "currencyA": "Currency A",

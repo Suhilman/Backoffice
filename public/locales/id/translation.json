@@ -1240,6 +1240,7 @@
   "successEditProduct": "Berhasil Mengedit Produk",
   "failedEditProduct": "Failed Edit Product",
   "userIsLoggedInPleaseLogOutOfTheUserFirst": "staff sedang login, silakan keluar terlebih dahulu",
+  "voucherCustomer": "Voucher Pelanggan",
 
   "currencyConversion": "Konversi Mata Uang",
   "currencyA": "Mata Uang A",
