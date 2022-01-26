@@ -24,6 +24,8 @@ import ShowConfirmModal from "../../../components/ConfirmModal";
 import "../../style.css";
 
 export const VoucherPromoCustomerPage = () => {
+  const [checkLimitDiscount, setCheckLimitDiscount] = React.useState(false)
+
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [refresh, setRefresh] = React.useState(0);
@@ -43,43 +45,46 @@ export const VoucherPromoCustomerPage = () => {
 
   const [voucherPromos, setVoucherPromos] = React.useState([]);
   const [allOutlets, setAllOutlets] = React.useState([]);
+
   const initialValuePromo = {
-    id: "",
-    outlet_id: "",
-    name: "",
-    code: "",
-    quota: "",
-    description_type: "regulation",
-    description: "",
-    type: "percentage",
-    value: ""
-  };
+    business_id: "", 
+    outlet_id: "", 
+    name: "",  
+    description: "",  
+    discount_type: "",  
+    discount_amount: "",
+    expiration_date: "", 
+    status: "available", 
+    acquisition_type: "", 
+    acquisition_cost: "",
+    used_amount: 0, 
+    limit_usage: "", 
+    discount_limit: ""
+  }
 
   const PromoSchema = Yup.object().shape({
-    outlet_id: Yup.array()
-      .of(Yup.number().min(1))
+    outlet_id: Yup.number()
+      .integer()
+      .min(1)
       .required(`${t("pleaseChooseOutlet")}`),
     name: Yup.string()
       .min(3, `${t("minimum3Character")}`)
       .max(50, `${t("maximum50Character")}`)
       .required(`${t("pleaseInputAName")}`),
-    code: Yup.string()
-      .min(3, `${t("minimum3Character")}`)
-      .max(50, `${t("maximum50Character")}`)
-      .required(`${t("pleaseInputACode")}`),
-    quota: Yup.number()
-      .min(1, `${t("minimum1Quota")}`)
-      .required(`${t("pleaseInputQuota")}`),
-    description_type: Yup.string()
-      .matches(/regulation|how_to_use/)
-      .required(`${t("pleaseChooseType")}`),
     description: Yup.string().min(1, `${t("minimum1Character")}`),
-    type: Yup.string()
-      .matches(/percentage|currency/)
-      .required(`${t("pleaseChooseType")}`),
-    value: Yup.number()
+    discount_type: Yup.string()
+      .required(`${t("pleaseInputDiscountType")}`),
+    discount_amount: Yup.number()
       .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`)
-      .required(`${t("pleaseInputValue")}`)
+      .required(`${t("pleaseInputValue")}`),
+    acquisition_type: Yup.string()
+      .required(`${t("pleaseInputAcquisitionType")}`),
+    acquisition_cost: Yup.number()
+      .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`),
+    limit_usage: Yup.number()
+      .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`),
+    discount_limit: Yup.number()
+      .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`),
   });
 
   const EditPromoSchema = Yup.object().shape({
@@ -115,41 +120,34 @@ export const VoucherPromoCustomerPage = () => {
     initialValues: initialValuePromo,
     validationSchema: PromoSchema,
     onSubmit: async (values, {resetForm}) => {
-      if(errorDate) {
-        console.log("tanggal akhir harus lebih besar dari tanggal mulai")
-      } else {
-        const options = {
-          maxSizeMB: 0.5,
-          maxWidthOrHeight: 1920,
-          useWebWorker: true
-        }
-        const promoData = new FormData();
-        promoData.append("outlet_id", JSON.stringify(values.outlet_id));
-        promoData.append("name", values.name);
-        promoData.append("description_type", values.description_type);
-        promoData.append("description", values.description);
-        promoData.append("type", values.type);
-        promoData.append("value", values.value);
-        promoData.append("code", values.code);
-        promoData.append("quota", values.quota);
-        promoData.append("promo_date_start", startDate);
-        promoData.append("promo_date_end", endDate);
-        if (photo) {
-          promoData.append("voucherPromoImage", photo);
-        }
-
-        const API_URL = process.env.REACT_APP_API_URL;
-        try {
-          enableLoading();
-          await axios.post(`${API_URL}/api/v1/voucher-promo/create-development`, promoData);
-          resetForm()
-          handleRefresh();
-          disableLoading();
-          closeAddModal();
-        } catch (err) {
-          disableLoading();
-          setAlert(err.response?.data.message || err.message);
-        }
+      const user_info = JSON.parse(localStorage.getItem('user_info'))
+      const data = {
+        business_id: user_info.business_id,
+        outlet_id: values.outlet_id,
+        acquisition_type: values.acquisition_type,
+        acquisition_cost: values.acquisition_cost,
+        description: values.description,
+        discount_amount: values.discount_amount,
+        discount_limit: values.discount_limit,
+        discount_type: values.discount_type,
+        expiration_date: startDate,
+        limit_usage: values.limit_usage,
+        name: values.name,
+        status: values.status,
+        used_amount: values.used_amount
+      }
+      console.log("data", data)
+      const API_URL = process.env.REACT_APP_API_URL;
+      try {
+        enableLoading();
+        await axios.post(`${API_URL}/api/v1/customer-voucher-list`, data);
+        resetForm()
+        handleRefresh();
+        disableLoading();
+        closeAddModal();
+      } catch (err) {
+        disableLoading();
+        setAlert(err.response?.data.message || err.message);
       }
     }
   });
@@ -169,45 +167,52 @@ export const VoucherPromoCustomerPage = () => {
   const formikEditPromo = useFormik({
     enableReinitialize: true,
     initialValues: initialValuePromo,
-    validationSchema: EditPromoSchema,
+    validationSchema: PromoSchema,
     onSubmit: async (values) => {
-      if(errorDate) {
-        console.log("tanggal akhir harus lebih besar dari tanggal mulai")
-      } else {
-        const options = {
-          maxSizeMB: 0.5,
-          maxWidthOrHeight: 1920,
-          useWebWorker: true
-        }
-        const promoData = new FormData();
-        promoData.append("outlet_id", values.outlet_id);
-        promoData.append("name", values.name);
-        promoData.append("description_type", values.description_type);
-        promoData.append("description", values.description);
-        promoData.append("type", values.type);
-        promoData.append("value", values.value);
-        promoData.append("code", values.code);
-        promoData.append("quota", values.quota);
-        promoData.append("promo_date_start", startDate);
-        promoData.append("promo_date_end", endDate);
-        if (photo.name) {
-          promoData.append("voucherPromoImage", photo);
-        }
-  
-        const API_URL = process.env.REACT_APP_API_URL;
-        try {
-          enableLoading();
-          await axios.put(
-            `${API_URL}/api/v1/voucher-promo/update-development/${values.id}`,
-            promoData
-          );
-          handleRefresh();
-          disableLoading();
-          closeEditModal();
-        } catch (err) {
-          disableLoading();
-          setAlert(err.response?.data.message || err.message);
-        }
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
+
+      let result_acquisition_cost = values.acquisition_cost
+      // if(values.acquisition_type !== 'currency' && values.acquisition_type !== 'point' ) {
+      //   result_acquisition_cost = "0"
+      // } else {
+      //   result_acquisition_cost = values.acquisition_cost
+      // }
+
+      const data = {
+        business_id: values.business_id,
+        outlet_id: values.outlet_id,
+        name: values.name, 
+        description: values.description, 
+        discount_type: values.discount_type, 
+        discount_amount: values.discount_amount,
+        expiration_date: values.expiration_date,
+        status: values.status,
+        acquisition_type: values.acquisition_type,
+        acquisition_cost: result_acquisition_cost,
+        used_amount: values.used_amount,
+        discount_limit: values.discount_limit,
+        limit_usage: values.limit_usage
+      }
+
+      console.log("data yang akan di sep", data)
+
+      const API_URL = process.env.REACT_APP_API_URL;
+      try {
+        enableLoading();
+        await axios.patch(
+          `${API_URL}/api/v1/customer-voucher-list/${values.id}`,
+          data
+        );
+        handleRefresh();
+        disableLoading();
+        closeEditModal();
+      } catch (err) {
+        disableLoading();
+        setAlert(err.response?.data.message || err.message);
       }
     }
   });
@@ -232,8 +237,9 @@ export const VoucherPromoCustomerPage = () => {
 
   const getVoucherPromos = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
+    const user_info = JSON.parse(localStorage.getItem('user_info'))
     try {
-      const { data } = await axios.get(`${API_URL}/api/v1/voucher-promo`);
+      const { data } = await axios.get(`${API_URL}/api/v1/customer-voucher-list?business_id=${user_info.business_id}`);
       setVoucherPromos(data.data);
     } catch (err) {
       setVoucherPromos([]);
@@ -294,29 +300,38 @@ export const VoucherPromoCustomerPage = () => {
     setPhoto("");
     setPhotoPreview("");
     setStateAddModal(false);
+    setCheckLimitDiscount(false)
   };
 
   const showEditModal = (data) => {
     const API_URL = process.env.REACT_APP_API_URL;
+    console.log("showEditModal", data)
+
+    if(data.discount_amount) {
+      setCheckLimitDiscount(true)
+    }
 
     formikEditPromo.setValues({
       id: data.id,
+      business_id: data.business_id,
       outlet_id: data.outlet_id,
-      name: data.name,
-      code: data.code,
-      quota: data.quota_value,
-      description_type: data.description_type,
+      acquisition_type: data.acquisition_type,
+      acquisition_cost: data.acquisition_cost,
       description: data.description,
-      type: data.type,
-      value: data.value
+      discount_amount: data.discount_amount,
+      discount_limit: data.discount_limit,
+      discount_type: data.discount_type,
+      limit_usage: data.limit_usage,
+      name: data.name,
+      status: data.status,
+      used_amount: data.used_amount
     });
     if (data.image) {
       setPhoto(`${API_URL}${data.image}`);
       setPhotoPreview(`${API_URL}${data.image}`);
     }
-    if (data.promo_date_start && data.promo_date_end) {
-      setStartDate(new Date(data.promo_date_start));
-      setEndDate(new Date(data.promo_date_end));
+    if (data.expiration_date) {
+      setStartDate(new Date(data.expiration_date));
     }
     setStateEditModal(true);
   };
@@ -354,6 +369,7 @@ export const VoucherPromoCustomerPage = () => {
     setPhoto("");
     setPhotoPreview("");
     setStateEditModal(false);
+    setCheckLimitDiscount(false)
   };
 
   const showDeleteModal = (data) => {
@@ -394,7 +410,7 @@ export const VoucherPromoCustomerPage = () => {
 
     try {
       enableLoading();
-      await axios.delete(`${API_URL}/api/v1/voucher-promo/${promo_id}`);
+      await axios.delete(`${API_URL}/api/v1/customer-voucher-list/${promo_id}`);
       handleRefresh();
       disableLoading();
       closeDeleteModal();
@@ -407,28 +423,31 @@ export const VoucherPromoCustomerPage = () => {
 
   const dataPromo = () => {
     return voucherPromos.map((item, index) => {
-      const quota = `${item.quota - item.quota_used}/${item.quota}`;
-
       return {
         id: item.id,
         no: index + 1,
         name: item.name,
-        outlet_id: item.outlet_id,
         outlet_name: item.Outlet?.name,
-        promo_date_start: item.promo_date_start,
-        promo_date_end: item.promo_date_end,
-        code: item.code,
-        quota,
-        quota_value: item.quota,
-        type: item.type,
-        value: item.value,
-        description_type: item.description_type,
+        business_id: item.business_id,
+        outlet_id: item.outlet_id,
+        acquisition_type: item.acquisition_type,
+        acquisition_cost: item.acquisition_cost,
         description: item.description,
-        image: item.image,
-        status: item.status
+        discount_amount: item.discount_amount,
+        discount_limit: item.discount_limit,
+        discount_type: item.discount_type,
+        expiration_date: item.expiration_date,
+        limit_usage: item.limit_usage,
+        name: item.name,
+        status: item.status,
+        used_amount: item.used_amount
       };
     });
   };
+
+  const handleCheckLimitDiscount = (e) => {
+    setCheckLimitDiscount(!checkLimitDiscount)
+  }
 
   const columns = [
     {
@@ -448,48 +467,25 @@ export const VoucherPromoCustomerPage = () => {
       sortable: true
     },
     {
-      name: `${t("voucherDate")}`,
+      name: `${t("voucherExpired")}`,
       cell: (rows) => {
+        console.log("rows", rows)
         return (
           <div style={{ padding: "5px 0" }}>
-            {formatDate(rows.promo_date_start)} <br />
-            until <br />
-            {formatDate(rows.promo_date_end)}
+            {formatDate(rows.expiration_date)}
           </div>
         );
       }
     },
     {
-      name: `${t("voucherCode")}`,
-      selector: "code",
-      sortable: true
-    },
-    {
-      name: `${t("voucherQuota")}`,
-      selector: "quota",
+      name: `${t("acquisitionType")}`,
+      selector: "acquisition_type",
       sortable: true
     },
     {
       name: `${t("promoStatus")}`,
-      cell: (rows) => {
-        return (
-          <FormControl component="fieldset">
-            <FormGroup aria-label="position" row>
-              <FormControlLabel
-                value={rows.status}
-                control={
-                  <Switch
-                    color="primary"
-                    checked={rows.status === "active" ? true : false}
-                    onChange={() => handleChangeStatus(rows.id)}
-                    name=""
-                  />
-                }
-              />
-            </FormGroup>
-          </FormControl>
-        );
-      }
+      selector: "status",
+      sortable: true
     },
     {
       name: `${t("actions")}`,
@@ -520,7 +516,7 @@ export const VoucherPromoCustomerPage = () => {
         t={t}
         stateModal={stateAddModal}
         cancelModal={closeAddModal}
-        title={t("addNewVoucherPromo")}
+        title={t("addNewVoucherCustomer")}
         loading={loading}
         alert={alert}
         formikPromo={formikPromo}
@@ -536,6 +532,8 @@ export const VoucherPromoCustomerPage = () => {
         setEndDate={setEndDate}
         handleDate={handleDate}
         errorDate={errorDate}
+        handleCheckLimitDiscount={handleCheckLimitDiscount}
+        checkLimitDiscount={checkLimitDiscount}
       />
 
       <VoucherPromoCustomerModalEdit
@@ -558,6 +556,8 @@ export const VoucherPromoCustomerPage = () => {
         setEndDate={setEndDate}
         handleDate={handleDate}
         errorDate={errorDate}
+        handleCheckLimitDiscount={handleCheckLimitDiscount}
+        checkLimitDiscount={checkLimitDiscount}
       />
 
       <ShowConfirmModal
@@ -586,7 +586,7 @@ export const VoucherPromoCustomerPage = () => {
                   style={{ marginLeft: "0.5rem" }}
                   onClick={showAddModal}
                 >
-                  {t("addNewVoucherPromo")}
+                  {t("addNewVoucherCustomer")}
                 </Button>
               </div>
             </div>

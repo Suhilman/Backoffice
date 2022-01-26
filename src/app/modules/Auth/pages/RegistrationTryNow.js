@@ -182,7 +182,7 @@ const RegistrationTryNow = () => {
   const [showVerifyModal, setShowVerifyModal] = useState(false);
   const [showBusinessModal, setShowBusinessModal] = useState(false);
   const [alertModal, setAlertModal] = useState("");
-  const [token, setToken] = useState(false);
+  const [token, setToken] = useState("");
   const [second, setSecond] = useState(0);
   const [verificationCode, setVerificationCode] = useState(0);
   const [cancelLoading, setCancelLoading] = useState(false);
@@ -525,7 +525,7 @@ const RegistrationTryNow = () => {
         const { owner, accessToken } = data.data;
         setToken(`Bearer ${accessToken}`);
         setVerificationCode(owner.verification_code)
-        handleSendEmail(values.email, owner.verification_code)
+        await handleSendEmail(values.email, owner.verification_code, `Bearer ${accessToken}`)
         history.push(`/register-process/verify-email?email=${values.email}&session=${accessToken}`);
       })
       .catch((err) => {
@@ -601,16 +601,20 @@ const RegistrationTryNow = () => {
     }
   };
 
-  const handleSendEmail = async (email, verifyCode) => {
+  const handleSendEmail = async (email, verifyCode, token) => {
     try {
-      await axios.get(
+      console.log("email =====>", email)
+      console.log("verifyCode =====>", verifyCode)
+      console.log("token =====>", token)
+      const { data } = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/v1/send-email/verify-otp?email=${email}&verifyCode=${verifyCode}`,
         { headers: { Authorization: token } }
       );
+      console.log("response send email", data)
       setStatusEmail(true);
       return true;
     } catch (error) {
-      console.log("error", error);
+      console.log("error ketika send email", error);
       return false;
     }
   };

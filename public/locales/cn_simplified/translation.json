@@ -1240,5 +1240,21 @@
     "successEditProduct": "成功编辑产品",
     "failedEditProduct": "编辑产品失败",
     "userIsLoggedInPleaseLogOutOfTheUserFirst": "用户已登录，请先退出该用户",
-    "voucherCustomer": "凭单客户"
+    "voucherCustomer": "凭单客户",
+    "limitUsage": "限制使用",
+    "limitDiscount": "限制折扣",
+    "discountAmount": "折扣金额",
+    "acquisitionType": "采集类型",
+    "acquisitionCost": "收购成本",
+    "chooseAcquisitionType": "选择采集类型",
+    "voucherExpired": "优惠券已过期",
+    "addNewVoucherCustomer": "添加新的优惠券客户",
+    "enterLimitUsage": "输入限制使用",
+    "amountLimitDiscount": "金额限制折扣",
+    "pleaseInputAcquisitionType": "请输入采集类型",
+    "pleaseInputDiscountType": "请输入折扣类型",
+    "enterDiscountAmount": "输入折扣金额",
+    "enterAmountLimitDiscount": "输入金额限制折扣",
+    "enterAcquisitionCost": "输入购置成本",
+    "enterPromoName": "输入促销名称"
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Select from "react-select";
 
 import {
@@ -36,8 +36,11 @@ const VoucherPromoModalEdit = ({
   setEndDate,
   t,
   handleDate,
-  errorDate
+  errorDate,
+  handleCheckLimitDiscount,
+  checkLimitDiscount
 }) => {
+
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg,image/png",
     maxSize: 3 * 1000 * 1000,
@@ -46,9 +49,10 @@ const VoucherPromoModalEdit = ({
     }
   });
   const handleSelectOutlet = (value, formik) => {
+    console.log("sebelum diubah", formikPromo.values.outlet_id)
+    console.log("statenya", value)
     if (value) {
-      const outlet = value.map((item) => item.value);
-      formikPromo.setFieldValue("outlet_id", outlet);
+      formikPromo.setFieldValue("outlet_id", value.value);
     } else {
       formikPromo.setFieldValue("outlet_id", []);
     }
@@ -57,6 +61,13 @@ const VoucherPromoModalEdit = ({
   const optionsOutlet = allOutlets.map((item) => {
     return { value: item.id, label: item.name };
   });
+
+  const defaultValueOutlet = optionsOutlet.find(value => {
+    return value.value === formikPromo.values.outlet_id
+  })
+
+  console.log("defaultValueOutlet", defaultValueOutlet)
+
   return (
     <Modal show={stateModal} onHide={cancelModal} size="lg">
       <Modal.Header closeButton>
@@ -69,45 +80,13 @@ const VoucherPromoModalEdit = ({
 
           <Row>
             <Col>
-            {formikPromo.getFieldProps("outlet_id").value ? (
-            <Form.Group>
-                <Form.Label>{t("outlet")}:</Form.Label>
-                <Form.Control
-                  as="select"
-                  name="outlet_id"
-                  {...formikPromo.getFieldProps("outlet_id")}
-                  className={validationPromo("outlet_id")}
-                  required
-                >
-                  <option value="" disabled hidden>
-                  {t("chooseOutlet")}
-                  </option>
-                  {allOutlets.map((item) => {
-                    return (
-                      <option key={item.id} value={item.id}>
-                        {item.name}
-                      </option>
-                    );
-                  })}
-                </Form.Control>
-                {formikPromo.touched.outlet_id &&
-                formikPromo.errors.outlet_id ? (
-                  <div className="fv-plugins-message-container">
-                    <div className="fv-help-block">
-                      {formikPromo.errors.outlet_id}
-                    </div>
-                  </div>
-                ) : null}
-              </Form.Group>
-            ) : (
               <Form.Group>
                 <Form.Label>{t("outlet")}:</Form.Label>
                 <Select
+                  defaultValue={defaultValueOutlet}
                   options={optionsOutlet}
                   placeholder={t('select')}
-                  isMulti
                   name="outlet_id"
-                  className="basic-multi-select"
                   classNamePrefix="select"
                   onChange={(value) => handleSelectOutlet(value, formikPromo)}
                 />
@@ -120,7 +99,6 @@ const VoucherPromoModalEdit = ({
                   </div>
                 ) : null}
               </Form.Group>
-            )}
             </Col>
             <Col>
               <Form.Group>
@@ -128,7 +106,7 @@ const VoucherPromoModalEdit = ({
                 <Form.Control
                   type="text"
                   name="name"
-                  placeholder="Enter Promo Name"
+                  placeholder={t('enterPromoName')}
                   {...formikPromo.getFieldProps("name")}
                   className={validationPromo("name")}
                   required
@@ -147,50 +125,27 @@ const VoucherPromoModalEdit = ({
           <Row>
             <Col>
               <Form.Group>
-                <Form.Label>{t("promoCode")}:</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="code"
-                  placeholder="Enter Promo Code"
-                  {...formikPromo.getFieldProps("code")}
-                  className={validationPromo("code")}
-                  required
-                />
-                {formikPromo.touched.code && formikPromo.errors.code ? (
-                  <div className="fv-plugins-message-container">
-                    <div className="fv-help-block">
-                      {formikPromo.errors.code}
-                    </div>
-                  </div>
-                ) : null}
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
-                <Form.Label>{t("promoQuota")}:</Form.Label>
+                <Form.Label>{t("limitUsage")}:</Form.Label>
                 <Form.Control
                   type="number"
-                  name="quota"
-                  placeholder="Enter Promo Quota"
-                  {...formikPromo.getFieldProps("quota")}
-                  className={validationPromo("quota")}
+                  name="limit_usage"
+                  placeholder={t('enterLimitUsage')}
+                  {...formikPromo.getFieldProps("limit_usage")}
+                  className={validationPromo("limit_usage")}
                   required
                 />
-                {formikPromo.touched.quota && formikPromo.errors.quota ? (
+                {formikPromo.touched.limit_usage && formikPromo.errors.limit_usage ? (
                   <div className="fv-plugins-message-container">
                     <div className="fv-help-block">
-                      {formikPromo.errors.quota}
+                      {formikPromo.errors.limit_usage}
                     </div>
                   </div>
                 ) : null}
               </Form.Group>
             </Col>
-          </Row>
-
-          <Row>
             <Col>
               <Form.Group>
-                <Form.Label>{t("promoStartDate")}:</Form.Label>
+                <Form.Label>{t("expirationDate")}:</Form.Label>
 
                 <InputGroup>
                   <DateTimePicker
@@ -208,60 +163,7 @@ const VoucherPromoModalEdit = ({
                 </InputGroup>
               </Form.Group>
             </Col>
-            <Col>
-              <Form.Group>
-                <Form.Label>{t("promoEndDate")}:</Form.Label>
-
-                <InputGroup>
-                  <DateTimePicker
-                    startDate={endDate}
-                    setStartDate={setEndDate}
-                    handleDate={handleDate}
-                    state="end"
-                  />
-
-                  <InputGroup.Append>
-                    <InputGroup.Text>
-                      <CalendarToday />
-                    </InputGroup.Text>
-                  </InputGroup.Append>
-                </InputGroup>
-                {errorDate ? (
-                  <div className="fv-plugins-message-container">
-                    <div className="fv-help-block">
-                      {t('endDateMustBeGreaterThanTheStartDate')}
-                    </div>
-                  </div>
-                ) : null}
-              </Form.Group>
-            </Col>
           </Row>
-
-          <Form.Group>
-            <Form.Label>{t("promoDescriptionType")}:</Form.Label>
-            <Form.Control
-              as="select"
-              name="description_type"
-              value={""}
-              {...formikPromo.getFieldProps("description_type")}
-              className={validationPromo("description_type")}
-              required
-            >
-              <option value="" disabled hidden>
-              {t("chooseType")}
-              </option>
-              <option value="regulation">{t("regulation")}</option>
-              <option value="how_to_use">{t("howToUse")}</option>
-            </Form.Control>
-            {formikPromo.touched.description_type &&
-            formikPromo.errors.description_type ? (
-              <div className="fv-plugins-message-container">
-                <div className="fv-help-block">
-                  {formikPromo.errors.description_type}
-                </div>
-              </div>
-            ) : null}
-          </Form.Group>
 
           <Form.Group>
             <Form.Label>{t("promoDescription")}:</Form.Label>
@@ -281,84 +183,167 @@ const VoucherPromoModalEdit = ({
             ) : null}
           </Form.Group>
 
-          <Form.Group>
-            <Form.Label>{t("promoRateType")}:</Form.Label>
-            <Form.Control
-              as="select"
-              name="type"
-              {...formikPromo.getFieldProps("type")}
-              className={validationPromo("type")}
-              required
-            >
-              <option value="" disabled hidden>
-              {t("chooseType")}
-              </option>
-              <option value="percentage">{t("percentage")}</option>
-              <option value="currency">{t("rupiah")}</option>
-            </Form.Control>
-            {formikPromo.touched.type && formikPromo.errors.type ? (
-              <div className="fv-plugins-message-container">
-                <div className="fv-help-block">{formikPromo.errors.type}</div>
-              </div>
-            ) : null}
-          </Form.Group>
-
-          <Form.Group as={Row}>
-            <Form.Label column md={2}>
-            {t("promoRate")}:
-            </Form.Label>
+          <Row className="align-items-center">
             <Col>
-              <Form.Control
-                type="number"
-                name="value"
-                {...formikPromo.getFieldProps("value")}
-                className={validationPromo("value")}
-                required
-              />
-              {formikPromo.touched.value && formikPromo.errors.value ? (
-                <div className="fv-plugins-message-container">
-                  <div className="fv-help-block">
-                    {formikPromo.errors.value}
+              <Form.Group>
+                <Form.Label>{t("discountType")}:</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="discount_type"
+                  {...formikPromo.getFieldProps("discount_type")}
+                  className={validationPromo("discount_type")}
+                  required
+                >
+                  <option value="" disabled hidden>
+                  {t("chooseType")}
+                  </option>
+                  <option value="percentage">{t("percentage")}</option>
+                  <option value="amount">{t("amount")}</option>
+                </Form.Control>
+                {formikPromo.touched.discount_type && formikPromo.errors.discount_type ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">{formikPromo.errors.discount_type}</div>
                   </div>
-                </div>
-              ) : null}
+                ) : null}
+              </Form.Group>
             </Col>
-          </Form.Group>
-
-          <Form.Group>
-            <Form.Label>{t("promoBanner")}</Form.Label>
-            {alertPhoto ? <Alert variant="danger">{alertPhoto}</Alert> : ""}
-            <div
-              {...getRootProps({
-                className: "boxDashed dropzone"
-              })}
-            >
-              <input {...getInputProps()} />
-              {!photoPreview ? (
-                <>
-                  <p>{t("dragAndDrop")}</p>
-                  <p style={{ color: "gray" }}>{t("fileSizeLimit")}</p>
-                </>
-              ) : (
-                <>
-                  <div
-                    style={{
-                      margin: "auto",
-                      width: "120px",
-                      height: "120px",
-                      overflow: "hidden",
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      backgroundImage: `url(${photoPreview || photo})`
-                    }}
+            {formikPromo.values.discount_type === 'percentage' ? (
+              <Col>
+                  <Form.Check
+                    type="checkbox"
+                    name="check_limit_discount"
+                    label={t("limitDiscount")}
+                    checked={checkLimitDiscount}
+                    onChange={handleCheckLimitDiscount}
                   />
-                  <small>
-                    {photo?.name ? `${photo.name} - ${photo.size} bytes` : ""}
-                  </small>
-                </>
-              )}
-            </div>
-          </Form.Group>
+              </Col>
+            ): null }
+          </Row>
+
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>{t("discountAmount")}:</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="discount_amount"
+                  placeholder={t('enterDiscountAmount')}
+                  {...formikPromo.getFieldProps("discount_amount")}
+                  className={validationPromo("discount_amount")}
+                  required
+                />
+                {formikPromo.touched.discount_amount && formikPromo.errors.discount_amount ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikPromo.errors.discount_amount}
+                    </div>
+                  </div>
+                ) : null}
+              </Form.Group>
+            </Col>
+              {formikPromo.values.discount_type === 'percentage' && checkLimitDiscount ? (
+                <Col>
+                  <Form.Group>
+                  <Form.Label>{t("amountLimitDiscount")}:</Form.Label>
+                    <Form.Control
+                      type="number"
+                      name="discount_limit"
+                      placeholder={t('enterAmountLimitDiscount')}
+                      {...formikPromo.getFieldProps("discount_limit")}
+                      className={validationPromo("discount_limit")}
+                      required
+                    />
+                    {formikPromo.touched.discount_limit && formikPromo.errors.discount_limit ? (
+                      <div className="fv-plugins-message-container">
+                        <div className="fv-help-block">
+                          {formikPromo.errors.dis9count_limit}
+                        </div>
+                      </div>
+                    ) : null}
+                  </Form.Group>
+                </Col>
+              ) : null }
+          </Row>
+          {/* <Form.Group>
+            <FormControl component="fieldset">
+              <FormGroup row>
+                <Form.Label
+                  style={{ alignSelf: "center", marginRight: "1rem" }}
+                >
+                  {t("productFavorite")}*
+                </Form.Label>
+                <FormControlLabel
+                  value={false}
+                  name="is_favorite"
+                  control={
+                    <Switch
+                      color="primary"
+                      checked={true}
+                      onChange={(e) => {
+                        const { value } = e.target;
+                        console.log("value", value)
+                        if (value === "false") {
+                          // formikProduct.setFieldValue("is_favorite", true);
+                        } else {
+                          // formikProduct.setFieldValue("is_favorite", false);
+                        }
+                      }}
+                    />
+                  }
+                />
+              </FormGroup>
+            </FormControl>
+          </Form.Group> */}
+
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>{t("acquisitionType")}:</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="acquisition_type"
+                  {...formikPromo.getFieldProps("acquisition_type")}
+                  className={validationPromo("acquisition_type")}
+                  required
+                >
+                  <option value="" disabled hidden>
+                  {t("chooseAcquisitionType")}
+                  </option>
+                  <option value="currency">{t("currency")}</option>
+                  <option value="point">{t("point")}</option>
+                  <option value="claim">{t("claim")}</option>
+                  <option value="system">{t("system")}</option>
+                </Form.Control>
+                {formikPromo.touched.acquisition_type && formikPromo.errors.acquisition_type ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">{formikPromo.errors.acquisition_type}</div>
+                  </div>
+                ) : null}
+              </Form.Group>
+            </Col>
+            {formikPromo.values.acquisition_type === 'point' || formikPromo.values.acquisition_type === 'currency' ? (
+              <Col>
+                <Form.Group>
+                  <Form.Label>{t("acquisitionCost")}:</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="acquisition_cost"
+                    placeholder={t('enterAcquisitionCost')}
+                    {...formikPromo.getFieldProps("acquisition_cost")}
+                    className={validationPromo("acquisition_cost")}
+                    required
+                  />
+                  {formikPromo.touched.acquisition_cost && formikPromo.errors.acquisition_cost ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikPromo.errors.dis9count_limit}
+                      </div>
+                    </div>
+                  ) : null}
+                </Form.Group>
+              </Col>
+            ) : null }
+          </Row>
         </Modal.Body>
 
         <Modal.Footer>
