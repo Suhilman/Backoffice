@@ -59,7 +59,8 @@ export const VoucherPromoCustomerPage = () => {
     acquisition_cost: "",
     used_amount: 0, 
     limit_usage: "", 
-    discount_limit: ""
+    discount_limit: "",
+    limit_claim: 0
   }
 
   const PromoSchema = Yup.object().shape({
@@ -84,6 +85,8 @@ export const VoucherPromoCustomerPage = () => {
     limit_usage: Yup.number()
       .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`),
     discount_limit: Yup.number()
+      .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`),
+    limit_claim: Yup.number()
       .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`),
   });
 
@@ -134,9 +137,9 @@ export const VoucherPromoCustomerPage = () => {
         limit_usage: values.limit_usage,
         name: values.name,
         status: values.status,
-        used_amount: values.used_amount
+        used_amount: values.used_amount,
+        limit_claim: values.limit_claim,        
       }
-      console.log("data", data)
       const API_URL = process.env.REACT_APP_API_URL;
       try {
         enableLoading();
@@ -169,11 +172,6 @@ export const VoucherPromoCustomerPage = () => {
     initialValues: initialValuePromo,
     validationSchema: PromoSchema,
     onSubmit: async (values) => {
-      const options = {
-        maxSizeMB: 0.5,
-        maxWidthOrHeight: 1920,
-        useWebWorker: true
-      }
 
       let result_acquisition_cost = values.acquisition_cost
       // if(values.acquisition_type !== 'currency' && values.acquisition_type !== 'point' ) {
@@ -195,7 +193,8 @@ export const VoucherPromoCustomerPage = () => {
         acquisition_cost: result_acquisition_cost,
         used_amount: values.used_amount,
         discount_limit: values.discount_limit,
-        limit_usage: values.limit_usage
+        limit_usage: values.limit_usage,
+        limit_claim: values.limit_claim
       }
 
       console.log("data yang akan di sep", data)
@@ -324,7 +323,8 @@ export const VoucherPromoCustomerPage = () => {
       limit_usage: data.limit_usage,
       name: data.name,
       status: data.status,
-      used_amount: data.used_amount
+      used_amount: data.used_amount,
+      limit_claim: data.limit_claim
     });
     if (data.image) {
       setPhoto(`${API_URL}${data.image}`);
@@ -440,7 +440,8 @@ export const VoucherPromoCustomerPage = () => {
         limit_usage: item.limit_usage,
         name: item.name,
         status: item.status,
-        used_amount: item.used_amount
+        used_amount: item.used_amount,
+        limit_claim: item.limit_claim
       };
     });
   };

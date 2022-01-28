@@ -1257,6 +1257,9 @@
   "enterAmountLimitDiscount": "Masukkan Jumlah Batas Diskon",
   "enterAcquisitionCost": "Masukkan Biaya Akuisisi",
   "enterPromoName": "Masukkan Nama Promo",
+  "enterLimitClaim": "Masukkan Batas Klaim",
+  "limitCalim": "Batas Klaim",
+  "onlinePayment": "Pembayaran Online",
 
   "currencyConversion": "Konversi Mata Uang",
   "currencyA": "Mata Uang A",

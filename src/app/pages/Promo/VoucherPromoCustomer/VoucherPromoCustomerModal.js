@@ -104,6 +104,9 @@ const VoucherPromoModal = ({
                 ) : null}
               </Form.Group>
             </Col>
+          </Row>
+
+          <Row>
             <Col>
               <Form.Group>
                 <Form.Label>{t("promoName")}:</Form.Label>
@@ -119,6 +122,26 @@ const VoucherPromoModal = ({
                   <div className="fv-plugins-message-container">
                     <div className="fv-help-block">
                       {formikPromo.errors.name}
+                    </div>
+                  </div>
+                ) : null}
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+                <Form.Label>{t("limitCalim")}:</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="limit_claim"
+                  placeholder={t('enterLimitClaim')}
+                  {...formikPromo.getFieldProps("limit_claim")}
+                  className={validationPromo("limit_claim")}
+                  required
+                />
+                {formikPromo.touched.limit_claim && formikPromo.errors.limit_claim ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikPromo.errors.limit_claim}
                     </div>
                   </div>
                 ) : null}

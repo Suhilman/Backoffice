@@ -36,7 +36,8 @@ const ModalPayment = ({
   state,
   optionsEcommerce,
   showOptionEcommerce,
-  showFeature
+  showFeature,
+  dataBusiness
 }) => {
   const API_URL = process.env.REACT_APP_API_URL;
   // console.log("state apaan nih", state)
@@ -81,7 +82,7 @@ const ModalPayment = ({
   // console.log("defaultValue", defaultValue)
 
   return (
-    <Modal show={stateModal} onHide={cancelModal} size="sm">
+    <Modal show={stateModal} onHide={cancelModal} size="md">
       <Modal.Header closeButton>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
@@ -173,6 +174,117 @@ const ModalPayment = ({
             </Col>
           </Row>
 
+          {formikPayment.values.payment_method_type_id == 1 && dataBusiness.cz_user && dataBusiness.cz_pin && dataBusiness.cz_entity_id && dataBusiness.cz_vendor_identifier ? (
+            <Row>
+              <Col>
+                <Form.Group>
+                  <Form.Check
+                    type="checkbox"
+                    label="Cashlez QRIS"
+                    name="cz_type_qris"
+                    value={formikPayment.getFieldProps("cz_type_qris").value}
+                    checked={formikPayment.getFieldProps("cz_type_qris").value}
+                    onChange={(e) => {
+                      const { value } = e.target;
+                      if (value === "false") {
+                        formikPayment.setFieldValue("cz_type_qris", true);
+                      } else {
+                        formikPayment.setFieldValue("cz_type_qris", false);
+                      }
+                    }}
+                    checked={formikPayment.getFieldProps("cz_type_qris").value}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+          ) : null }
+
+          {formikPayment.values.payment_method_type_id == 2 && dataBusiness.cz_user && dataBusiness.cz_pin && dataBusiness.cz_entity_id && dataBusiness.cz_vendor_identifier ? (
+            <Row>
+              <Col>
+                <Form.Group>
+                  <Form.Check
+                    label="Manual"
+                    name="group1"
+                    type='radio'
+                    value={formikPayment.getFieldProps("cz_type_manual").value}
+                    checked={formikPayment.getFieldProps("cz_type_manual").value}
+                    onChange={(e) => {
+                      const { value } = e.target;
+                      console.log("value radio manual", value)
+                      if (value ==='false') {
+                        formikPayment.setFieldValue("cz_type_manual", true);
+                        formikPayment.setFieldValue("cz_type_debit", false);
+                        formikPayment.setFieldValue("cz_type_credit_reader", false);
+                      } else {
+                        formikPayment.setFieldValue("cz_type_manual", false);
+                      }
+                    }}
+                  />
+                  <Form.Check
+                    label="Cashlez Debit"
+                    name="group1"
+                    type='radio'
+                    value={formikPayment.getFieldProps("cz_type_debit").value}
+                    checked={formikPayment.getFieldProps("cz_type_debit").value}
+                    onChange={(e) => {
+                      const { value } = e.target;
+                      console.log("value radio debit", value)
+                      if (value === 'false') {
+                        formikPayment.setFieldValue("cz_type_debit", true);
+                        formikPayment.setFieldValue("cz_type_credit_reader", false);
+                        formikPayment.setFieldValue("cz_type_manual", false);
+                      } else {
+                        formikPayment.setFieldValue("cz_type_debit", false);
+                      }
+                    }}
+                  />
+                  <Form.Check
+                    label="Cashlez Credit"
+                    name="group1"
+                    type='radio'
+                    value={formikPayment.getFieldProps("cz_type_credit_reader").value}
+                    checked={formikPayment.getFieldProps("cz_type_credit_reader").value}
+                    onChange={(e) => {
+                      const { value } = e.target;
+                      console.log("value radio credit", value)
+                      if (value ==='false') {
+                        formikPayment.setFieldValue("cz_type_credit_reader", true);
+                        formikPayment.setFieldValue("cz_type_manual", false);
+                        formikPayment.setFieldValue("cz_type_debit", false);
+                      } else {
+                        formikPayment.setFieldValue("cz_type_credit_reader", false);
+                      }
+                    }}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+          ) : null }
+
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Check
+                  type="checkbox"
+                  label={t('onlinePayment')}
+                  name="onlinePayment"
+                  value={formikPayment.getFieldProps("online_payment").value}
+                  checked={formikPayment.getFieldProps("online_payment").value}
+                  onChange={(e) => {
+                    const { value } = e.target;
+                    if (value === "false") {
+                      formikPayment.setFieldValue("online_payment", true);
+                    } else {
+                      formikPayment.setFieldValue("online_payment", false);
+                    }
+                  }}
+                  checked={formikPayment.getFieldProps("online_payment").value}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+          
           {showOptionEcommerce ? (
             <Row>
               <Col>
@@ -183,7 +295,7 @@ const ModalPayment = ({
                     name="ecommerce_name"
                     {...formikPayment.getFieldProps("ecommerce_name")}
                     className={validationPayment("ecommerce_name")}
-                    required
+                    // required
                   >
                     <option value="" disabled hidden>
                       {t("chooseAEcommerce")}

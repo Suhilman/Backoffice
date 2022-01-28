@@ -21,7 +21,13 @@ import useDebounce from "../../../hooks/useDebounce";
 
 import "../../style.css";
 
-export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, optionsEcommerce, showFeature }) => {
+export const PaymentTab = ({ 
+  handleRefresh, 
+  refresh, 
+  showOptionEcommerce, 
+  optionsEcommerce, 
+  showFeature 
+}) => {
   const [loading, setLoading] = React.useState(false);
   const [state, setState] = React.useState("");
   const [stateAddModal, setStateAddModal] = React.useState(false);
@@ -33,6 +39,7 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
   const [alertPhoto, setAlertPhoto] = React.useState("");
   const [idMethod, setIdMethod] = React.useState(null);
   const [allOutlets, setAllOutlets] = React.useState([]);
+  const [dataBusiness, setDataBusiness] = React.useState({})
 
   const [allPaymentMethods, setAllPaymentMethods] = React.useState([]);
   const [allTypes, setAllTypes] = React.useState([]);
@@ -99,6 +106,27 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
     }
   };
 
+  // cz_user
+  // cz_pin
+  // cz_entity_id
+  // cz_vendor_identifier
+
+  const handleDataBusiness = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const user_info = JSON.parse(localStorage.getItem('user_info'))
+    try {
+      const {data} = await axios.get(`${API_URL}/api/v1/business/${user_info.business_id}`)
+      setDataBusiness(data.data)
+      console.log("data business", data.data)
+    } catch (error) {
+      console.log("Error get business", error)
+    }
+  }
+
+  React.useEffect(() => {
+    handleDataBusiness()
+  }, [])
+
   React.useEffect(() => {
     getPaymentMethod(debouncedSearch, filter);
   }, [refresh, debouncedSearch, filter]);
@@ -122,7 +150,12 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
     ecommerce_name: "",
     mdr: 0,
     status: "active",
-    outlet_id: []
+    outlet_id: [],
+    cz_type_qris: false,
+    cz_type_manual: true,
+    cz_type_debit: false,
+    cz_type_credit_reader: false,
+    online_payment: false
   };
 
   const PaymentSchemaCreate = Yup.object().shape({
@@ -160,8 +193,26 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
       paymentMethodData.append("mdr", values.mdr);
       paymentMethodData.append("status", values.status);
       paymentMethodData.append("ecommerce_name", values.ecommerce_name);
+      paymentMethodData.append("online_payment", values.online_payment);
       paymentMethodData.append("outlet_id", JSON.stringify(values.outlet_id));
       if (photo) paymentMethodData.append("qrImage", photo);
+      let cz_allow = 0
+      let cz_type = ''
+      if(values.cz_type_qris || values.cz_type_credit_reader || values.cz_type_debit) {
+        cz_allow = 1
+      } 
+      if (values.cz_type_qris) {
+        cz_type = 'qr'
+      } 
+      if(values.cz_type_debit) {
+        cz_type = 'debit'
+      }
+      if(values.cz_type_credit_reader) {
+        cz_type = 'creditreader'
+      }
+
+      paymentMethodData.append("cz_allow", cz_allow);
+      paymentMethodData.append("cz_type", cz_type);
 
       const API_URL = process.env.REACT_APP_API_URL;
       try {
@@ -184,7 +235,12 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
     payment_method_type_id: "",
     ecommerce_name: "",
     mdr: "",
-    status: "active"
+    status: "active",
+    cz_type_qris: false,
+    cz_type_manual: true,
+    cz_type_debit: false,
+    cz_type_credit_reader: false,
+    online_payment: false
   };
 
   const PaymentSchemaEdit = Yup.object().shape({
@@ -221,9 +277,28 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
         values.ecommerce_name
       );
       paymentMethodData.append("mdr", values.mdr);
+      paymentMethodData.append("online_payment", values.online_payment);
       paymentMethodData.append("status", values.status);
       paymentMethodData.append("outlet_id", values.outlet_id);
       if (photo) paymentMethodData.append("qrImage", photo);
+
+      let cz_allow = 0
+      let cz_type = ''
+      if(values.cz_type_qris || values.cz_type_credit_reader || values.cz_type_debit) {
+        cz_allow = 1
+      } 
+      if (values.cz_type_qris) {
+        cz_type = 'qr'
+      } 
+      if(values.cz_type_debit) {
+        cz_type = 'debit'
+      }
+      if(values.cz_type_credit_reader) {
+        cz_type = 'creditreader'
+      }
+
+      paymentMethodData.append("cz_allow", cz_allow);
+      paymentMethodData.append("cz_type", cz_type);
 
       const API_URL = process.env.REACT_APP_API_URL;
       try {
@@ -286,6 +361,29 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
   const showEditModalPayment = (data) => {
     console.log("data yang mau di edit", data);
     setState("Edit");
+    
+    let cz_type_qris,
+    cz_type_manual,
+    cz_type_debit,
+    cz_type_credit_reader,
+    online_payment
+
+    // if(data.cz_allow)
+    let cz_allow = 0
+    if(data.cz_type === 'creditreader') {
+      cz_type_credit_reader = true
+      cz_allow = true
+    } else if(data.cz_type === 'qr') {
+      cz_type_qris = true
+      cz_allow = true
+    } else if(data.cz_type === 'debit') {
+      cz_type_debit = true
+      cz_allow = true
+    } else {
+      cz_allow = false
+      cz_type_manual = true
+    }
+
     formikPaymentEdit.setValues({
       id: data.id,
       name: data.name,
@@ -294,7 +392,12 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
       ecommerce_name: data.ecommerce,
       mdr: parseFloat(data.mdr),
       status: data.status,
-      outlet_id: data.outlet_id
+      outlet_id: data.outlet_id,
+      cz_type_qris,
+      cz_type_manual,
+      cz_type_debit,
+      cz_type_credit_reader,
+      online_payment: data.online_payment
     });
 
     if (data.qr_image) {
@@ -481,7 +584,10 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
         outlet: item.Outlet ? item.Outlet.name : t('allOutlets'),
         qr_image: item.qr_image,
         status: item.status,
-        outlet_id: item.outlet_id
+        outlet_id: item.outlet_id,
+        cz_allow: item.cz_allow,
+        cz_type: item.cz_type,
+        online_payment: item.online_payment
       };
     });
   };
@@ -509,6 +615,7 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
         showOptionEcommerce={showOptionEcommerce}
         optionsEcommerce={optionsEcommerce}
         showFeature={showFeature}
+        dataBusiness={dataBusiness}
       />
 
       <ModalPayment
@@ -534,6 +641,7 @@ export const PaymentTab = ({ handleRefresh, refresh, showOptionEcommerce, option
         showOptionEcommerce={showOptionEcommerce}
         optionsEcommerce={optionsEcommerce}
         showFeature={showFeature}
+        dataBusiness={dataBusiness}
       />
 
       <ShowConfirmModal

@@ -1257,6 +1257,9 @@
     "enterAmountLimitDiscount": "Enter Amount Limit Discount",
     "enterAcquisitionCost": "Enter Acquisition Cost",
     "enterPromoName": "Enter Promo Name",
+    "enterLimitClaim": "Enter Limit Claim",
+    "limitCalim": "Limit Calim",
+    "onlinePayment": "Online Payment",
 
     "currencyConversion": "Currency Convertion",
     "currencyA": "Currency A",

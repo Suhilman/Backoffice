@@ -1256,5 +1256,8 @@
   "enterDiscountAmount": "输入折扣金额",
   "enterAmountLimitDiscount": "输入金额限制折扣",
   "enterAcquisitionCost": "输入购置成本",
-  "enterPromoName": "輸入促銷名稱"
+  "enterPromoName": "輸入促銷名稱",
+  "enterLimitClaim": "輸入限制索賠",
+  "limitCalim": "限制索賠",
+  "onlinePayment": "網上支付"
 }
