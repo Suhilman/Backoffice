@@ -1141,6 +1141,7 @@
     "owner": "所有者",
     "codeIsInvalid": "代码无效",
     "valueMustBeGreaterThanOrEqualTo0": "值必须大于或等于 0",
+    "valueMustBeGreaterThanOrEqualTo1": "值必须大于或等于 1",
     "emailMustBeAValidEmail": "电子邮件必须是有效的电子邮件",
     "calorie": "卡路里",
     "kiloCalorie": "千卡",

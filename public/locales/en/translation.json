@@ -1141,6 +1141,7 @@
     "owner": "Owner",
     "codeIsInvalid": "Code Is Invalid",
     "valueMustBeGreaterThanOrEqualTo0": "Value Must be Greater Than Or Equal To 0",
+    "valueMustBeGreaterThanOrEqualTo1": "Value Must be Greater Than Or Equal To 1",
     "emailMustBeAValidEmail": "Email Must Be A Valid Email",
     "caloricalorie": "Cal",
     "kiloCalorie": "Kcal",

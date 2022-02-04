@@ -1141,6 +1141,7 @@
   "owner": "Pemilik",
   "codeIsInvalid": "Kode Tidak Valid",
   "valueMustBeGreaterThanOrEqualTo0": "Nilai Harus Lebih Besar Dari Atau Sama Dengan 0",
+  "valueMustBeGreaterThanOrEqualTo1": "Nilai Harus Lebih Besar Dari Atau Sama Dengan 1",
   "emailMustBeAValidEmail": "Nama email Harus Email yang Valid",
   "calorie": "Kalori",
   "kiloCalorie": "Kilokalori",

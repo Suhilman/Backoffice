@@ -131,7 +131,7 @@ const VoucherPromoModal = ({
               <Form.Group>
                 <Form.Label>{t("limitCalim")}:</Form.Label>
                 <Form.Control
-                  type="text"
+                  type="number"
                   name="limit_claim"
                   placeholder={t('enterLimitClaim')}
                   {...formikPromo.getFieldProps("limit_claim")}
@@ -192,6 +192,49 @@ const VoucherPromoModal = ({
             </Col>
           </Row>
 
+          <Row>
+            <Col>
+              <Form.Group>
+                  <Form.Label>Daily Limit Claim</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="daily_claim"
+                    placeholder={t('enterAcquisitionCost')}
+                    {...formikPromo.getFieldProps("daily_claim")}
+                    className={validationPromo("daily_claim")}
+                    required
+                  />
+                  {formikPromo.touched.daily_claim && formikPromo.errors.daily_claim ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikPromo.errors.dis9count_limit}
+                      </div>
+                    </div>
+                  ) : null}
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+                  <Form.Label>Obtained Amount</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="obtained_amount"
+                    placeholder={t('enterAcquisitionCost')}
+                    {...formikPromo.getFieldProps("obtained_amount")}
+                    className={validationPromo("obtained_amount")}
+                    required
+                  />
+                  {formikPromo.touched.obtained_amount && formikPromo.errors.obtained_amount ? (
+                    <div className="fv-plugins-message-container">
+                      <div className="fv-help-block">
+                        {formikPromo.errors.dis9count_limit}
+                      </div>
+                    </div>
+                  ) : null}
+              </Form.Group>
+            </Col>
+          </Row>
+
           <Form.Group>
             <Form.Label>{t("promoDescription")}:</Form.Label>
             <Form.Control
@@ -241,7 +284,7 @@ const VoucherPromoModal = ({
                     name="check_limit_discount"
                     label={t("limitDiscount")}
                     checked={checkLimitDiscount}
-                    onChange={handleCheckLimitDiscount}
+                    onChange={() => handleCheckLimitDiscount(formikPromo)}
                   />
               </Col>
             ): null }

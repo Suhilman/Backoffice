@@ -61,7 +61,9 @@ export const VoucherPromoCustomerPage = () => {
     used_amount: 0, 
     limit_usage: "", 
     discount_limit: "",
-    limit_claim: 0
+    limit_claim: 0,
+    daily_claim: null,
+    obtained_amount: 1
   }
 
   const PromoSchema = Yup.object().shape({
@@ -89,6 +91,10 @@ export const VoucherPromoCustomerPage = () => {
       .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`),
     limit_claim: Yup.number()
       .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`),
+    daily_claim: Yup.number()
+      .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`),
+    obtained_amount: Yup.number()
+      .min(1, `${t('valueMustBeGreaterThanOrEqualTo1')}`),
   });
 
   const PromoSchemaEdit = Yup.object().shape({
@@ -167,7 +173,9 @@ export const VoucherPromoCustomerPage = () => {
         name: values.name,
         status: values.status,
         used_amount: values.used_amount,
-        limit_claim: values.limit_claim,        
+        limit_claim: values.limit_claim,   
+        daily_claim: values.daily_claim,
+        obtained_amount: values.obtained_amount
       }
       const API_URL = process.env.REACT_APP_API_URL;
       console.log("data =====>", data)
@@ -232,7 +240,9 @@ export const VoucherPromoCustomerPage = () => {
         used_amount: values.used_amount,
         discount_limit: values.discount_limit,
         limit_usage: values.limit_usage,
-        limit_claim: values.limit_claim
+        limit_claim: values.limit_claim,
+        obtained_amount: values.obtained_amount,
+        daily_claim: values.daily_claim
       }
 
       const API_URL = process.env.REACT_APP_API_URL;
@@ -361,7 +371,9 @@ export const VoucherPromoCustomerPage = () => {
       name: data.name,
       status: data.status,
       used_amount: data.used_amount,
-      limit_claim: data.limit_claim || 0
+      limit_claim: data.limit_claim || 0,
+      obtained_amount: data.obtained_amount,
+      daily_claim: data.daily_claim
     });
     if (data.image) {
       setPhoto(`${API_URL}${data.image}`);
@@ -481,12 +493,17 @@ export const VoucherPromoCustomerPage = () => {
         name: item.name,
         status: item.status,
         used_amount: item.used_amount,
-        limit_claim: item.limit_claim
+        limit_claim: item.limit_claim,
+        obtained_amount: item.obtained_amount,
+        daily_claim: item.daily_claim
       };
     });
   };
 
-  const handleCheckLimitDiscount = (e) => {
+  const handleCheckLimitDiscount = (formik) => {
+    if(checkLimitDiscount) {
+      formik.setFieldValue("discount_limit", 0)
+    }
     setCheckLimitDiscount(!checkLimitDiscount)
   }
 
