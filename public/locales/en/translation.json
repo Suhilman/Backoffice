@@ -1258,8 +1258,9 @@
     "enterAcquisitionCost": "Enter Acquisition Cost",
     "enterPromoName": "Enter Promo Name",
     "enterLimitClaim": "Enter Limit Claim",
-    "limitCalim": "Limit Calim",
+    "limitCalim": "Limit Claim",
     "onlinePayment": "Online Payment",
+    "generateCustomerVouchersCanBeRedeemedOnTheWebAppLoyaltyPromo": "Generate customer vouchers, can be redeemed on the web app loyalty promo",
 
     "currencyConversion": "Currency Convertion",
     "currencyA": "Currency A",

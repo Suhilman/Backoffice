@@ -38,7 +38,8 @@ const VoucherPromoModalEdit = ({
   handleDate,
   errorDate,
   handleCheckLimitDiscount,
-  checkLimitDiscount
+  checkLimitDiscount,
+  validateDiscountLimit
 }) => {
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -88,6 +89,7 @@ const VoucherPromoModalEdit = ({
                   placeholder={t('select')}
                   name="outlet_id"
                   classNamePrefix="select"
+                  className={validationPromo("outlet_id")}
                   onChange={(value) => handleSelectOutlet(value, formikPromo)}
                 />
                 {formikPromo.touched.outlet_id &&
@@ -178,11 +180,11 @@ const VoucherPromoModalEdit = ({
                     state="start"
                   />
 
-                  <InputGroup.Append>
+                  {/* <InputGroup.Append>
                     <InputGroup.Text>
                       <CalendarToday />
                     </InputGroup.Text>
-                  </InputGroup.Append>
+                  </InputGroup.Append> */}
                 </InputGroup>
               </Form.Group>
             </Col>
@@ -273,7 +275,7 @@ const VoucherPromoModalEdit = ({
                       name="discount_limit"
                       placeholder={t('enterAmountLimitDiscount')}
                       {...formikPromo.getFieldProps("discount_limit")}
-                      className={validationPromo("discount_limit")}
+                      className={validateDiscountLimit == 'error' ? 'is-invalid' : 'is-valid'}
                       required
                     />
                     {formikPromo.touched.discount_limit && formikPromo.errors.discount_limit ? (
@@ -402,9 +404,9 @@ const DateTimePicker = ({ startDate, setStartDate, handleDate, state }) => {
       selected={startDate}
       // onChange={(date) => setStartDate(date)}
       onChange={(date) => handleDate(date, state)}
-      dateFormat="dd/MM/yyyy HH:mm"
-      showTimeInput
-      timeInputLabel="Time:"
+      dateFormat="dd/MM/yyyy"
+      // showTimeInput
+      // timeInputLabel="Time:"
       customInput={<CustomInput />}
     />
   );

@@ -9,6 +9,18 @@ import "../style.css";
 
 export const PromoPage = () => {
   const [promoCategories, setPromoCategories] = React.useState([]);
+  const [voucherPromoList, setVoucherPromoList] = React.useState([])
+
+  const getVoucherCustomerList = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    try {
+      const { data } = await axios.get(`${API_URL}/api/v1/customer-voucher-list?status=available`)
+      setVoucherPromoList(data.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const { t } = useTranslation();
   const getPromoCategories = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -44,6 +56,7 @@ export const PromoPage = () => {
 
   React.useEffect(() => {
     getPromoCategories();
+    getVoucherCustomerList()
   }, []);
   const dataKategoriPromo = [
     {
@@ -177,7 +190,7 @@ export const PromoPage = () => {
               </div>
               <div className="headerEnd" style={{ display: "inline-flex" }}>
                 <p style={{ margin: 0, alignSelf: "center" }}>
-                  No {t("activePromo")}
+                  {voucherPromoList.length ? voucherPromoList.length : "No"} {t("activePromo")}
                 </p>
 
                 <Link to='promo/voucher-promo-customer'>
@@ -191,7 +204,7 @@ export const PromoPage = () => {
               </div>
             </div>
 
-            <div style={{ padding: "1rem" }}>Description Promo</div>
+            <div style={{ padding: "1rem" }}>{t('generateCustomerVouchersCanBeRedeemedOnTheWebAppLoyaltyPromo')}</div>
           </Paper>
         </Col>
       </Row>

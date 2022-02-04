@@ -406,9 +406,9 @@ const DateTimePicker = ({ startDate, setStartDate, handleDate, state }) => {
       selected={startDate}
       // onChange={(date) => setStartDate(date)}
       onChange={(date) => handleDate(date, state)}
-      dateFormat="dd/MM/yyyy HH:mm"
-      showTimeInput
-      timeInputLabel="Time:"
+      dateFormat="dd/MM/yyyy"
+      // showTimeInput
+      // timeInputLabel="Time:"
       customInput={<CustomInput />}
     />
   );

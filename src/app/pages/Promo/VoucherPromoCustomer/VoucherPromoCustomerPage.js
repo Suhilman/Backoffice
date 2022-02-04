@@ -26,6 +26,7 @@ import "../../style.css";
 export const VoucherPromoCustomerPage = () => {
   const [checkLimitDiscount, setCheckLimitDiscount] = React.useState(false)
 
+  const [validateDiscountLimit, setValidateDiscountLimit] = React.useState('')
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [refresh, setRefresh] = React.useState(0);
@@ -90,6 +91,29 @@ export const VoucherPromoCustomerPage = () => {
       .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`),
   });
 
+  const PromoSchemaEdit = Yup.object().shape({
+    outlet_id: Yup.number()
+      .integer()
+      .min(1)
+      .required(`${t("pleaseChooseOutlet")}`),
+    name: Yup.string()
+      .min(3, `${t("minimum3Character")}`)
+      .max(50, `${t("maximum50Character")}`)
+      .required(`${t("pleaseInputAName")}`),
+    description: Yup.string().min(1, `${t("minimum1Character")}`),
+    discount_amount: Yup.number()
+      .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`)
+      .required(`${t("pleaseInputValue")}`),
+    acquisition_cost: Yup.number()
+      .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`),
+    limit_usage: Yup.number()
+      .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`),
+    // discount_limit: Yup.number()
+    //   .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`),
+    limit_claim: Yup.number()
+      .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`),
+  });
+
   const EditPromoSchema = Yup.object().shape({
     outlet_id: Yup.number()
       .integer()
@@ -124,6 +148,11 @@ export const VoucherPromoCustomerPage = () => {
     validationSchema: PromoSchema,
     onSubmit: async (values, {resetForm}) => {
       const user_info = JSON.parse(localStorage.getItem('user_info'))
+
+      let formatExpiredDate = dayjs(startDate).format('YYYY-MM-DD HH:mm')
+      const dataFormat = formatExpiredDate.split(' ')[0]
+      const resultExpiredDate = `${dataFormat} 23:59`
+
       const data = {
         business_id: user_info.business_id,
         outlet_id: values.outlet_id,
@@ -133,7 +162,7 @@ export const VoucherPromoCustomerPage = () => {
         discount_amount: values.discount_amount,
         discount_limit: values.discount_limit,
         discount_type: values.discount_type,
-        expiration_date: startDate,
+        expiration_date: resultExpiredDate,
         limit_usage: values.limit_usage,
         name: values.name,
         status: values.status,
@@ -141,11 +170,13 @@ export const VoucherPromoCustomerPage = () => {
         limit_claim: values.limit_claim,        
       }
       const API_URL = process.env.REACT_APP_API_URL;
+      console.log("data =====>", data)
       try {
         enableLoading();
         await axios.post(`${API_URL}/api/v1/customer-voucher-list`, data);
         resetForm()
         handleRefresh();
+        setValidateDiscountLimit()
         disableLoading();
         closeAddModal();
       } catch (err) {
@@ -170,9 +201,16 @@ export const VoucherPromoCustomerPage = () => {
   const formikEditPromo = useFormik({
     enableReinitialize: true,
     initialValues: initialValuePromo,
-    validationSchema: PromoSchema,
+    validationSchema: PromoSchemaEdit,
     onSubmit: async (values) => {
 
+      console.log("data yang akan di sep", values)
+
+      if(values.discount_limit && values.discount_limit < 0) {
+        console.log("validateDiscountLimit", validateDiscountLimit)
+        setValidateDiscountLimit('error')
+        return 
+      }
       let result_acquisition_cost = values.acquisition_cost
       // if(values.acquisition_type !== 'currency' && values.acquisition_type !== 'point' ) {
       //   result_acquisition_cost = "0"
@@ -187,7 +225,7 @@ export const VoucherPromoCustomerPage = () => {
         description: values.description, 
         discount_type: values.discount_type, 
         discount_amount: values.discount_amount,
-        expiration_date: values.expiration_date,
+        expiration_date: startDate,
         status: values.status,
         acquisition_type: values.acquisition_type,
         acquisition_cost: result_acquisition_cost,
@@ -197,8 +235,6 @@ export const VoucherPromoCustomerPage = () => {
         limit_claim: values.limit_claim
       }
 
-      console.log("data yang akan di sep", data)
-
       const API_URL = process.env.REACT_APP_API_URL;
       try {
         enableLoading();
@@ -207,6 +243,7 @@ export const VoucherPromoCustomerPage = () => {
           data
         );
         handleRefresh();
+        setValidateDiscountLimit()
         disableLoading();
         closeEditModal();
       } catch (err) {
@@ -320,11 +357,11 @@ export const VoucherPromoCustomerPage = () => {
       discount_amount: data.discount_amount,
       discount_limit: data.discount_limit,
       discount_type: data.discount_type,
-      limit_usage: data.limit_usage,
+      limit_usage: data.limit_usage || 0,
       name: data.name,
       status: data.status,
       used_amount: data.used_amount,
-      limit_claim: data.limit_claim
+      limit_claim: data.limit_claim || 0
     });
     if (data.image) {
       setPhoto(`${API_URL}${data.image}`);
@@ -349,6 +386,8 @@ export const VoucherPromoCustomerPage = () => {
       } else {
         setErrorDate(false)
       }
+      console.log("Params Date", date)
+      console.log("Params State", state)
       setStartDate(date)
     } else {
       const formatStartDate = dayjs(startDate).format('YYYY-MM-DD')
@@ -412,6 +451,7 @@ export const VoucherPromoCustomerPage = () => {
       enableLoading();
       await axios.delete(`${API_URL}/api/v1/customer-voucher-list/${promo_id}`);
       handleRefresh();
+      setValidateDiscountLimit()
       disableLoading();
       closeDeleteModal();
     } catch (err) {
@@ -468,6 +508,16 @@ export const VoucherPromoCustomerPage = () => {
       sortable: true
     },
     {
+      name: `${t("discountAmount")}`,
+      selector: "discount_amount",
+      sortable: true
+    },
+    {
+      name: `${t("discountType")}`,
+      selector: "discount_type",
+      sortable: true
+    },
+    {
       name: `${t("voucherExpired")}`,
       cell: (rows) => {
         console.log("rows", rows)
@@ -477,16 +527,6 @@ export const VoucherPromoCustomerPage = () => {
           </div>
         );
       }
-    },
-    {
-      name: `${t("acquisitionType")}`,
-      selector: "acquisition_type",
-      sortable: true
-    },
-    {
-      name: `${t("promoStatus")}`,
-      selector: "status",
-      sortable: true
     },
     {
       name: `${t("actions")}`,
@@ -559,6 +599,7 @@ export const VoucherPromoCustomerPage = () => {
         errorDate={errorDate}
         handleCheckLimitDiscount={handleCheckLimitDiscount}
         checkLimitDiscount={checkLimitDiscount}
+        validateDiscountLimit={validateDiscountLimit}
       />
 
       <ShowConfirmModal

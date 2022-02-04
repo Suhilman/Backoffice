@@ -1259,5 +1259,6 @@
   "enterPromoName": "輸入促銷名稱",
   "enterLimitClaim": "輸入限制索賠",
   "limitCalim": "限制索賠",
-  "onlinePayment": "網上支付"
+  "onlinePayment": "網上支付",
+  "generateCustomerVouchersCanBeRedeemedOnTheWebAppLoyaltyPromo": "生成客戶憑證，可在網絡應用忠誠度促銷中兌換"
 }

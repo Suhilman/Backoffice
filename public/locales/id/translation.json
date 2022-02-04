@@ -1260,6 +1260,7 @@
   "enterLimitClaim": "Masukkan Batas Klaim",
   "limitCalim": "Batas Klaim",
   "onlinePayment": "Pembayaran Online",
+  "generateCustomerVouchersCanBeRedeemedOnTheWebAppLoyaltyPromo": "Generate voucher customer, bisa di redeem di web app loyalty promo",
 
   "currencyConversion": "Konversi Mata Uang",
   "currencyA": "Mata Uang A",
