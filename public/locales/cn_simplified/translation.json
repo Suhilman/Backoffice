@@ -1261,5 +1261,12 @@
     "enterLimitClaim": "输入限制索赔",
     "limitCalim": "限制索赔",
     "onlinePayment": "网上支付",
-    "generateCustomerVouchersCanBeRedeemedOnTheWebAppLoyaltyPromo": "生成客户凭证，可在网络应用忠诚度促销中兑换"
+    "generateCustomerVouchersCanBeRedeemedOnTheWebAppLoyaltyPromo": "生成客户凭证，可在网络应用忠诚度促销中兑换",
+    "dailyLimitClaim": "每日限额索赔",
+    "dailyLimitEveryCustomer": "每日限额每位客户",
+    "enterAObtainedAmount": "输入获得的金额",
+    "obtainedAmount": "获得金额",
+    "enterDailyLimitClaim": "输入每日限额索赔",
+    "1ClaimCanGetHowManyVouchersDefaultIs1": "1个Claim可以获得多少代金券（默认为1）",
+    "acquisitionTypeIsHowToGetThisVoucher": "获取类型是如何获取此凭证"
 }

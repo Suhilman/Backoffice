@@ -1262,6 +1262,13 @@
     "limitCalim": "Limit Claim",
     "onlinePayment": "Online Payment",
     "generateCustomerVouchersCanBeRedeemedOnTheWebAppLoyaltyPromo": "Generate customer vouchers, can be redeemed on the web app loyalty promo",
+    "dailyLimitClaim": "Daily Limit Claim",
+    "dailyLimitEveryCustomer": "Daily Limit Every Customer",
+    "enterAObtainedAmount": "Enter A Obtained Amount",
+    "obtainedAmount": "Obtained Amount",
+    "enterDailyLimitClaim": "Enter Daily Limit Claim",
+    "1ClaimCanGetHowManyVouchersDefaultIs1": "1 Claim Can Get How Many Vouchers (Default Is 1)",
+    "acquisitionTypeIsHowToGetThisVoucher": "Acquisition Type Is How To Get This Voucher",
 
     "currencyConversion": "Currency Convertion",
     "currencyA": "Currency A",

@@ -16,6 +16,7 @@ import {
 } from "@material-ui/core";
 import DataTable from "react-data-table-component";
 import { MoreHoriz } from "@material-ui/icons";
+import NumberFormat from 'react-number-format'
 
 import VoucherPromoCustomerModal from "./VoucherPromoCustomerModal";
 import VoucherPromoCustomerModalEdit from "./VoucherPromoCustomerModalEdit";
@@ -65,6 +66,21 @@ export const VoucherPromoCustomerPage = () => {
     daily_claim: null,
     obtained_amount: 1
   }
+
+  const [currency, setCurrency] = React.useState("")
+  const handleCurrency = async () => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const userInfo = JSON.parse(localStorage.getItem("user_info"));
+
+    const {data} = await axios.get(`${API_URL}/api/v1/business/${userInfo.business_id}`)
+
+    // console.log("currency nya brpw", data.data.Currency.name)
+    
+    setCurrency(data.data.Currency.name)
+  }
+  React.useEffect(() => {
+    handleCurrency()
+  }, [])
 
   const PromoSchema = Yup.object().shape({
     outlet_id: Yup.number()
@@ -118,6 +134,10 @@ export const VoucherPromoCustomerPage = () => {
     //   .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`),
     limit_claim: Yup.number()
       .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`),
+    daily_claim: Yup.number()
+      .min(0, `${t('valueMustBeGreaterThanOrEqualTo0')}`),
+    obtained_amount: Yup.number()
+      .min(1, `${t('valueMustBeGreaterThanOrEqualTo1')}`),
   });
 
   const EditPromoSchema = Yup.object().shape({
@@ -526,7 +546,17 @@ export const VoucherPromoCustomerPage = () => {
     },
     {
       name: `${t("discountAmount")}`,
-      selector: "discount_amount",
+      cell: (rows) => {
+        if(rows.discount_type === 'percentage') {
+          return (
+            <div>{rows.discount_amount}%</div>
+          )
+        } else {
+          return (
+            <NumberFormat value={rows.discount_amount || 0} displayType={'text'} thousandSeparator={true} prefix={currency} />
+          )
+        }
+      },
       sortable: true
     },
     {

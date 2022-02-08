@@ -193,15 +193,16 @@ const VoucherPromoModalEdit = ({
           <Row>
             <Col>
               <Form.Group>
-                  <Form.Label>Daily Limit Claim</Form.Label>
+                  <Form.Label>{t('dailyLimitClaim')}</Form.Label>
                   <Form.Control
                     type="number"
                     name="daily_claim"
-                    placeholder={t('enterAcquisitionCost')}
+                    placeholder={t('enterDailyLimitClaim')}
                     {...formikPromo.getFieldProps("daily_claim")}
                     className={validationPromo("daily_claim")}
                     required
                   />
+                  <div className="font-italic text-muted mt-1">({t('dailyLimitEveryCustomer')})</div>
                   {formikPromo.touched.daily_claim && formikPromo.errors.daily_claim ? (
                     <div className="fv-plugins-message-container">
                       <div className="fv-help-block">
@@ -213,15 +214,16 @@ const VoucherPromoModalEdit = ({
             </Col>
             <Col>
               <Form.Group>
-                  <Form.Label>Obtained Amount</Form.Label>
+                  <Form.Label>{t('obtainedAmount')}</Form.Label>
                   <Form.Control
                     type="number"
                     name="obtained_amount"
-                    placeholder={t('enterAcquisitionCost')}
+                    placeholder={t('enterAObtainedAmount')}
                     {...formikPromo.getFieldProps("obtained_amount")}
                     className={validationPromo("obtained_amount")}
                     required
                   />
+                  <div className="font-italic text-muted mt-1">({t('1ClaimCanGetHowManyVouchersDefaultIs1')})</div>
                   {formikPromo.touched.obtained_amount && formikPromo.errors.obtained_amount ? (
                     <div className="fv-plugins-message-container">
                       <div className="fv-help-block">
@@ -382,6 +384,7 @@ const VoucherPromoModalEdit = ({
                   <option value="claim">{t("claim")}</option>
                   <option value="system">{t("system")}</option>
                 </Form.Control>
+                <div className="font-italic text-muted mt-1">({t('acquisitionTypeIsHowToGetThisVoucher')})</div>
                 {formikPromo.touched.acquisition_type && formikPromo.errors.acquisition_type ? (
                   <div className="fv-plugins-message-container">
                     <div className="fv-help-block">{formikPromo.errors.acquisition_type}</div>

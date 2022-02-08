@@ -1262,6 +1262,13 @@
   "limitCalim": "Batas Klaim",
   "onlinePayment": "Pembayaran Online",
   "generateCustomerVouchersCanBeRedeemedOnTheWebAppLoyaltyPromo": "Generate voucher customer, bisa di redeem di web app loyalty promo",
+  "dailyLimitClaim": "Klaim Batas harian",
+  "dailyLimitEveryCustomer": "Batas Harian Setiap Pelanggan",
+  "enterAObtainedAmount": "Masukkan Jumlah yang Diperoleh",
+  "obtainedAmount": "Jumlah yang Diperoleh",
+  "enterDailyLimitClaim": "Masukkan Klaim Batas Harian",
+  "1ClaimCanGetHowManyVouchersDefaultIs1": "1 Claim Dapat Berapa Banyak Voucher (Default Adalah 1)",
+  "acquisitionTypeIsHowToGetThisVoucher": "Jenis Akuisisi Adalah Cara Mendapatkan Voucher Ini",
 
   "currencyConversion": "Konversi Mata Uang",
   "currencyA": "Mata Uang A",
