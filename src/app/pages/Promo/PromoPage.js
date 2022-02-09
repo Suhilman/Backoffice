@@ -13,8 +13,9 @@ export const PromoPage = () => {
 
   const getVoucherCustomerList = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
+    const user_info = JSON.parse(localStorage.getItem('user_info'));
     try {
-      const { data } = await axios.get(`${API_URL}/api/v1/customer-voucher-list?status=available`)
+      const { data } = await axios.get(`${API_URL}/api/v1/customer-voucher-list?business_id=${user_info.business_id}&status=available`)
       setVoucherPromoList(data.data)
     } catch (error) {
       console.log(error)
