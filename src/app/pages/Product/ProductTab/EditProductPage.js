@@ -30,6 +30,8 @@ export const EditProductPage = ({ match, location }) => {
   } = location.state;
   const history = useHistory();
   const API_URL = process.env.REACT_APP_API_URL;
+  const [hideSelectOutlet, setHideSelectOutlet] = React.useState(currProduct.all_outlet)
+
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
   const [allSupplier, setAllSupplier] = React.useState([])
@@ -86,6 +88,7 @@ export const EditProductPage = ({ match, location }) => {
   }
 
   const product = {
+    all_outlet: currProduct.all_outlet,
     outlet_id: currProduct.outlet_id,
     name: currProduct.name,
     product_category_id: currProduct.product_category_id || "",
@@ -121,7 +124,6 @@ export const EditProductPage = ({ match, location }) => {
     sales_types: currProduct.Sales_Type_Products
   };
 
-  console.log("edit product", product)
 
   const [addonsInitial, setAddonsinitial] = React.useState(groupAddons);
 
@@ -219,6 +221,7 @@ export const EditProductPage = ({ match, location }) => {
 
       const formData = new FormData();
       formData.append("outlet_id", values.outlet_id);
+      formData.append("all_outlet", values.all_outlet);
       formData.append("name", values.name);
       formData.append("price", values.price);
       formData.append("price_purchase", values.price_purchase);
@@ -661,6 +664,8 @@ export const EditProductPage = ({ match, location }) => {
           thereShowSync={thereShowSync}
           showModalSalesType={showModalSalesType}
           handleSetAlert={handleSetAlert}
+          setHideSelectOutlet={setHideSelectOutlet}
+          hideSelectOutlet={hideSelectOutlet}
         />
       </Col>
     </Row>

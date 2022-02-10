@@ -26,6 +26,8 @@ export const AddProductPage = ({ location }) => {
     showFeature
   } = location.state;
   const { t } = useTranslation();
+  const [hideSelectOutlet, setHideSelectOutlet] = React.useState(false)
+
   const [photo, setPhoto] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState("");
@@ -96,6 +98,7 @@ export const AddProductPage = ({ location }) => {
   }
 
   const initialValueProduct = {
+    all_outlet: false,
     outlet_id: "",
     name: "",
     product_category_id: "",
@@ -132,10 +135,10 @@ export const AddProductPage = ({ location }) => {
   };
 
   const ProductSchema = Yup.object().shape({
-    outlet_id: Yup.number()
-      .integer()
-      .min(1, `${t("minimum1Character")}`)
-      .required(`${t("pleaseChooseAnOutlet")}`),
+    // outlet_id: Yup.number()
+    //   .integer()
+    //   .min(1, `${t("minimum1Character")}`)
+    //   .required(`${t("pleaseChooseAnOutlet")}`),
     name: Yup.string()
       .min(3, `${t("minimum3Character")}`)
       .max(50, `${t("maximum50Character")}`)
@@ -220,7 +223,10 @@ export const AddProductPage = ({ location }) => {
     initialValues: initialValueProduct,
     validationSchema: ProductSchema,
     onSubmit: async (values) => {
-      console.log("Data sebelum dikirim", values)
+
+      // fungsi untuk check jika outlet_id nya kosong, ambil salah satu dari semua outlet
+      const outlet_id = values.outlet_id ? values.outlet_id : optionsOutlet[0].value
+
       const options = {
         maxSizeMB: 0.5,
         maxWidthOrHeight: 1920,
@@ -228,7 +234,8 @@ export const AddProductPage = ({ location }) => {
       }
 
       const formData = new FormData();
-      formData.append("outlet_id", values.outlet_id);
+      formData.append("outlet_id", outlet_id);
+      formData.append("all_outlet", values.all_outlet);
       formData.append("name", values.name);
       formData.append("price", values.price);
       formData.append("price_purchase", values.price_purchase);
@@ -639,6 +646,8 @@ export const AddProductPage = ({ location }) => {
           thereShowSync={thereShowSync}
           showModalSalesType={showModalSalesType}
           handleSetAlert={handleSetAlert}
+          setHideSelectOutlet={setHideSelectOutlet}
+          hideSelectOutlet={hideSelectOutlet}
         />
       </Col>
     </Row>

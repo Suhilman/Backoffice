@@ -483,6 +483,7 @@ const ProductTab = ({
         sku: item.sku,
         stock: item.stock,
         outlet: item.Outlet?.name,
+        all_outlet: item.all_outlet,
         unit: item.Unit?.name || "-",
         status: item.status,
         currProduct: item,
@@ -568,7 +569,13 @@ const ProductTab = ({
     },
     {
       name: `${t("outlet")}`,
-      selector: "outlet",
+      cell: (row) => {
+        return (
+          <div>
+            {row.all_outlet ? t('allOutlet') : row.outlet}
+          </div>
+        )
+      },
       sortable: true,
       wrap: true,
       grow: 4

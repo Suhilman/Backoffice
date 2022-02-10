@@ -59,7 +59,9 @@ const FormTemplate = ({
   syncEcommerce,
   thereShowSync,
   showModalSalesType,
-  handleSetAlert
+  handleSetAlert,
+  setHideSelectOutlet,
+  hideSelectOutlet
 }) => {  
   // console.log("defaultWeight", defaultWeight)
   // console.log("defaultValueSupplier", defaultValueSupplier)
@@ -117,29 +119,57 @@ const FormTemplate = ({
 
         <Row style={{ padding: "1rem" }}>
           <Col>
-            <Form.Group>
-              <Form.Label>{t("outlet")}*</Form.Label>
-              <Select
-                options={optionsOutlet}
-                placeholder={t('select')}
-                defaultValue={defaultValueOutlet}
-                name="outlet_id"
-                className="basic-single"
-                classNamePrefix="select"
-                onChange={(value) =>{
-                  handleOptionSync(value.value)
-                  formikProduct.setFieldValue("outlet_id", value.value)
-                }}
+            <Form.Group style={{ margin: 0 }}>
+              <Form.Label style={{ alignSelf: "center", marginRight: "1rem" }}>
+                {t("allOutlet")}
+              </Form.Label>
+              <FormControlLabel
+                value={formikProduct.values.all_outlet}
+                name="all_outlet"
+                control={
+                  <Switch
+                    color="primary"
+                    checked={formikProduct.values.all_outlet}
+                    onChange={(e) => {
+                      const { value } = e.target;
+                      if (value === "false") {
+                        formikProduct.setFieldValue("all_outlet", true);
+                        setHideSelectOutlet(true)
+                      } else {
+                        formikProduct.setFieldValue("all_outlet", false);
+                        setHideSelectOutlet(false)
+                      }
+                    }}
+                  />
+                }
               />
-              {formikProduct.touched.outlet_id &&
-              formikProduct.errors.outlet_id ? (
-                <div className="fv-plugins-message-container">
-                  <div className="fv-help-block">
-                    {formikProduct.errors.outlet_id}
-                  </div>
-                </div>
-              ) : null}
             </Form.Group>
+
+            {!hideSelectOutlet ? (
+              <Form.Group>
+                <Form.Label>{t("outlet")}*</Form.Label>
+                <Select
+                  options={optionsOutlet}
+                  placeholder={t('select')}
+                  defaultValue={defaultValueOutlet}
+                  name="outlet_id"
+                  className="basic-single"
+                  classNamePrefix="select"
+                  onChange={(value) =>{
+                    handleOptionSync(value.value)
+                    formikProduct.setFieldValue("outlet_id", value.value)
+                  }}
+                />
+                {formikProduct.touched.outlet_id &&
+                formikProduct.errors.outlet_id ? (
+                  <div className="fv-plugins-message-container">
+                    <div className="fv-help-block">
+                      {formikProduct.errors.outlet_id}
+                    </div>
+                  </div>
+                ) : null}
+              </Form.Group>
+            ) : null }
 
             <Form.Group>
               <Form.Label>{t("productName")}*</Form.Label>

@@ -900,7 +900,7 @@ function AsideMenuList(props) {
           </li>
 
           {/* Online Shop */}
-          {/* <li
+          <li
             className={`menu-item ${getMenuItemActive(
               "/sales-channel",
               false
@@ -948,7 +948,7 @@ function AsideMenuList(props) {
                   </div>
                 </li>
 
-                {marketPlace.length > 0 ? (
+                {/* {marketPlace.length > 0 ? (
                   <li className={`menu-item ${getMenuItemActive("/report",false)}`}  aria-haspopup="true">
                     <div className="menu-link d-flex justify-content-between align-items-center" onClick={handleDropdownMarketplace}>
                       <span className="dropdown-menu-lv1 menu-text">{t("marketplace")}</span>
@@ -970,11 +970,11 @@ function AsideMenuList(props) {
                       </ul>
                     </div>
                   </li>
-                ) : null }
+                ) : null } */}
 
               </ul>
             </div>
-          </li> */}
+          </li>
           
           {/* <li className={`menu-item ${getMenuItemActive("/currency", false)}`}>
             <NavLink className="menu-link" to="/currency">
