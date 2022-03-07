@@ -1268,5 +1268,13 @@
     "obtainedAmount": "获得金额",
     "enterDailyLimitClaim": "输入每日限额索赔",
     "1ClaimCanGetHowManyVouchersDefaultIs1": "1个Claim可以获得多少代金券（默认为1）",
-    "acquisitionTypeIsHowToGetThisVoucher": "获取类型是如何获取此凭证"
+    "acquisitionTypeIsHowToGetThisVoucher": "获取类型是如何获取此凭证",
+    "article": "文章",
+    "title": "標題",
+    "publishedAt": "發表於",
+    "addArticle": "添加文章",
+    "body": "身體",
+    "hide": "隱藏",
+    "deleteArticle": "刪除文章",
+    "editArticle": "编辑文章"
 }

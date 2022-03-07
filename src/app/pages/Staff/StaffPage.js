@@ -72,6 +72,7 @@ export const StaffPage = () => {
   const closeConfirmModal = () => {
     setConfirmModal(false)
     setSecond(0)
+    setWarning('')
   };
   const openConfirmModal = async (data) => {
     setConfirmModal(true);

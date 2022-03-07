@@ -17,6 +17,8 @@ import staffIcon from "../../../../../images/icons8-staff-100.png";
 import roleIcon from "../../../../../images/icons8-confirm-96.png";
 import customerIcon from "../../../../../images/icons8-customer-insight-64.png";
 import accountIcon from "../../../../../images/icons8-search-account-256.png";
+import articleIcon from "../../../../../images/icons8-article-64.png";
+
 import commissionIcon from "../../../../../images/icons8-sales-performance-52.png";
 import subscriptionIcon from "../../../../../images/icons8-subscription-100.png";
 import paymentIcon from "../../../../../images/icons8-mobile-payment-90.png";
@@ -728,6 +730,27 @@ function AsideMenuList(props) {
           ) : (
             ""
           )}
+
+          <li
+            className={`menu-item ${getMenuItemActive(
+              "/article",
+              false
+            )}`}
+          >
+            <NavLink className="menu-link" to="/article">
+              {/* <span className="svg-icon menu-icon">
+                <SVG
+                  src={toAbsoluteUrl(
+                    "/media/svg/icons/Shopping/Bag2.svg"
+                  )}
+                />
+              </span> */}
+              <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                <img src={articleIcon} alt="Icon Outlet" />
+              </div>
+              <span className="menu-text">{t("article")}</span>
+            </NavLink>
+          </li>
 
           {managementSections.length
             ? managementSections.map((section, index) => {

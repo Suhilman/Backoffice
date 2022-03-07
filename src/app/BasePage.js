@@ -76,6 +76,9 @@ import { OutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/Outcoming
 import { AddOutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/AddPage";
 import { EditOutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/EditPage";
 import { DetailOutcomingMaterialPage } from "./pages/Ingredient/InventoryTab/OutcomingStock/DetailPage";
+import ArticlesPage from "./pages/Articles/ArticlesPage";
+import AddArticlesPage from "./pages/Articles/AddArticlesPage";
+import EditArticlePage from "./pages/Articles/EditArticlePage";
 
 import { AddProductAssembly } from "./pages/Ingredient/ProductAssemblyTab/AddProductAssembly";
 import { EditProductAssembly } from "./pages/Ingredient/ProductAssemblyTab/EditProductAssembly";
@@ -126,7 +129,8 @@ export default function BasePage({handleScrollBottom}) {
     payment_module: true,
     about: true,
     sales_channel: true,
-    online_shop: true
+    online_shop: true,
+    article: true
   });
 
   const localData = JSON.parse(localStorage.getItem("user_info"));
@@ -835,6 +839,30 @@ export default function BasePage({handleScrollBottom}) {
           exact={true}
           path="/online-shop/shopee"
           component={ShopeePage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.article}
+          isRoute={false}
+          exact={true}
+          path="/article"
+          component={ArticlesPage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.article}
+          isRoute={false}
+          exact={true}
+          path="/article/add"
+          component={AddArticlesPage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.article}
+          isRoute={false}
+          exact={true}
+          path="/article/edit"
+          component={EditArticlePage}
         />
 
         <ContentRoute path="/account" component={AccountPage} />

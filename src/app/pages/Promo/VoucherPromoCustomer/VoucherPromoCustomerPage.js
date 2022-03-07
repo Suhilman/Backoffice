@@ -21,6 +21,7 @@ import NumberFormat from 'react-number-format'
 import VoucherPromoCustomerModal from "./VoucherPromoCustomerModal";
 import VoucherPromoCustomerModalEdit from "./VoucherPromoCustomerModalEdit";
 import ShowConfirmModal from "../../../components/ConfirmModal";
+import ConfirmModalDelete from "../../../components/ConfirmModalDelete";
 
 import "../../style.css";
 
@@ -32,6 +33,10 @@ export const VoucherPromoCustomerPage = () => {
   const [alert, setAlert] = React.useState("");
   const [refresh, setRefresh] = React.useState(0);
   const { t } = useTranslation();
+
+  const [warning, setWarning] = React.useState("")
+  const [body, setBody] = React.useState("")
+  const [second, setSecond] = React.useState(0);
 
   const [stateAddModal, setStateAddModal] = React.useState(false);
   const [stateEditModal, setStateEditModal] = React.useState(false);
@@ -443,12 +448,48 @@ export const VoucherPromoCustomerPage = () => {
     setCheckLimitDiscount(false)
   };
 
-  const showDeleteModal = (data) => {
+  const handleCheckVoucher = async (id) => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    try {
+      const { data } = await axios.get(`${API_URL}/api/v1/customer-voucher-list/check-used/${id}`)
+      console.log("response check voucher", data.data)
+      if(data.data.message === "Voucher already in use") {
+        setWarning("voucherAlreadyInUse")
+        setBody("areYouSureWantToDelete?")
+        setSecond(10)
+      } else {
+        setBody("areYouSureWantToDelete?")
+      }
+    } catch (error) {
+      console.log("error check voucher", error)
+    }
+  }
+
+  React.useEffect(() => {
+    let timer;
+    if (second > 0) {
+      timer = setTimeout(function() {
+        setSecond((now) => now - 1);
+      }, 1000);
+    } else {
+      clearTimeout(timer);
+    }
+
+    return () => clearTimeout(timer);
+  });
+
+  const showDeleteModal = async (data) => {
+    console.log("handle open modal delete voucher", data)
+    await handleCheckVoucher(data.id)
     formikPromo.setFieldValue("id", data.id);
     formikPromo.setFieldValue("name", data.name);
     setStateDeleteModal(true);
   };
-  const closeDeleteModal = () => setStateDeleteModal(false);
+  const closeDeleteModal = () => {
+    setStateDeleteModal(false)
+    setSecond(0)
+    setWarning('')
+  };
 
   const enableLoading = () => setLoading(true);
   const disableLoading = () => setLoading(false);
@@ -482,10 +523,10 @@ export const VoucherPromoCustomerPage = () => {
     try {
       enableLoading();
       await axios.delete(`${API_URL}/api/v1/customer-voucher-list/${promo_id}`);
+      closeDeleteModal();
       handleRefresh();
       setValidateDiscountLimit()
       disableLoading();
-      closeDeleteModal();
     } catch (err) {
       disableLoading();
     }
@@ -649,7 +690,7 @@ export const VoucherPromoCustomerPage = () => {
         validateDiscountLimit={validateDiscountLimit}
       />
 
-      <ShowConfirmModal
+      {/* <ShowConfirmModal
         state={stateDeleteModal}
         closeModal={closeDeleteModal}
         title={`${t("deletePromo")} - ${formikPromo.getFieldProps("name").value}`}
@@ -657,6 +698,18 @@ export const VoucherPromoCustomerPage = () => {
         loading={loading}
         buttonColor="danger"
         handleClick={handleDeletePromo}
+      /> */}
+
+      <ConfirmModalDelete
+        title={`${t("deletePromo")} - ${formikPromo.getFieldProps("name").value}`}
+        body={t(body)}
+        warning={t(warning)}
+        buttonColor="danger"
+        state={stateDeleteModal}
+        closeModal={closeDeleteModal}
+        handleClick={handleDeletePromo}
+        loading={loading}
+        second={second}
       />
 
       <Row>
