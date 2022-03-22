@@ -20,6 +20,7 @@ import StaffTransaction from "./pages/Report/StaffTransaction";
 import VoidTransaction from "./pages/Report/VoidTransaction";
 import SalesPerHour from "./pages/Report/SalesPerHour";
 import StockReport from "./pages/Report/StockReport";
+import SalesTypeProduct from "./pages/Report/SalesTypeProduct";
 import RawMaterialTab from "./pages/Report/RawMaterialTab";
 import { AttendanceTab } from "./pages/Report/AttendanceTab";
 import CommissionReport from "./pages/Report/CommissionReport";
@@ -300,6 +301,13 @@ export default function BasePage({handleScrollBottom}) {
           exact={true}
           path="/report/stock-report"
           component={StockReport}
+        />
+        <ProtectedRoute
+          isAllowed={currPrivileges.view_report}
+          isRoute={false}
+          exact={true}
+          path="/report/sales-type-product"
+          component={SalesTypeProduct}
         />
         <ProtectedRoute
           isAllowed={currPrivileges.view_report}

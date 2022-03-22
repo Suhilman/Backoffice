@@ -422,6 +422,12 @@ function AsideMenuList(props) {
             name: 'rawMaterial'
           }
         )
+        // tempDropdownInventory.splice(0,0, 
+        //   {
+        //     route: 'sales-type-product',
+        //     name: 'salesTypeProduct'
+        //   }
+        // )
         tempDropdownEmployee.splice(0, 0, 
           {
             route: 'attendance',

@@ -303,12 +303,7 @@ export const DetailIncomingStockPage = ({ match }) => {
               </div>
               <div className="headerEnd">
                 <Button
-                  className="btn"
-                  className={
-                    incomingStock.status === "done"
-                      ? "btn-secondary"
-                      : "btn-primary"
-                  }
+                  className={`${incomingStock.status === "done" ? "btn-secondary" : "btn-primary"} btn`}
                   disabled={incomingStock.status === "done"}
                   onClick={handleShowConfirm}
                 >

@@ -233,7 +233,7 @@ export const DetailOutcomingStockPage = ({ match }) => {
                 <h3>{t('outcomingStockDetailSummary')}</h3>
               </div>
               <div className="headerEnd">
-              <Button className="btn" className={outcomingStock.status === "done" ? 'btn-secondary' : 'btn-primary'} disabled={outcomingStock.status === "done"} onClick={handleShowConfirm}>{t(outcomingStock.status)}</Button>
+              <Button className={`${outcomingStock.status === "done" ? 'btn-secondary' : 'btn-primary'} btn`} disabled={outcomingStock.status === "done"} onClick={handleShowConfirm}>{t(outcomingStock.status)}</Button>
                 <Link
                   className="ml-2"
                   to={{

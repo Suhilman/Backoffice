@@ -17,6 +17,8 @@ import './style.css'
 import { useDropzone } from "react-dropzone";
 
 export default function EditArticlePage() {
+  const [deletePhoto, setDeletePhoto] = useState(false)
+
   const API_URL = process.env.REACT_APP_API_URL;
   const history = useHistory()
   const location = useLocation()
@@ -51,6 +53,7 @@ export default function EditArticlePage() {
       img = file[0];
       console.log("img", img);
       setPhoto(img);
+      setDeletePhoto(false)
     } else {
       preview = "";
       setAlertPhoto("file is too large or not supported");
@@ -60,6 +63,7 @@ export default function EditArticlePage() {
   const handleDeletePhoto = () => {
     setPhoto("");
     setPhotoPreview("");
+    setDeletePhoto(true)
   };
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -95,6 +99,7 @@ export default function EditArticlePage() {
         formData.append("body", content)
         formData.append("active", active)
         formData.append("hide", hide)
+        formData.append('deletePhoto', deletePhoto)
 
         await axios.patch(`${API_URL}/api/v1/news-article/${values.id}`, formData)
         setLoading(false)
@@ -226,6 +231,19 @@ export default function EditArticlePage() {
                   </>
                 )}
               </div>
+              {photo ? (
+                <div style={{ textAlign: "center", marginTop: "1rem" }}>
+                  <Button
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={handleDeletePhoto}
+                  >
+                    {t("removePhoto")}
+                  </Button>
+                </div>
+              ) : (
+                ""
+              )}
             </Col>
             <Col>
               <div className='mt-2'>{t("active")}</div>
