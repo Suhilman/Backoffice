@@ -37,8 +37,16 @@ import { AddProductPage } from "./pages/Product/ProductTab/AddProductPage";
 import { EditProductPage } from "./pages/Product/ProductTab/EditProductPage";
 import { OutletPage } from "./pages/Outlet/OutletPage";
 import { RolePage } from "./pages/Role/RolePage";
+import { NotificationPage } from "./pages/Notification/NotificationPage";
+
 import { CustomerPage } from "./pages/Customer/CustomerPage";
 import { DetailCustomerPage } from "./pages/Customer/DetailCustomerPage";
+import { VoucherPromoCustomerPage } from "./pages/Promo/VoucherPromoCustomer/VoucherPromoCustomerPage";
+
+import { DevicePage } from "./pages/Device/DevicePage";
+import { DetailDevicePage } from "./pages/Device/DetailDevicePage";
+// import { VoucherPromoDevicePage } from "./pages/Promo/VoucherPromoDevice/VoucherPromoDevicePage";
+
 import { PromoPage } from "./pages/Promo/PromoPage";
 import { SpecialPromoPage } from "./pages/Promo/SpecialPromo/SpecialPromoPage";
 import { VoucherPromoPage } from "./pages/Promo/VoucherPromo/VoucherPromoPage";
@@ -46,7 +54,7 @@ import { AutomaticPromoPage } from "./pages/Promo/AutomaticPromo/AutomaticPromoP
 import { AddAutomaticPromoPage } from "./pages/Promo/AutomaticPromo/AddAutomaticPromoPage";
 import { EditAutomaticPromoPage } from "./pages/Promo/AutomaticPromo/EditAutomaticPromoPage";
 import { LoyaltyPromoPage } from "./pages/Promo/LoyaltyPromo/LoyaltyPromoPage";
-import { VoucherPromoCustomerPage } from "./pages/Promo/VoucherPromoCustomer/VoucherPromoCustomerPage";
+
 import { InventoryPage } from "./pages/Inventory/InventoryPage";
 import { IncomingStockPage } from "./pages/Inventory/InventoryTab/IncomingStock/IncomingStockPage";
 import { AddIncomingStockPage } from "./pages/Inventory/InventoryTab/IncomingStock/AddPage";
@@ -120,6 +128,8 @@ export default function BasePage({handleScrollBottom}) {
     outlet_management: false,
     staff_management: false,
     role_management: false,
+    device_management: false,
+    notification_management: false,
     promo_management: false,
     customer_management: false,
     inventory_management: false,
@@ -129,6 +139,9 @@ export default function BasePage({handleScrollBottom}) {
     subscription: true,
     payment_module: true,
     about: true,
+    device: true,
+    kitchen: true,
+    notification: true,
     sales_channel: true,
     online_shop: true,
     article: true
@@ -686,6 +699,15 @@ export default function BasePage({handleScrollBottom}) {
           component={RolePage}
         />
 
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.notification_management}
+          isRoute={false}
+          exact={false}
+          path="/notification"
+          component={NotificationPage}
+        />
+
         <ProtectedRoute
           isAllowed={currPrivileges.promo_management}
           isRoute={false}
@@ -759,6 +781,22 @@ export default function BasePage({handleScrollBottom}) {
           exact={false}
           path="/customer/:customerId"
           component={DetailCustomerPage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.device_management}
+          isRoute={false}
+          exact={true}
+          path="/device"
+          component={DevicePage}
+        />
+
+        <ProtectedRoute
+          isAllowed={currPrivileges.device_management}
+          isRoute={true}
+          exact={false}
+          path="/device/:deviceId"
+          component={DetailDevicePage}
         />
 
         <ProtectedRoute

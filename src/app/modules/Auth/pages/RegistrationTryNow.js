@@ -18,6 +18,8 @@ import styles from "./auth.module.css";
 import OpenEye from "../../../../images/open-eye.png"
 import ClosedEye from "../../../../images/closed-eye.png"
 
+import ModalTerms from "../components/ModalTerms"
+
 import LogoBeetpos from '../../../../images/logo beetPOS new.png'
 import LogoTwitter from '../../../../images/twitter-480.png'
 import LogoInstagram from '../../../../images/instagram-480.png'
@@ -1070,9 +1072,7 @@ const RegistrationTryNow = () => {
         <div className="form-group">
           <div className="d-flex align-items-center">
             {t('iAgreeThe')}
-            <Link to="/terms" target="_blank" rel="noopener noreferrer" className='mx-2'>
-              {t('terms&Conditions')}
-            </Link>
+            <ModalTerms />
             <input 
               type="checkbox" 
               className={`${styles.checkbox} ${getInputClasses(

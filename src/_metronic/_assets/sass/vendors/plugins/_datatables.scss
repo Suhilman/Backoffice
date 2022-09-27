@@ -367,7 +367,6 @@ $dt-page-color-active: $white;
             @include ki(get($ki-types, arrowUp));
         }
     }
-
     // Responsive mode row expand details
     .child {
         .dtr-details {

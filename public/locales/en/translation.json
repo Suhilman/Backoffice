@@ -1296,5 +1296,6 @@
     "editCurrencyConversion": "Edit Currency Conversion",
     "chatNow": "Chat Now",
     "message": "Message",
-    "send": "Send"
+    "send": "Send",
+    "device":"Device"
 }

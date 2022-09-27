@@ -52,12 +52,12 @@ export const StaffPage = () => {
     setFilter(filterData);
   };
 
-  const handleCheckDevice = async (params) => {
+  const handleCheckStaff = async (params) => {
     const API_URL = process.env.REACT_APP_API_URL;
     try {
-      const { data } = await axios.get(`${API_URL}/api/v1/staff/check-device/${params.id}`)
-      // Jika device nya ada, kasi peringatan
-      if(data.data.message === "Device Available") {
+      const { data } = await axios.get(`${API_URL}/api/v1/staff/check-staff/${params.id}`)
+      // Jika staff nya ada, kasi peringatan
+      if(data.data.message === "Staff Available") {
         setWarning("userIsLoggedInPleaseLogOutOfTheUserFirst")
         setBody("areYouSureWantToDelete?")
         setSecond(10)
@@ -76,7 +76,7 @@ export const StaffPage = () => {
   };
   const openConfirmModal = async (data) => {
     setConfirmModal(true);
-    await handleCheckDevice(data)
+    await handleCheckStaff(data)
     setStaffInfo({ id: data.id, name: data.name });
   };
 

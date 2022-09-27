@@ -25,6 +25,8 @@ import paymentIcon from "../../../../../images/icons8-mobile-payment-90.png";
 import paymentSalesChannel from "../../../../../images/icons8-sales-64.png";
 import currencyIcon from "../../../../../images/currency-exchange.png";
 import aboutIcon from "../../../../../images/icons8-about-500.png";
+import deviceIcon from "../../../../../images/icons8-device-500.png";
+import notifIcon from "../../../../../images/icons8-notif-500.png";
 import axios from "axios";
 import ArrowUp from '../../../../../images/arrow-up.png'
 import ArrowDown from '../../../../../images/arrow-down.png'
@@ -811,6 +813,8 @@ function AsideMenuList(props) {
                     </li>
                   );
                 }
+                  
+                
 
                 if (section === "staff_management") {
                   return (
@@ -1044,6 +1048,29 @@ function AsideMenuList(props) {
               </NavLink>
             </li>) 
           : null } */}
+
+         
+          
+       
+          <li id="Notification" className={`menu-item ${getMenuItemActive("/notification", false)}`}>
+            <NavLink className="menu-link" to="/notification">
+              <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                <img src={notifIcon} alt="Icon Notification" />
+              </div>
+              <span className="menu-text">{t("notification")}</span>
+            </NavLink>
+          </li>
+
+          <li id="Device" className={`menu-item ${getMenuItemActive("/device", false)}`}>
+            <NavLink className="menu-link" to="/device">
+              <div  className={props.hide ? 'hide-aside' : 'show-aside'}>
+                <img src={deviceIcon} alt="Icon Device" />
+              </div>
+              <span className="menu-text">{t("device")}</span>
+            </NavLink>
+          </li>
+        
+          
 
           <li id="about" className={`menu-item ${getMenuItemActive("/about", false)}`}>
             <NavLink className="menu-link" to="/about">

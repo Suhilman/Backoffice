@@ -76,7 +76,7 @@ const ProfitReport = () => {
     }
     try {
       const { data } = await axios.get(
-        `${API_URL}/api/v1/transaction/profit${outlet_id}date_start=${start_range}&date_end=${end_range}`
+        `${API_URL}/api/v1/reports/profit${outlet_id}date_start=${start_range}&date_end=${end_range}`
       );
       setProfitReport(renderTable(data.data));
     } catch (err) {

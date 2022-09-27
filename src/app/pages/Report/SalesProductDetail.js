@@ -83,7 +83,7 @@ export const SalesProductDetail = () => {
     }
     try {
       const { data } = await axios.get(
-        `${API_URL}/api/v1/transaction/detail-sales${outlet_id}date_start=${start_range}&date_end=${end_range}`
+        `${API_URL}/api/v1/reports/detail-sales${outlet_id}date_start=${start_range}&date_end=${end_range}`
       );
       const resFinal = renderTable(data.data)
       console.log("resFinal", resFinal)

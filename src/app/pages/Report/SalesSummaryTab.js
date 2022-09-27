@@ -111,7 +111,7 @@ export const SalesSummaryTab = () => {
       //   `${API_URL}/api/v1/transaction${outlet_id}date_start=${start_range}&date_end=${end_range}`
       // );
       const { data } = await axios.get(
-        `${API_URL}/api/v1/transaction/mdr${outlet_id}date_start=${start_range}&date_end=${end_range}`
+        `${API_URL}/api/v1/reports/sales-summary${outlet_id}date_start=${start_range}&date_end=${end_range}`
       );
       
       console.log("all transaction", data.data)

@@ -657,7 +657,7 @@ export function QuickPanel() {
                     <h5 className="font-weight-bold mb-3">Memebers</h5>
                     <div className="form-group mb-0 row">
                       <label className="col-8 col-form-label">
-                        Enable Member singup:
+                        Enable Member role:
                       </label>
                       <div className="col-4 text-right">
                       <span className="switch switch-sm switch-primary">

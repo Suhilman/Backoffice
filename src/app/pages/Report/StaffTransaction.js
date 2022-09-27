@@ -76,7 +76,7 @@ const StaffTransaction = () => {
     }
     try {
       const { data } = await axios.get(
-        `${API_URL}/api/v1/transaction/staff-history${outlet_id}date_start=${start_range}&date_end=${end_range}`
+        `${API_URL}/api/v1/reports/staff-history${outlet_id}date_start=${start_range}&date_end=${end_range}`
       );
 
       setStaffTransaction(renderTable(data.data));

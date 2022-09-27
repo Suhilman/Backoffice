@@ -97,7 +97,7 @@ export const SalesTypeTab = () => {
       //   `${API_URL}/api/v1/transaction/sales-type${outlet_id}date_start=${start_range}&date_end=${end_range}`
       // );
       const { data } = await axios.get(
-        `${API_URL}/api/v1/transaction/sales-type/mdr${outlet_id}date_start=${start_range}&date_end=${end_range}`
+        `${API_URL}/api/v1/reports/sales-type${outlet_id}date_start=${start_range}&date_end=${end_range}`
       );
 
       setAllSalesTypes(data.data);

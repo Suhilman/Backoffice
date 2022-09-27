@@ -92,7 +92,7 @@ export const RecapTab = () => {
     let recapData = [];
     try {
       const { data } = await axios.get(
-        `${API_URL}/api/v1/recap${outlet_id}date_start=${start_range}&date_end=${end_range}`
+        `${API_URL}/api/v1/reports/recap${outlet_id}date_start=${start_range}&date_end=${end_range}`
       );
       setAllRecaps(data.data);
       recapData = data.data;

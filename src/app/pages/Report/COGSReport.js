@@ -82,7 +82,7 @@ const COGSReport = () => {
     }
     try {
       const { data } = await axios.get(
-        `${API_URL}/api/v1/transaction/cogs${outlet_id}date_start=${start_range}&date_end=${end_range}`
+        `${API_URL}/api/v1/reports/cogs${outlet_id}date_start=${start_range}&date_end=${end_range}`
       );
       setCOGSTransaction(renderTable(data.data));
     } catch (err) {

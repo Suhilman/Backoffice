@@ -97,7 +97,7 @@ export const TransactionHistoryTab = () => {
       // );
 
       const { data } = await axios.get(
-        `${API_URL}/api/v1/transaction/mdr?order=newest&per_page=999${outlet_id}&date_start=${start_range}&date_end=${end_range}${filter}`
+        `${API_URL}/api/v1/reports/mdr?order=newest&per_page=999${outlet_id}&date_start=${start_range}&date_end=${end_range}${filter}`
       );
       setAllTransactions(data.data);
 
